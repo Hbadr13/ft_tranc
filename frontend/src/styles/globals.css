@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --Navbar-color: #1ba098;
+}
+
+.bg-Navbar-color {
+  @apply bg-slate-600
+}
+
+.button-color {}
+
+.carcontainer {
+  /* @apply bg-[#869ba9]; */
+  @apply bg-[#1ba098];
+}
+.body{
+  background-color: #1ba098;
+}
