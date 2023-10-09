@@ -153,6 +153,7 @@ function countPoints() {
     ball.velocityY = VELOCITY;
   }
 }
+
 function collision(ball, p) {
   ball.top = ball.y - ball.radius;
   ball.bottom = ball.y + ball.radius;

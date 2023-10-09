@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState, RefObject } from "react";
 import { startGame } from "../utils/main";
-import { Player, Canvas, Ball, GameInfo } from "../utils/class";
+import { Player, Ball, GameInfo } from "../utils/class";
 import { InfoGameFromClientProps } from "@/components/model";
-import { Socket } from "socket.io";
 import { io } from "socket.io-client";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 interface InfoGameprops {
@@ -14,9 +12,9 @@ interface InfoGameprops {
 }
 let computer = new Player(0, 0);
 let player = new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y);
-GameInfo.VELOCIT *= 0.4;
-GameInfo.SPEED *= 0.4;
-let ball = new Ball(200, 50, "red", 10, GameInfo.VELOCIT, GameInfo.VELOCIT);
+// GameInfo.VELOCIT *= 0.8;
+// GameInfo.SPEED *= 0.8;
+let ball = new Ball(200, 50, "red", 10, GameInfo.VELOCIT, GameInfo.VELOCIT, GameInfo.SPEED);
 let mousePosition = { x: 0, y: 0 };
 let HoAreYou = 0
 const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGameprops) => {
@@ -33,12 +31,33 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
     const router = useRouter();
 
     useEffect(() => {
-        socket?.on("start", () => {
 
+        socket?.on("start", () => {
+            if (infoGameFromClient.selectPlayer === 'online') {
+                GameInfo.SPEED = 2;
+                GameInfo.VELOCIT = 1;
+                GameInfo.ACCELERATION = 0.2;
+
+                ball.speed = GameInfo.SPEED
+                ball.velocityX = GameInfo.VELOCIT;
+                ball.velocityY = GameInfo.VELOCIT;
+            }
             setnumberPlayer(2);
             setgamaIsStart(1)
 
             setInterval(() => {
+                if (HoAreYou == 1) {
+                    if (document.hidden)
+                        socket?.emit("documentHidden")
+                }
+                // if (document.hidden)
+                //     socket?.emit("document-hidden")
+
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const seconds = now.getSeconds();
+
                 startGame(myCanvasRef, mousePosition, ball, player, computer, infoGameFromClient, HoAreYou);
                 setcomputerScore(computer.score);
                 setplayerScore(player.score);
@@ -49,6 +68,8 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
                         ball.y = GameInfo.CANVAS_HIEGHT / 2;
                         ball.velocityX = GameInfo.VELOCIT;
                         ball.velocityY = GameInfo.VELOCIT;
+                        ball.speed = GameInfo.SPEED
+
                     }
                     if (ball.x > GameInfo.CANVAS_WIDTH) {
                         player.score += 1;
@@ -56,6 +77,7 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
                         ball.y = GameInfo.CANVAS_HIEGHT / 2;
                         ball.velocityX = GameInfo.VELOCIT;
                         ball.velocityY = GameInfo.VELOCIT;
+                        ball.speed = GameInfo.SPEED
                     }
                 }
                 if (infoGameFromClient.selectPlayer == "online") {
@@ -74,37 +96,15 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
                             computerScore: computer.score,
                             statuee: gameStatus
                         });
-                    socket?.on("y1", (yy: number) => {
-                        if (HoAreYou == 1) mousePosition.y = yy;
-                    });
-                    socket?.on("y2", (yy: number) => {
-                        if (HoAreYou == 0) mousePosition.x = yy;
-                    });
-                    socket?.on("movebb", (obj: any) => {
-                        if (HoAreYou == 1) {
-                            ball.x = obj.x;
-                            ball.y = obj.y;
-                            computer.score = obj.computerScore;
-                            player.score = obj.playerScore;
-                        }
-                    });
                 }
             }, 1000 / 60);
         });
     });
-    const handleMouseMove = (e: any) => {
-        console.log(gamaIsStart)
-        const rect = e.target.getBoundingClientRect();
-        if (HoAreYou == 0) mousePosition.y = e.clientY - rect.top - 25;
-        if (HoAreYou == 1) mousePosition.x = e.clientY - rect.top - 25;
-    };
+
     useEffect(() => {
         const handlerResize = () => {
             const canvas = myCanvasRef.current;
             if (!canvas) return;
-            // canvas.width = window.innerWidth < 2000 ? window.innerWidth - window.innerWidth / 2 : 1000
-            // computer.x = window.innerWidth < 2000 ? window.innerWidth - window.innerWidth / 2 : 1000
-            // canvas.width = 400
             computer.x = canvas.width;
             computer.x -= 10;
         };
@@ -128,58 +128,84 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
             }
         });
     });
+
     useEffect(() => {
-        const newSocket = io("http://localhost:8000");
+        const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:8000";
+        const newSocket = io(socketUrl);
         setsocket(newSocket);
         return () => {
             newSocket.disconnect();
         };
     }, []);
+
     useEffect(() => {
-        socket?.on("indexPlayer", (yy: number) => {
-            HoAreYou = yy;
+        socket?.on("indexPlayer", (index: number) => {
+            HoAreYou = index;
         });
-    });
-    if (
-        infoGameFromClient.selectPlayer === "computer" ||
-        infoGameFromClient.selectPlayer === "offline"
-    ) {
+
+        socket?.on("ResumePause", (value: string) => {
+            console.log(value)
+            setgameStatus(value)
+            player.status = value
+            computer.status = value
+        })
+        socket?.on("leaveRoom", () => {
+            console.log('leaveRoom:')
+            player.status = 'Pause'
+            computer.status = 'Pause'
+            setYouWon(1)
+        })
+        socket?.on("posY", (posY: number) => {
+            if (HoAreYou == 1)
+                mousePosition.y = posY;
+        });
+        socket?.on("posX", (posX: number) => {
+            if (HoAreYou == 0)
+                mousePosition.x = posX;
+        });
+        socket?.on("movebb", (obj: any) => {
+            if (HoAreYou == 1) {
+                ball.x = obj.x;
+                ball.y = obj.y;
+                computer.score = obj.computerScore;
+                player.score = obj.playerScore;
+            }
+        });
+        socket?.on("documentHidden", (flag: boolean) => {
+            // if(flag)
+            const value = "Resume"
+            console.log("--->:", value)
+            setgameStatus(value)
+            player.status = value
+            computer.status = value
+        })
+    })
+
+    if (infoGameFromClient.selectPlayer === "computer" ||
+        infoGameFromClient.selectPlayer === "offline") {
         socket?.emit("startWithComputer", room);
     }
 
+    const handleMouseMove = (e: any) => {
+        const rect = e.target.getBoundingClientRect();
+        if (HoAreYou == 0) mousePosition.y = e.clientY - rect.top - 25;
+        if (HoAreYou == 1) mousePosition.x = e.clientY - rect.top - 25;
+    };
     const sendMessage = () => {
         setnumberPlayer(1);
         socket?.emit("joinRoom", room);
 
     };
-
-    useEffect(() => {
-        socket?.on("indexx", (ind: string) => {
-            setgameStatus(ind)
-            player.status = ind
-            computer.status = ind
-        })
-    })
-
     const handelButtonGameStatus = () => {
         const status = gameStatus === 'Pause' ? 'Resume' : 'Pause'
-        socket?.emit('indexx', status)
+        socket?.emit('ResumePause', status)
         computer.status = status
         player.status = status
         setgameStatus(status)
     }
-    useEffect(() => {
-        socket?.on("leaveRoom", (ind: any) => {
-            console.log('leaveRoom:')
-            setYouWon(1)
-            // handelButtonLeave()
-        })
-    })
     const handelButtonLeave = () => {
-        // location.reload()
         setselectPlayer('')
         router.push('/game?h=1');
-        // location.
     }
     return (
         <>
@@ -187,12 +213,6 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
                 {numberPlayer == 0 &&
                     infoGameFromClient.selectPlayer === "online" ? (
                     <div>
-                        {/* <input
-                            className="bg-red-400 pb-7 h-[90px] rounded-2xl"
-                            type="text"
-                            value={room}
-                            onChange={(e) => setroom(e.target.value)}
-                        /> */}
                         <button className="bg-red-400 w-[80px] h-[90px] rounded-2xl text-3xl mx-2" onClick={sendMessage}>join room</button>
                     </div>
                 ) : null}
@@ -206,11 +226,11 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
                     <div className="w-full h-[100%] flex items-center flex-col space-y-10">
                         <div>{ }</div>
                         <canvas
-                            className="bg-black rounded-2xl h-[70%] w-[70%] "
+                            className={`bg-black rounded-2xl h-[70%] w-[50%] ${false ? 'hidden' : ''}`}
                             onMouseMove={handleMouseMove}
                             ref={myCanvasRef}
                             height={400}
-                            width={1000}
+                            width={800}
                         >
                         </canvas>
                         <div className="w-[400px] h-[70px] rounded-2xl flex justify-around items-center">

@@ -6,7 +6,8 @@ import { Navbar } from '@/components/model'
 export default function Home() {
   return (
     <>
-      {/* <Navbar /> */}
+      <div>hi</div>
+      <div>hello</div>
     </>
 
   )

@@ -13,7 +13,7 @@ function Chat() {
   const [rome, setrome] = useState('');
 
   useEffect(() => {
-    const newSocket = io('http://localhost:8001');
+    const newSocket = io('http://e2r11p2.1337.ma:8001');
     setsocket(newSocket)
   }, []);
 

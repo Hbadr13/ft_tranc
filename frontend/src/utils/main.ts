@@ -17,22 +17,20 @@ const updateGameLoop = (
   HoAreYou: number
 ) => {
   //init the canvas size in Gameinfo
-  if (computer.status == 'Resume' || computer.status == 'Resume')
-    return
-  // console.log('computer.status :',computer.status)
-  // console.log('player.status :',player.status)
+
 
   GameInfo.CANVAS_WIDTH = MyCanvas.width;
   GameInfo.CANVAS_HIEGHT = MyCanvas.height;
-  if (infoGameFromClient.selectPlayer === "computer")
-    computer.y = LinearInterpolation(
-      computer.y,
-      ball.y - computer.height / 2,
-      0.1
-    );
-  else {
-    computer.y = mousePosition.x;
+  if (infoGameFromClient.selectPlayer === "computer") {
+    const newY = LinearInterpolation(computer.y, ball.y - computer.height / 2, GameInfo.LEVEL);
+    if (newY > -10 && (newY + computer.height < MyCanvas.height + 10))
+      computer.y = newY;
   }
+  else {
+    if (mousePosition.x > -10 && (mousePosition.x + computer.height < MyCanvas.height + 10))
+      computer.y = mousePosition.x;
+  }
+
   if (mousePosition.y > -10 && (mousePosition.y + player.height < MyCanvas.height + 10))
     player.y = mousePosition.y;
   if (HoAreYou == 1)
@@ -42,9 +40,12 @@ const updateGameLoop = (
   ball.setBorder();
   player.setBorder();
   computer.setBorder();
-  if (ball.bottom > MyCanvas.height || ball.top < 0) ball.velocityY *= -1;
+  if (ball.bottom + 2 > MyCanvas.height || ball.top - 2 < 0)
+    ball.velocityY *= -1;
+
   let selectPlayer = ball.x < MyCanvas.width / 2 ? player : computer;
-  if (ball.checkCollision(selectPlayer)) MyCanvas.moveBall(ball, selectPlayer);
+  if (ball.checkCollision(selectPlayer))
+    MyCanvas.moveBall(ball, selectPlayer);
 };
 
 const renderGameOverScreen = (
@@ -74,6 +75,8 @@ export function startGame(
 ) {
   if (!myCanvasRef.current) return;
   const MyCanvas = new Canvas(myCanvasRef.current);
+  if (computer.status == 'Resume' || computer.status == 'Resume')
+    return
   updateGameLoop(MyCanvas, mousePosition, ball, player, computer, infoGameFromClient, HoAreYou);
   renderGameOverScreen(MyCanvas, ball, player, computer);
 }
