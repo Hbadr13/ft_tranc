@@ -19,6 +19,7 @@ let mousePosition = { x: 0, y: 0 };
 let HoAreYou = 0
 const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGameprops) => {
 
+
     const myCanvasRef = useRef<HTMLCanvasElement>(null);
     const [room, setroom] = useState("");
     const [socket, setsocket] = useState<any>();
@@ -50,14 +51,6 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
                     if (document.hidden)
                         socket?.emit("documentHidden")
                 }
-                // if (document.hidden)
-                //     socket?.emit("document-hidden")
-
-                const now = new Date();
-                const hours = now.getHours();
-                const minutes = now.getMinutes();
-                const seconds = now.getSeconds();
-
                 startGame(myCanvasRef, mousePosition, ball, player, computer, infoGameFromClient, HoAreYou);
                 setcomputerScore(computer.score);
                 setplayerScore(player.score);
@@ -130,7 +123,8 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
     });
 
     useEffect(() => {
-        const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:8000";
+        const socketUrl = "http://localhost:8000";
+        // const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://e2r9p2.1337.ma:8000";
         const newSocket = io(socketUrl);
         setsocket(newSocket);
         return () => {
@@ -144,20 +138,22 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
         });
 
         socket?.on("ResumePause", (value: string) => {
-            console.log(value)
+            // console.log(value)
             setgameStatus(value)
             player.status = value
             computer.status = value
         })
         socket?.on("leaveRoom", () => {
-            console.log('leaveRoom:')
+            // console.log('leaveRoom:')
             player.status = 'Pause'
             computer.status = 'Pause'
             setYouWon(1)
         })
         socket?.on("posY", (posY: number) => {
-            if (HoAreYou == 1)
+            // console.log('hello')
+            if (HoAreYou == 1) {
                 mousePosition.y = posY;
+            }
         });
         socket?.on("posX", (posX: number) => {
             if (HoAreYou == 0)
@@ -226,7 +222,9 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
                     <div className="w-full h-[100%] flex items-center flex-col space-y-10">
                         <div>{ }</div>
                         <canvas
-                            className={`bg-black rounded-2xl h-[70%] w-[50%] ${false ? 'hidden' : ''}`}
+                            // sm:w-[80%] sm:h-[80%]
+                            // w-[90%] h-[50%] 2xl:h-[50%] 2xl:w-[40%]    md:h-[50%]  md:w-[80%]
+                            className={`bg-black rounded-2xl w-[90%] h-[50%]   md:h-[60%]  md:w-[60%] 2xl:h-[70%] 2xl:w-[40%]${false ? 'hidden' : ''}`}
                             onMouseMove={handleMouseMove}
                             ref={myCanvasRef}
                             height={400}
@@ -243,7 +241,7 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
                             </button>
 
                             <div className="bg-slate-400 w-[20%] h-[90%] rounded-2xl flex justify-center items-center text-3xl">
-                                {computerScore}
+                                {computer.score}
                             </div>
                             <button onClick={handelButtonLeave} className="bg-slate-400 w-[20%] h-[90%] rounded-2xl flex justify-center items-center text-3xl">
                                 Leave

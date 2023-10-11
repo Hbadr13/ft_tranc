@@ -1,7 +1,8 @@
 export const arabicNames = [
-    "Ahmed Amina",
-    "Fatima Youssef",
-    "Ali Rana",
+    "Ahmed_Amina",
+    "Ahmed_Amina",
+    "Fatima_Youssef",
+    "Ali_Rana",
     "Amina Bilal",
     "Mohammad Layla",
     "Layla Sami",

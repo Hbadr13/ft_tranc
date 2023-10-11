@@ -1,5 +1,5 @@
 
-
+import { useRouter } from 'next/navigation'
 
 import { Combobox, Transition } from '@headlessui/react'
 
@@ -12,9 +12,10 @@ import Link from 'next/link'
 import { Fragment, useState, ChangeEvent, KeyboardEvent, useEffect } from 'react'
 import { CustomLinkNavbarProps, BoxSearchrProps } from './model'
 import { arabicNames } from '../components/data'
+import UserInfo from './user/UserInfo'
 
 const BoxSearch = ({ searchUser, setSearchUser }: BoxSearchrProps) => {
-
+    const router = useRouter()
     const [query, setQuery] = useState('')
     // const [User, setUser] = useState('')
     const [Index, setIndex] = useState(0)
@@ -31,11 +32,17 @@ const BoxSearch = ({ searchUser, setSearchUser }: BoxSearchrProps) => {
             user.toLowerCase().includes(query.trimStart().trimEnd().replace(/\s+/g, ' ').toLowerCase())
         ))
     }
+    const handelOnChange = (name: any) => {
+
+        setSearchUser(name)
+
+        router.replace(`/users/${name}`);
+    }
 
     return (
         <>
             <form className='w-full' action="">
-                <Combobox value={searchUser} onChange={setSearchUser} >
+                <Combobox value={searchUser} onChange={handelOnChange} >
                     <div className='relative flex justify-center items-center  h-10 w-[100%]'>
                         <Combobox.Input
                             type="text"
@@ -106,8 +113,9 @@ const Navbar = () => {
                     <CustomLinkNavbar moreStye='' href="/" content="logOut" />
                     <CustomLinkNavbar moreStye='' href="/" content="more" />
                 </div>
+                {/* <UserInfo /> */}
             </div>
-            <div className='bg-red-200'>{searchUser}</div>
+            {/* <div className='bg-red-200'>{searchUser}</div> */}
 
         </>
     )

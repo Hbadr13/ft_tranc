@@ -41,12 +41,14 @@ const Index = () => {
                     }
                 </div>
                 {
-                    selectPlayer != '' ? (<div className='w-full absolute'> <Pong
-                        infoGameFromClient={infoGameFromClient}
-                        selectPlayer={selectPlayer}
-                        setselectPlayer={setselectPlayer}
+                    selectPlayer != '' ? (<div className='w-full absolute'>
+                        <Pong
+                            infoGameFromClient={infoGameFromClient}
+                            selectPlayer={selectPlayer}
+                            setselectPlayer={setselectPlayer}
+                        ></Pong>
 
-                    ></Pong></div>) : null
+                    </div>) : null
                 }
             </div >
         </>
