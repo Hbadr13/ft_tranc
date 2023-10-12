@@ -8,8 +8,7 @@ export class UserController {
 
   @Get('/:userId')
   async getAllUsers(
-    @Param('userId', ParseIntPipe) userId: number,
-  ) {
+  @Param('userId', ParseIntPipe) userId: number,) {
     return this.userService.findAllUsers(userId);
   }
 
