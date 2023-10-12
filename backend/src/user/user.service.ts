@@ -16,7 +16,9 @@ export class UserService {
     
     return user;
   }
-  async findAllUsers() {
-    return this.prisma.user.findMany();
+  async findAllUsers(userAId: number) {
+    const users = await this.prisma.user.findMany();
+    const filteredUsers = users.filter(user => user.id !== userAId);
+    return filteredUsers;
   }
-}
+  }
