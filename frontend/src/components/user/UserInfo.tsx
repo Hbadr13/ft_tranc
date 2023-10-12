@@ -16,7 +16,6 @@ export default function Home() {
   };
   // const router = useRouter();
 
-  // import { useRouter } from 'next/navigation';
 
   useEffect(() => {
     (
@@ -24,16 +23,7 @@ export default function Home() {
         const response = await fetch('http://localhost:3333/auth/user', {
           credentials: 'include',
         });
-        console.log(response.status)
-        if (response.status != 200) {
-
-          // router.push('/');
-          router.push('/auth/login');
-          // } else {
-          return;
-        }
         const content = await response.json();
-        console.log(content);
         setfoto_user(content.foto_user);
         setEmail(content.email);
         setUsername(content.username);

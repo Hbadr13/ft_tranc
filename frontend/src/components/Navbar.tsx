@@ -13,29 +13,46 @@ import { Fragment, useState, ChangeEvent, KeyboardEvent, useEffect } from 'react
 import { CustomLinkNavbarProps, BoxSearchrProps } from './model'
 import { arabicNames } from '../components/data'
 import UserInfo from './user/UserInfo'
+import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks'
+
+
+
+
+
 
 const BoxSearch = ({ searchUser, setSearchUser }: BoxSearchrProps) => {
     const router = useRouter()
     const [query, setQuery] = useState('')
+    const [id, setid] = useState(0)
     // const [User, setUser] = useState('')
-    const [Index, setIndex] = useState(0)
+    const [users, setUsers] = useState<any>([])
+    const [amis, setAmis] = useState<any>([])
     const [LastArrow, setLastArrow] = useState("")
+    const [isfriends, setisfriends] = useState<boolean>(false)
     const handlingQuery = (event: ChangeEvent<HTMLInputElement>) => {
         setQuery(event.target.value)
         // setSearchUser(event.target.value)
     }
     const empy: Array<string> = []
     let filterUser = empy;
+    fetchCurrentUser(setid);
+    fetchAllUsers(setUsers, query);
+    fetchAllAmis({ setAmis, query, id });
 
     if (query.replace(/\s+/g, '')) {
-        filterUser = arabicNames.filter((user) => (
-            user.toLowerCase().includes(query.trimStart().trimEnd().replace(/\s+/g, ' ').toLowerCase())
-        ))
+        filterUser = users.filter((user: any) => {
+            user.flag = true
+            amis.filter((usr: any) => {
+                console.log(`cur: ${user.username} | ami: ${usr.username}`)
+                if (usr.id == user.id)
+                    user.flag = false
+            })
+            return user.username?.toLowerCase().includes(query.trimStart().trimEnd().replace(/\s+/g, ' ').toLowerCase())
+        }
+        )
     }
     const handelOnChange = (name: any) => {
-
         setSearchUser(name)
-
         router.replace(`/users/${name}`);
     }
 
@@ -62,17 +79,23 @@ const BoxSearch = ({ searchUser, setSearchUser }: BoxSearchrProps) => {
                     <Combobox.Options className='absolute flex justify-center mt-5 w-[50%]'>
                         <div className={`text-center rounded-2xl m-2 shadow-slate-800 shadow-md font-light flex flex-col justify-center w-[100%] bg-red-200 overflow-hidden`}>
                             {
-                                filterUser.map((item, index) => (
+                                filterUser.map((item: any, index: number) => (
 
                                     index < 10 && (
-                                        < Combobox.Option value={item} key={index}
+                                        < Combobox.Option value={item.username} key={index}
                                             className={({ active }) => `flex justify-around  ${active ? 'bg-teal-600 text-white' : 'text-gray-900'}`}
-                                            onClick={() => setQuery(item)}
-                                            onMouseEnter={() => setIndex(index)}
+                                            onClick={() => setQuery(item.username)}
+                                        // onMouseEnter={() => setIndex(index)}
                                         >
                                             <Image src={"/man.png"} alt='man profiel' width={60} height={40}></Image>
-                                            <CustomLinkNavbar href='/' content={item} ></CustomLinkNavbar>
-                                            <CustomLinkNavbar href='/' content=' add friend' ></CustomLinkNavbar>
+                                            <CustomLinkNavbar href='/' content={item.username} ></CustomLinkNavbar>
+                                            {
+
+                                                (!item.flag) ?
+                                                    (<CustomLinkNavbar href='/game' moreStye="bg-yallow-700" content='play' ></CustomLinkNavbar>) :
+                                                    (<CustomLinkNavbar href='/' content=' add friend' ></CustomLinkNavbar>)
+                                            }
+
                                         </Combobox.Option>
                                     )
                                 ))
@@ -96,6 +119,23 @@ const CustomLinkNavbar = ({ href, content, moreStye }: CustomLinkNavbarProps) =>
 }
 
 const Navbar = () => {
+    const router = useRouter();
+
+
+    useEffect(() => {
+        (
+            async () => {
+                const response = await fetch('http://localhost:3333/auth/user', {
+                    credentials: 'include',
+                });
+                if (response.status != 200) {
+                    router.push('/auth/login');
+                    return;
+                }
+                const content = await response.json();
+            }
+        )();
+    });
     const [searchUser, setSearchUser] = useState("")
 
     return (
@@ -113,10 +153,8 @@ const Navbar = () => {
                     <CustomLinkNavbar moreStye='' href="/" content="logOut" />
                     <CustomLinkNavbar moreStye='' href="/" content="more" />
                 </div>
-                {/* <UserInfo /> */}
+                <UserInfo />
             </div>
-            {/* <div className='bg-red-200'>{searchUser}</div> */}
-
         </>
     )
 }

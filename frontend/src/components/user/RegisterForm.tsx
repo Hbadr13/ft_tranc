@@ -3,6 +3,7 @@ import Link from "next/link";
 import * as z from 'zod';
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
+import { checklogin } from "@/hooks/userHooks";
 // import LoginFrom from './LoginForm'
 
 // import { Provider } from 'next-auth/client';
@@ -29,7 +30,23 @@ export default function RegisterForm() {
     password: password,
     confirmPassword: configPassword, // Doesn't match 'password123'
   };
-
+  // checklogin();
+  //   useEffect(() => {
+  //     try {
+  //       async () => {
+  //         const response = await fetch('http://localhost:3333/auth/user', {
+  //           credentials: 'include',
+  //         });
+  //         console.log("ssssss------------");
+  //             console.log(response.status )
+  //             if (response.status != 200) {
+  //                 router.push('/');
+  //                 return;
+  //             }
+  //         };
+  //     } catch (error) {
+  //     }
+  // });
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const FormSchema = z
