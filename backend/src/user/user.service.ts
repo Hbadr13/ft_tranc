@@ -26,9 +26,9 @@ export class UserService {
   //t5arbi9a
   async findAllUsers2(userAId: number) {
     const users = await this.prisma.user.findMany();
-    const filteredUsers123496 = users.filter(user => user.id !== userAId);
-    console.log('hello')
-    return filteredUsers123496;
+    const filteredUsers1234961111 = users.filter(user => user.id !== userAId);
+    console.log('hello simo')
+    return filteredUsers1234961111;
   }
 
 }
