@@ -1,8 +1,9 @@
 // 'use client'
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
+import { checkAuth, checklogin } from "@/hooks/userHooks";
 // import { useState } from "react";
 // import { signIn } from "next-auth/react";
 // import { useRouter } from "next/navigation";
@@ -15,6 +16,23 @@ export default function LoginForm() {
     email: email,
     password: password
   };
+  //   console.log("ssssss")
+  //   useEffect(() => {
+  //     try {
+  //       async () => {
+  //         const response = await fetch('http://localhost:3333/auth/user', {
+  //           credentials: 'include',
+  //         });
+  //         console.log("ssssss------------");
+  //             console.log(response.status )
+  //             if (response.status != 200) {
+  //                 router.push('/');
+  //                 return;
+  //             }
+  //         };
+  //     } catch (error) {
+  //     }
+  // });
   const handleGoogleLogin = () => {
     // const currentUrl = window.location.href;
     // Redirect to the desired URL

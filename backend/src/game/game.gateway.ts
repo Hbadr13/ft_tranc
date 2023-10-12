@@ -18,12 +18,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private players: Array<{ _client: Socket; _room: string }> = [];
 
   handleConnection(client: Socket) {
-    console.log(`Game: Client connected: ${client.id}`);
+    // console.log(`Game: Client connected: ${client.id}`);
   }
   handleDisconnect(client: Socket) {
     const user = this.players.find((item) => item._client.id == client.id);
     this.players = this.players.filter((item) => item._client.id != client.id);
-    console.log(`Game: Client disconnected: ${client.id}`);
+    // console.log(`Game: Client disconnected: ${client.id}`);
     if (user) client.to(user._room).emit('leaveRoom', {})
   }
   // if(!if(!document.hidden))

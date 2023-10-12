@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { FriendsModule } from './friends/friends.module';
 import { JwtModule } from '@nestjs/jwt';
 import { GameGateway } from './game/game.gateway';
+import { OnlineGateway } from './online/online.gateway';
 
 
 
@@ -19,6 +20,6 @@ import { GameGateway } from './game/game.gateway';
         ConfigModule.forRoot({
             isGlobal: true
         }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule],
-    providers: [GameGateway],
+    providers: [GameGateway, OnlineGateway],
 })
 export class AppModule { }
