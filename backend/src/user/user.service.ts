@@ -4,8 +4,8 @@ import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
-  
+  constructor(private prisma: PrismaService) { }
+
   async findByUsername(id: number): Promise<User | undefined> {
     // Replace this with your actual logic to find a user by username
     const user = await this.prisma.user.findUnique({
@@ -13,7 +13,7 @@ export class UserService {
         id: id,
       },
     });
-    
+
     return user;
   }
   async findAllUsers(userAId: number) {
@@ -21,4 +21,4 @@ export class UserService {
     const filteredUsers = users.filter(user => user.id !== userAId);
     return filteredUsers;
   }
-  }
+}
