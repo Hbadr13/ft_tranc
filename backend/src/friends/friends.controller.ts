@@ -59,7 +59,10 @@ async sendFriendRequest(
   }
   @Get(':userId/received-requests')
   async getReceivedFriendRequests(@Param('userId') userId: number) {
-    return this.friendsService.getReceivedFriendRequests(userId);
+    if(Number(userId) > 0)
+    return this.friendsService.getReceivedFriendRequests(Number(userId));
+    else
+      return {}
   }
 
 }

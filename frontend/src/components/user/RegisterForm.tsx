@@ -15,7 +15,7 @@ import { checklogin } from "@/hooks/userHooks";
 // export default LoginForm;
 export default function RegisterForm() {
 
-
+  checklogin();
 
   const router = useRouter();
   const [name, setName] = useState("");

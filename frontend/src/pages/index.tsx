@@ -1,4 +1,3 @@
-// // import Image from 'next/image'
 // // import { Inter } from 'next/font/google'
 // // import { Navbar } from '@/components/model'
 // // import { useEffect, useState } from 'react';
@@ -181,27 +180,47 @@
 // // export default FriendsPage;
 
 
+import Image from 'next/image'
+
+
 import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks';
 import { useEffect, useState } from 'react';
 
 function Index() {
 
 
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<Array<any>>([]);
   const [friendId, setFriendId] = useState(0);
   const [accept, setaccept] = useState(0);
-  const [id, setid] = useState(-1);
+
+  const [received, setreceived] = useState<Array<any>>([]);
+  const [requestt, setrequestt] = useState(0);
+  const [id, setid] = useState(0);
   const [Email, setEmail] = useState("");
   const [query, setquery] = useState("22");
   // const [users, setUsers] = useState<any>([])
 
   const [amis, setAmis] = useState<any>([])
-  fetchAllUsers(setUsers, "")
   fetchCurrentUser(setid)
+  fetchAllUsers(setUsers, "", id)
   fetchAllAmis({ setAmis, query, id })
-  console.log(amis)
 
-
+  useEffect(() => {
+    (
+      async () => {
+        const response = await fetch(`http://localhost:3333/friends/${id}/received-requests`, {
+          credentials: 'include',
+        });
+        const counte = await response.json();
+        if (response.status == 200) {
+          setreceived(counte)
+          console.log(counte[0]?.sender);
+          // setrequestt(cont)
+          return;
+        }
+      }
+    )();
+  }, [id]);
 
   const sendRequest = async () => {
     try {
@@ -221,7 +240,8 @@ function Index() {
   };
   const sendRequestForaccpet = async () => {
     try {
-      const response = await fetch(`http://localhost:3333/friends/accept-friend-request/${friendId}/${id}`, {
+
+      const response = await fetch(`http://localhost:3333/friends/accept-friend-request/${accept}/${id}`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -271,14 +291,58 @@ function Index() {
         </div>
         <button className='bg-blue-800   p-2 rounded-xl' onClick={sendRequestForaccpet}>accept</button>
       </div>
+      <div className="flex justify-around w-full ">
+        <div className="">
+          <h1 className=''>all users</h1>
+          {
+            (users.length) ? users.map((user: any) => (
+              <div className=' bg-slate-200 rounded-2xl items-start  '>
+                <img
+                  src={user.foto_user}
+                  alt="Your Image Alt Text"
+                  className="w-20 h-auto  rounded-full inline-block" // Adjust the width as needed
+                />
+                <samp className='bg-black  rounded-2xl   '>{`${user.username}.${user.id}`}</samp>
 
-      {
-        users.map((user: any) => (
-          <div>
-            <div>{`${user.username}-----${user.id}`}</div>
-          </div>
-        ))
-      }
+              </div>
+            )) : null
+          }
+        </div>
+        <div className="">
+          <h1 className=''>amis</h1>
+
+          {
+            (amis.length) ? amis.map((user: any) => (
+              <div className=' bg-slate-200 rounded-2xl items-start  '>
+                <img
+                  src={user.foto_user}
+                  alt="Your Image Alt Text"
+                  className="w-20 h-auto  rounded-full inline-block" // Adjust the width as needed
+                />
+                <samp className='bg-black  rounded-2xl   '>{`${user.username}.${user.id}`}</samp>
+
+              </div>
+            )) : null
+          }
+        </div>
+        <div className="">
+          <h1 className=''>request</h1>
+          {
+            (received.length) ? received.map((user: any) => (
+              <div className=' bg-slate-200 rounded-2xl items-start  '>
+                <img
+
+                  src={user.sender.foto_user}
+                  alt="Your Image Alt Text"
+                  className="w-20 h-auto  rounded-full inline-block" // Adjust the width as needed
+                />
+                <samp className='bg-black  rounded-2xl   '>{`${user.sender.username}.${user.sender.id}`}</samp>
+
+              </div>
+            )) : null
+          }
+        </div>
+      </div>
     </div >
   );
 }

@@ -17,6 +17,7 @@ model User {
   firstName             String?
   lastName              String?
   foto_user             String?
+  isOnline              Boolean
   bookmarks             Bookmark[]
   
   // Friend relations

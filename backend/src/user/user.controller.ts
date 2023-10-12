@@ -8,11 +8,13 @@ export class UserController {
 
   @Get('/:userId')
   async getAllUsers(
-  @Param('userId', ParseIntPipe) userId: number,) {
-    return this.userService.findAllUsers(userId);
+  @Param('userId') userId) {
+    console.log(userId)
+        return this.userService.findAllUsers(Number(userId));
   }
 
 }
 
 
 
+undefined

@@ -149,7 +149,7 @@ export class FriendsService {
     return friendUsers;
   }
   async getReceivedFriendRequests(userId: number, status: string = 'pending') {
-    return this.prisma.user.findUnique({
+    const data_rese = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
         receivedFriendRequests: {
@@ -157,10 +157,11 @@ export class FriendsService {
             status: status,
           },
           select: {
-            id: true,
-            status: true,
+            id: false,
+            status: false,
             sender: {
-              select: {
+              select: 
+              {
                 id: true,
                 username: true,
                 foto_user:true, // Include any fields you need from the sender
@@ -172,6 +173,7 @@ export class FriendsService {
         },
       },
     });
+    return  data_rese.receivedFriendRequests
   }
 
 }
