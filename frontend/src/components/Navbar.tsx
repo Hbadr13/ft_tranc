@@ -36,7 +36,7 @@ const BoxSearch = ({ searchUser, setSearchUser }: BoxSearchrProps) => {
     const empy: Array<string> = []
     let filterUser = empy;
     fetchCurrentUser(setid);
-    fetchAllUsers(setUsers, query);
+    fetchAllUsers({ setUsers, query, id });
     fetchAllAmis({ setAmis, query, id });
 
     if (query.replace(/\s+/g, '')) {

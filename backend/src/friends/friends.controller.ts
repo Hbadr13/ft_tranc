@@ -19,7 +19,7 @@ async sendFriendRequest(
 ): Promise<void> {
   
   const userId = id;
-  console.log(userId) // Assuming you have stored user information in the request object during authentication
+  // console.log(userId) // Assuming you have stored user information in the request object during authentication
   await this.friendsService.sendFriendRequest(Number(userId), Number(friendId));
 }
 @Post('accept-friend-request/:requestId/:id')

@@ -44,7 +44,7 @@ export class AuthController {
     @UseGuards(AuthGuard('42'))
     async fortyTwoAuthCallback(@Req() req,  @Res({passthrough: true}) response:Response) {
          const user = await this.authService.login(req.user);
-         console.log("ssssss");
+        //  console.log("ssssss");
          const jwt = await this.jwtService.signAsync({id: user.id}) 
          response.cookie('jwt', jwt, { httpOnly: true });
           response.redirect('http://localhost:3000/');

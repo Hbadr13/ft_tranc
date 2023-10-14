@@ -9,7 +9,7 @@ export class UserController {
   @Get('/:userId')
   async getAllUsers(
   @Param('userId') userId) {
-    console.log(userId)
+    // console.log(userId)
         return this.userService.findAllUsers(Number(userId));
   }
 

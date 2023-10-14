@@ -55,7 +55,8 @@ export const checklogin = () => {
         )();
       });
 }
-export const fetchAllUsers = (setUsers: (users: any) => void, query: string ,id:number) => {
+export const fetchAllUsers = ({setUsers, query ,id}:
+    {setUsers: (users: any) => void, query: string ,id:number}) => {
         useEffect(() => {
             (
                 async () => {

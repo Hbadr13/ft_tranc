@@ -66,7 +66,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   @SubscribeMessage("ResumePause")
   handlegameResumePause(client: Socket, index: number): void {
-    console.log(index)
+    // console.log(index)
     const user = this.players.find((item) => item._client.id == client.id);
     if (user) client.to(user._room).emit('ResumePause', index);
   }

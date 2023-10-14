@@ -185,6 +185,25 @@ import Image from 'next/image'
 
 import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks';
 import { useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
+
+
+export interface userProps {
+
+  id: number,
+  createdAt: string,
+  updatedAt: string,
+  email: string,
+  hash: string,
+  username: string,
+  firstName: string,
+  lastName: string,
+  foto_user: string,
+  isOnline: boolean,
+  userId: number
+}
+
+
 
 function Index() {
 
@@ -196,14 +215,77 @@ function Index() {
   const [received, setreceived] = useState<Array<any>>([]);
   const [requestt, setrequestt] = useState(0);
   const [id, setid] = useState(0);
+  const [id1, setid1] = useState(0);
+  // const [id, set] = useState(0);÷
   const [Email, setEmail] = useState("");
-  const [query, setquery] = useState("22");
+  const [query, setquery] = useState("");
   // const [users, setUsers] = useState<any>([])
 
   const [amis, setAmis] = useState<any>([])
   fetchCurrentUser(setid)
-  fetchAllUsers(setUsers, "", id)
+  fetchAllUsers({ setUsers, query: "", id })
   fetchAllAmis({ setAmis, query, id })
+
+
+
+
+
+
+  const [socket, setsocket] = useState<any>();
+
+  useEffect(() => {
+
+    const newSocket = io('http://localhost:8001', {
+      query: {
+        userId: id,
+        userName: id,
+      },
+    });
+    setsocket(newSocket);
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [id]);
+  
+  useEffect(() => {
+    socket?.emit("allAmis", amis);
+    
+  
+    // console.log(amis)
+  })
+  useEffect(() => {
+    // console.log("amis")
+    socket?.on("amisOnline", (amisOnline: any) => {
+      setAmis(amisOnline)
+      // console.log(amisOnline);
+    });
+  }, [])
+
+
+
+  // useEffect(() => {
+  //   // console.log("amis")
+  //   socket?.on("disconnected", (useridd: any) => {
+  //     console.log(useridd, ": disconnected");
+  //   });
+  // })
+
+  // useEffect(() => {
+  //   socket?.on("msg", (msg: string) => {
+  //     console.log(msg);
+  //   })
+  // })
+
+  // useEffect(() => {
+  //   socket?.emit("rome", "hello")
+  // })
+
+
+
+
+
+
+
 
   useEffect(() => {
     (
@@ -256,12 +338,10 @@ function Index() {
     }
   };
 
-
-
   return (
     <div className='flex flex-col space-y-10 p-10 font-thin text-3xl items-center text-white'>
 
-      <div className='bg-blue-400 p-5  rounded-md'>
+      <div className='bg-blue-500 p-5  rounded-md'>
 
         <h1>Send Friend Request</h1>
         <div>
@@ -289,20 +369,20 @@ function Index() {
             onChange={(ee) => setaccept(Number(ee.target.value))}
           />
         </div>
-        <button className='bg-blue-800   p-2 rounded-xl' onClick={sendRequestForaccpet}>accept</button>
+        <button className='bg-blue-800   rounded-xl' onClick={sendRequestForaccpet}>accept</button>
       </div>
       <div className="flex justify-around w-full ">
         <div className="">
           <h1 className=''>all users</h1>
           {
             (users.length) ? users.map((user: any) => (
-              <div className=' bg-slate-200 rounded-2xl items-start  '>
+              <div className='flex bg-[#0ea5e9]   rounded-xl items-start  '>
                 <img
                   src={user.foto_user}
                   alt="Your Image Alt Text"
                   className="w-20 h-auto  rounded-full inline-block" // Adjust the width as needed
                 />
-                <samp className='bg-black  rounded-2xl   '>{`${user.username}.${user.id}`}</samp>
+                <span className='rounded-2xl   '>{`${user.username}.${user.id}`}</span>
 
               </div>
             )) : null
@@ -312,15 +392,22 @@ function Index() {
           <h1 className=''>amis</h1>
 
           {
-            (amis.length) ? amis.map((user: any) => (
-              <div className=' bg-slate-200 rounded-2xl items-start  '>
+            (amis.length) ? amis.map((user: userProps) => (
+              <div className=' bg-blue-200 rounded-2xl items-center  space-x-3 p-2 flex justify-between'>
                 <img
                   src={user.foto_user}
                   alt="Your Image Alt Text"
                   className="w-20 h-auto  rounded-full inline-block" // Adjust the width as needed
                 />
-                <samp className='bg-black  rounded-2xl   '>{`${user.username}.${user.id}`}</samp>
-
+                <span className='bg-black  rounded-2xl   '>{`${user.username}.${user.id}`}</span>
+                {user.isOnline ? (
+                  <div className=' bg-green-700 w-4 h-4 rounded-full '>
+                  </div>
+                ) : (
+                  <div className=' bg-red-700 w-4 h-4 rounded-full '>
+                  </div>
+                )
+                }
               </div>
             )) : null
           }
@@ -336,7 +423,7 @@ function Index() {
                   alt="Your Image Alt Text"
                   className="w-20 h-auto  rounded-full inline-block" // Adjust the width as needed
                 />
-                <samp className='bg-black  rounded-2xl   '>{`${user.sender.username}.${user.sender.id}`}</samp>
+                <span className='bg-black  rounded-2xl   '>{`${user.sender.username}.${user.sender.id}`}</span>
 
               </div>
             )) : null
