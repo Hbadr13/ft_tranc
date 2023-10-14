@@ -273,11 +273,11 @@ function Index() {
       </div>
 
       {
-        users.map((user: any) => (
+        (users.length) ? users.map((user: any) => (
           <div>
             <div>{`${user.username}-----${user.id}`}</div>
           </div>
-        ))
+        )) : null
       }
     </div >
   );

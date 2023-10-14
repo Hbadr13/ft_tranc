@@ -55,7 +55,6 @@ const BoxSearch = ({ searchUser, setSearchUser }: BoxSearchrProps) => {
         setSearchUser(name)
         router.replace(`/users/${name}`);
     }
-
     return (
         <>
             <form className='w-full' action="">
