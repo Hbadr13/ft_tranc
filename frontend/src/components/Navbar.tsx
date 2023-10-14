@@ -14,6 +14,7 @@ import { CustomLinkNavbarProps, BoxSearchrProps } from './model'
 import { arabicNames } from '../components/data'
 import UserInfo from './user/UserInfo'
 import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks'
+import { idText } from 'typescript'
 
 
 
@@ -53,7 +54,7 @@ const BoxSearch = ({ searchUser, setSearchUser }: BoxSearchrProps) => {
     }
     const handelOnChange = (name: any) => {
         setSearchUser(name)
-        router.replace(`/users/${name}`);
+        router.replace(`/users/${name}.3`);
     }
 
     return (
@@ -87,7 +88,8 @@ const BoxSearch = ({ searchUser, setSearchUser }: BoxSearchrProps) => {
                                             onClick={() => setQuery(item.username)}
                                         // onMouseEnter={() => setIndex(index)}
                                         >
-                                            <Image src={"/man.png"} alt='man profiel' width={60} height={40}></Image>
+                                                <img src={item.foto_user} alt='man profiel' width={60} height={40} />
+                                            {/* <Image src={"/man.png"} alt='man profiel' width={60} height={40}></Image> */}
                                             <CustomLinkNavbar href='/' content={item.username} ></CustomLinkNavbar>
                                             {
 

@@ -215,7 +215,7 @@ function Index() {
   const [received, setreceived] = useState<Array<any>>([]);
   const [requestt, setrequestt] = useState(0);
   const [id, setid] = useState(0);
-  const [id1, setid1] = useState(0);
+  const [id1, setid1] = useState(3);
   // const [id, set] = useState(0);÷
   const [Email, setEmail] = useState("");
   const [query, setquery] = useState("");
@@ -303,6 +303,22 @@ function Index() {
       }
     )();
   }, [id]);
+
+  useEffect(() => {
+    (
+      async () => {
+        const response = await fetch(`http://localhost:3333/users/one/${id1}`, {
+          credentials: 'include',
+        });
+        const counte = await response.json();
+        if (response.status == 200) {
+          console.log(counte);
+          // setrequestt(cont)
+          return;
+        }
+      }
+    )();
+  });
 
   const sendRequest = async () => {
     try {

@@ -174,5 +174,49 @@ export class FriendsService {
     });
     return  data_rese.receivedFriendRequests
   }
+  async getSendFriendRequests(userId: number, status: string = 'pending') {
+    const data_rese = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        sentFriendRequests: {
+          where: {
+            status: status,
+          },
+          select: {
+            id: false,
+            status: false,
+            receiver: {
+              select: 
+              {
+                id: true,
+                username: true,
+                foto_user:true, // Include any fields you need from the sender
+                // Add other fields as needed
+              },
+            },
+            // Add other fields from the FriendRequest model as needed
+          },
+        },
+      },
+    });
+    return  data_rese.sentFriendRequests
+  }
+  async deleteFriendRequest(requestId: number, sendId: number) {
+    const friendRequest = await this.prisma.friendRequest.findFirst({
+      where: {
+        senderId: sendId,
+        receiverId: requestId,
+      },
+      include: {
+        sender: true, // Include the sender of the request
+        receiver: true, // Include the receiver of the request
+      },
+    });
+    await this.prisma.friendRequest.delete({
+      where: {
+        id: friendRequest.id
+      },
+    });
+  }
 
 }

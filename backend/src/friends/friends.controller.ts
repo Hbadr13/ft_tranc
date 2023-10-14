@@ -1,5 +1,5 @@
 
-import { Controller, Post, Param, UseGuards, Request, NotFoundException, Get, ParseIntPipe } from '@nestjs/common';
+import { Controller, Post, Param, UseGuards, Request, NotFoundException, Get, ParseIntPipe, Delete } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { AuthGuard } from '@nestjs/passport';
@@ -64,5 +64,16 @@ async sendFriendRequest(
     else
       return {}
   }
+  @Get(':userId/send-requests')
+  async getSendFriendRequests(@Param('userId') userId: number) {
+    if(Number(userId) > 0)
+    return this.friendsService.getSendFriendRequests(Number(userId));
+    else
+      return {}
+  }
+  @Delete('delete-friend-request/:requestId/:id')
+async deleteFriendRequest(@Param('requestId') requestId: number,@Param('id') id: number) {
+  return this.friendsService.deleteFriendRequest(Number(requestId), Number(id));
+}
 
 }

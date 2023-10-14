@@ -12,6 +12,12 @@ export class UserController {
     // console.log(userId)
         return this.userService.findAllUsers(Number(userId));
   }
+  @Get('one/:userId')
+  async getOneUsers(
+  @Param('userId') userId) {
+    // console.log(userId)
+        return this.userService.findOneUsers(Number(userId));
+  }
 
 }
 

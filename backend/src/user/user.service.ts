@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service'; // You should have a Prisma service
 import { User } from '@prisma/client';
+import { hash } from 'argon2';
 
 @Injectable()
 export class UserService {
@@ -20,5 +21,14 @@ export class UserService {
     const users = await this.prisma.user.findMany();
     const filteredUsers = users.filter(user => user.id !== userAId);
     return filteredUsers;
+  }
+  async findOneUsers(userAId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id : userAId
+      }
+    });
+    const {hash, ...result} = user;
+    return result;
   }
   }
