@@ -9,6 +9,8 @@ import { checkAuth, checklogin } from "@/hooks/userHooks";
 // import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  checklogin();
+ 
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

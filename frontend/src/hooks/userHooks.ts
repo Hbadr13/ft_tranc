@@ -23,33 +23,51 @@ export const checkAuth = () => {
 }
 export const checklogin = () => {
     const router = useRouter();
-    useEffect(() => {
-        try {
-            async () => {
-                const response = await fetch('http://localhost:3333/auth/user', {
-                    credentials: 'include',
-                });
-                if (response.status == 200) {
-                    router.push('/');
-                    return;
-                }
-            };
-        } catch (error) {
-        }
-    });
-}
-export const fetchAllUsers = (setUsers: (users: any) => void, query: string) => {
+    // useEffect(() => {
+    //     try {
+    //         async () => {
+    //             const response = await fetch('http://localhost:3333/auth/user', {
+    //                 credentials: 'include',
+    //             });
+    //             if (response.status == 200) {
+    //                 router.push('/');
+    //                 return;
+    //             }
+    //         };
+    //     } catch (error) {
+    //     }
+    // });
     useEffect(() => {
         (
-            async () => {
-                const response = await fetch('http://localhost:3333/users', {
-                    credentials: 'include',
-                });
-                const content = await response.json();
-                setUsers(content);
+          async () => {
+            const response = await fetch('http://localhost:3333/auth/user', {
+              credentials: 'include',
+            });
+      
+            if (response.status == 200) {
+    
+              // router.push('/');
+              router.push('/');
+              // } else {
+              return;
             }
+          }
         )();
-    }, [query]);
+      });
+}
+export const fetchAllUsers = ({setUsers, query ,id}:
+    {setUsers: (users: any) => void, query: string ,id:number}) => {
+        useEffect(() => {
+            (
+                async () => {
+                    const response = await fetch(`http://localhost:3333/users/${id}`, {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+                    setUsers(content);
+                }
+                )();
+            }, [query, id]);
 }
 
 interface fetchAllAmisprops {
@@ -61,7 +79,6 @@ interface fetchAllAmisprops {
 export const fetchAllAmis = ({ setAmis, query, id }: fetchAllAmisprops) => {
     useEffect(() => {
         (
-            console.log("---------"),
             async () => {
                 const response = await fetch(`http://localhost:3333/friends/accepted-friends/${id}`, {
                     credentials: 'include',

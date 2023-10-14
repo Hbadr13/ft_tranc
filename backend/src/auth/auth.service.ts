@@ -52,6 +52,7 @@ export class AuthService{
               // createdAt: new Date(),
               username: dto.username, // Replace with the desired username
               lastName: dto.lastName, // Replace with the user's last name
+              isOnline : false,
               // foto_user: dto.foto_user,
               foto_user: dto.foto_user,
               hash
@@ -121,6 +122,7 @@ export class AuthService{
           username: requser.username, // Replace with the desired username
           lastName: requser.lastName, // Replace with the user's last name
           firstName: requser.firstName,
+          isOnline : false,
           foto_user: requser.avatar,
 
           hash:"", // Replace with the actual password hash

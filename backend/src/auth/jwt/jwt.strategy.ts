@@ -11,7 +11,7 @@ import { use } from 'passport';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(private readonly authService: AuthService) {
-      console.log("eeeee");
+      // console.log("eeeee");
       super({
           jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
           ignoreExpiration: false,

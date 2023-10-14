@@ -9,40 +9,45 @@ import {
 import { Server, Socket } from 'socket.io';
 
 
+export interface userProps {
 
+  id: number,
+  createdAt: string,
+  updatedAt: string,
+  email: string,
+  hash: string,
+  username: string,
+  firstName: string,
+  lastName: string,
+  foto_user: string,
+  isOnline: boolean,
+  userId: number
+}
 
 
 @WebSocketGateway(8001, { cors: '*' })
 export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
+  private onlineUsers: Map<string, number> = new Map();
 
-
-  private players: Array<{ _client: Socket; _room: string }> = [];
-
-  handleConnection(client: Socket) {
-    console.log(`online: Client connected: ${client.id}`);
+  handleConnection(client: Socket, ...args: any[]) {
+    console.log("connect", Number(client.handshake.query.userId))
+    const userId = Number(client.handshake.query.userId);
+    if (userId < 1)
+      return
+    this.onlineUsers.set(client.id, userId);
+    const myset: Set<number> = new Set();
+    Array.from(this.onlineUsers).map((item) => myset.add(item[1]))
+    this.server.emit('updateOnlineUsers', Array.from(myset));
+    console.log(Array.from(myset))
   }
-
   handleDisconnect(client: Socket) {
-    const date = Date();
-    console.log(`online: Client disconnected: ${client.id}`);
-    // const user = this.players.find((item) => item._client.id == client.id);
-    // this.players = this.players.filter((item) => item._client.id != client.id);
-    // console.log(`Game: Client disconnected: ${client.id}`);
-    // if (user) client.to(user._room).emit('leaveRoom', {})
-  }
-  @SubscribeMessage('joinRoom')
-  handleCreatRoom(client: Socket, room: string): void {
-    // this.players.push({ _client: client, _room: room });
-    // client.join(room);
-    // const filtr = this.players.filter((item) => item._room === room);
-    // const index = this.players.findIndex(
-    //   (item) => item._client.id === client.id,
-    // );
-    // if (index != -1) client.emit('indexPlayer', index);
-    // if (filtr.length == 2) this.server.emit('start', filtr.length);
+    this.onlineUsers.delete(client.id);
+    const myset: Set<number> = new Set();
+    Array.from(this.onlineUsers).map((item) => myset.add(item[1]))
+    this.server.emit('updateOnlineUsers', Array.from(myset));
+    console.log(Array.from(myset))
   }
 }
-
 

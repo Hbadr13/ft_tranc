@@ -19,10 +19,9 @@ export class FriendsService {
     const existingFriendship1 = await this.prisma.friendRequest.findFirst({
       where: {
         senderId: reeceiverId,
+        receiverId:seenderId,
       },
-    });
-
-  
+    }); 
     if (!existingFriendship && !existingFriendship1) {
       // Create a friend request in the database
       await this.prisma.friendRequest.create({
@@ -55,7 +54,7 @@ export class FriendsService {
         receiver: true, // Include the receiver of the request
       },
     });
-    console.log(friendRequest);
+    // console.log(friendRequest);
     
     if (!friendRequest || friendRequest.status !== 'pending') {
       throw new NotFoundException('Friend request not found or already accepted/rejected.');
@@ -135,7 +134,7 @@ export class FriendsService {
     const friendUserIds = friendRequests.flatMap((request) => [
       request.senderId === userId ? request.receiverId : request.senderId,
     ]);
-    console.log(friendUserIds)
+    // console.log(friendUserIds)
 
     // Fetch the user records for the friendUserIds
     const friendUsers = await this.prisma.user.findMany({
@@ -149,7 +148,7 @@ export class FriendsService {
     return friendUsers;
   }
   async getReceivedFriendRequests(userId: number, status: string = 'pending') {
-    return this.prisma.user.findUnique({
+    const data_rese = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
         receivedFriendRequests: {
@@ -157,10 +156,11 @@ export class FriendsService {
             status: status,
           },
           select: {
-            id: true,
-            status: true,
+            id: false,
+            status: false,
             sender: {
-              select: {
+              select: 
+              {
                 id: true,
                 username: true,
                 foto_user:true, // Include any fields you need from the sender
@@ -172,6 +172,7 @@ export class FriendsService {
         },
       },
     });
+    return  data_rese.receivedFriendRequests
   }
 
 }
