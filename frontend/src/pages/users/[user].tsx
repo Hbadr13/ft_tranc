@@ -41,6 +41,7 @@ import Friends from '@/components/user/Friend';
 import Rank from '@/components/user/Rank';
 import { fetchAllAmis, fetchCurrentUser } from '@/hooks/userHooks';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import path from 'path';
 import { useEffect, useState } from 'react';
 
@@ -76,9 +77,15 @@ const YourComponent = ({ currentFileName }: any) => {
     const [received, setreceived] = useState<Array<any>>([]);
     const [sendr, setsendr] = useState<Array<any>>([]);
     const [amis, setAmis] = useState<any>([])
-
+    const router = useRouter()
     const parts = currentFileName.split('.');
-    const numberPart = parts[1];
+    const numberPart: string = parts[1];
+    const usernamePart: string = parts[0];
+    if(!numberPart)
+    {   return (
+        <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start bg-blue-100 p-6 '>zid userId</div>)
+
+    }
     const toggleDropdown = () => {
         // setisfriend(!isfriend);
         setIsOpen(false);
@@ -86,7 +93,7 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/users/one/${numberPart}`, {
+                const response = await fetch(`http://localhost:3333/users/one/${usernamePart}/${numberPart}`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();

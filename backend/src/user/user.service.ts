@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service'; // You should have a Prisma service
 import { User } from '@prisma/client';
 import { hash } from 'argon2';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
-  
+  constructor(private prisma: PrismaService) { }
+
   async findByUsername(id: number): Promise<User | undefined> {
     // Replace this with your actual logic to find a user by username
     const user = await this.prisma.user.findUnique({
@@ -14,7 +14,7 @@ export class UserService {
         id: id,
       },
     });
-    
+
     return user;
   }
   async findAllUsers(userAId: number) {
@@ -22,13 +22,17 @@ export class UserService {
     const filteredUsers = users.filter(user => user.id !== userAId);
     return filteredUsers;
   }
-  async findOneUsers(userAId: number) {
+  async findOneUsers(userAId: number, userName: string) {
     const user = await this.prisma.user.findUnique({
       where: {
-        id : userAId
+        id: userAId,
+        username: userName
       }
     });
-    const {hash, ...result} = user;
-    return result;
+    if(!user) {
+
+      throw new UnauthorizedException();
   }
+    return user;
   }
+}

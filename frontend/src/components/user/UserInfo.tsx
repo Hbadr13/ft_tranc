@@ -1,5 +1,3 @@
-// 'use client';
-// import {signOut} from "next-auth/react";
 
 import { useEffect } from 'react';
 import { useState } from "react";
@@ -14,8 +12,6 @@ export default function Home() {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-  // const router = useRouter();
-
 
   useEffect(() => {
     (
@@ -109,24 +105,3 @@ export default function Home() {
 };
 
 
-
-
-
-
-
-{/* <div className="">
-  <button className="relative z=30  -m-10 lg:hidden peer h-14 w-14 rounded-full bg-cyan-500 hover:bg-cyan-600 focus:bg-cyan-600 active:bg-cyan-700 transition">
-    <span className="text-white">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-6 m-auto" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M3.646 9.146a.5.5 0 0 1 .708 0L8 12.793l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708zm0-2.292a.5.5 0 0 0 .708 0L8 3.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708z" />
-      </svg>
-    </span>
-  </button>
-
-  <div className="flex  z=30 flex-col gap-8 bg-white w-64 items-center shadow-2xl shadow-blue-500 mt-[160px] min-h-[845px] rounded-[0px] p-6 fixed  -left-96 lg:w-64 peer-focus:left-0 peer:transition">
-    <div><button onClick={() => setCheck(1)} className=" mt-60 px-[101px] py-2   g shadow-blue-600  justify-center bg-gradient-to-r from-blue-500 to-cyan-200  text-white">Friends</button></div>
-    <div><button onClick={() => setCheck(2)} className=" mt-20  px-[110px] py-2 shadow-blue-600 justify-center bg-gradient-to-r from-blue-500 to-cyan-200    text-white">Rank</button></div>
-
-  </div>
-
-</div> */}
