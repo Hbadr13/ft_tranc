@@ -157,7 +157,7 @@ export default function LoginForm() {
 
         {/* image */}
         <div className="md:block hidden w-1/2">
-          <img className="rounded-2xl" src="https://images.unsplash.com/photo-1616606103915-dea7be788566?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1887&q=80" alt="Login" />
+          <img className="rounded-2xl w-[1000px] h-[500px]" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/8641cfe2-5d86-4177-a677-abb4da6a98aa/dc4skw6-2e8fbc26-2757-4bf6-a73f-f98e570033ee.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwic3ViIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsImF1ZCI6WyJ1cm46c2VydmljZTpmaWxlLmRvd25sb2FkIl0sIm9iaiI6W1t7InBhdGgiOiIvZi84NjQxY2ZlMi01ZDg2LTQxNzctYTY3Ny1hYmI0ZGE2YTk4YWEvZGM0c2t3Ni0yZThmYmMyNi0yNzU3LTRiZjYtYTczZi1mOThlNTcwMDMzZWUuZ2lmIn1dXX0.EYpokmZ0lIvl2GOmwFooEinJn3jJzBKBBHtUU8kv0SQ" alt="Login" />
         </div>
       </div>
     </section>
