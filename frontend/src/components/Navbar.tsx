@@ -11,6 +11,8 @@ import UserInfo from './user/UserInfo'
 import { io } from 'socket.io-client'
 import { AppProps, BoxSearchrProps, userProps } from '@/interface/data'
 import { CustomLinkNavbarProps } from './model'
+import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks'
+import { idText } from 'typescript'
 
 
 
@@ -28,7 +30,6 @@ const BoxSearch = ({ searchUser, setSearchUser, onlineUsersss, id, users, amis }
         filterUser = users.filter((user: userProps) => {
             user.flag = true
             amis.filter((usr: userProps) => {
-                console.log(`cur: ${user.username} | ami: ${usr.username}`)
                 if (usr.id == user.id)
                     user.flag = false
             })
@@ -66,10 +67,9 @@ const BoxSearch = ({ searchUser, setSearchUser, onlineUsersss, id, users, amis }
                                 filterUser.map((item: any, index: number) => (
 
                                     index < 10 && (
-                                        < Combobox.Option value={item.username} key={index}
+                                        < Combobox.Option value={`${item.username}.${item.id}`} key={index}
                                             className={({ active }) => `flex justify-around  ${active ? 'bg-teal-600 text-white' : 'text-gray-900'}`}
                                             onClick={() => setQuery(item.username)}
-                                        // onMouseEnter={() => setIndex(index)}
                                         >
                                             <div className={`w-[65px] h-[65px] pb-[3px] ${(!item.flag) ? onlineUsersss.includes(item.id) ? 'bg-green-400' : 'bg-red-400' : null} rounded-full flex justify-center items-center `}>
                                                 <Image src={"/man.png"} alt='man profiel' width={60} height={40}></Image>

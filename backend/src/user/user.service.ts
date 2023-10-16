@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service'; // You should have a Prisma service
 import { User } from '@prisma/client';
+import { hash } from 'argon2';
 
 @Injectable()
 export class UserService {
@@ -21,6 +22,17 @@ export class UserService {
     const filteredUsers = users.filter(user => user.id !== userAId);
     return filteredUsers;
   }
+  async findOneUsers(userAId: number, userName: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userAId,
+        username: userName
+      }
+    });
+    if(!user) {
 
-
+      throw new UnauthorizedException();
+  }
+    return user;
+  }
 }

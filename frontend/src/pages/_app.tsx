@@ -9,6 +9,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
   const isNavbarVisible = !router.asPath.startsWith('/auth/login');
   const isNavbarVisible2 = !router.asPath.startsWith('/register')
   const isNavbarVisible3 = !router.asPath.startsWith('/auth/login')
+  const currentPath = router.asPath;
   const [onlineUsersss, setOnlineUsersss] = useState<Array<number>>([]);
   const [socket, setSocket] = useState<any>();
 
@@ -17,6 +18,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
   const [users, setUsers] = useState<Array<any>>([]);
   const [id, setid] = useState(0);
   const [amis, setAmis] = useState<any>([])
+  const [notExist, setNotexits] = useState(true)
   fetchCurrentUser(setid)
   fetchAllUsers({ setUsers, query: "", id })
   fetchAllAmis({ setAmis, query, id })
@@ -40,7 +42,22 @@ export default function App({ Component, pageProps, router }: AppProps) {
     }
   });
 
-
+  // useEffect(() => {
+  //   (
+  //     async () => {
+  //       const response = await fetch(`http://localhost:3333/users/one/0`, {
+  //         credentials: 'include',
+  //       });
+  //       const counte = await response.json();
+  //       if (response.status == 200) {
+  //       }
+  //       else {
+  //         // setNotexits(false)
+  //         router.push("/")
+  //       }
+  //     }
+  //   )();
+  // });
   useEffect(() => {
     // if (isNavbarVisible3) {
 
@@ -71,7 +88,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
   };
   return (
     <>
-
       {isNavbarVisible && isNavbarVisible2 && <Navbar id={id} users={users} amis={amis} onlineUsersss={onlineUsersss} />}
       <Component  {...modifiedPageProps} />
     </>
