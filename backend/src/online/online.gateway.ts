@@ -24,7 +24,6 @@ export interface userProps {
   userId: number
 }
 
-
 @WebSocketGateway(8001, { cors: '*' })
 export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
@@ -32,7 +31,7 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private onlineUsers: Map<string, number> = new Map();
 
   handleConnection(client: Socket, ...args: any[]) {
-    console.log("connect", Number(client.handshake.query.userId))
+    // console.log("connect", Number(client.handshake.query.userId))
     const userId = Number(client.handshake.query.userId);
     if (userId < 1)
       return
@@ -40,14 +39,20 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const myset: Set<number> = new Set();
     Array.from(this.onlineUsers).map((item) => myset.add(item[1]))
     this.server.emit('updateOnlineUsers', Array.from(myset));
-    console.log(Array.from(myset))
+    // console.log(Array.from(myset))
   }
   handleDisconnect(client: Socket) {
     this.onlineUsers.delete(client.id);
     const myset: Set<number> = new Set();
-    Array.from(this.onlineUsers).map((item) => myset.add(item[1]))
+    Array.from(this.onlineUsers).map((item) => myset.add(item[1
+    ]))
     this.server.emit('updateOnlineUsers', Array.from(myset));
-    console.log(Array.from(myset))
+    // console.log(Array.from(myset))
+  }
+  @SubscribeMessage('areYouReady')
+  handleCreatInfo(client: Socket, Info: any): void {
+    this.server.emit("areYouReady", Info)
+    // console.log(Info)
   }
 }
 

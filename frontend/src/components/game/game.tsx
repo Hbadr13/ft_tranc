@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState, RefObject } from "react";
-import { startGame } from "../utils/main";
-import { Player, Ball, GameInfo } from "../utils/class";
+import { startGame } from "../../utils/main";
+import { Player, Ball, GameInfo } from "../../utils/class";
 import { InfoGameFromClientProps } from "@/components/model";
 import { io } from "socket.io-client";
 import { useRouter } from "next/router";
+import { userProps } from "@/interface/data";
 
 interface InfoGameprops {
     infoGameFromClient: InfoGameFromClientProps;
-    selectPlayer: string
-    setselectPlayer: (selectPlayer: string) => void
+    selectPlayer: string;
+    setselectPlayer: (selectPlayer: string) => void;
+    room: string;
+    currentUser: userProps
 }
 let computer = new Player(0, 0);
 let player = new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y);
@@ -17,11 +20,9 @@ let player = new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y);
 let ball = new Ball(200, 50, "red", 10, GameInfo.VELOCIT, GameInfo.VELOCIT, GameInfo.SPEED);
 let mousePosition = { x: 0, y: 0 };
 let HoAreYou = 0
-const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGameprops) => {
-
+const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, currentUser }: InfoGameprops) => {
 
     const myCanvasRef = useRef<HTMLCanvasElement>(null);
-    const [room, setroom] = useState("");
     const [socket, setsocket] = useState<any>();
     const [numberPlayer, setnumberPlayer] = useState(0);
     const [computerScore, setcomputerScore] = useState(0);
@@ -126,6 +127,7 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
         const socketUrl = "http://localhost:8000";
         // const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://e2r9p2.1337.ma:8000";
         const newSocket = io(socketUrl);
+        // newSocket.off("hello")
         setsocket(newSocket);
         return () => {
             newSocket.disconnect();
@@ -147,6 +149,7 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
             // console.log('leaveRoom:')
             player.status = 'Pause'
             computer.status = 'Pause'
+            // router.push("/game")
             setYouWon(1)
         })
         socket?.on("posY", (posY: number) => {
@@ -177,8 +180,7 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
         })
     })
 
-    if (infoGameFromClient.selectPlayer === "computer" ||
-        infoGameFromClient.selectPlayer === "offline") {
+    if (infoGameFromClient.selectPlayer === "computer" || infoGameFromClient.selectPlayer === "offline") {
         socket?.emit("startWithComputer", room);
     }
 
@@ -189,8 +191,7 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
     };
     const sendMessage = () => {
         setnumberPlayer(1);
-        socket?.emit("joinRoom", room);
-
+        socket?.emit("joinRoom", { room: room, userId: currentUser.id });
     };
     const handelButtonGameStatus = () => {
         const status = gameStatus === 'Pause' ? 'Resume' : 'Pause'
@@ -222,8 +223,6 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer }: InfoGamepro
                     <div className="w-full h-[100%] flex items-center flex-col space-y-10">
                         <div>{ }</div>
                         <canvas
-                            // sm:w-[80%] sm:h-[80%]
-                            // w-[90%] h-[50%] 2xl:h-[50%] 2xl:w-[40%]    md:h-[50%]  md:w-[80%]
                             className={`bg-black rounded-2xl w-[90%] h-[50%]   md:h-[60%]  md:w-[60%] 2xl:h-[70%] 2xl:w-[40%]${false ? 'hidden' : ''}`}
                             onMouseMove={handleMouseMove}
                             ref={myCanvasRef}

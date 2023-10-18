@@ -4,8 +4,8 @@ const nextConfig = {
 }
 
 module.exports = nextConfig
-// module.exports = {
-//   images: {
-//     domains: ['cdn.intra.42.fr'], // Add your domain(s) here
-//   },
-// };
+module.exports = {
+  images: {
+    domains: ['cdn.intra.42.fr', 'i.pinimg.com/', 'i.pinimg.com']
+  },
+};

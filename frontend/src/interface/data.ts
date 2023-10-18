@@ -18,9 +18,10 @@ export interface userProps {
 
 export interface AppProps {
     onlineUsersss: Array<number>,
-    id: number,
+    currentUser: userProps,
     users: Array<userProps>,
     amis: Array<userProps>,
+    socket?: any,
 }
 
 export interface BoxSearchrProps {

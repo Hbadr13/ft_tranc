@@ -1,3 +1,4 @@
+import { userProps } from "@/interface/data";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -39,57 +40,59 @@ export const checklogin = () => {
     // });
     useEffect(() => {
         (
-          async () => {
-            const response = await fetch('http://localhost:3333/auth/user', {
-              credentials: 'include',
-            });
-      
-            if (response.status == 200) {
-    
-              // router.push('/');
-              router.push('/');
-              // } else {
-              return;
-            }
-          }
-        )();
-      });
-}
-export const fetchAllUsers = ({setUsers, query ,id}:
-    {setUsers: (users: any) => void, query: string ,id:number}) => {
-        useEffect(() => {
-            (
-                async () => {
-                    const response = await fetch(`http://localhost:3333/users/${id}`, {
-                        credentials: 'include',
-                    });
-                    const content = await response.json();
-                    setUsers(content);
+            async () => {
+                const response = await fetch('http://localhost:3333/auth/user', {
+                    credentials: 'include',
+                });
+
+                if (response.status == 200) {
+
+                    // router.push('/');
+                    router.push('/');
+                    // } else {
+                    return;
                 }
-                )();
-            }, [query, id]);
+            }
+        )();
+    });
+}
+export const fetchAllUsers = ({ setUsers, query, currentUser }:
+    { setUsers: (users: any) => void, query: string, currentUser: userProps }) => {
+    useEffect(() => {
+        (
+            async () => {
+                const response = await fetch(`http://localhost:3333/users/${currentUser.id}`, {
+                    credentials: 'include',
+                });
+                const content = await response.json();
+                setUsers(content);
+            }
+        )();
+    }, [query, currentUser]);
 }
 
 interface fetchAllAmisprops {
     setAmis: (amis: any) => void;
     query: string;
-    id: number
+    currentUser: userProps
 }
 
-export const fetchAllAmis = ({ setAmis, query, id }: fetchAllAmisprops) => {
+export const fetchAllAmis = ({ setAmis, query, currentUser }: fetchAllAmisprops) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${id}`, {
+                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser.id}`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
                 setAmis(content);
+                console.log('1')
+
             }
         )();
-    }, [query, id]);
+    }, [query, currentUser]);
 }
-export const fetchCurrentUser = (setid: (id: any) => void) => {
+export const fetchCurrentUser = ({ setCurrentUser }: { setCurrentUser: (currentUser: any) => void }) => {
 
     useEffect(() => {
         (
@@ -98,12 +101,16 @@ export const fetchCurrentUser = (setid: (id: any) => void) => {
                     credentials: 'include',
                 });
                 const content = await response.json();
-                // setfoto_user(content.foto_user);
-                setid(content.id);
-                // setUsername(content.username);
-
-                // console.log(content.id);
+                // let usr: userProps;
+                // usr = {
+                //     id: content.id, foto_user: content.foto_user, createdAt: "",
+                //     email: content.email,
+                //     firstName: content.firstName, isOnline: content.isOnline, lastName: content.lastName,
+                //     updatedAt: content.updatedAt,
+                //     userId: , username: content.username, hash: ""
+                // };
+                setCurrentUser(content);
             }
         )();
-    });
+    }, []);
 }

@@ -1,32 +1,78 @@
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 import { Navbar } from '../components/model'
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks';
+import Image from 'next/image';
+import { Open_Sans } from 'next/font/google'
+import { userProps } from '@/interface/data';
+import { useRouter } from 'next/navigation';
+const font = Open_Sans({ subsets: ['latin'] })
+
+export interface CardInvitation {
+  currentUser: userProps;
+  opponent: userProps;
+  handerRefuseButton: () => void;
+  hideRequest: boolean;
+  myIdFromOpponent: Number
+}
+
+
+export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hideRequest, myIdFromOpponent }: CardInvitation) => {
+
+  return (<>
+    {
+      (myIdFromOpponent === Number(currentUser.id)) ?
+        (
+          <div className={` z-40 absolute w-full h-screen ${hideRequest ? 'flex' : 'hidden'} justify-center items-center`}>
+            <div className=' w-[30%] h-[30%] bg-white rounded-3xl shadow-sm shadow-black flex flex-col justify-around items-center'>
+              <div className="flex flex-col justify-around items-center border-b-2 border-blue-600  space-y-3">
+                <Image className='rounded-full w-24' height={200} width={200} alt={`image:${opponent.username}`} src={opponent.foto_user}></Image>
+                <h1>{opponent.username}</h1>
+              </div>
+              <div className='flex justify-around items-center  w-full'>
+                <button onClick={handerRefuseButton} className='m-2 border-2 border-black rounded-xl py-1 px-4'>Refuse</button>
+                <button onClick={handerRefuseButton} className='m-2 border-2 border-black rounded-xl py-1 px-4 bg-[#77A6F7]'>Accept</button>
+              </div>
+            </div>
+          </div>
+        ) : null
+    }
+  </>
+  )
+}
+
+
+
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const isNavbarVisible = !router.asPath.startsWith('/auth/login');
   const isNavbarVisible2 = !router.asPath.startsWith('/register')
   const isNavbarVisible3 = !router.asPath.startsWith('/auth/login')
-  const currentPath = router.asPath;
+
   const [onlineUsersss, setOnlineUsersss] = useState<Array<number>>([]);
   const [socket, setSocket] = useState<any>();
+  const [hideRequest, sethideRequest] = useState<boolean>(true);
 
   const [query, setquery] = useState("");
+  const [myIdFromOpponent, setmyIdFromOpponent] = useState<number>(-2);
 
   const [users, setUsers] = useState<Array<any>>([]);
-  const [id, setid] = useState(0);
-  const [amis, setAmis] = useState<any>([])
-  const [notExist, setNotexits] = useState(true)
-  fetchCurrentUser(setid)
-  fetchAllUsers({ setUsers, query: "", id })
-  fetchAllAmis({ setAmis, query, id })
+  const [currentUser, setCurrentUser] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, });
+  const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, });
 
+  const [amis, setAmis] = useState<any>([])
+  const [pathOfGame, setpathOfGame] = useState<string>('')
+  // const router = useRouter()
+
+
+  fetchCurrentUser({ setCurrentUser })
+  fetchAllUsers({ setUsers, query: "", currentUser })
+  fetchAllAmis({ setAmis, query, currentUser })
 
   useEffect(() => {
     if (isNavbarVisible3) {
-
       (
         async () => {
           const response = await fetch('http://localhost:3333/auth/user', {
@@ -42,28 +88,12 @@ export default function App({ Component, pageProps, router }: AppProps) {
     }
   });
 
-  // useEffect(() => {
-  //   (
-  //     async () => {
-  //       const response = await fetch(`http://localhost:3333/users/one/0`, {
-  //         credentials: 'include',
-  //       });
-  //       const counte = await response.json();
-  //       if (response.status == 200) {
-  //       }
-  //       else {
-  //         // setNotexits(false)
-  //         router.push("/")
-  //       }
-  //     }
-  //   )();
-  // });
-  useEffect(() => {
-    // if (isNavbarVisible3) {
 
+
+  useEffect(() => {
     const newSocket = io('http://localhost:8001', {
       query: {
-        userId: id,
+        userId: currentUser.id,
         amis: amis,
       },
     });
@@ -72,24 +102,40 @@ export default function App({ Component, pageProps, router }: AppProps) {
     newSocket?.on("updateOnlineUsers", (amisOnline: any) => {
       setOnlineUsersss(amisOnline)
     });
+    newSocket?.on("areYouReady", ({ OpponentId, currentPlayer, pathOfGame }: { OpponentId: string, currentPlayer: userProps, pathOfGame: string }) => {
+      setmyIdFromOpponent(Number(OpponentId))
+      setpathOfGame(pathOfGame);
+      setopponent(currentPlayer);
+      // sethideRequest((prev) => !prev)
+
+    });
     return () => {
       newSocket.disconnect();
     };
-    // }
-  }, [id, amis]);
-
+  }, [currentUser, amis]);
 
   const modifiedPageProps = {
     ...pageProps,
     onlineUsersss: onlineUsersss,
-    id: id,
+    currentUser: currentUser,
     users: users,
     amis: amis,
+    socket: socket,
   };
+
+  const handerRefuseButton = () => {
+    sethideRequest((prev) => !prev)
+    router.push(pathOfGame)
+  }
+
   return (
     <>
-      {isNavbarVisible && isNavbarVisible2 && <Navbar id={id} users={users} amis={amis} onlineUsersss={onlineUsersss} />}
-      <Component  {...modifiedPageProps} />
+      <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
+        hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} />
+      <div className={`${font.className}   font-medium `}>
+        {isNavbarVisible && isNavbarVisible2 && <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} />}
+        <Component  {...modifiedPageProps} />
+      </div >
     </>
   )
 }

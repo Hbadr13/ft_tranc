@@ -118,7 +118,6 @@ const YourComponent = ({ currentFileName }: any) => {
                 const counte = await response.json();
                 if (response.status == 200) {
                     setreceived(counte)
-                    // setrequestt(cont)
                     return;
                 }
             }
@@ -239,7 +238,7 @@ const YourComponent = ({ currentFileName }: any) => {
 
 
 
-    console.log(flag2)
+    // console.log(flag2)
     return (
 
 

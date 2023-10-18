@@ -103,7 +103,7 @@ const CustomLinkNavbar = ({ href, content, moreStye }: CustomLinkNavbarProps) =>
     )
 }
 
-const Navbar = ({ onlineUsersss, id, users, amis }: AppProps) => {
+const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
     const router = useRouter();
 
 
@@ -119,7 +119,7 @@ const Navbar = ({ onlineUsersss, id, users, amis }: AppProps) => {
                     <CustomLinkNavbar moreStye="" href="/game" content="PongGame" />
                 </div>
                 <div className="flex item-center justify-center sm:w-[60%] w-[100%] py-4 ">
-                    <BoxSearch searchUser={searchUser} setSearchUser={setSearchUser} id={id} users={users} amis={amis} onlineUsersss={onlineUsersss} />
+                    <BoxSearch searchUser={searchUser} setSearchUser={setSearchUser} id={currentUser.id} users={users} amis={amis} onlineUsersss={onlineUsersss} />
                 </div>
                 <div className="hidden w-[20%] pl-10 sm:flex justify-between item-center text-[#1ba098]">
                     <CustomLinkNavbar moreStye='' href="/" content="logOut" />
