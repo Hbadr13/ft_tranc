@@ -1,5 +1,7 @@
 
 export interface userProps {
+    length: any;
+    map(arg0: (user: userProps) => import("react").JSX.Element): import("react").ReactNode;
 
     id: number,
     createdAt: string,

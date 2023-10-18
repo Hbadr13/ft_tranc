@@ -40,6 +40,7 @@
 import Friends from '@/components/user/Friend';
 import Rank from '@/components/user/Rank';
 import { fetchAllAmis, fetchCurrentUser } from '@/hooks/userHooks';
+import { AppProps } from '@/interface/data';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import path from 'path';
@@ -69,26 +70,45 @@ const YourComponent = ({ currentFileName }: any) => {
     const [level, setLevel] = useState("");
     const [Email, setEmail] = useState("");
     const [foto_user, setFoto_user] = useState("");
-    const [check, setCheck] = useState(1);
+    const [check, setCheck] = useState(0);
     const [isOpen, setIsOpen] = useState(false)
     const [isfriend, setisfriend] = useState(false)
     const [id, setid] = useState(0)
     const [query, setQuery] = useState('')
+    const [amis, setAmis] = useState<any>([])
+    const [amis_id, setAmisid] = useState<any>([])
+
     const [received, setreceived] = useState<Array<any>>([]);
     const [sendr, setsendr] = useState<Array<any>>([]);
-    const [amis, setAmis] = useState<any>([])
     const router = useRouter()
     const parts = currentFileName.split('.');
     const numberPart: string = parts[1];
     const usernamePart: string = parts[0];
-    if(!numberPart)
-    {   return (
-        <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start bg-blue-100 p-6 '>zid userId</div>)
+    const [number, setNumber] = useState(numberPart);
+    if (!numberPart) {
+        return (
+            <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start bg-blue-100 p-6 '>zid userId</div>)
 
     }
     const toggleDropdown = () => {
         // setisfriend(!isfriend);
         setIsOpen(false);
+    };
+    useEffect(() => {
+        (
+            async () => {
+                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${numberPart}`, {
+                    credentials: 'include',
+                });
+                const content = await response.json();
+
+                setAmisid(content);
+
+            }
+        )();
+    }, [query, numberPart]);
+    const freind_ranck = async (fd: number) => {
+        setCheck(fd)
     };
     useEffect(() => {
         (
@@ -124,6 +144,13 @@ const YourComponent = ({ currentFileName }: any) => {
             }
         )();
     }, [id]);
+    useEffect(() => {
+        (
+        async()=>{
+            setCheck(0);
+        }
+        )();
+    }, [numberPart]);
     useEffect(() => {
         (
             async () => {
@@ -239,7 +266,7 @@ const YourComponent = ({ currentFileName }: any) => {
 
 
 
-    console.log(flag2)
+
     return (
 
 
@@ -255,8 +282,8 @@ const YourComponent = ({ currentFileName }: any) => {
         //         </div >
         //     </div>
         // </section>
-        <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start bg-blue-100 p-6 '>
-            <div className='  flex-none     w-96 mt-[120px] mb-10  h-[100%]  shadow-2xl  shadow-blue-600 justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
+        <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start  bg-blue-50 p-6 '>
+            <div className='  flex-none     w-96 mt-[120px] mb-10  h-[100%]    drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]    bg-[#3b82f6] rounded-[40px] p-6  text-white'>
                 <div className="text-center">
                     <span>Profile {username}</span>
                     <div className="mt-6">
@@ -345,16 +372,27 @@ const YourComponent = ({ currentFileName }: any) => {
             </div>
             <div className="">
 
-                <div className=" flex flex-col gap-8    h-full w-64 items-center shadow-lg shadow-blue-500 bg-white  mt-[160px] min-h-[845px]  rounded-[0px] p-6">
-                    <div><button onClick={() => setCheck(1)} className=" mt-60 px-[101px] py-2   g shadow-blue-600  justify-center bg-gradient-to-r from-blue-500 to-cyan-200  text-white">Friends</button></div>
-                    <div><button onClick={() => setCheck(2)} className=" mt-20  px-[110px] py-2 shadow-blue-600 justify-center bg-gradient-to-r from-blue-500 to-cyan-200    text-white">Rank</button></div>
+                <div className=" flex flex-col gap-8    h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[160px] min-h-[845px]  rounded-[0px] p-6">
+                    {(!check || check == 2)? ( <div>
+                        <button onClick={() => freind_ranck(1)} className=" mt-60 px-[101px] py-2  bg-[#3b82f6]  hover:bg-black  hover:scale-110 duration-300 text-white">Friends</button>
+                    </div>) :null}
+                    {(check && check != 2)? (<div>
+                        <button onClick={() => freind_ranck(1)} className=" mt-60 px-[101px] py-2  bg-black  hover:bg-black  hover:scale-110 duration-300 text-white">Friends</button>
+                    </div>):null}
+                    {(!check || check == 1)? (<div>
+                        <button onClick={() => freind_ranck(2)} className=" mt-60 px-[110px] py-2  bg-[#3b82f6]  hover:bg-black  hover:scale-110 duration-300 text-white">Rank</button>
+                    </div>):null}
+                    {(check && check != 1)?(<div>
+                        <button onClick={() => freind_ranck(2)} className=" mt-60 px-[110px] py-2  bg-black  hover:bg-black  hover:scale-110 duration-300 text-white">Rank</button>
+                    </div>) :null}
+                
 
                 </div>
 
             </div>
-            <div className=" flex flex-auto w-[900px]  opacity-50  md:opacity-150 bg-white mt-[160px] min-h-[845px] flex-col   rounded-r-[50px] p-6">
+            {check? (<div className=" flex  justify-center  w-[900px]    md:opacity-150 bg-[#f4f4f5] mt-[160px] min-h-[845px]   rounded-r-[50px] p-6">
                 {
-                    check === 1 && <Friends />
+                    check === 1 && <Friends amis_id={amis_id} />
 
                 }
                 {
@@ -362,7 +400,8 @@ const YourComponent = ({ currentFileName }: any) => {
                 }
 
 
-            </div>
+            </div>):null
+            }
         </div>
         //       <div class="grid grid-rows-3 grid-flow-col gap-4">
         //   <div class="row-start-6  row-span-2  bg-black ...">01</div>
