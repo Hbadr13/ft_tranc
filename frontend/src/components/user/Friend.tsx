@@ -1,4 +1,5 @@
 const Friends = () =>{
+    
     return (
         <div>
             this is friend cmp
