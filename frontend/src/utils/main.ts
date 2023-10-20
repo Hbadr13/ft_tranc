@@ -75,6 +75,7 @@ export function startGame(
 ) {
   if (!myCanvasRef.current) return;
   const MyCanvas = new Canvas(myCanvasRef.current);
+  computer.x = MyCanvas.width - 10
   if (computer.status == 'Resume' || computer.status == 'Resume')
     return
   updateGameLoop(MyCanvas, mousePosition, ball, player, computer, infoGameFromClient, HoAreYou);

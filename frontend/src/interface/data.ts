@@ -1,3 +1,4 @@
+import { Socket } from "socket.io-client";
 
 export interface userProps {
 
@@ -21,7 +22,7 @@ export interface AppProps {
     currentUser: userProps,
     users: Array<userProps>,
     amis: Array<userProps>,
-    socket?: any,
+    socket: Socket,
 }
 
 export interface BoxSearchrProps {

@@ -1,6 +1,6 @@
 // src/auth/42.strategy.ts
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy , VerifyCallback} from 'passport-42';
+import { Strategy, VerifyCallback } from 'passport-42';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -11,14 +11,14 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
       clientSecret: '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',
       callbackURL: 'http://localhost:3333/auth/42/callback',
     });
-}
+  }
 
-async validate(accessToken: string, refreshToken: string, profile: any  ,done: VerifyCallback): Promise<any> {
+  async validate(accessToken: string, refreshToken: string, profile: any, done: VerifyCallback): Promise<any> {
     // Implement user creation or retrieval logic here
     // Return the user or null if the user is not found
     // const  {name, emails}= profile;
     try {
-   
+
       // Implement user creation or retrieval logic here
       // Return the user or null if the user is not found
       const user = {
@@ -31,7 +31,7 @@ async validate(accessToken: string, refreshToken: string, profile: any  ,done: V
 
       // You can also handle additional validation logic here
       // For example, check if the user exists in your database
-      console.log('Received profile:', profile);
+      // console.log('Received profile:', profile);
       if (user) {
         done(null, user);
       } else {

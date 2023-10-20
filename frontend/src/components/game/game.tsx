@@ -5,6 +5,7 @@ import { InfoGameFromClientProps } from "@/components/model";
 import { io } from "socket.io-client";
 import { useRouter } from "next/router";
 import { userProps } from "@/interface/data";
+import { isAbsolute } from "path";
 
 interface InfoGameprops {
     infoGameFromClient: InfoGameFromClientProps;
@@ -13,14 +14,15 @@ interface InfoGameprops {
     room: string;
     currentUser: userProps
 }
-let computer = new Player(0, 0);
-let player = new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y);
 // GameInfo.VELOCIT *= 0.8;
 // GameInfo.SPEED *= 0.8;
-let ball = new Ball(200, 50, "red", 10, GameInfo.VELOCIT, GameInfo.VELOCIT, GameInfo.SPEED);
 let mousePosition = { x: 0, y: 0 };
-let HoAreYou = 0
 const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, currentUser }: InfoGameprops) => {
+
+    const [HoAreYou, setHoAreYou] = useState(-1)
+    let player = new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y);
+    let computer = new Player(0, 0);
+    let ball = new Ball(200, 50, "red", 10, GameInfo.VELOCIT, GameInfo.VELOCIT, GameInfo.SPEED);
 
     const myCanvasRef = useRef<HTMLCanvasElement>(null);
     const [socket, setsocket] = useState<any>();
@@ -136,7 +138,7 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
 
     useEffect(() => {
         socket?.on("indexPlayer", (index: number) => {
-            HoAreYou = index;
+            setHoAreYou(index);
         });
 
         socket?.on("ResumePause", (value: string) => {
@@ -173,10 +175,12 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
         socket?.on("documentHidden", (flag: boolean) => {
             // if(flag)
             const value = "Resume"
-            console.log("--->:", value)
             setgameStatus(value)
             player.status = value
             computer.status = value
+        })
+        socket?.on("availableRoom", (flag: boolean) => {
+            console.log("this rome available")
         })
     })
 
@@ -202,7 +206,8 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
     }
     const handelButtonLeave = () => {
         setselectPlayer('')
-        router.push('/game?h=1');
+        router.push('/game');
+        // router.replace('/game')
     }
     return (
         <>
@@ -221,15 +226,18 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
                     infoGameFromClient.selectPlayer === "computer" ||
                     infoGameFromClient.selectPlayer === "offline" ? (
                     <div className="w-full h-[100%] flex items-center flex-col space-y-10">
-                        <div>{ }</div>
-                        <canvas
-                            className={`bg-black rounded-2xl w-[90%] h-[50%]   md:h-[60%]  md:w-[60%] 2xl:h-[70%] 2xl:w-[40%]${false ? 'hidden' : ''}`}
-                            onMouseMove={handleMouseMove}
-                            ref={myCanvasRef}
-                            height={400}
-                            width={800}
-                        >
-                        </canvas>
+                        {
+                            true ? (
+                                <canvas
+                                    className={`bg-black rounded-2xl w-[90%] h-[50%]   md:h-[60%]  md:w-[60%] 2xl:h-[70%] 2xl:w-[40%]${false ? 'hidden' : ''}`}
+                                    onMouseMove={handleMouseMove}
+                                    ref={myCanvasRef}
+                                    height={400}
+                                    width={800}
+                                >
+                                </canvas>
+                            ) : null
+                        }
                         <div className="w-[400px] h-[70px] rounded-2xl flex justify-around items-center">
                             <div className="bg-slate-400 w-[20%] h-[90%] rounded-2xl flex justify-center items-center text-3xl">
                                 {playerScore}

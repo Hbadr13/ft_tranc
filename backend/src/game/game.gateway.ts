@@ -18,16 +18,20 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private players: Array<{ _client: Socket; _room: string }> = [];
   private rromes: Map<string, number> = new Map<string, number>();
 
+  private allUserInGame: Set<string> = new Set();
 
   handleConnection(client: Socket) {
-    // console.log(`Game: Client connected: ${client.id}`);
+    console.log(`Game: Client connected: ${client.id}`);
   }
   handleDisconnect(client: Socket) {
     const user = this.players.find((item) => item._client.id == client.id);
     this.players = this.players.filter((item) => item._client.id != client.id);
-    // console.log(`Game: Client disconnected: ${client.id}`);
+    console.log(`Game: Client disconnected: ${client.id}`);
     if (user) {
+      // console.log('room :', this.rromes.get(user._room), "name: ", user._room)
       client.to(user._room).emit('leaveRoom', {})
+      if (this.rromes.get(user._room) === 1)
+        client.to(user._room).emit('availableRoom')
       this.rromes.delete(user._room)
     }
   }
@@ -35,18 +39,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('documentHidden')
   handleMessage(client: Socket, flag: boolean): void {
     const user = this.players.find((item) => item._client.id == client.id);
-    if (user){
+    if (user) {
       client.to(user._room).emit('documentHidden', flag);
-    } 
+    }
   }
 
   @SubscribeMessage('joinRoom')
   handleCreatRoom(client: Socket, { room, userId }): void {
-    if(!this.rromes.get(room))
-      this.rromes.set(room,1)
+    if (!this.rromes.get(room))
+      this.rromes.set(room, 1)
     else
-      this.rromes.set(room,this.rromes.get(room)+1)
-    console.log(this.rromes.get(room))
+      this.rromes.set(room, this.rromes.get(room) + 1)
+    // console.log(this.rromes.get(room))
     // console.log(userId)
     this.players.push({ _client: client, _room: room });
     client.join(room);
@@ -55,7 +59,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       (item) => item._client.id === client.id,
     );
     if (index != -1) client.emit('indexPlayer', index);
-    if (this.rromes.get(room) == 2) this.server.emit('start', 2);
+    if (this.rromes.get(room) == 2) this.server.to(room).emit('start', 2);
   }
 
 

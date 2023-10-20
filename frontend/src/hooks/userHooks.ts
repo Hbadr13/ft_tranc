@@ -86,7 +86,6 @@ export const fetchAllAmis = ({ setAmis, query, currentUser }: fetchAllAmisprops)
                 });
                 const content = await response.json();
                 setAmis(content);
-                console.log('1')
 
             }
         )();

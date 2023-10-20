@@ -1,7 +1,8 @@
 import { AppProps, userProps } from '@/interface/data'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router';
+import { v4 as uuid } from 'uuid';
 
 interface ExtendedAppProps extends AppProps {
     setOpponent: (opponent: string) => void;
@@ -11,12 +12,15 @@ const ListAmis = ({ onlineUsersss, currentUser, users, amis, socket, setOpponent
     const router = useRouter()
 
     const handelChallenge = (e: any) => {
-        socket?.emit("areYouReady", { OpponentId: e.target.value, currentPlayer: currentUser, pathOfGame: `/game?online=true&rome=${currentUser.id}.${e.target.value}` })
+        const uid: string = uuid();
+        socket?.emit("areYouReady", {
+            OpponentId: e.target.value, currentPlayer: currentUser, pathOfGame: `/game?online=true&rome=${currentUser.id}.${e.target.value}.${uid}`
+        })
         // console.log("value: ", e.target.value)
         // console.log(currentUser.id)
         // console.log(e.target.value)
         setOpponent(e.target.value)
-        router.push(`/game?online=true&rome=${currentUser.id}.${e.target.value}`);
+        router.push(`/game?online=true&rome=${currentUser.id}.${e.target.value}.${uid}`);
     }
 
     return (
@@ -35,7 +39,7 @@ const ListAmis = ({ onlineUsersss, currentUser, users, amis, socket, setOpponent
                                         width={2000}
                                         height={2000}
                                         src={user.foto_user}
-                                        alt={`image of:${user.username}`}
+                                        alt={`image of: ${user.username}`}
                                         className="w-20   rounded-full border-4 border-balck inline-block" // Adjust the width as needed
                                     />
                                     {/* <Image width={10} height={10} src={""} alt='jhel'> </Image> */}

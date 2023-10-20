@@ -14,12 +14,13 @@ export interface CardInvitation {
   currentUser: userProps;
   opponent: userProps;
   handerRefuseButton: () => void;
+  handerAcceptButton: () => void;
   hideRequest: boolean;
   myIdFromOpponent: Number
 }
 
 
-export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hideRequest, myIdFromOpponent }: CardInvitation) => {
+export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hideRequest, myIdFromOpponent, handerAcceptButton }: CardInvitation) => {
 
   return (<>
     {
@@ -33,7 +34,7 @@ export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hide
               </div>
               <div className='flex justify-around items-center  w-full'>
                 <button onClick={handerRefuseButton} className='m-2 border-2 border-black rounded-xl py-1 px-4'>Refuse</button>
-                <button onClick={handerRefuseButton} className='m-2 border-2 border-black rounded-xl py-1 px-4 bg-[#77A6F7]'>Accept</button>
+                <button onClick={handerAcceptButton} className='m-2 border-2 border-black rounded-xl py-1 px-4 bg-[#77A6F7]'>Accept</button>
               </div>
             </div>
           </div>
@@ -42,8 +43,6 @@ export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hide
   </>
   )
 }
-
-
 
 
 export default function App({ Component, pageProps, router }: AppProps) {
@@ -63,6 +62,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
   const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, });
 
   const [amis, setAmis] = useState<any>([])
+  const [flag, setflag] = useState<boolean>(true)
   const [pathOfGame, setpathOfGame] = useState<string>('')
   // const router = useRouter()
 
@@ -103,11 +103,11 @@ export default function App({ Component, pageProps, router }: AppProps) {
       setOnlineUsersss(amisOnline)
     });
     newSocket?.on("areYouReady", ({ OpponentId, currentPlayer, pathOfGame }: { OpponentId: string, currentPlayer: userProps, pathOfGame: string }) => {
+      console.log("areYouReady")
       setmyIdFromOpponent(Number(OpponentId))
       setpathOfGame(pathOfGame);
       setopponent(currentPlayer);
-      // sethideRequest((prev) => !prev)
-
+      sethideRequest(true)
     });
     return () => {
       newSocket.disconnect();
@@ -125,15 +125,25 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
   const handerRefuseButton = () => {
     sethideRequest((prev) => !prev)
+    // setmyIdFromOpponent(-2)
+    setflag(true)
+    socket.emit("rejectRequest", { currentUser, opponent });
+  }
+
+  const handerAcceptButton = () => {
+
+    sethideRequest((prev) => !prev)
+    console.log(pathOfGame)
     router.push(pathOfGame)
+
   }
 
   return (
     <>
       <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
-        hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} />
+        hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
       <div className={`${font.className}   font-medium `}>
-        {isNavbarVisible && isNavbarVisible2 && <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} />}
+        {isNavbarVisible && isNavbarVisible2 && <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />}
         <Component  {...modifiedPageProps} />
       </div >
     </>
