@@ -44,7 +44,9 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     })
 
     const handelButtonRejectRequest = () => {
+
         setrejectRequest(false)
+        router.push("/game")
     }
     const infoGameFromClient = {
         selectPlayer: selectPlayer,
@@ -90,8 +92,8 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                     ) : null
                 }
                 {
-                    (rejectRequest) || (selectPlayer === 'online' && room !== '') || (selectPlayer === 'computer' || selectPlayer === 'offline') ? (
-                        <div className='w-full absolute'>
+                    (selectPlayer === 'online' && room !== '') || (selectPlayer === 'computer' || selectPlayer === 'offline') ? (
+                        <div className={`w-full absolute ${rejectRequest ? ' hidden ' : ''}`}>
                             <Pong
                                 infoGameFromClient={infoGameFromClient}
                                 selectPlayer={selectPlayer}

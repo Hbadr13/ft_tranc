@@ -29,7 +29,8 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
   private onlineUsers: Map<Socket, number> = new Map();
-  // private allSocket: Map<Socket, number> = new Map();
+  private allUserInGame: Set<string> = new Set();
+
 
   handleConnection(client: Socket, ...args: any[]) {
     // console.log("connect", Number(client.handshake.query.userId))
@@ -68,5 +69,8 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
     })
   }
+  @SubscribeMessage('UserInGame')
+  handleSendMessage(client: Socket, message: string): void {
+    client.emit("UserInGame", this.allUserInGame);
+  }
 }
-

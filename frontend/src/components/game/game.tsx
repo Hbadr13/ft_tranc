@@ -209,6 +209,9 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
         router.push('/game');
         // router.replace('/game')
     }
+    const handelButtonYouWon = () => {
+        router.push("/game")
+    }
     return (
         <>
             <div className="w-full h-[600px] flex justify-center items-center mt-20">
@@ -225,7 +228,7 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
                 {numberPlayer == 2 ||
                     infoGameFromClient.selectPlayer === "computer" ||
                     infoGameFromClient.selectPlayer === "offline" ? (
-                    <div className="w-full h-[100%] flex items-center flex-col space-y-10">
+                    <div className={`${YouWon ? " hidden " : ""} w-full h-[100%] flex items-center flex-col space-y-10`}>
                         {
                             true ? (
                                 <canvas
@@ -256,7 +259,6 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
                         </div>
                     </div>
                 ) : null}
-
                 {
                     (gamaIsStart == 0) ?
                         (<button onClick={handelButtonLeave} className="bg-red-400 w-[20%] h-[90px] rounded-2xl flex justify-center items-center text-3xl">
@@ -264,9 +266,15 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
                         </button>) : null
                 }
                 {
-
-                    YouWon ? (<div className="w-[40%] h-[40%] bg-yellow-600  rounded-3xl  absolute flex items-center justify-center">
-                        <span className="text-3xl">You Won</span>
+                    YouWon ? (<div className="w-[40%] h-[40%] bg-slate-200  rounded-3xl  absolute ">
+                        <div className="flex flex-col items-center justify-center space-y-6 h-[50%]">
+                            <h1 className="text-3xl ">You Won</h1>
+                        </div>
+                        <div className="flex flex-col items-center justify-center space-y-6 h-[50%]">
+                            <button className="ease-in-out duration-500 bg-[#77A6F7] px-6 py-2 rounded-xl  outline outline-offset-2 outline-black hover:text-xl hover:px-8 hover:py-3 text-white font-bold"
+                                onClick={handelButtonYouWon}
+                            >OK</button>
+                        </div>
                     </div>) : null
                 }
             </div>

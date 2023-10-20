@@ -18,7 +18,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private players: Array<{ _client: Socket; _room: string }> = [];
   private rromes: Map<string, number> = new Map<string, number>();
 
-  private allUserInGame: Set<string> = new Set();
 
   handleConnection(client: Socket) {
     console.log(`Game: Client connected: ${client.id}`);

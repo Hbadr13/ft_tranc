@@ -10,22 +10,33 @@ interface ExtendedAppProps extends AppProps {
 
 const ListAmis = ({ onlineUsersss, currentUser, users, amis, socket, setOpponent }: ExtendedAppProps) => {
     const router = useRouter()
+    const [flag, setflag] = useState(false)
 
     const handelChallenge = (e: any) => {
         const uid: string = uuid();
         socket?.emit("areYouReady", {
             OpponentId: e.target.value, currentPlayer: currentUser, pathOfGame: `/game?online=true&rome=${currentUser.id}.${e.target.value}.${uid}`
         })
+        socket.emitWithAck('sendMessage', 'Hello, server!', (ack: string) => {
+            console.log('Server acknowledged:', ack);
+        });
+
         // console.log("value: ", e.target.value)
         // console.log(currentUser.id)
         // console.log(e.target.value)
+        setflag(true)
         setOpponent(e.target.value)
-        router.push(`/game?online=true&rome=${currentUser.id}.${e.target.value}.${uid}`);
+        // router.push(`/game?online=true&rome=${currentUser.id}.${e.target.value}.${uid}`);
     }
-
+    useEffect(() => {
+        socket.emit("UserInGame", "data-----")
+        socket.on("UserInGame", (data: any) => {
+            console.log("data-----", data)
+            // console.log("data-----", data)
+        })
+    })
     return (
         <>
-
             <div className='  w-full mt-20  flex flex-col space-y-3 justify-center items-center  '>
                 <div className='rounded-2xl space-y-4 w-full md:w-[50%] bg-white flex flex-col justify-center items-center '>
                     <div className='border-b-2 w-full flex items-center justify-center p-2'>
@@ -42,7 +53,6 @@ const ListAmis = ({ onlineUsersss, currentUser, users, amis, socket, setOpponent
                                         alt={`image of: ${user.username}`}
                                         className="w-20   rounded-full border-4 border-balck inline-block" // Adjust the width as needed
                                     />
-                                    {/* <Image width={10} height={10} src={""} alt='jhel'> </Image> */}
                                     <div className='bg-green-200 rounded-xl bg-blackd w-[80%] h-10  flex items-center justify-center'>
                                         <h1>
                                             Grade

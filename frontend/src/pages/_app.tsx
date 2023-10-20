@@ -32,9 +32,11 @@ export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hide
                 <Image className='rounded-full w-24' height={200} width={200} alt={`image:${opponent.username}`} src={opponent.foto_user}></Image>
                 <h1>{opponent.username}</h1>
               </div>
+              {/* <button className="ease-in-out duration-500 bg-[#77A6F7] px-6 py-2 rounded-xl  outline outline-offset-2 outline-black hover:text-xl hover:px-8 hover:py-3 text-white font-bold" */}
+
               <div className='flex justify-around items-center  w-full'>
-                <button onClick={handerRefuseButton} className='m-2 border-2 border-black rounded-xl py-1 px-4'>Refuse</button>
-                <button onClick={handerAcceptButton} className='m-2 border-2 border-black rounded-xl py-1 px-4 bg-[#77A6F7]'>Accept</button>
+                <button onClick={handerRefuseButton} className='m-2 border-2 border-black rounded-xl py-1 px-4 duration-500 ease-in-out hover:py-2 hover:px-5 hover:text-xl'>Refuse</button>
+                <button onClick={handerAcceptButton} className='m-2 border-2 border-black rounded-xl py-1 px-4 bg-[#77A6F7] duration-500 ease-in-out hover:py-2 hover:px-5 hover:text-xl'>Accept</button>
               </div>
             </div>
           </div>
@@ -96,6 +98,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
         userId: currentUser.id,
         amis: amis,
       },
+      
     });
 
     setSocket(newSocket);
