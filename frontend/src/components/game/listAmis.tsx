@@ -11,30 +11,34 @@ interface ExtendedAppProps extends AppProps {
 const ListAmis = ({ onlineUsersss, currentUser, users, amis, socket, setOpponent }: ExtendedAppProps) => {
     const router = useRouter()
     const [flag, setflag] = useState(false)
+    const [allUserInGame, setallUserInGame] = useState<Set<string>>();
+    const [selectUser, setselectUser] = useState<Number>(-1);
 
-    const handelChallenge = (e: any) => {
-        const uid: string = uuid();
-        socket?.emit("areYouReady", {
-            OpponentId: e.target.value, currentPlayer: currentUser, pathOfGame: `/game?online=true&rome=${currentUser.id}.${e.target.value}.${uid}`
-        })
-        socket.emitWithAck('sendMessage', 'Hello, server!', (ack: string) => {
-            console.log('Server acknowledged:', ack);
-        });
-
-        // console.log("value: ", e.target.value)
-        // console.log(currentUser.id)
-        // console.log(e.target.value)
-        setflag(true)
-        setOpponent(e.target.value)
-        // router.push(`/game?online=true&rome=${currentUser.id}.${e.target.value}.${uid}`);
+    const handelChallenge = async (e: any) => {
+        try {
+            const response = await fetch(`http://localhost:3333/users/getbyuserid/${e.target.value}`, {
+                credentials: 'include',
+            });
+            if (response.status == 200) {
+                const content = await response.json();
+                if (content.isOnline == false) {
+                    const uid: string = uuid();
+                    socket?.emit("areYouReady", {
+                        OpponentId: e.target.value, currentPlayer: currentUser, pathOfGame: `/game?online=true&rome=${currentUser.id}.${e.target.value}.${uid}`
+                    })
+                    setOpponent(e.target.value)
+                    router.push(`/game?online=true&rome=${currentUser.id}.${e.target.value}.${uid}`);
+                }
+                else {
+                    if (selectUser === -1)
+                        setselectUser(Number(e.target.value))
+                    else
+                        setselectUser(-1)
+                }
+            }
+        } catch (error) {
+        }
     }
-    useEffect(() => {
-        socket.emit("UserInGame", "data-----")
-        socket.on("UserInGame", (data: any) => {
-            console.log("data-----", data)
-            // console.log("data-----", data)
-        })
-    })
     return (
         <>
             <div className='  w-full mt-20  flex flex-col space-y-3 justify-center items-center  '>
@@ -44,7 +48,7 @@ const ListAmis = ({ onlineUsersss, currentUser, users, amis, socket, setOpponent
                     </div>
                     {
                         (amis.length) ? amis.map((user: userProps) => (
-                            <div key={user.id} className=' bg-white rounded-2xl items-center  space-x-3 p-2 flex  w-full md:w-[100%] shadow-md'>
+                            <div key={user.id} className=' bg-white rounded-2xl items-center  space-x-3 p-2 flex  w-full md:w-[100%] shadow-md relative'>
                                 <div className=' w-[20%] flex flex-col py-2 items-center justify-center space-y-4 border-[1px] border-slate-200 border-spacing-9 rounded-3xl'>
                                     <Image
                                         width={2000}
@@ -67,11 +71,12 @@ const ListAmis = ({ onlineUsersss, currentUser, users, amis, socket, setOpponent
                                         <div className="w-[70%] h-10  rounded-xl bg-[#77A6F7]">
                                         </div>
                                     </div>
-                                    <div className="flex justify-between">
+                                    <div className="flex justify-between ">
                                         <button value={`${user.id}`} onClick={handelChallenge} className='bg-[#77A6F7]    rounded-xl px-4 py-2'>Challenge</button>
                                         <button className='bg-white border-black border-2 rounded-xl px-4 py-2'>Historique</button>
                                     </div>
                                 </div>
+                                <div className={`bg-red-200 w-[250px] h-[170px] absolute z-10  -bottom-[190px] rounded-3xl p-3 duration-200 ${!(user.id === selectUser) ? 'hidden' : ""}`}>hello {user.id}</div>
                             </div>
                         )) : null
                     }

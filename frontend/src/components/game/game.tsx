@@ -6,24 +6,25 @@ import { io } from "socket.io-client";
 import { useRouter } from "next/router";
 import { userProps } from "@/interface/data";
 import { isAbsolute } from "path";
+import { Socket } from "socket.io-client";
+
 
 interface InfoGameprops {
-    infoGameFromClient: InfoGameFromClientProps;
     selectPlayer: string;
     setselectPlayer: (selectPlayer: string) => void;
     room: string;
     currentUser: userProps
+    socketApp: Socket
 }
-// GameInfo.VELOCIT *= 0.8;
-// GameInfo.SPEED *= 0.8;
-let mousePosition = { x: 0, y: 0 };
-const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, currentUser }: InfoGameprops) => {
 
-    const [HoAreYou, setHoAreYou] = useState(-1)
-    let player = new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y);
-    let computer = new Player(0, 0);
-    let ball = new Ball(200, 50, "red", 10, GameInfo.VELOCIT, GameInfo.VELOCIT, GameInfo.SPEED);
+const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: InfoGameprops) => {
+    let [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    let [ball, setball] = useState(new Ball(200, 50, "red", 10, GameInfo.VELOCIT, GameInfo.VELOCIT, GameInfo.SPEED));
+    let [computer, setcomputer] = useState(new Player(0, 0));
+    let [player, setplayer] = useState(new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y));
 
+    let HoAreYou = useRef(0);
+    // const [HoAreYou, setHoAreYou] = useState(2)
     const myCanvasRef = useRef<HTMLCanvasElement>(null);
     const [socket, setsocket] = useState<any>();
     const [numberPlayer, setnumberPlayer] = useState(0);
@@ -31,33 +32,58 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
     const [playerScore, setplayerScore] = useState(0);
     const [gamaIsStart, setgamaIsStart] = useState(0)
     const [YouWon, setYouWon] = useState(0);
+    const YouWonOrLostPlayAgain = useRef("");
+    const [PlayAgainhidden, setPlayAgainhidden] = useState(false);
+    const [YouLost, setYouLost] = useState(true);
     const [gameStatus, setgameStatus] = useState('Pause')
     const router = useRouter();
 
     useEffect(() => {
-
         socket?.on("start", () => {
-            if (infoGameFromClient.selectPlayer === 'online') {
+
+            if (selectPlayer === 'online') {
                 GameInfo.SPEED = 2;
                 GameInfo.VELOCIT = 1;
                 GameInfo.ACCELERATION = 0.2;
-
                 ball.speed = GameInfo.SPEED
                 ball.velocityX = GameInfo.VELOCIT;
                 ball.velocityY = GameInfo.VELOCIT;
             }
-            setnumberPlayer(2);
             setgamaIsStart(1)
+            setnumberPlayer(2);
 
             setInterval(() => {
-                if (HoAreYou == 1) {
+                if (YouWonOrLostPlayAgain.current === "won" || YouWonOrLostPlayAgain.current === "lost") {
+                    return
+                }
+                if (HoAreYou.current == 0) {
+                    if (player.youWonRrLost == "won") {
+                        YouWonOrLostPlayAgain.current = "won"
+                        // setYouWonPlayAgain(true)
+                    }
+                    if (player.youWonRrLost == "lost") {
+                        // setYouWonOrLostPlayAgain(true)
+                        YouWonOrLostPlayAgain.current = "lost"
+                    }
+                }
+                if (HoAreYou.current == 1) {
+                    if (computer.youWonRrLost == "won") {
+                        YouWonOrLostPlayAgain.current = "won"
+                        // setYouWonPlayAgain(true)
+                    }
+                    if (computer.youWonRrLost == "lost") {
+                        YouWonOrLostPlayAgain.current = "lost"
+                        // setYouWonOrLostPlayAgain(true)
+                    }
+                }
+                if (HoAreYou.current == 1) {
                     if (document.hidden)
                         socket?.emit("documentHidden")
                 }
-                startGame(myCanvasRef, mousePosition, ball, player, computer, infoGameFromClient, HoAreYou);
+                startGame({ myCanvasRef, mousePosition, ball, player, computer, selectPlayer, HoAreYou });
                 setcomputerScore(computer.score);
                 setplayerScore(player.score);
-                if (HoAreYou == 0) {
+                if (HoAreYou.current == 0) {
                     if (ball.x < 0) {
                         computer.score += 1;
                         ball.x = GameInfo.CANVAS_WIDTH / 2;
@@ -65,7 +91,6 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
                         ball.velocityX = GameInfo.VELOCIT;
                         ball.velocityY = GameInfo.VELOCIT;
                         ball.speed = GameInfo.SPEED
-
                     }
                     if (ball.x > GameInfo.CANVAS_WIDTH) {
                         player.score += 1;
@@ -75,16 +100,23 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
                         ball.velocityY = GameInfo.VELOCIT;
                         ball.speed = GameInfo.SPEED
                     }
+                    if (player.score >= 1) {
+                        player.youWonRrLost = "won"
+                    }
+                    if (computer.score >= 1) {
+                        player.youWonRrLost = "lost"
+                    }
                 }
-                if (infoGameFromClient.selectPlayer == "online") {
-                    if (HoAreYou == 0) {
-                        socket?.emit("update1", player.y);
+                if (selectPlayer == "online") {
+                    if (HoAreYou.current == 0) {
+                        socket?.emit("dataOfplayer", player);
                     }
 
-                    if (HoAreYou == 1) {
-                        socket?.emit("update2", computer.y);
+                    if (HoAreYou.current == 1) {
+                        socket?.emit("dataOfcomputer", computer);
                     }
-                    if (HoAreYou == 0)
+                    if (HoAreYou.current == 0) {
+
                         socket?.emit("moveBall", {
                             x: ball.x,
                             y: ball.y,
@@ -92,21 +124,19 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
                             computerScore: computer.score,
                             statuee: gameStatus
                         });
+                    }
                 }
             }, 1000 / 60);
         });
     });
 
     useEffect(() => {
-        const handlerResize = () => {
-            const canvas = myCanvasRef.current;
-            if (!canvas) return;
-            computer.x = canvas.width;
-            computer.x -= 10;
-        };
-        handlerResize();
-        window.addEventListener("resize", handlerResize);
-    });
+        const canvas = myCanvasRef.current;
+        if (!canvas) return;
+        computer.x = canvas.width;
+        computer.x -= 10;
+    }, []);
+
     useEffect(() => {
         document.addEventListener("keydown", (event) => {
             const keyPressed = event.key;
@@ -128,8 +158,11 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
     useEffect(() => {
         const socketUrl = "http://localhost:8000";
         // const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://e2r9p2.1337.ma:8000";
-        const newSocket = io(socketUrl);
-        // newSocket.off("hello")
+        const newSocket = io(socketUrl, {
+            query: {
+                userId: currentUser.id,
+            },
+        });
         setsocket(newSocket);
         return () => {
             newSocket.disconnect();
@@ -138,34 +171,34 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
 
     useEffect(() => {
         socket?.on("indexPlayer", (index: number) => {
-            setHoAreYou(index);
+            HoAreYou.current = index;
         });
 
         socket?.on("ResumePause", (value: string) => {
-            // console.log(value)
             setgameStatus(value)
             player.status = value
             computer.status = value
         })
         socket?.on("leaveRoom", () => {
-            // console.log('leaveRoom:')
             player.status = 'Pause'
             computer.status = 'Pause'
-            // router.push("/game")
             setYouWon(1)
         })
-        socket?.on("posY", (posY: number) => {
-            // console.log('hello')
-            if (HoAreYou == 1) {
-                mousePosition.y = posY;
+        socket?.on("dataOfplayer", (plyr: Player) => {
+            if (HoAreYou.current == 1) {
+                mousePosition.y = plyr.y;
+                if (plyr.youWonRrLost === "won")
+                    computer.youWonRrLost = "lost"
+                if (plyr.youWonRrLost === "lost")
+                    computer.youWonRrLost = "won"
             }
         });
-        socket?.on("posX", (posX: number) => {
-            if (HoAreYou == 0)
-                mousePosition.x = posX;
+        socket?.on("dataOfcomputer", (comptr: Player) => {
+            if (HoAreYou.current == 0)
+                mousePosition.x = comptr.y;
         });
         socket?.on("movebb", (obj: any) => {
-            if (HoAreYou == 1) {
+            if (HoAreYou.current == 1) {
                 ball.x = obj.x;
                 ball.y = obj.y;
                 computer.score = obj.computerScore;
@@ -173,7 +206,6 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
             }
         });
         socket?.on("documentHidden", (flag: boolean) => {
-            // if(flag)
             const value = "Resume"
             setgameStatus(value)
             player.status = value
@@ -184,14 +216,14 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
         })
     })
 
-    if (infoGameFromClient.selectPlayer === "computer" || infoGameFromClient.selectPlayer === "offline") {
+    if (selectPlayer === "computer" || selectPlayer === "offline") {
         socket?.emit("startWithComputer", room);
     }
 
     const handleMouseMove = (e: any) => {
         const rect = e.target.getBoundingClientRect();
-        if (HoAreYou == 0) mousePosition.y = e.clientY - rect.top - 25;
-        if (HoAreYou == 1) mousePosition.x = e.clientY - rect.top - 25;
+        if (HoAreYou.current == 0) mousePosition.y = e.clientY - rect.top - 25;
+        if (HoAreYou.current == 1) mousePosition.x = e.clientY - rect.top - 25;
     };
     const sendMessage = () => {
         setnumberPlayer(1);
@@ -207,27 +239,36 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
     const handelButtonLeave = () => {
         setselectPlayer('')
         router.push('/game');
-        // router.replace('/game')
     }
     const handelButtonYouWon = () => {
         router.push("/game")
+    }
+    const handelButtonYouLost = () => {
+        router.push("/game")
+    }
+    const handelButtonPlayAgain = () => {
+        YouWonOrLostPlayAgain.current = ""
+        computer.score = 0
+        player.score = 0
+        player.youWonRrLost = ""
+        computer.youWonRrLost = ""
     }
     return (
         <>
             <div className="w-full h-[600px] flex justify-center items-center mt-20">
                 {numberPlayer == 0 &&
-                    infoGameFromClient.selectPlayer === "online" ? (
+                    selectPlayer === "online" ? (
                     <div>
                         <button className="bg-red-400 w-[80px] h-[90px] rounded-2xl text-3xl mx-2" onClick={sendMessage}>join room</button>
                     </div>
                 ) : null}
                 {numberPlayer == 1 &&
-                    infoGameFromClient.selectPlayer === "online" ? (
+                    selectPlayer === "online" ? (
                     <div className="bg-red-400  h-[90px] pt-5  rounded-2xl text-3xl px-1 mx-2">waiting for oponenet</div>
                 ) : null}
                 {numberPlayer == 2 ||
-                    infoGameFromClient.selectPlayer === "computer" ||
-                    infoGameFromClient.selectPlayer === "offline" ? (
+                    selectPlayer === "computer" ||
+                    selectPlayer === "offline" ? (
                     <div className={`${YouWon ? " hidden " : ""} w-full h-[100%] flex items-center flex-col space-y-10`}>
                         {
                             true ? (
@@ -243,7 +284,7 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
                         }
                         <div className="w-[400px] h-[70px] rounded-2xl flex justify-around items-center">
                             <div className="bg-slate-400 w-[20%] h-[90%] rounded-2xl flex justify-center items-center text-3xl">
-                                {playerScore}
+                                {player.score}
                             </div>
 
                             <button onClick={handelButtonGameStatus} className="bg-slate-400 w-[20%] h-[90%] rounded-2xl flex justify-center items-center text-3xl">
@@ -253,8 +294,8 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
                             <div className="bg-slate-400 w-[20%] h-[90%] rounded-2xl flex justify-center items-center text-3xl">
                                 {computer.score}
                             </div>
-                            <button onClick={handelButtonLeave} className="bg-slate-400 w-[20%] h-[90%] rounded-2xl flex justify-center items-center text-3xl">
-                                Leave
+                            <button onClick={handelButtonLeave} className="bg-slate-400 w-[30%] h-[90%]  rounded-2xl flex justify-center items-center text-3xl">
+                                leave
                             </button>
                         </div>
                     </div>
@@ -276,6 +317,47 @@ const Pong = ({ infoGameFromClient, selectPlayer, setselectPlayer, room, current
                             >OK</button>
                         </div>
                     </div>) : null
+                }
+                {
+                    YouWonOrLostPlayAgain.current === 'won' ? (
+                        <div className="w-[40%] h-[40%] bg-slate-200  rounded-3xl  absolute ">
+                            <div className="flex flex-col items-center justify-center space-y-6 h-[50%]">
+                                <h1 className="text-3xl text-green-600">You Won</h1>
+                                <h3 className="text-xl ">Play Again</h3>
+                            </div>
+                            <div className="flex  items-center justify-center space-x-6 h-[50%]">
+                                <button className="ease-in-out duration-500 bg-green-400 px-6 py-2 rounded-xl  outline outline-offset-2 outline-black hover:text-xl hover:px-8 hover:py-3 text-white font-bold"
+                                    onClick={handelButtonPlayAgain}
+                                >OK</button>
+                                <button className="ease-in-out duration-500 bg-red-400 px-6 py-2 rounded-xl  outline outline-offset-2 outline-black hover:text-xl hover:px-8 hover:py-3 text-white font-bold"
+                                    onClick={handelButtonYouLost}
+                                >NO</button>
+                            </div>
+                            --=={YouWonOrLostPlayAgain.current}
+                        </div>
+                    ) : null
+                }
+                {
+                    YouWonOrLostPlayAgain.current === 'lost' ? (
+                        <div className="w-[40%] h-[40%] bg-slate-200  rounded-3xl  absolute ">
+                            <div className="flex flex-col items-center justify-center space-y-6 h-[50%]">
+                                <h1 className="text-3xl text-red-600">You Lost</h1>
+                                <h3 className="text-xl ">Play Again</h3>
+                            </div>
+                            <div className="flex  items-center justify-center space-x-6 h-[50%]">
+                                <button className="ease-in-out duration-500 bg-green-400 px-6 py-2 rounded-xl  outline outline-offset-2 outline-black hover:text-xl hover:px-8 hover:py-3 text-white font-bold"
+                                    onClick={handelButtonPlayAgain}
+                                >OK</button>
+                                <button className="ease-in-out duration-500 bg-red-400 px-6 py-2 rounded-xl  outline outline-offset-2 outline-black hover:text-xl hover:px-8 hover:py-3 text-white font-bold"
+                                    onClick={handelButtonYouLost}
+                                >NO</button>
+                            </div>
+                            --=={YouWonOrLostPlayAgain.current}
+                        </div>
+                    ) : null
+                }
+                {
+
                 }
             </div>
 

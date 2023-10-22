@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { GameGateway } from './game/game.gateway';
 import { OnlineGateway } from './online/online.gateway';
 import { WebsocketsModule } from './websockets/websockets.module';
+import { UserService } from './user/user.service';
 
 
 
@@ -21,6 +22,6 @@ import { WebsocketsModule } from './websockets/websockets.module';
         ConfigModule.forRoot({
             isGlobal: true
         }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule, WebsocketsModule],
-    providers: [GameGateway, OnlineGateway],
+    providers: [GameGateway, OnlineGateway, UserService],
 })
 export class AppModule { }

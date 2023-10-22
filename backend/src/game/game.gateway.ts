@@ -1,3 +1,6 @@
+import io from 'socket.io-client';
+import { UserService } from '../user/user.service';
+
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -13,25 +16,45 @@ import { Server, Socket } from 'socket.io';
 @WebSocketGateway(8000, { cors: '*' })
 
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
+
+  constructor(private readonly userService: UserService) { }
   @WebSocketServer()
   server: Server;
   private players: Array<{ _client: Socket; _room: string }> = [];
   private rromes: Map<string, number> = new Map<string, number>();
+  private IdOfPlayer: Map<Socket, number> = new Map<Socket, number>();
 
 
-  handleConnection(client: Socket) {
-    console.log(`Game: Client connected: ${client.id}`);
+  async handleConnection(client: Socket) {
+    try {
+      console.log('hello')
+      const userId = Number(client.handshake.query.userId);
+      if (userId < 1)
+        return
+      this.IdOfPlayer.set(client, userId)
+      const content = await this.userService.makeUserInGame(userId);
+      console.log(`Game: Client connected: ${this.IdOfPlayer.get(client)}`);
+    } catch (error) {
+
+    }
   }
-  handleDisconnect(client: Socket) {
-    const user = this.players.find((item) => item._client.id == client.id);
-    this.players = this.players.filter((item) => item._client.id != client.id);
-    console.log(`Game: Client disconnected: ${client.id}`);
-    if (user) {
-      // console.log('room :', this.rromes.get(user._room), "name: ", user._room)
-      client.to(user._room).emit('leaveRoom', {})
-      if (this.rromes.get(user._room) === 1)
-        client.to(user._room).emit('availableRoom')
-      this.rromes.delete(user._room)
+
+  async handleDisconnect(client: Socket) {
+    try {
+      const user = this.players.find((item) => item._client.id == client.id);
+      this.players = this.players.filter((item) => item._client.id != client.id);
+      if (user) {
+        client.to(user._room).emit('leaveRoom', {})
+        if (this.rromes.get(user._room) === 1)
+          client.to(user._room).emit('availableRoom')
+        this.rromes.delete(user._room)
+      }
+      console.log(`Game: Client disconnected: ${this.IdOfPlayer.get(client)}`);
+      await this.userService.makeUserOutGame(this.IdOfPlayer.get(client));
+      this.IdOfPlayer.delete(client)
+      console.log(this.IdOfPlayer)
+    } catch (error) {
+
     }
   }
 
@@ -49,8 +72,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.rromes.set(room, 1)
     else
       this.rromes.set(room, this.rromes.get(room) + 1)
-    // console.log(this.rromes.get(room))
-    // console.log(userId)
+    console.log(userId)
     this.players.push({ _client: client, _room: room });
     client.join(room);
     const filtr = this.players.filter((item) => item._room === room);
@@ -63,16 +85,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
 
-  @SubscribeMessage('update1')
-  handleCreatpostion1(client: Socket, y: number): void {
+  @SubscribeMessage('dataOfplayer')
+  handleCreatpostion1(client: Socket, player: any): void {
     const user = this.players.find((item) => item._client.id == client.id);
-    if (user) client.to(user._room).emit('posY', y);
+    if (user) client.to(user._room).emit('dataOfplayer', player);
   }
 
-  @SubscribeMessage('update2')
-  handleCreatpostion2(client: Socket, y: number): void {
+  @SubscribeMessage('dataOfcomputer')
+  handleCreatpostion2(client: Socket, computer: any): void {
     const user = this.players.find((item) => item._client.id == client.id);
-    if (user) client.to(user._room).emit('posX', y);
+    if (user) client.to(user._room).emit('dataOfcomputer', computer);
   }
 
 

@@ -11,6 +11,7 @@ export class Player {
   left: number = 0;
   score: number = 0;
   status: string = 'Pause';
+  youWonRrLost: string = "";
   public constructor(x: number, y: number) {
     this.x = x;
     this.y = y;

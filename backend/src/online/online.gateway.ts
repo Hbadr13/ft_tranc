@@ -32,7 +32,8 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private allUserInGame: Set<string> = new Set();
 
 
-  handleConnection(client: Socket, ...args: any[]) {
+  handleConnection(client: Socket) {
+
     // console.log("connect", Number(client.handshake.query.userId))
     const userId = Number(client.handshake.query.userId);
     if (userId < 1)
@@ -57,7 +58,6 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
         key.emit("areYouReady", { OpponentId, currentPlayer, pathOfGame })
       }
     })
-
   }
   @SubscribeMessage('rejectRequest')
   handlerejectRequest(client: Socket, { currentUser, opponent }: { currentUser: userProps, opponent: userProps }): void {
@@ -65,12 +65,9 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.onlineUsers.forEach((value: any, key: any) => {
       if (value == opponent.id) {
         key.emit("rejectRequest")
-        // key.emit("areYouReady", { OpponentId, currentPlayer, pathOfGame })
       }
     })
   }
-  @SubscribeMessage('UserInGame')
-  handleSendMessage(client: Socket, message: string): void {
-    client.emit("UserInGame", this.allUserInGame);
-  }
+
+
 }

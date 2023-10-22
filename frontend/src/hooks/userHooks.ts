@@ -24,20 +24,6 @@ export const checkAuth = () => {
 }
 export const checklogin = () => {
     const router = useRouter();
-    // useEffect(() => {
-    //     try {
-    //         async () => {
-    //             const response = await fetch('http://localhost:3333/auth/user', {
-    //                 credentials: 'include',
-    //             });
-    //             if (response.status == 200) {
-    //                 router.push('/');
-    //                 return;
-    //             }
-    //         };
-    //     } catch (error) {
-    //     }
-    // });
     useEffect(() => {
         (
             async () => {
@@ -46,10 +32,7 @@ export const checklogin = () => {
                 });
 
                 if (response.status == 200) {
-
-                    // router.push('/');
                     router.push('/');
-                    // } else {
                     return;
                 }
             }
@@ -100,14 +83,6 @@ export const fetchCurrentUser = ({ setCurrentUser }: { setCurrentUser: (currentU
                     credentials: 'include',
                 });
                 const content = await response.json();
-                // let usr: userProps;
-                // usr = {
-                //     id: content.id, foto_user: content.foto_user, createdAt: "",
-                //     email: content.email,
-                //     firstName: content.firstName, isOnline: content.isOnline, lastName: content.lastName,
-                //     updatedAt: content.updatedAt,
-                //     userId: , username: content.username, hash: ""
-                // };
                 setCurrentUser(content);
             }
         )();
