@@ -1,41 +1,50 @@
 
-
+import { useRouter } from 'next/navigation'
 
 import { Combobox, Transition } from '@headlessui/react'
-
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { Fragment, useState, ChangeEvent, KeyboardEvent, useEffect } from 'react'
-import { CustomLinkNavbarProps, BoxSearchrProps } from './model'
-import { arabicNames } from '../components/data'
+import { useState, ChangeEvent } from 'react'
+import UserInfo from './user/UserInfo'
+import { io } from 'socket.io-client'
+import { AppProps, BoxSearchrProps, userProps } from '@/interface/data'
+import { CustomLinkNavbarProps } from './model'
+import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks'
+import { idText } from 'typescript'
 
-const BoxSearch = ({ searchUser, setSearchUser }: BoxSearchrProps) => {
 
+
+
+
+const BoxSearch = ({ searchUser, setSearchUser, onlineUsersss, id, users, amis }: BoxSearchrProps) => {
+    const router = useRouter()
     const [query, setQuery] = useState('')
-    // const [User, setUser] = useState('')
-    const [Index, setIndex] = useState(0)
-    const [LastArrow, setLastArrow] = useState("")
     const handlingQuery = (event: ChangeEvent<HTMLInputElement>) => {
         setQuery(event.target.value)
-        // setSearchUser(event.target.value)
     }
-    const empy: Array<string> = []
+    const empy: Array<userProps> = []
     let filterUser = empy;
-
     if (query.replace(/\s+/g, '')) {
-        filterUser = arabicNames.filter((user) => (
-            user.toLowerCase().includes(query.trimStart().trimEnd().replace(/\s+/g, ' ').toLowerCase())
-        ))
+        filterUser = users.filter((user: userProps) => {
+            user.flag = true
+            amis.filter((usr: userProps) => {
+                if (usr.id == user.id)
+                    user.flag = false
+            })
+            return user.username?.toLowerCase().includes(query.trimStart().trimEnd().replace(/\s+/g, ' ').toLowerCase())
+        }
+        )
     }
-
+    const handelOnChange = (name: any) => {
+        setSearchUser(name)
+        router.replace(`/users/${name}`);
+    }
     return (
         <>
             <form className='w-full' action="">
-                <Combobox value={searchUser} onChange={setSearchUser} >
+                <Combobox value={searchUser} onChange={handelOnChange} >
                     <div className='relative flex justify-center items-center  h-10 w-[100%]'>
                         <Combobox.Input
                             type="text"
@@ -55,17 +64,23 @@ const BoxSearch = ({ searchUser, setSearchUser }: BoxSearchrProps) => {
                     <Combobox.Options className='absolute flex justify-center mt-5 w-[50%]'>
                         <div className={`text-center rounded-2xl m-2 shadow-slate-800 shadow-md font-light flex flex-col justify-center w-[100%] bg-red-200 overflow-hidden`}>
                             {
-                                filterUser.map((item, index) => (
+                                filterUser.map((item: any, index: number) => (
 
                                     index < 10 && (
-                                        < Combobox.Option value={item} key={index}
+                                        < Combobox.Option value={`${item.username}.${item.id}`} key={index}
                                             className={({ active }) => `flex justify-around  ${active ? 'bg-teal-600 text-white' : 'text-gray-900'}`}
-                                            onClick={() => setQuery(item)}
-                                            onMouseEnter={() => setIndex(index)}
+                                            onClick={() => setQuery(item.username)}
                                         >
-                                            <Image src={"/man.png"} alt='man profiel' width={60} height={40}></Image>
-                                            <CustomLinkNavbar href='/' content={item} ></CustomLinkNavbar>
-                                            <CustomLinkNavbar href='/' content=' add friend' ></CustomLinkNavbar>
+                                            <div className={`w-[65px] h-[65px] pb-[3px] ${(!item.flag) ? onlineUsersss.includes(item.id) ? 'bg-green-400' : 'bg-red-400' : null} rounded-full flex justify-center items-center `}>
+                                                <Image src={"/man.png"} alt='man profiel' width={60} height={40}></Image>
+                                            </div>
+                                            <CustomLinkNavbar href='/' content={item.username} ></CustomLinkNavbar>
+                                            {
+
+                                                (!item.flag) ?
+                                                    (<CustomLinkNavbar href='/game' moreStye="bg-yallow-700" content='play' ></CustomLinkNavbar>) :
+                                                    (<CustomLinkNavbar href='/' content=' add friend' ></CustomLinkNavbar>)
+                                            }
                                         </Combobox.Option>
                                     )
                                 ))
@@ -88,7 +103,11 @@ const CustomLinkNavbar = ({ href, content, moreStye }: CustomLinkNavbarProps) =>
     )
 }
 
-const Navbar = () => {
+const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
+    const router = useRouter();
+
+
+
     const [searchUser, setSearchUser] = useState("")
 
     return (
@@ -96,19 +115,18 @@ const Navbar = () => {
             <div className='bg-slate-600 px-5 py-2 w-full flex justify-between item-center font-light shadow-md shadow-slate-700'>
                 <div className="w-[20%] hidden  sm:flex flex-row item-center justify-between text-[#1ba098]">
                     <CustomLinkNavbar moreStye="" href="/" content="Home" />
-                    <CustomLinkNavbar moreStye="" href="/" content="Chat" />
+                    <CustomLinkNavbar moreStye="" href="/chat" content="Chat" />
                     <CustomLinkNavbar moreStye="" href="/game" content="PongGame" />
                 </div>
                 <div className="flex item-center justify-center sm:w-[60%] w-[100%] py-4 ">
-                    <BoxSearch searchUser={searchUser} setSearchUser={setSearchUser} />
+                    <BoxSearch searchUser={searchUser} setSearchUser={setSearchUser} id={currentUser.id} users={users} amis={amis} onlineUsersss={onlineUsersss} />
                 </div>
                 <div className="hidden w-[20%] pl-10 sm:flex justify-between item-center text-[#1ba098]">
                     <CustomLinkNavbar moreStye='' href="/" content="logOut" />
                     <CustomLinkNavbar moreStye='' href="/" content="more" />
                 </div>
+                <UserInfo />
             </div>
-            <div className='bg-red-200'>{searchUser}</div>
-
         </>
     )
 }

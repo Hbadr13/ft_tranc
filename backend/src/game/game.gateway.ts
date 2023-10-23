@@ -1,3 +1,6 @@
+import io from 'socket.io-client';
+import { UserService } from '../user/user.service';
+
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -8,28 +11,68 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
+
+
 @WebSocketGateway(8000, { cors: '*' })
+
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
+
+  constructor(private readonly userService: UserService) { }
   @WebSocketServer()
   server: Server;
   private players: Array<{ _client: Socket; _room: string }> = [];
-  handleConnection(client: Socket) {
-    console.log(`Game: Client connected: ${client.id}`);
+  private rromes: Map<string, number> = new Map<string, number>();
+  private IdOfPlayer: Map<Socket, number> = new Map<Socket, number>();
+
+
+  async handleConnection(client: Socket) {
+    try {
+      console.log('hello')
+      const userId = Number(client.handshake.query.userId);
+      if (userId < 1)
+        return
+      this.IdOfPlayer.set(client, userId)
+      const content = await this.userService.makeUserInGame(userId);
+      console.log(`Game: Client connected: ${this.IdOfPlayer.get(client)}`);
+    } catch (error) {
+
+    }
   }
-  handleDisconnect(client: Socket) {
+
+  async handleDisconnect(client: Socket) {
+    try {
+      const user = this.players.find((item) => item._client.id == client.id);
+      this.players = this.players.filter((item) => item._client.id != client.id);
+      if (user) {
+        client.to(user._room).emit('leaveRoom', {})
+        if (this.rromes.get(user._room) === 1)
+          client.to(user._room).emit('availableRoom')
+        this.rromes.delete(user._room)
+      }
+      console.log(`Game: Client disconnected: ${this.IdOfPlayer.get(client)}`);
+      await this.userService.makeUserOutGame(this.IdOfPlayer.get(client));
+      this.IdOfPlayer.delete(client)
+      console.log(this.IdOfPlayer)
+    } catch (error) {
+
+    }
+  }
+
+  @SubscribeMessage('documentHidden')
+  handleMessage(client: Socket, flag: boolean): void {
     const user = this.players.find((item) => item._client.id == client.id);
-    this.players = this.players.filter((item) => item._client.id != client.id);
-    console.log(`Game: Client disconnected: ${client.id}`);
-    if (user) client.to(user._room).emit('leaveRoom', {})
+    if (user) {
+      client.to(user._room).emit('documentHidden', flag);
+    }
   }
-  @SubscribeMessage('message')
-  handleMessage(client: Socket, message: string): void {
-    console.log('Game: -------- ', message);
-    // const rm = this.players.get(client.id);
-    // if (rm) this.server.to(rm).emit('message', message);
-  }
+
   @SubscribeMessage('joinRoom')
-  handleCreatRoom(client: Socket, room: string): void {
+  handleCreatRoom(client: Socket, { room, userId }): void {
+    if (!this.rromes.get(room))
+      this.rromes.set(room, 1)
+    else
+      this.rromes.set(room, this.rromes.get(room) + 1)
+    console.log(userId)
     this.players.push({ _client: client, _room: room });
     client.join(room);
     const filtr = this.players.filter((item) => item._room === room);
@@ -37,36 +80,40 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       (item) => item._client.id === client.id,
     );
     if (index != -1) client.emit('indexPlayer', index);
-    if (filtr.length == 2) this.server.emit('start', filtr.length);
-    // console.log(filtr.length);
-    // console.log(this.players);
+    if (this.rromes.get(room) == 2) this.server.to(room).emit('start', 2);
   }
-  @SubscribeMessage('update1')
-  handleCreatpostion1(client: Socket, y: number): void {
+
+
+
+  @SubscribeMessage('dataOfplayer')
+  handleCreatpostion1(client: Socket, player: any): void {
     const user = this.players.find((item) => item._client.id == client.id);
-    if (user) client.to(user._room).emit('y1', y);
+    if (user) client.to(user._room).emit('dataOfplayer', player);
   }
-  @SubscribeMessage('update2')
-  handleCreatpostion2(client: Socket, y: number): void {
+
+  @SubscribeMessage('dataOfcomputer')
+  handleCreatpostion2(client: Socket, computer: any): void {
     const user = this.players.find((item) => item._client.id == client.id);
-    if (user) client.to(user._room).emit('y2', y);
+    if (user) client.to(user._room).emit('dataOfcomputer', computer);
   }
+
+
   @SubscribeMessage('moveBall')
   handleMoveBall(client: Socket, ball: any): void {
     const user = this.players.find((item) => item._client.id == client.id);
     if (user) this.server.to(user._room).emit('movebb', ball);
   }
+
   @SubscribeMessage('startWithComputer')
-  handlestartWithComputer(client: Socket, ball: any): void {
+  handlestartWithComputer(client: Socket): void {
     client.emit('start');
   }
-  @SubscribeMessage("indexx")
-  handlegameINdexx(client: Socket, index: number): void {
-    console.log(index)
-    // this.server.to('').emit('gameStatusServer', gameStatus);
-    // this.emit('indexx', index);
+
+
+  @SubscribeMessage("ResumePause")
+  handlegameResumePause(client: Socket, index: number): void {
     const user = this.players.find((item) => item._client.id == client.id);
-    if (user) client.to(user._room).emit('indexx', index);
+    if (user) client.to(user._room).emit('ResumePause', index);
   }
 }
 

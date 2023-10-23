@@ -3,7 +3,7 @@ export class Player {
   x: number = 0;
   y: number = 0;
   width: number = 10;
-  height: number = 50;
+  height: number = 100;
   color: string = "#FFFFFF";
   top: number = 0;
   bottom: number = 0;
@@ -11,6 +11,7 @@ export class Player {
   left: number = 0;
   score: number = 0;
   status: string = 'Pause';
+  youWonRrLost: string = "";
   public constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
@@ -34,14 +35,15 @@ export class Ball {
   left: number = 0;
   velocityX: number = 0;
   velocityY: number = 0;
-
+  speed: number;
   public constructor(
     x: number,
     y: number,
     color: string,
     raduis: number,
     velocityX: number,
-    velocityY: number
+    velocityY: number,
+    speed: number,
   ) {
     this.x = x;
     this.y = y;
@@ -49,6 +51,7 @@ export class Ball {
     this.raduis = raduis;
     this.velocityX = velocityX * -1;
     this.velocityY = velocityY;
+    this.speed = speed
   }
   public setBorder(): void {
     this.top = this.y - this.raduis;
@@ -74,13 +77,13 @@ export const GameInfo = {
   PLAYER_Y: 0,
   BALL_START_SPEED: 2,
   RADIUS_BALL: 10,
-  VELOCIT: 0.3,
-  LEVEL: 0.05,
+  VELOCIT: 0.1,
+  LEVEL: 0.005,
   ANGLE: Math.PI / 4,
-  SPEED: 0.5,
+  SPEED: 0.3,
   CANVAS_WIDTH: 0,
   CANVAS_HIEGHT: 0,
-  you:-1
+  ACCELERATION: 0.05
 };
 
 export class Canvas {
@@ -100,11 +103,6 @@ export class Canvas {
     this.ctx.fillStyle = "#000000";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
-  // public Clear(): void {
-  // if (!this.ctx) return;
-  // this.ctx.fillStyle = "#000000";
-  // this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-  // }
   public drawRect(object: Player): void {
     if (!this.ctx) return;
     this.ctx.fillStyle = "#FFFFFF";
@@ -151,9 +149,9 @@ export class Canvas {
         (selectPlayer.height / 2);
       const direction = ball.x > this.width / 2 ? -1 : 1;
       let newAngle = GameInfo.ANGLE * whenCollision;
-      ball.velocityX = direction * GameInfo.SPEED * Math.cos(newAngle);
-      ball.velocityY = GameInfo.SPEED * Math.sin(newAngle);
-      // GameInfo.SPEED += 0.1;
+      ball.velocityX = direction * ball.speed * Math.cos(newAngle);
+      ball.velocityY = ball.speed * Math.sin(newAngle);
+      ball.speed += GameInfo.ACCELERATION;
     }
   }
 }
