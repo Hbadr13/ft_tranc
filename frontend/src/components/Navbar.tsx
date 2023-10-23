@@ -48,7 +48,7 @@ const BoxSearch = ({ searchUser, setSearchUser, onlineUsersss, id, users, amis }
                     <div className='relative flex justify-center items-center  h-10 w-[100%]'>
                         <Combobox.Input
                             type="text"
-                            className='absolute focus:outline-none bg-slate-800 w-[100%] py-2 text-yellow-400 px-8 rounded-xl hover:bg-slate-900'
+                            className='absolute focus:outline-none bg-black w-[100%] py-2 text-white px-8 rounded-xl hover:text-black hover:bg-blue-100'
                             placeholder='typing..'
                             onChange={handlingQuery}
                             autoComplete='off'
@@ -68,7 +68,7 @@ const BoxSearch = ({ searchUser, setSearchUser, onlineUsersss, id, users, amis }
 
                                     index < 10 && (
                                         < Combobox.Option value={`${item.username}.${item.id}`} key={index}
-                                            className={({ active }) => `flex justify-around  ${active ? 'bg-teal-600 text-white' : 'text-gray-900'}`}
+                                            className={({ active }) => `flex justify-around  ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}
                                             onClick={() => setQuery(item.username)}
                                         >
                                             <div className={`w-[65px] h-[65px] pb-[3px] ${(!item.flag) ? onlineUsersss.includes(item.id) ? 'bg-green-400' : 'bg-red-400' : null} rounded-full flex justify-center items-center `}>
@@ -96,7 +96,7 @@ const BoxSearch = ({ searchUser, setSearchUser, onlineUsersss, id, users, amis }
 const CustomLinkNavbar = ({ href, content, moreStye }: CustomLinkNavbarProps) => {
     return (
         <div className={`rounded justify-between flex items-center ${moreStye}`}>
-            <Link className='hover:bg-orange-400 hover:text-cyan-100 p-1 px-2 rounded-xl' href={String(href)}>
+            <Link className='hover:bg-blue-500 hover:text-cyan-100 p-1 px-2 rounded-xl' href={String(href)}>
                 {content}
             </Link>
         </div>

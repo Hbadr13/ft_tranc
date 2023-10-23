@@ -19,8 +19,13 @@ async sendFriendRequest(
 ): Promise<void> {
   
   const userId = id;
+  console.log("+++++++++++++++++++++++++++++")
   // console.log(userId) // Assuming you have stored user information in the request object during authentication
-  await this.friendsService.sendFriendRequest(Number(userId), Number(friendId));
+  if(Number(userId) != Number(friendId))
+  {
+    console.log("________________________________________________________")
+    await this.friendsService.sendFriendRequest(Number(userId), Number(friendId));
+  }
 }
 @Post('accept-friend-request/:requestId/:id')
   async acceptFriendRequest(@Param('requestId') requestId: number,  @Param('id') id: number) {
@@ -75,5 +80,8 @@ async sendFriendRequest(
 async deleteFriendRequest(@Param('requestId') requestId: number,@Param('id') id: number) {
   return this.friendsService.deleteFriendRequest(Number(requestId), Number(id));
 }
-
+@Get('received/:receiverId')
+async getReceivedFriendRequests1(@Param('receiverId') receiverId: number) {
+  return this.friendsService.getReceivedFriendRequests1(receiverId);
+}
 }

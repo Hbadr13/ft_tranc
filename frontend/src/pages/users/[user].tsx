@@ -1,48 +1,12 @@
-// import React from 'react'
-
-// const Index = () => {
-//     const currentFileName = path.basename(__filename);
-//     console.log(currentFileName);
-//     const name = 'asdfjasdf';
-//     return (
-//         <div>user</div>
-//     )
-// }
-
-
-// export default Index
-
-// export default function singlPage({ products1 }: any) {
-//     return (
-//         <div>
-//             {products1}
-//         </div>
-//     )
-// }
-
-// export async function getServerSideProps(context: any) {
-//     console.log(context.query.user)
-//     try {
-
-//         const req = await fetch(`https://fakestoreapi.com/products/${context.query.user}`)
-//         const products1 = await req.json();
-//         return {
-//             props: { products1 }
-//         }
-//     }
-//     catch (error) {
-//         console.log(error)
-//     }
-// }
-
-
 
 import Friends from '@/components/user/Friend';
 import Rank from '@/components/user/Rank';
 import { fetchAllAmis, fetchCurrentUser } from '@/hooks/userHooks';
+import { AppProps, userProps } from '@/interface/data';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import path from 'path';
+import { send } from 'process';
 import { useEffect, useState } from 'react';
 
 interface LevelBarpros {
@@ -63,33 +27,115 @@ function LevelBar({ value }: LevelBarpros) {
     );
 }
 
-const YourComponent = ({ currentFileName }: any) => {
-
+const YourComponent = ({ currentFileName, currentUser }: any) => {
+    const [flag, setFlag] = useState(true)
+    const [flag1, setFlag1] = useState(true)
+    const [flag2, setFlag2] = useState(true)
     const [username, setUsername] = useState("");
-    const [level, setLevel] = useState("");
     const [Email, setEmail] = useState("");
     const [foto_user, setFoto_user] = useState("");
-    const [check, setCheck] = useState(1);
+    const [check, setCheck] = useState(0);
+    const [check1, setCheck1] = useState(0);
+    const [check2, setCheck2] = useState(0);
     const [isOpen, setIsOpen] = useState(false)
     const [isfriend, setisfriend] = useState(false)
-    const [id, setid] = useState(0)
+    // const [id, setid] = useState(0)
     const [query, setQuery] = useState('')
+    const [amis, setAmis] = useState<Array<userProps>>([])
+    const [amis_id, setAmisid] = useState<Array<userProps>>([])
+    const [delete_request, setdelete_request] = useState<any>([])
+
     const [received, setreceived] = useState<Array<any>>([]);
     const [sendr, setsendr] = useState<Array<any>>([]);
-    const [amis, setAmis] = useState<any>([])
     const router = useRouter()
     const parts = currentFileName.split('.');
-    const numberPart: string = parts[1];
+    const numberPart: number = Number(parts[1]);
     const usernamePart: string = parts[0];
-    if(!numberPart)
-    {   return (
-        <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start bg-blue-100 p-6 '>zid userId</div>)
+    const [number, setNumber] = useState(0);
 
-    }
+    useEffect(() => {
+
+
+        if (numberPart === currentUser.id) {
+            router.push("/Profile")
+
+        }
+    }, [currentUser.id, numberPart]);
     const toggleDropdown = () => {
         // setisfriend(!isfriend);
         setIsOpen(false);
     };
+    useEffect(() => {
+        (
+            async () => {
+                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${numberPart}`, {
+                    credentials: 'include',
+                });
+                const content = await response.json();
+
+                setAmisid(Array.from(content));
+
+            }
+        )();
+    }, [query, numberPart, isfriend, check, check1, check2]);
+    useEffect(() => {
+        (
+            async () => {
+                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser.id}`, {
+                    credentials: 'include',
+                });
+                const content = await response.json();
+
+                setAmis(Array.from(content));
+
+            }
+        )();
+    }, [query, numberPart, isfriend, check, check1, check2]);
+    useEffect(() => {
+        (
+            async () => {
+                setCheck1(0);
+                setCheck2(0);
+                setIsOpen(false)
+            }
+        )();
+    }, [query, numberPart, send, received]);
+    const freind_ranck = async (fd: number) => {
+        setCheck(fd)
+        if (check1 == 0) {
+            setCheck1(1);
+            setCheck2(0);
+
+        }
+        // else if (fd == 2 && check1 == 1)
+        //     setCheck1(2);
+        // else if (fd == 2 && check1 == 2)
+        //     setCheck1(0);
+        else if (check1 == 1) {
+
+            setCheck2(0);
+            setCheck1(0);
+        }
+
+    }
+    const freind_ranck1 = async (fd: number) => {
+        setCheck(fd)
+        if (check2 == 0) {
+            setCheck2(1);
+            setCheck1(0);
+        }
+        // else if (fd == 2 && check1 == 1)
+        //     setCheck1(2);
+        // else if (fd == 2 && check1 == 2)
+        //     setCheck1(0);
+        else if (check2 == 1) {
+            setCheck2(0);
+            setCheck1(0);
+        }
+
+    };
+
+
     useEffect(() => {
         (
             async () => {
@@ -108,11 +154,10 @@ const YourComponent = ({ currentFileName }: any) => {
             }
         )();
     });
-
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${id}/received-requests`, {
+                const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/received-requests`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -122,11 +167,33 @@ const YourComponent = ({ currentFileName }: any) => {
                 }
             }
         )();
-    }, [id]);
+    }, [currentUser.id, numberPart, isOpen, currentFileName]);
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${id}/send-requests`, {
+                const response = await fetch(`http://localhost:3333/friends/${numberPart}/send-requests`, {
+                    credentials: 'include',
+                });
+                const counte = await response.json();
+                if (response.status == 200) {
+                    setFlag2(counte);
+                    // setrequestt(cont)
+                    return;
+                }
+            }
+        )();
+    }, [sendr, received, currentUser.id, numberPart, isOpen]);
+    useEffect(() => {
+        (
+            async () => {
+                setCheck(0);
+            }
+        )();
+    }, [numberPart]);
+    useEffect(() => {
+        (
+            async () => {
+                const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -138,11 +205,11 @@ const YourComponent = ({ currentFileName }: any) => {
                 }
             }
         )();
-    }, [id]);
+    }, [currentUser.id, numberPart, received, check, check1, isOpen, check2, currentFileName]);
     const sendRequestForaccpet = async () => {
         try {
 
-            const response = await fetch(`http://localhost:3333/friends/accept-friend-request/${numberPart}/${id}`, {
+            const response = await fetch(`http://localhost:3333/friends/accept-friend-request/${numberPart}/${currentUser.id}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -151,6 +218,7 @@ const YourComponent = ({ currentFileName }: any) => {
                 console.log('Friend request sent successfully.');
                 setisfriend(!isfriend);
             } else {
+                setIsOpen(false);
                 console.error('Failed to send friend request.');
             }
         } catch (error) {
@@ -159,13 +227,13 @@ const YourComponent = ({ currentFileName }: any) => {
     };
     const sendRequest = async () => {
         try {
-            const response = await fetch(`http://localhost:3333/friends/send-request/${numberPart}/${id}`, {
+            const response = await fetch(`http://localhost:3333/friends/send-request/${numberPart}/${currentUser.id}`, {
                 method: 'POST',
                 credentials: 'include',
             });
 
             if (response.ok) {
-                setIsOpen(!isOpen);
+                setIsOpen(true);
 
                 console.log('Friend request sent successfully.');
             } else {
@@ -177,16 +245,13 @@ const YourComponent = ({ currentFileName }: any) => {
     };
     const CanacelRequest = async () => {
         try {
-            const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${id}`, {
+            const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${currentUser.id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
 
-
             if (response.ok) {
-                console.log("sssss");
                 setIsOpen(false);
-                setFlag2(true)
 
                 console.log('delete-friend-request sent successfully.');
             } else {
@@ -198,43 +263,75 @@ const YourComponent = ({ currentFileName }: any) => {
     };
 
 
-    fetchCurrentUser(setid);
-    fetchAllAmis({ setAmis, query, id });
-    let flag = true
-    let flag1 = true
-    const [flag2, setFlag2] = useState(true)
+    // fetchCurrentUser(setid);
+    // fetchAllAmis({ setAmis, query, id });
+    //   useEffect(() => {
+    //     (
+    //         async () => {
+    //             const response = await fetch(`http://localhost:3333/friends/accepted-friends/${numberPart}`, {
+    //                 credentials: 'include',
+    //             });
+    //             const content = await response.json();
 
-    amis.filter((usr: any) => {
+    //             setAmisid(content);
 
-        if (usr.id == numberPart)
-            flag = false
-    })
-
-    if (Array.isArray(received)) {
-        received.map((user: any) => {
-            // Your mapping logic here
-            if (user.sender.id == numberPart) {
-                flag1 = false
-            }
-        });
-    } else {
-        // Handle the case when 'received' is not an array (e.g., show an error message)
-    }
+    //         }
+    //     )();
+    // }, [query, numberPart, isfriend]);
+    // useEffect(() => {
 
     useEffect(() => {
+        (
+            async () => {
+                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser.id}`, {
+                    credentials: 'include',
+                });
+                const content = await response.json();
+                setAmis(content);
+            }
+        )();
+    }, [query, currentUser.id, check, check1, check2, numberPart, currentFileName]);
 
+    useEffect(() => {
+        setFlag(true)
+        setFlag1(true)
+
+    }, [numberPart, currentFileName])
+
+
+    // }, [sendr, numberPart, received, flag2])
+    useEffect(() => {
+
+        amis.filter((usr: any) => {
+
+            if (usr.id == numberPart)
+                setFlag(false)
+
+        })
+        // useEffect(() => {
+        if (Array.isArray(received)) {
+            received.map((user: any) => {
+                // Your mapping logic here
+                if (user.sender.id == numberPart) {
+
+                    setFlag1(false)
+                }
+            });
+        } else { }
         if (Array.isArray(sendr)) {
             sendr.map((user: any) => {
                 // Your mapping logic here
                 if (user.receiver.id == numberPart) {
 
-                    setFlag2(false)
+
+                    setIsOpen(true)
                 }
             });
         } else {
             // Handle the case when 'received' is not an array (e.g., show an error message)
         }
-    }, [sendr])
+        // setFlag2(true)
+    }, [sendr, numberPart, isfriend, received, currentFileName, amis, amis_id, setFlag1, flag2, delete_request])
 
 
 
@@ -254,8 +351,8 @@ const YourComponent = ({ currentFileName }: any) => {
         //         </div >
         //     </div>
         // </section>
-        <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start bg-blue-100 p-6 '>
-            <div className='  flex-none     w-96 mt-[120px] mb-10  h-[100%]  shadow-2xl  shadow-blue-600 justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
+        <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start  bg-blue-100 p-6 '>
+            <div className='  flex-none     w-96 mt-[120px] mb-10  h-[100%]    drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]     shadow-blue-600 justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
                 <div className="text-center">
                     <span>Profile {username}</span>
                     <div className="mt-6">
@@ -266,7 +363,7 @@ const YourComponent = ({ currentFileName }: any) => {
                         />
                     </div>
                     <div className='mt-6'>
-                        <h1 className="text-xl font-bold">{username}</h1>
+                        <h1 className="text-xl font-bold uppercase">{username}</h1>
                         <span className="text-sm  font-serif italic flex justify-center mt-3">{Email}</span>
                     </div>
                     <div className="mt-8">
@@ -286,6 +383,8 @@ const YourComponent = ({ currentFileName }: any) => {
                                             </div>
                                             <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
                                             <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</Link>
+
+
                                         </div>
                                     ) :
                                     (!flag1) ?
@@ -311,18 +410,14 @@ const YourComponent = ({ currentFileName }: any) => {
                                         ) :
 
                                         (
-                                            (!flag2) ?
-                                                (
-                                                    (<button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={CanacelRequest} >Canacel requset</button>)
 
-                                                ) :
-                                                (
-                                                    (!isOpen) ?
-                                                        (
-                                                            <button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={sendRequest} >Add friend</button>
-                                                        ) :
-                                                        (<button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={CanacelRequest} >Canacel requset</button>)
-                                                )
+                                            (
+                                                (!isOpen) ?
+                                                    (
+                                                        <button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={sendRequest} >Add friend</button>
+                                                    ) :
+                                                    (<button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={CanacelRequest} >Canacel requset</button>)
+                                            )
                                         )
 
                             }
@@ -338,22 +433,33 @@ const YourComponent = ({ currentFileName }: any) => {
                         {/* <button className="flex justify-center  items-center mt-6  bg-[#f4f5f8] transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-12 hover:scale-105 ">Login</button> */}
                     </div>
                     <div className="mt-8">
-                        <button className="bg-[#dbeafe]   transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-32 hover:scale-105 ">Logout</button>
+                        <button className="bg-[#dbeafe]   transition-all active:scale-100 rounded-xl  text-[#2c4d82] py-2 px-32 hover:scale-105 ">Logout</button>
                     </div>
                 </div>
             </div>
             <div className="">
 
-                <div className=" flex flex-col gap-8    h-full w-64 items-center shadow-lg shadow-blue-500 bg-white  mt-[160px] min-h-[845px]  rounded-[0px] p-6">
-                    <div><button onClick={() => setCheck(1)} className=" mt-60 px-[101px] py-2   g shadow-blue-600  justify-center bg-gradient-to-r from-blue-500 to-cyan-200  text-white">Friends</button></div>
-                    <div><button onClick={() => setCheck(2)} className=" mt-20  px-[110px] py-2 shadow-blue-600 justify-center bg-gradient-to-r from-blue-500 to-cyan-200    text-white">Rank</button></div>
+                <div className=" flex flex-col gap-8    h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[150px] min-h-[845px] rounded-r-[80px] rounded-[0px] p-6">
+                    {(!check || check == 2 || !check1) ? (<div>
+                        <button onClick={() => freind_ranck(1)} className=" mt-60 px-[101px] py-2 text-base font-bold    bg-black   hover:bg-[#3b82f6] hover:scale-110 duration-300 text-white">Friends</button>
+                    </div>) : null}
+                    {(check && check != 2 && check1) ? (<div>
+                        <button onClick={() => freind_ranck(1)} className=" mt-60 px-[101px] py-2   text-base font-bold   bg-[#3b82f6]  hover:bg-black hover:scale-110 duration-300 text-white">Friends</button>
+                    </div>) : null}
+                    {(!check || check == 1 || !check2) ? (<div>
+                        <button onClick={() => freind_ranck1(2)} className=" mt-60 px-[110px] py-2   text-base font-bold  bg-black   hover:bg-[#3b82f6]  hover:scale-110 duration-300 text-white">Rank</button>
+                    </div>) : null}
+                    {(check && check != 1 && check2) ? (<div>
+                        <button onClick={() => freind_ranck1(2)} className=" mt-60 px-[110px] py-2 text-base font-bold  bg-[#3b82f6]  hover:bg-black  hover:scale-110 duration-300 text-white">Rank</button>
+                    </div>) : null}
+
 
                 </div>
 
             </div>
-            <div className=" flex flex-auto w-[900px]  opacity-50  md:opacity-150 bg-white mt-[160px] min-h-[845px] flex-col   rounded-r-[50px] p-6">
+            {(check && (check1 || check2)) ? (<div className=" flex   justify-start     md:opacity-150 bg mt-[160px] min-h-[845px]    w-[400px] h-16 rounded-r-[50px] p-6"  >
                 {
-                    check === 1 && <Friends />
+                    check === 1 && <Friends amis_id={amis_id} amis={amis} currentUser={currentUser}/>
 
                 }
                 {
@@ -361,7 +467,8 @@ const YourComponent = ({ currentFileName }: any) => {
                 }
 
 
-            </div>
+            </div>) : null
+            }
         </div>
         //       <div class="grid grid-rows-3 grid-flow-col gap-4">
         //   <div class="row-start-6  row-span-2  bg-black ...">01</div>
