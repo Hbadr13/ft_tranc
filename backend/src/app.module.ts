@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { GameGateway } from './game/game.gateway';
 import { OnlineGateway } from './online/online.gateway';
 import { WebsocketsModule } from './websockets/websockets.module';
+import { json } from 'express';
 
 
 
@@ -23,4 +24,8 @@ import { WebsocketsModule } from './websockets/websockets.module';
         }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule, WebsocketsModule],
     providers: [GameGateway, OnlineGateway],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+      consumer.apply(json({ limit: '10mb' })).forRoutes('*');
+    }
+}

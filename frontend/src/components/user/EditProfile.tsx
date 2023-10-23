@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link";
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import Friends from "./Friend";
 import Rank from "./Rank";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
@@ -49,17 +49,28 @@ const EditProfile = () => {
     const [update_name, setupdate_name] = useState("");
     const [update_foto_user, setupdate_foto_user] = useState("");
     const router = useRouter()
-    const handleFileChange = (event:any) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
+ 
+
+    // ...
     
-        reader.onload = (event: any) => {
-          const base64Image = event.target.result;
-          setupdate_foto_user(base64Image);
-        };
-        reader.readAsDataURL(file);
-        console.log(update_foto_user);
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+      
+        if (file) {
+          const reader = new FileReader();
+      
+          reader.onload = (event: any) => {
+            const base64Image = event.target.result;
+            setupdate_foto_user(base64Image);
+          };
+          reader.readAsDataURL(file);
+
+          console.log(file);
+        }
       };
+      
+    
+      
     const handleSubmit = async (e: any) => {
         // console.log(update_gender);
 
@@ -253,7 +264,7 @@ const EditProfile = () => {
 
                 <div className="inline-block mt-8   ml-20 ">
                     <div className="  inline-block font-bold mr-1 ">Choose photo</div>
-                    <input onChange={handleFileChange}  className="p-2 block  -mt-6 mb-5 text-xs text-gray-900 border border-gray-900 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  ml-[120px]  w-72" type="File"  accept="/image/*" name="File" placeholder="Name" />
+                    <input onChange={handleFileChange}  className="p-2 block  -mt-6 mb-5 text-xs text-gray-900 border border-gray-900 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  ml-[120px]  w-72" type="File"  accept="/image/*" name="File" placeholder="Name" id="#HERE"/>
                 </div>
                 <div className="inline-block mt-4   ml-20 ">
 
