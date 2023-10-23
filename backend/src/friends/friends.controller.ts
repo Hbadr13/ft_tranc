@@ -75,5 +75,8 @@ async sendFriendRequest(
 async deleteFriendRequest(@Param('requestId') requestId: number,@Param('id') id: number) {
   return this.friendsService.deleteFriendRequest(Number(requestId), Number(id));
 }
-
+@Get('received/:receiverId')
+async getReceivedFriendRequests1(@Param('receiverId') receiverId: number) {
+  return this.friendsService.getReceivedFriendRequests1(receiverId);
+}
 }

@@ -174,6 +174,16 @@ export class FriendsService {
     });
     return  data_rese.receivedFriendRequests
   }
+  async getReceivedFriendRequests1(receiverId: number) {
+    return this.prisma.friendRequest.findMany({
+      where: {
+        receiverId,
+        status: 'pending', // You can adjust this to match your data model
+      },
+      // You can include other options like selecting specific fields or sorting.
+    });
+  }
+  
   async getSendFriendRequests(userId: number, status: string = 'pending') {
     const data_rese = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -218,5 +228,7 @@ export class FriendsService {
       },
     });
   }
+ 
+ 
 
 }

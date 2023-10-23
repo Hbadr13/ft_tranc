@@ -25,7 +25,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
 
   useEffect(() => {
-    if (isNavbarVisible3) {
+    if (isNavbarVisible3 && isNavbarVisible2) {
 
       (
         async () => {

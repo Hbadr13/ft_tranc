@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get,Post, Param, ParseIntPipe, Body } from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -19,5 +19,10 @@ export class UserController {
     console.log('userName--->', userName)
     return this.userService.findOneUsers(Number(userId), userName);
   }
+  @Post('update_info/:userId')
+  async update_name(@Body() bd, @Param('userId') userId){
+    return this.userService.apdate_user(Number(userId), bd.username, bd.foto_user ,bd.email);
+
+    }
 
 }

@@ -1,5 +1,8 @@
 
 export interface userProps {
+   
+    flag1: boolean;
+    filter(arg0: (user: userProps) => void): unknown;
     length: any;
     map(arg0: (user: userProps) => import("react").JSX.Element): import("react").ReactNode;
 
