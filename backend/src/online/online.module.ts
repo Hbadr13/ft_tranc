@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { GameController } from './online.controller';
-import { GameService } from './online.service';
+import { OnlineController } from './online.controller';
+import { OnlineService } from './online.service';
 import { OnlineGateway } from './online.gateway';
 
 @Module({
-  controllers: [GameController],
-  providers: [GameService, OnlineGateway],
+  controllers: [OnlineController],
+  providers: [OnlineService, OnlineGateway],
 })
-export class AppGame { }
+export class OnlineModule { }

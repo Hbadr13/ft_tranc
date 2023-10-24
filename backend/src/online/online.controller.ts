@@ -1,9 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
-import { GameService } from './online.service';
+import { OnlineService } from './online.service';
 
 @Controller('')
-export class GameController {
-  constructor(private readonly gameCont: GameService) { }
+export class OnlineController {
+  constructor(private readonly gameCont: OnlineService) { }
   @Get()
   game(): any {
     // console.log('hii');

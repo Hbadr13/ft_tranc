@@ -8,56 +8,58 @@ datasource db {
 }
 
 model User {
-  id                    Int               @id @default(autoincrement())
-  createdAt             DateTime          @default(now())
-  updatedAt             DateTime          @updatedAt 
-  email                 String            @unique
-  hash                  String
-  username              String            @unique
-  firstName             String?
-  lastName              String?
-  foto_user             String?
-  isOnline              Boolean
-  bookmarks             Bookmark[]
-  
+  id                     Int             @id @default(autoincrement())
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  email                  String          @unique
+  hash                   String
+  username               String          @unique
+  firstName              String?
+  lastName               String?
+  foto_user              String?
+  isOnline               Boolean
+  history                History[]
+  // hu                    String[]
   // Friend relations
-  friends                Friendship[]      @relation("UserFriends")
-  friendOf               Friendship[]      @relation("UserFriendOf")
-  sentFriendRequests     FriendRequest[]   @relation("SentFriendRequests")
-  receivedFriendRequests FriendRequest[]   @relation("ReceivedFriendRequests")
+  friends                Friendship[]    @relation("UserFriends")
+  friendOf               Friendship[]    @relation("UserFriendOf")
+  sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
   userId                 Int?
 }
 
 model FriendRequest {
-  id         Int    @id @default(autoincrement())
-  status     String
+  id     Int    @id @default(autoincrement())
+  status String
 
-  senderId   Int
-  sender     User   @relation("SentFriendRequests", fields: [senderId], references: [id])
+  senderId Int
+  sender   User @relation("SentFriendRequests", fields: [senderId], references: [id])
 
   receiverId Int
-  receiver   User   @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
+  receiver   User @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
 }
 
-model Bookmark {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  title       String
-  description String?
-  link        String?
-  
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id])
+model History {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  opponentId Int
+  stauts String
+  myGools Int
+  opponentGools Int
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
 }
 
 model Friendship {
-  id        Int     @id @default(autoincrement())
-  status    String  // You can use this to track the status of the friendship (e.g., 'accepted', 'pending', 'rejected')
+  id     Int    @id @default(autoincrement())
+  status String // You can use this to track the status of the friendship (e.g., 'accepted', 'pending', 'rejected')
 
-  userAId   Int
-  userA     User    @relation("UserFriends", fields: [userAId], references: [id])
-  
-  userBId   Int
-  userB     User    @relation("UserFriendOf", fields: [userBId], references: [id])
+  userAId Int
+  userA   User @relation("UserFriends", fields: [userAId], references: [id])
+
+  userBId Int
+  userB   User @relation("UserFriendOf", fields: [userBId], references: [id])
 }

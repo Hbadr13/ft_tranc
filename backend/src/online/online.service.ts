@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class GameService {
+export class OnlineService {
   game(): any {
     return 'hi2';
   }
