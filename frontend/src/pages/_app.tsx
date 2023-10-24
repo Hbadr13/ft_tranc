@@ -57,6 +57,9 @@ export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hide
   )
 }
 
+'{ id: number; createdAt: string; updatedAt: string; email: string; hash: string; username: string; firstName: string; lastName: string; foto_user: string; isOnline: false; userId: number; flag: false; flag1: false; length: any; }'
+
+'{ id: number; createdAt: string; updatedAt: string; email: string; hash: string; username: string; firstName: string; lastName: string; foto_user: string; isOnline: false; userId: number; flag: false; flag1: false; length: any; }'
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const isNavbarVisible = !router.asPath.startsWith('/auth/login');
@@ -71,8 +74,9 @@ export default function App({ Component, pageProps, router }: AppProps) {
   const [myIdFromOpponent, setmyIdFromOpponent] = useState<number>(-2);
 
   const [users, setUsers] = useState<Array<any>>([]);
-  const [currentUser, setCurrentUser] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, });
-  const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, });
+  const [currentUser, setCurrentUser] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false });
+  const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false });
+  // const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, });
 
   const [amis, setAmis] = useState<any>([])
   const [flag, setflag] = useState<boolean>(true)
@@ -85,7 +89,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
   fetchAllAmis({ setAmis, query, currentUser })
 
   useEffect(() => {
-    if (isNavbarVisible3) {
+    if (isNavbarVisible3 && isNavbarVisible2) {
+
       (
         async () => {
           const response = await fetch('http://localhost:3333/auth/user', {

@@ -9,23 +9,26 @@ import { AuthGuard } from '@nestjs/passport';
 export class FriendsController {
   constructor(private readonly friendsService: FriendsService) { }
 
-  //   @UseGuards(JwtAuthGuard) // Use a guard to ensure the user is authenticated
-  @Post('send-request/:friendId/:id')
-  // @UseGuards(AuthGuard('jwt'))
-  async sendFriendRequest(
-    @Param('friendId') friendId: number,
-    @Param('id') id: number,
-    @Request() req, // Use Request to access the user from the request object
-  ): Promise<void> {
-
-    const userId = id;
-    console.log(friendId, userId);
-    // console.log(userId) // Assuming you have stored user information in the request object during authentication
-    if (Number(friendId) != Number(userId))
-      await this.friendsService.sendFriendRequest(Number(userId), Number(friendId));
+//   @UseGuards(JwtAuthGuard) // Use a guard to ensure the user is authenticated
+@Post('send-request/:friendId/:id')
+// @UseGuards(AuthGuard('jwt'))
+async sendFriendRequest(
+  @Param('friendId') friendId: number,
+  @Param('id') id: number,
+  @Request() req, // Use Request to access the user from the request object
+): Promise<void> {
+  
+  const userId = id;
+  console.log("+++++++++++++++++++++++++++++")
+  // console.log(userId) // Assuming you have stored user information in the request object during authentication
+  if(Number(userId) != Number(friendId))
+  {
+    console.log("________________________________________________________")
+    await this.friendsService.sendFriendRequest(Number(userId), Number(friendId));
   }
-  @Post('accept-friend-request/:requestId/:id')
-  async acceptFriendRequest(@Param('requestId') requestId: number, @Param('id') id: number) {
+}
+@Post('accept-friend-request/:requestId/:id')
+  async acceptFriendRequest(@Param('requestId') requestId: number,  @Param('id') id: number) {
     try {
       await this.friendsService.acceptFriendRequest(Number(requestId), Number(id));
 
@@ -74,8 +77,11 @@ export class FriendsController {
       return {}
   }
   @Delete('delete-friend-request/:requestId/:id')
-  async deleteFriendRequest(@Param('requestId') requestId: number, @Param('id') id: number) {
-    return this.friendsService.deleteFriendRequest(Number(requestId), Number(id));
-  }
-
+async deleteFriendRequest(@Param('requestId') requestId: number,@Param('id') id: number) {
+  return this.friendsService.deleteFriendRequest(Number(requestId), Number(id));
+}
+@Get('received/:receiverId')
+async getReceivedFriendRequests1(@Param('receiverId') receiverId: number) {
+  return this.friendsService.getReceivedFriendRequests1(receiverId);
+}
 }

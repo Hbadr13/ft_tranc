@@ -19,3 +19,8 @@
 .body{
   background-color: #1ba098;
 }
+.custom-overflow {
+  overflow: auto;
+  color: #51d1ff33;
+  /* Other custom styles */
+}
