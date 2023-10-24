@@ -19,8 +19,8 @@ model User {
   foto_user              String?
   isOnline               Boolean
   history                History[]
-  // hu                    String[]
-  // Friend relations
+  room                   String?
+
   friends                Friendship[]    @relation("UserFriends")
   friendOf               Friendship[]    @relation("UserFriendOf")
   sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
@@ -44,9 +44,9 @@ model History {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  opponentId Int
-  stauts String
-  myGools Int
+  opponentId    Int
+  stauts        String
+  myGools       Int
   opponentGools Int
 
   userId Int
