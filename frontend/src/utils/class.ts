@@ -10,8 +10,11 @@ export class Player {
   right: number = 0;
   left: number = 0;
   score: number = 0;
-  status: string = 'Pause';
+  status: string = "Pause";
   youWonRrLost: string = "";
+  id: number = -1;
+  opponentId: number = -1;
+  
   public constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
@@ -43,7 +46,7 @@ export class Ball {
     raduis: number,
     velocityX: number,
     velocityY: number,
-    speed: number,
+    speed: number
   ) {
     this.x = x;
     this.y = y;
@@ -51,7 +54,7 @@ export class Ball {
     this.raduis = raduis;
     this.velocityX = velocityX * -1;
     this.velocityY = velocityY;
-    this.speed = speed
+    this.speed = speed;
   }
   public setBorder(): void {
     this.top = this.y - this.raduis;
@@ -83,7 +86,7 @@ export const GameInfo = {
   SPEED: 0.3,
   CANVAS_WIDTH: 0,
   CANVAS_HIEGHT: 0,
-  ACCELERATION: 0.05
+  ACCELERATION: 0.05,
 };
 
 export class Canvas {

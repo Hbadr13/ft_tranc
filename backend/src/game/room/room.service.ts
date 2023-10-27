@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { roomDto } from '../dto/game';
 
 @Injectable()
 export class RoomService {
@@ -11,15 +12,15 @@ export class RoomService {
         id: userId,
       },
     });
-    return user.room;
+    return user;
   }
-  async creatRoom(userId: number, room: string) {
+  async creatRoom(userId: number, body: roomDto) {
     const data = await this.prisma.user.update({
       where: {
         id: userId,
       },
       data: {
-        room: room,
+        room: body.room,
       },
     });
     return data;

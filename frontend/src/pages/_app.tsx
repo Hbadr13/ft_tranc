@@ -109,28 +109,34 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
 
   useEffect(() => {
-    const newSocket = io('http://localhost:8001', {
-      query: {
-        userId: currentUser.id,
-        amis: amis,
-      },
+    try {
 
-    });
+      const newSocket = io('http://localhost:8001', {
+        query: {
+          userId: currentUser.id,
+          amis: amis,
+        },
 
-    setSocket(newSocket);
-    newSocket?.on("updateOnlineUsers", (amisOnline: any) => {
-      setOnlineUsersss(amisOnline)
-    });
-    newSocket?.on("areYouReady", ({ OpponentId, currentPlayer, pathOfGame }: { OpponentId: string, currentPlayer: userProps, pathOfGame: string }) => {
-      console.log("areYouReady")
-      setmyIdFromOpponent(Number(OpponentId))
-      setpathOfGame(pathOfGame);
-      setopponent(currentPlayer);
-      sethideRequest(true)
-    });
-    return () => {
-      newSocket.disconnect();
-    };
+      });
+
+      setSocket(newSocket);
+      newSocket?.on("updateOnlineUsers", (amisOnline: any) => {
+        setOnlineUsersss(amisOnline)
+      });
+      newSocket?.on("areYouReady", ({ OpponentId, currentPlayer, pathOfGame }: { OpponentId: string, currentPlayer: userProps, pathOfGame: string }) => {
+        console.log("areYouReady")
+        setmyIdFromOpponent(Number(OpponentId))
+        setpathOfGame(pathOfGame);
+        setopponent(currentPlayer);
+        sethideRequest(true)
+      });
+      return () => {
+        newSocket.disconnect();
+      };
+    }
+    catch (error) {
+
+    }
   }, [currentUser, amis]);
 
   const modifiedPageProps = {
@@ -142,9 +148,19 @@ export default function App({ Component, pageProps, router }: AppProps) {
     socket: socket,
   };
 
-  const handerRefuseButton = () => {
+  const handerRefuseButton = async () => {
     sethideRequest((prev) => !prev)
     // setmyIdFromOpponent(-2)
+    try {
+      const responseDelete = await fetch(`http://localhost:3333/game/room/${currentUser.id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      console.log(responseDelete)
+    } catch (error) {
+
+    }
+
     setflag(true)
     socket.emit("rejectRequest", { currentUser, opponent });
   }

@@ -7,11 +7,17 @@ import { UpdateModule } from './update/update.module';
 import { RoomService } from './room/room.service';
 import { RoomController } from './room/room.controller';
 import { RoomModule } from './room/room.module';
-
+import { UpdateService } from './update/update.service';
 
 @Module({
   controllers: [GameController, RoomController],
-  providers: [GameService, GameGateway, UserService, RoomService],
+  providers: [
+    GameService,
+    GameGateway,
+    UserService,
+    RoomService,
+    UpdateService,
+  ],
   imports: [UpdateModule, RoomModule],
 })
-export class GameModule { }
+export class GameModule {}

@@ -45,7 +45,7 @@ model History {
   updatedAt DateTime @updatedAt
 
   opponentId    Int
-  stauts        String
+  status        String
   myGools       Int
   opponentGools Int
 

@@ -24,7 +24,6 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
     let [player, setplayer] = useState(new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y));
 
     let HoAreYou = useRef(0);
-    // const [HoAreYou, setHoAreYou] = useState(2)
     const myCanvasRef = useRef<HTMLCanvasElement>(null);
     const [socket, setsocket] = useState<any>();
     const [numberPlayer, setnumberPlayer] = useState(0);
@@ -33,14 +32,14 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
     const [gamaIsStart, setgamaIsStart] = useState(0)
     const [YouWon, setYouWon] = useState(0);
     const YouWonOrLostPlayAgain = useRef("");
-    const [PlayAgainhidden, setPlayAgainhidden] = useState(false);
-    const [YouLost, setYouLost] = useState(true);
+    const [opponentId, setopponentId] = useState<Number>(-1);
+    const opponentIdd = useRef<Number>(-1);
     const [gameStatus, setgameStatus] = useState('Pause')
+
     const router = useRouter();
 
     useEffect(() => {
         socket?.on("start", () => {
-
             if (selectPlayer === 'online') {
                 GameInfo.SPEED = 2;
                 GameInfo.VELOCIT = 1;
@@ -56,6 +55,7 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
                 if (YouWonOrLostPlayAgain.current === "won" || YouWonOrLostPlayAgain.current === "lost") {
                     return
                 }
+
                 if (HoAreYou.current == 0) {
                     if (player.youWonRrLost == "won") {
                         YouWonOrLostPlayAgain.current = "won"
@@ -75,10 +75,47 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
                         YouWonOrLostPlayAgain.current = "lost"
                         // setYouWonOrLostPlayAgain(true)
                     }
+
                 }
+
                 if (HoAreYou.current == 1) {
                     if (document.hidden)
                         socket?.emit("documentHidden")
+                }
+                if (YouWonOrLostPlayAgain.current === "won" || YouWonOrLostPlayAgain.current === "lost") {
+                    {
+                        try {
+                            const sendData = async () => {
+                                if (HoAreYou.current == 0) {
+                                    console.log('myGools:', player.score)
+                                    console.log('opponentGools :', computer.score)
+
+                                } else if (HoAreYou.current == 1) {
+                                    console.log('myGools:', computer.score)
+                                    console.log('opponentGools:', player.score)
+
+                                }
+                                // console.log()
+                                const response = await fetch(`http://localhost:3333/game/update/${currentUser.id}`, {
+                                    method: "POST",
+                                    credentials: "include",
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        opponentId: opponentIdd.current,
+                                        status: YouWonOrLostPlayAgain.current,
+                                        myGools: HoAreYou.current == 0 ? player.score : computer.score,
+                                        opponentGools: HoAreYou.current == 0 ? computer.score : player.score,
+                                    }),
+                                })
+
+                            }
+                            sendData()
+                        } catch (error) {
+
+                        }
+                    }
                 }
                 startGame({ myCanvasRef, mousePosition, ball, player, computer, selectPlayer, HoAreYou });
                 setcomputerScore(computer.score);
@@ -100,20 +137,24 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
                         ball.velocityY = GameInfo.VELOCIT;
                         ball.speed = GameInfo.SPEED
                     }
-                    if (player.score >= 1) {
+                    if (player.score >= 3) {
                         player.youWonRrLost = "won"
                     }
-                    if (computer.score >= 1) {
+                    if (computer.score >= 3) {
                         player.youWonRrLost = "lost"
                     }
                 }
                 if (selectPlayer == "online") {
+                    if (opponentIdd.current == -1)
+                        socket.emit("opponentId", currentUser.id)
                     if (HoAreYou.current == 0) {
+
                         socket?.emit("dataOfplayer", player);
                     }
 
                     if (HoAreYou.current == 1) {
                         socket?.emit("dataOfcomputer", computer);
+
                     }
                     if (HoAreYou.current == 0) {
 
@@ -126,7 +167,7 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
                         });
                     }
                 }
-            }, 1000 / 60);
+            }, 1000 / 30);
         });
     });
 
@@ -156,20 +197,34 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
     });
 
     useEffect(() => {
-        const socketUrl = "http://localhost:8000";
-        // const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://e2r9p2.1337.ma:8000";
-        const newSocket = io(socketUrl, {
-            query: {
-                userId: currentUser.id,
-            },
-        });
-        setsocket(newSocket);
-        return () => {
-            newSocket.disconnect();
-        };
+        try {
+            const socketUrl = "http://localhost:8000";
+            // const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://e2r9p2.1337.ma:8000";
+            const newSocket = io(socketUrl, {
+                query: {
+                    userId: currentUser.id,
+                },
+            });
+            setsocket(newSocket);
+            return () => {
+                newSocket.disconnect();
+            };
+
+        } catch (error) {
+
+        }
     }, []);
 
     useEffect(() => {
+        socket?.on("opponentId", (oppnenid: number) => {
+            // console.log('oppnenid====>>', oppnenid)
+            // computer.id = currentUser.id
+            // computer.opponentId = oppnenid
+            // player.id = currentUser.id
+            // player.opponentId = oppnenid
+            opponentIdd.current = oppnenid
+            setopponentId(oppnenid)
+        })
         socket?.on("indexPlayer", (index: number) => {
             HoAreYou.current = index;
         });
@@ -225,9 +280,25 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
         if (HoAreYou.current == 0) mousePosition.y = e.clientY - rect.top - 25;
         if (HoAreYou.current == 1) mousePosition.x = e.clientY - rect.top - 25;
     };
-    const sendMessage = () => {
-        setnumberPlayer(1);
-        socket?.emit("joinRoom", { room: room, userId: currentUser.id });
+    const sendMessage = async () => {
+        try {
+            const response = await fetch(`http://localhost:3333/game/room/${currentUser.id}`, {
+                credentials: 'include',
+            })
+
+            // console.log(response)
+            if (response.status == 200) {
+                const content = await response.json()
+                if (content.room == "") {
+                    router.push("/game")
+                }
+                // console.log(content.room)
+                setnumberPlayer(1);
+                socket?.emit("joinRoom", { room: content.room, userId: currentUser.id });
+            }
+        } catch (error) {
+
+        }
     };
     const handelButtonGameStatus = () => {
         const status = gameStatus === 'Pause' ? 'Resume' : 'Pause'

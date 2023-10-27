@@ -13,7 +13,8 @@ export class UpdateService {
         data: {
           myGools: Number(body.myGools),
           opponentGools: Number(body.opponentGools),
-          stauts: body.stauts,
+        
+          status: body.status,
           opponentId: Number(body.opponentId),
           user: {
             connect: {

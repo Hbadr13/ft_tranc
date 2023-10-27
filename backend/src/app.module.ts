@@ -10,6 +10,8 @@ import { GameGateway } from './game/game.gateway';
 import { UserService } from './user/user.service';
 import { GameModule } from './game/game.module';
 import { OnlineModule } from './online/online.module';
+import { RoomService } from './game/room/room.service';
+import { UpdateService } from './game/update/update.service';
 
 
 
@@ -22,6 +24,6 @@ import { OnlineModule } from './online/online.module';
         ConfigModule.forRoot({
             isGlobal: true
         }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule ,GameModule,OnlineModule],
-    providers: [GameGateway, UserService],
+    providers: [GameGateway, UserService,RoomService,UpdateService],
 })
 export class AppModule { }

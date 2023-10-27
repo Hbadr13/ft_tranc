@@ -22,8 +22,8 @@ export class UserController {
     @Param('userName') userName: string,
     @Param('userId') userId,
   ) {
-    console.log('userId--->', userId);
-    console.log('userName--->', userName);
+    // console.log('userId--->', userId);
+    // console.log('userName--->', userName);
     return this.userService.findOneUsers(Number(userId), userName);
   }
   @Post('update_info/:userId')
@@ -35,9 +35,9 @@ export class UserController {
       bd.email,
     );
   }
-  @Get('getbyuserid/:userId')
+  @Get('d/:userId')
   async getByUserId(@Param('userId') userId: string) {
-    console.log('userId--->', userId);
+    // console.log('userId--->', userId);
     // console.log('userName--->', userName)
     return this.userService.findByUserId(Number(userId));
   }

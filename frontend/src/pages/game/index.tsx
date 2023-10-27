@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, RefObject } from 'react'
 import Pong from '../../components/game/game'
 import { AppProps, userProps } from '@/interface/data';
-import ListAmis from '@/components/game/listAmis';
+import ListOfFriends from '@/components/game/listOfFriends';
 import { useRouter } from 'next/router';
 
 const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) => {
@@ -13,6 +13,7 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     const [hidden, sethidden] = useState<boolean>(false);
     const [selectPlayer, setselectPlayer] = useState('')
     const [opponent, setOpponent] = useState('')
+    const [numberPlayer, setnumberPlayer] = useState(0);
 
     const [rejectRequest, setrejectRequest] = useState(false)
     const [cantPlayOnline, setCantPlayOnline] = useState(false)
@@ -24,32 +25,34 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     })
 
     useEffect(() => {
-        console.log(router.asPath)
-        if (router.query.online === "true" && router.query.rome) {
-            console.log(router.query.rome)
+
+
+        if (router.asPath == '/game?online=true') {
+            console.log(router.query.friends)
+            console.log(1111111)
             setroom(router.query.rome);
             setselectPlayer("online")
+            setlistOfFriends(false)
         }
-        else if (router.query.online === "true" && router.query.friends === 'listoffriends') {
-            // setroom(router.query.rome);
-            setselectPlayer("online")
+        else if (router.asPath == '/game?online=true&friends=listoffriends') {
+            console.log(2222222)
+            setselectPlayer("")
             setlistOfFriends(true)
         }
-        if (router.query.friends !== 'listoffriends')
-            setlistOfFriends(false)
-        if (router.asPath === '/game') {
+
+        else if (router.asPath == '/game?offline=true') {
+            setroom('room1')
+            setselectPlayer("offline")
+        }
+        else if (router.asPath == '/game?computer=true') {
+            setroom('room2')
+            setselectPlayer("computer")
+        }
+        else if (router.asPath == '/game') {
             setroom('')
             setlistOfFriends(false)
             setselectPlayer('')
             setOpponent('')
-        }
-        else if (router.asPath === '/game?offline=true') {
-            setroom('room1')
-            setselectPlayer("offline")
-        }
-        else if (router.asPath === '/game?computer=true') {
-            setroom('room2')
-            setselectPlayer("computer")
         }
     })
 
@@ -86,7 +89,7 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
             <div className=' w-full '>
                 <div className='absolute flex justify-center w-[100%] items-center h-[500px] space-x-5'>
                     {
-                        selectPlayer == '' && (
+                        selectPlayer == '' && !listOfFriends && (
                             <>
                                 <button className="rounded-2xl w-[20%] h-[200px] bg-black text-yellow-600 font-extralight text-4xl hover:bg-gray-800"
                                     onClick={handelButtonPlayOnline}
@@ -99,7 +102,6 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                                 >
                                     <span>play with friend </span>
                                     <span className='text-2xl'>offline</span>
-
                                 </button>
                                 <button className="rounded-2xl w-[20%] h-[200px] bg-black text-yellow-600 font-extralight text-4xl hover:bg-gray-800"
                                     onClick={() => router.push("/game?computer=true")}
@@ -111,10 +113,9 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                     }
                 </div>
                 {
-                    // (selectPlayer === 'online' && opponent === '' && room == '') ||
                     listOfFriends ? (
                         <div className=" absolute w-full">
-                            <ListAmis currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} setOpponent={setOpponent}></ListAmis>
+                            <ListOfFriends currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} setOpponent={setOpponent} />
                         </div>
 
                     ) : null

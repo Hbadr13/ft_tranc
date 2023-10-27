@@ -61,7 +61,7 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   @SubscribeMessage('rejectRequest')
   handlerejectRequest(client: Socket, { currentUser, opponent }: { currentUser: userProps, opponent: userProps }): void {
-    console.log('currentUser:', currentUser.username, "  opponent: ", opponent.username)
+    // console.log('currentUser:', currentUser.username, "  opponent: ", opponent.username)
     this.onlineUsers.forEach((value: any, key: any) => {
       if (value == opponent.id) {
         key.emit("rejectRequest")

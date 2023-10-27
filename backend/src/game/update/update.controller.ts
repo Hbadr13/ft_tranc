@@ -14,7 +14,7 @@ export class UpdateController {
     @Get(':id')
     async getUsershistory(@Param('id') userid: string,) {
         return this.updateService.getUsershistory(Number(userid))
-    }
+    }   
     @Get(':id/:customid')
     async getUsersCustomhistory(@Param('id') userid: string, @Param('customid') customid: string) {
         return this.updateService.getUsersCustomhistory(Number(userid), Number(customid))
