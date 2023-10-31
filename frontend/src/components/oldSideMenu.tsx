@@ -10,7 +10,7 @@ import { useState, ChangeEvent } from 'react'
 import UserInfo from './user/UserInfo'
 import { io } from 'socket.io-client'
 import { AppProps, BoxSearchrProps, userProps } from '@/interface/data'
-import { CustomLinkNavbarProps } from './model'
+import { CustomLinkSideMenuProps } from './model'
 import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks'
 import { idText } from 'typescript'
 
@@ -74,12 +74,12 @@ const BoxSearch = ({ searchUser, setSearchUser, onlineUsersss, id, users, amis }
                                             <div className={`w-[65px] h-[65px] pb-[3px] ${(!item.flag) ? onlineUsersss.includes(item.id) ? 'bg-green-400' : 'bg-red-400' : null} rounded-full flex justify-center items-center `}>
                                                 <Image src={"/man.png"} alt='man profiel' width={60} height={40}></Image>
                                             </div>
-                                            <CustomLinkNavbar href='/' content={item.username} ></CustomLinkNavbar>
+                                            <CustomLinkSideMenu href='/' content={item.username} ></CustomLinkSideMenu>
                                             {
 
                                                 (!item.flag) ?
-                                                    (<CustomLinkNavbar href='/game' moreStye="bg-yallow-700" content='play' ></CustomLinkNavbar>) :
-                                                    (<CustomLinkNavbar href='/' content=' add friend' ></CustomLinkNavbar>)
+                                                    (<CustomLinkSideMenu href='/game' moreStye="bg-yallow-700" content='play' ></CustomLinkSideMenu>) :
+                                                    (<CustomLinkSideMenu href='/' content=' add friend' ></CustomLinkSideMenu>)
                                             }
                                         </Combobox.Option>
                                     )
@@ -93,7 +93,7 @@ const BoxSearch = ({ searchUser, setSearchUser, onlineUsersss, id, users, amis }
     )
 }
 
-const CustomLinkNavbar = ({ href, content, moreStye }: CustomLinkNavbarProps) => {
+const CustomLinkSideMenu = ({ href, content, moreStye }: CustomLinkSideMenuProps) => {
     return (
         <div className={`rounded justify-between flex items-center ${moreStye}`}>
             <Link className='hover:bg-blue-500 hover:text-cyan-100 p-1 px-2 rounded-xl' href={String(href)}>
@@ -103,7 +103,7 @@ const CustomLinkNavbar = ({ href, content, moreStye }: CustomLinkNavbarProps) =>
     )
 }
 
-const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
+const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
     const router = useRouter();
 
 
@@ -112,18 +112,18 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
 
     return (
         <>
-            <div className='bg-slate-600 px-5 py-2 w-full flex justify-between item-center font-light shadow-md shadow-slate-700'>
-                <div className="w-[20%] hidden  sm:flex flex-row item-center justify-between text-[#1ba098]">
-                    <CustomLinkNavbar moreStye="" href="/" content="Home" />
-                    <CustomLinkNavbar moreStye="" href="/chat" content="Chat" />
-                    <CustomLinkNavbar moreStye="" href="/game" content="PongGame" />
+            <div className=' px-5 py-2 w-full flex justify-between item-center '>
+                <div className="w-[20%] hidden  sm:flex flex-row item-center justify-between ">
+                    <CustomLinkSideMenu moreStye="" href="/" content="Home" />
+                    <CustomLinkSideMenu moreStye="" href="/chat" content="Chat" />
+                    <CustomLinkSideMenu moreStye="" href="/game" content="PongGame" />
                 </div>
                 <div className="flex item-center justify-center sm:w-[60%] w-[100%] py-4 ">
                     <BoxSearch searchUser={searchUser} setSearchUser={setSearchUser} id={currentUser.id} users={users} amis={amis} onlineUsersss={onlineUsersss} />
                 </div>
-                <div className="hidden w-[20%] pl-10 sm:flex justify-between item-center text-[#1ba098]">
-                    <CustomLinkNavbar moreStye='' href="/" content="logOut" />
-                    <CustomLinkNavbar moreStye='' href="/" content="more" />
+                <div className="hidden w-[20%] pl-10 sm:flex justify-between item-center">
+                    <CustomLinkSideMenu moreStye='' href="/" content="logOut" />
+                    <CustomLinkSideMenu moreStye='' href="/" content="more" />
                 </div>
                 <UserInfo />
             </div>
@@ -131,5 +131,5 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
     )
 }
 
-export default Navbar;
+export default SideMenu;
 

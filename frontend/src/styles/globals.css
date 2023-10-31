@@ -3,24 +3,39 @@
 @tailwind utilities;
 
 :root {
-  --Navbar-color: #1ba098;
+  --SideMenu-color: #1ba098;
+    --light: #f6f6f9;
+    --primary: #1976D2;
+    --light-primary: #CFE8FF;
+    --grey: #eee;
+    --dark-grey: #AAAAAA;
+    --dark: #363949;
+    --danger: #D32F2F;
+	--light-danger: #FECDD3;
+    --warning: #FBC02D;
+    --light-warning: #FFF2C6;
+    --success: #388E3C;
+    --light-success: #BBF7D0;
+
 }
 
-.bg-Navbar-color {
-  @apply bg-slate-600
-}
-
-.button-color {}
-
-.carcontainer {
-  /* @apply bg-[#869ba9]; */
-  @apply bg-[#1ba098];
-}
-.body{
+.body {
   background-color: #1ba098;
 }
-.custom-overflow {
-  overflow: auto;
-  color: #51d1ff33;
-  /* Other custom styles */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --light: #f6f6f9;
+    --primary: #1976D2;
+    --light-primary: #CFE8FF;
+    --grey: #eee;
+    --dark-grey: #AAAAAA;
+    --dark: #363949;
+    --danger: #D32F2F;
+	--light-danger: #FECDD3;
+    --warning: #FBC02D;
+    --light-warning: #FFF2C6;
+    --success: #388E3C;
+    --light-success: #BBF7D0;
 }

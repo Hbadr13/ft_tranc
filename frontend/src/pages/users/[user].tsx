@@ -459,7 +459,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
             </div>
             {(check && (check1 || check2)) ? (<div className=" flex   justify-start     md:opacity-150 bg mt-[160px] min-h-[845px]    w-[400px] h-16 rounded-r-[50px] p-6"  >
                 {
-                    check === 1 && <Friends amis_id={amis_id} amis={amis} currentUser={currentUser}/>
+                    check === 1 && <Friends amis_id={amis_id} amis={amis} currentUser={currentUser} />
 
                 }
                 {

@@ -1,6 +1,5 @@
-import Navbar from "./Navbar";
-export { Navbar };
-export interface CustomLinkNavbarProps {
+
+export interface CustomLinkSideMenuProps {
   href?: string;
   content?: string;
   moreStye?: string;

@@ -1,14 +1,16 @@
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
-import { Navbar } from '../components/model'
-import { useEffect, useId, useRef, useState } from 'react';
+import SideMenu from '@/components/sideMenu';
+import Navbar from '@/components/navbar';
+import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks';
 import Image from 'next/image';
 import { Open_Sans } from 'next/font/google'
 import { userProps } from '@/interface/data';
-import { useRouter } from 'next/navigation';
 import { Transition } from '@headlessui/react';
+import ThemeContext from '@/hooks/themeContext';
+import ThemeContextindex from '@/hooks/themeContext';
 const font = Open_Sans({ subsets: ['latin'] })
 
 export interface CardInvitation {
@@ -19,7 +21,6 @@ export interface CardInvitation {
   hideRequest: boolean;
   myIdFromOpponent: Number
 }
-
 
 export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hideRequest, myIdFromOpponent, handerAcceptButton }: CardInvitation) => {
 
@@ -62,9 +63,9 @@ export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hide
 '{ id: number; createdAt: string; updatedAt: string; email: string; hash: string; username: string; firstName: string; lastName: string; foto_user: string; isOnline: false; userId: number; flag: false; flag1: false; length: any; }'
 
 export default function App({ Component, pageProps, router }: AppProps) {
-  const isNavbarVisible = !router.asPath.startsWith('/auth/login');
-  const isNavbarVisible2 = !router.asPath.startsWith('/register')
-  const isNavbarVisible3 = !router.asPath.startsWith('/auth/login')
+  const isSideMenuVisible = !router.asPath.startsWith('/auth/login');
+  const isSideMenuVisible2 = !router.asPath.startsWith('/register')
+  const isSideMenuVisible3 = !router.asPath.startsWith('/auth/login')
 
   const [onlineUsersss, setOnlineUsersss] = useState<Array<number>>([]);
   const [socket, setSocket] = useState<any>();
@@ -89,7 +90,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
   fetchAllAmis({ setAmis, query, currentUser })
 
   useEffect(() => {
-    if (isNavbarVisible3 && isNavbarVisible2) {
+    if (isSideMenuVisible3 && isSideMenuVisible2) {
 
       (
         async () => {
@@ -175,12 +176,19 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
   return (
     <>
-      <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
-        hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
-      <div className={`${font.className}   font-medium `}>
-        {isNavbarVisible && isNavbarVisible2 && <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />}
-        <Component  {...modifiedPageProps} />
-      </div >
+      <ThemeContextindex>
+        <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
+          hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
+        <div className={`${font.className}   font-medium `}>
+          {isSideMenuVisible && isSideMenuVisible2 &&
+            <>
+              <Navbar/>
+              <SideMenu currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
+            </>
+          }
+          <Component  {...modifiedPageProps} />
+        </div>
+      </ThemeContextindex>
     </>
   )
 }
