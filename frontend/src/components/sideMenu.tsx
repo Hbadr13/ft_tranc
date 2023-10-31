@@ -36,7 +36,7 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
     const light: string = '#f6f6f9';
 
     return (
-        <div className='flex'>
+        <div className=''>
             <div className={`fixed w-[63px] h-screen bg-[${light}] space-y-3  sm:w-[230px] transition-width duration-1000`}>
                 <div className='relative py-2 pl-2 rounde w-full bg-red-300s mt-10'>
                     <div className={`${activeButton == 1 ? 'block' : 'hidden'} -top-[8px]  right-0 absolute w-[20px] h-[16px]   bg-[${grey}]`}>
@@ -80,7 +80,7 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                         </div>
                     </div>
                     <div onClick={() => setActiveButton(3)} className={`bg-[${activeButton == 3 ? grey : light}] p-1 rounded-l-full transition-padding duration-500 hover:p-2`}>
-                        <Link className={`flex items-center space-x-4 p-2 rounded-full bg-[${light}] w-full`} href='/'>
+                        <Link className={`flex items-center space-x-4 p-2 rounded-full bg-[${light}] w-full`} href='/profile'>
                             <Image src='/icons-user-black.png' className='w-auto' alt='search' width={20} height={20}></Image>
                             <span className={`hidden sm:block ${activeButton == 3 ? 'text-blue-900  font-bold' : ''}`}>
                                 Profile
@@ -91,17 +91,16 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                         <div className={`w-[20px] h-[16px] bg-[${light}] rounded-tr-[15px]`}></div>
                     </div>
                 </div>
-
-                <div className=' absolute bottom-40 py-2 pl-2 rounde w-full bg-red-300s mt-10'>
+                <div className='relative py-2 pl-2 rounde w-full bg-red-300s mt-10'>
                     <div className={`${activeButton == 4 ? 'block' : 'hidden'} -top-[8px]  right-0 absolute w-[20px] h-[16px]   bg-[${grey}]`}>
                         <div className={`w-[20px] h-[16px] bg-[${light}] rounded-br-[15px]`}>
                         </div>
                     </div>
                     <div onClick={() => setActiveButton(4)} className={`bg-[${activeButton == 4 ? grey : light}] p-1 rounded-l-full transition-padding duration-500 hover:p-2`}>
-                        <Link className={`flex items-center space-x-4 p-2 rounded-full bg-[${light}] w-full`} href='/'>
-                            <Image src='/icons-logout-black.png' className='w-auto' alt='search' width={20} height={20}></Image>
+                        <Link className={`flex items-center space-x-4 p-2 rounded-full bg-[${light}] w-full`} href='/game'>
+                            <Image src='/icons-ping-pong-black.png' className='w-auto' alt='search' width={20} height={20}></Image>
                             <span className={`hidden sm:block ${activeButton == 4 ? 'text-blue-900  font-bold' : ''}`}>
-                                LogOut
+                                Play
                             </span>
                         </Link>
                     </div>
@@ -109,8 +108,30 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                         <div className={`w-[20px] h-[16px] bg-[${light}] rounded-tr-[15px]`}></div>
                     </div>
                 </div>
+                <div className=' absolute bottom-40 py-2 pl-2 rounde w-full bg-red-300s mt-10'>
+                    <div className={`${activeButton == 10 ? 'block' : 'hidden'} -top-[8px]  right-0 absolute w-[20px] h-[16px]   bg-[${grey}]`}>
+                        <div className={`w-[20px] h-[16px] bg-[${light}] rounded-br-[15px]`}>
+                        </div>
+                    </div>
+                    <div onClick={() => setActiveButton(10)} className={`bg-[${activeButton == 10 ? grey : light}] p-1 rounded-l-full transition-padding duration-500 hover:p-2`}>
+                        <Link className={`flex items-center space-x-4 p-2 rounded-full bg-[${light}] w-full`} href='/'>
+                            <Image src='/icons-logout-black.png' className='w-auto' alt='search' width={20} height={20}></Image>
+                            <span className={`hidden sm:block ${activeButton == 10 ? 'text-blue-900  font-bold' : ''}`}>
+                                LogOut
+                            </span>
+                        </Link>
+                    </div>
+                    <div className={`${activeButton == 10 ? 'block' : 'hidden'} -buttom-[8px]  right-0 absolute w-[20px] h-[16px] bg-[${grey}]`}>
+                        <div className={`w-[20px] h-[16px] bg-[${light}] rounded-tr-[15px]`}></div>
+                    </div>
+                </div>
             </div>
-            <div className=" relative ">hello worl 1111111111111111122222 </div>
+            {/* <div className="b">
+
+                <div className="  ">hello worl 1111111111111111122222 </div>
+                <div className="  ">hello worl 1111111111111111122222 </div>
+                <div className="  ">hello worl 1111111111111111122222 </div>
+            </div> */}
         </div>
     )
 }
