@@ -37,7 +37,7 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
 
     return (
         <div className=''>
-            <div className={`fixed w-[63px] h-screen bg-[${light}] space-y-3  sm:w-[230px] transition-width duration-1000`}>
+            <div className={`fixed z-50 w-[63px] h-screen bg-[${light}] space-y-3  sm:w-[230px] transition-width duration-1000`}>
                 <div className='relative py-2 pl-2 rounde w-full bg-red-300s mt-10'>
                     <div className={`${activeButton == 1 ? 'block' : 'hidden'} -top-[8px]  right-0 absolute w-[20px] h-[16px]   bg-[${grey}]`}>
                         <div className={`w-[20px] h-[16px] bg-[${light}] rounded-br-[15px]`}>
