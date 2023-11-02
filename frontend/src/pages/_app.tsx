@@ -7,8 +7,8 @@ import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks
 import Image from 'next/image';
 import { Open_Sans } from 'next/font/google'
 import { userProps } from '@/interface/data';
-import { useRouter } from 'next/navigation';
-import { Transition } from '@headlessui/react';
+import  {useRouter } from 'next/navigation';
+import { Transition}  from '@headlessui/react';
 const font = Open_Sans({ subsets: ['latin'] })
 
 export interface CardInvitation {

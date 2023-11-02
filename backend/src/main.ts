@@ -3,6 +3,10 @@ import {AppModule}  from './app.module'
 import { ValidationPipe } from '@nestjs/common';
 import *as  cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
+import * as express from 'express';
+
+
+
 const cors = require('cors');
 
 
@@ -19,6 +23,8 @@ async function bootstrap() {
     app.useGlobalPipes( new ValidationPipe({
         whitelist:true,
     }));
+    app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ limit: '50mb', extended: true }));
     // app.use(cors());
     await app.listen(3333);    
 }

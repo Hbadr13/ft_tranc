@@ -60,13 +60,16 @@ export class UserService {
     }
     return user;
   }
-  async apdate_user(userAId: number, userName: string, foto_user: string, email:string)
-  {
-    console.log(email, userName, foto_user)
-    if(foto_user==="male")
-          foto_user="https://i.pinimg.com/564x/dc/51/61/dc5161dd5e36744d184e0b98e97d31ba.jpg";
-     else if(foto_user==="female")
-        foto_user="https://i.pinimg.com/564x/30/c7/1b/30c71b3c02f31c2f3747c9b7404d6880.jpg"; 
+  async apdate_user(userAId: number, userName: string, foto_user: string, email: string) {
+    console.log(email, userName)
+    if (foto_user === "male")
+      foto_user = "https://i.pinimg.com/564x/dc/51/61/dc5161dd5e36744d184e0b98e97d31ba.jpg";
+    else if (foto_user === "female")
+      foto_user = "https://i.pinimg.com/564x/30/c7/1b/30c71b3c02f31c2f3747c9b7404d6880.jpg";
+    if (userName.length > 15) {
+      userName = userName.substring(0, 15);
+    }
+    console.log(email, userName)
     const user = await this.prisma.user.update({
       where: {
         id: userAId,
