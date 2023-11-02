@@ -3,7 +3,7 @@ import UserInfo from './user/UserInfo'
 
 const Navbar = () => {
     return (
-        <div className={`w-full bg-blue-300`}>
+        <div className={`fixed top-0  w-full bg-blue-300`}>
             <UserInfo />
         </div>
     )
