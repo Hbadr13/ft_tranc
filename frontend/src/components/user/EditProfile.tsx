@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link";
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import Friends from "./Friend";
 import Rank from "./Rank";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
