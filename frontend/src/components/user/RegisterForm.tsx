@@ -51,7 +51,7 @@ export default function RegisterForm() {
     e.preventDefault();
     const FormSchema = z
       .object({
-        username: z.string().min(1, 'Username is required').max(100),
+        username: z.string().min(1, 'Username is required').max(15),
         email: z.string().min(1, 'Email is required').email('Invalid email'),
         password: z
           .string()

@@ -1,6 +1,10 @@
 # compiled output
 /dist
+<<<<<<< HEAD
+/nodet_modules
+=======
 /node_modules
+>>>>>>> hbadr
 
 # Logs
 logs

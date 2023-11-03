@@ -8,9 +8,10 @@ import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks
 import Image from 'next/image';
 import { Open_Sans } from 'next/font/google'
 import { userProps } from '@/interface/data';
-import { Transition } from '@headlessui/react';
 import ThemeContext from '@/hooks/themeContext';
 import ThemeContextindex from '@/hooks/themeContext';
+import  {useRouter } from 'next/navigation';
+import { Transition}  from '@headlessui/react';
 const font = Open_Sans({ subsets: ['latin'] })
 
 export interface CardInvitation {
@@ -177,7 +178,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <>
     
-      <ThemeContextindex>
         <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
           hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
         <div className={`${font.className}   font-medium `}>
@@ -185,12 +185,10 @@ export default function App({ Component, pageProps, router }: AppProps) {
             <>
               <Navbar/>
               <SideMenu currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
-
             </>
           }
           <Component  {...modifiedPageProps} />
         </div>
-      </ThemeContextindex>
     </>
   )
 }

@@ -7,6 +7,7 @@ import { any } from "zod";
 
 
 function LevelBar(userid: any) {
+  
   let flag1 = 0;
   const [amis_id, setAmisid] = useState<Array<userProps>>([])
 
@@ -156,7 +157,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
         {
           (allfriends.length) ? allfriends.map((user: any) => (
 
-            <div className=' bg-white  border-b-[2px] mt-0  w-[400px] h-16 rounded-l rounded-r items-center      space-x-6 p-2  flex  justify-between'>
+            <div className=' bg-white  border-b-[2px] mt-0  w-[420px] h-16 rounded-l rounded-r items-center      space-x-6 p-2  flex  justify-between'>
               <div className="flex   space-x-2  ">
                 <img
                   src={user.foto_user}
@@ -164,7 +165,10 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                   className="  w-14 h-auto  rounded-full " // Adjust the width as needed
                 />
                 {/* <div> */}
-                <div className=' rounded-xl  mt-3 flex flex-col  '> <button className="  flex  capitalize " onClick={() => profailamis(user.username, user.id)}> {`${user.username}`} </button>
+                <div className=' rounded-xl  mt-2 flex  justify-start items-start flex-col  '> 
+                {/* <div className="bg-black  h-8  w-32 flex flex-row  items-start">  */}
+                <button className="  flex  capitalize " onClick={() => profailamis(user.username, user.id)}> {`${user.username}`} </button>
+                {/* </div> */}
 
                   {
                     (user.id == currentUser.id) ?

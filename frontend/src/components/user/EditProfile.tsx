@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link";
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import Friends from "./Friend";
 import Rank from "./Rank";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
@@ -50,17 +50,56 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
     const [update_name, setupdate_name] = useState("");
     const [update_foto_user, setupdate_foto_user] = useState("");
     const router = useRouter()
-    const handleFileChange = (event: any) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = event.target.files?.[0];
+        if (selectedFile) {
+            const reader = new FileReader();
 
-        reader.onload = (event: any) => {
-            const base64Image = event.target.result;
-            setupdate_foto_user(base64Image);
-        };
-        reader.readAsDataURL(file);
-        console.log(update_foto_user);
+            reader.onload = (event) => {
+                // Read the file and store it in the state
+                const base64Image = event.target?.result;
+
+                if (typeof base64Image === 'string') {
+                    setupdate_foto_user(base64Image);
+                } else {
+                    // Handle the case when base64Image is not a string, e.g., set a default value
+                    setupdate_foto_user(''); // You can set any default value here
+                }
+
+                // Create an image element for resizing and display
+                const img = new Image();
+
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    // Set the desired dimensions (h and w)
+                    const newWidth = 200;
+                    const newHeight = 200;
+
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+
+                    ctx?.drawImage(img, 0, 0, newWidth, newHeight);
+                    const resizedImageURL = canvas.toDataURL('image/jpeg');
+
+                    // Display the resized image
+                    const imageContainer = document.getElementById('image-container') as HTMLImageElement;
+                    if (imageContainer) {
+                        imageContainer.src = resizedImageURL;
+                    }
+                    setupdate_foto_user(resizedImageURL);
+                    // console.log(resizedImageURL)
+                };
+
+                img.src = base64Image as string;
+            };
+
+            reader.readAsDataURL(selectedFile);
+        }
     };
+
+
     const handleSubmit = async (e: any) => {
         // console.log(update_gender);
 
@@ -80,17 +119,17 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
             if (res.status == 200) {
                 console.log("_sdsdsdsdf")
                 const form = e.target;
-                form.reset();
+             ;
                 router.push('/Profile');
             } else {
-                const form = e.target;
-                form.reset();
+                
+                router.push('/Profile');
+                
             }
-
+            
         } catch (error) {
-            // const form = e.target;
-            // form.reset();
-
+            router.push('/Profile');
+          
             console.log("kin wahd error hna: ", error);
         }
     };
@@ -112,6 +151,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
     useEffect(() => {
         (
             async () => {
+                console.log(update_foto_user);
                 if (update_foto_user)
                     setupdate_gender(update_foto_user)
                 else if (!update_foto_user && (foto_user == falq1 || foto_user == flaq2) && update_gender)
@@ -251,7 +291,11 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
 
                 <div className="inline-block mt-8   ml-20 ">
                     <div className="  inline-block font-bold mr-1 ">Choose photo</div>
+                    <form>
+
                     <input onChange={handleFileChange} className="p-2 block  -mt-6 mb-5 text-xs text-gray-900 border border-gray-900 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  ml-[120px]  w-72" type="File" accept="/image/*" name="File" placeholder="Name" />
+                    </form>
+                    <img id="image-container" src={update_foto_user} alt="Resized Image" />
                 </div>
                 <div className="inline-block mt-4   ml-20 ">
 
