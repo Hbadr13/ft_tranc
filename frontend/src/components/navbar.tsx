@@ -5,7 +5,6 @@ const Navbar = () => {
     return (
         <div className={`fixed top-0  w-full bg-blue-300`}>
             <UserInfo />
-            <div className="">hellohellohellohellohellohellohellohellohellohello</div>
         </div>
     )
 }
