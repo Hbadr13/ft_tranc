@@ -4,20 +4,21 @@
 
 :root {
   --SideMenu-color: #1ba098;
-    --light: #f6f6f9;
-    --primary: #1976D2;
-    --light-primary: #CFE8FF;
-    --grey: #eee;
-    --dark-grey: #AAAAAA;
-    --dark: #363949;
-    --danger: #D32F2F;
-	--light-danger: #FECDD3;
-    --warning: #FBC02D;
-    --light-warning: #FFF2C6;
-    --success: #388E3C;
-    --light-success: #BBF7D0;
+  --light: #f6f6f9;
+  --primary: #1976D2;
+  --light-primary: #CFE8FF;
+  --grey: #eee;
+  --dark-grey: #AAAAAA;
+  --dark: #363949;
+  --danger: #D32F2F;
+  --light-danger: #FECDD3;
+  --warning: #FBC02D;
+  --light-warning: #FFF2C6;
+  --success: #388E3C;
+  --light-success: #BBF7D0;
 
 }
+
 
 .body {
   background-color: #1ba098;
@@ -26,16 +27,110 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    --light: #f6f6f9;
-    --primary: #1976D2;
-    --light-primary: #CFE8FF;
-    --grey: #eee;
-    --dark-grey: #AAAAAA;
-    --dark: #363949;
-    --danger: #D32F2F;
-	--light-danger: #FECDD3;
-    --warning: #FBC02D;
-    --light-warning: #FFF2C6;
-    --success: #388E3C;
-    --light-success: #BBF7D0;
+  --light: #f6f6f9;
+  --primary: #1976D2;
+  --light-primary: #CFE8FF;
+  --grey: #eee;
+  --dark-grey: #AAAAAA;
+  --dark: #363949;
+  --danger: #D32F2F;
+  --light-danger: #FECDD3;
+  --warning: #FBC02D;
+  --light-warning: #FFF2C6;
+  --success: #388E3C;
+  --light-success: #BBF7D0;
+}
+
+.home {
+  width: calc(100% - 150px);
+  border-radius: 20px;
+  position: relative;
+  left: 150px;
+  transition: all 0.3s ease;
+}
+
+.home.close {
+  left: 52px;
+  width: calc(100% - 52px);
+  transition: all 0.3s ease;
+
+}
+
+.test {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 200px;
+  background: #e78484;
+  ;
+}
+
+
+.test button {
+  width: 100px;
+  height: 40px;
+  display: flex;
+  margin-top: 20px;
+  border-radius: 6px;
+  align-items: center;
+  background: #5294ca;
+  justify-content: center;
+}
+
+
+
+.sidebar {
+  width: 150px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.close {
+  width: 52px;
+}
+
+.sidebar span {
+  transition: all 0.1s ease;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 52px;
+    transition: all 0.3s ease;
+  }
+
+  .sidebar span {
+    transition: all 0.1s ease;
+    visibility: hidden;
+  }
+
+  .home {
+    left: 52px;
+    width: calc(100% - 52px);
+    transition: all 0.3s ease;
+
+  }
+}
+
+.sidebar span {
+  transition: all 0.1s ease;
+  display: block;
+}
+
+.sidebar.close span {
+  transition: all 0.1s ease;
+  visibility: hidden;
+}
+
+.navbar {
+  right: 0;
+  transition: all 0.3s ease;
+  width: calc(100% - 150px);
+}
+
+.navbar.close {
+  width: calc(100% - 52px);
+  right: 0;
+  transition: all 0.3s ease;
 }

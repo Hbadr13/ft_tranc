@@ -17,13 +17,18 @@ export default function Home() {
   useEffect(() => {
     (
       async () => {
-        const response = await fetch('http://localhost:3333/auth/user', {
-          credentials: 'include',
-        });
-        const content = await response.json();
-        setfoto_user(content.foto_user);
-        setEmail(content.email);
-        setUsername(content.username);
+        try {
+
+          const response = await fetch('http://localhost:3333/auth/user', {
+            credentials: 'include',
+          });
+          const content = await response.json();
+          setfoto_user(content.foto_user);
+          setEmail(content.email);
+          setUsername(content.username);
+        } catch (error) {
+
+        }
       }
     )();
   });
@@ -41,14 +46,14 @@ export default function Home() {
 
   return (
     // <div class="h-screen bg-gray-400">
-    
+
     <div className="mx-auto flex justify-end py-1 pr-2">
       <div onClick={toggleDropdown} className="">
         <button className=" flex h-10 w-10 items-center  overflow-hidden rounded-lg bg-slate-700 text-slate-100 ring-slate-100  hover:shadow-md hover:ring-2">
           <img className=" object-cover " src={foto_user} alt="Profile" />
         </button>
         {isOpen && (
-          <div className="absolute right-0 mt-2 flex w-60 flex-col gap-3 rounded-xl bg-slate-900 p-4 text-slate-100 shadow-lg">
+          <div className="absolute right-2 mt-2 flex w-60 flex-col gap-3 rounded-xl bg-slate-900 p-4 text-slate-100 shadow-lg">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg border-2 border-slate-600">
                 <img className="w-full object-cover" src={foto_user} alt="Profile" />

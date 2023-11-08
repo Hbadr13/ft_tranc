@@ -7,7 +7,6 @@ import * as express from 'express';
 
 
 
-const cors = require('cors');
 
 
 

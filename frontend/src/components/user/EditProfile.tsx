@@ -119,17 +119,17 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
             if (res.status == 200) {
                 console.log("_sdsdsdsdf")
                 const form = e.target;
-             ;
-                router.push('/Profile');
+                ;
+                router.push('/profile');
             } else {
-                
-                router.push('/Profile');
-                
+
+                router.push('/profile');
+
             }
-            
+
         } catch (error) {
-            router.push('/Profile');
-          
+            router.push('/profile');
+
             console.log("kin wahd error hna: ", error);
         }
     };
@@ -137,14 +137,18 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch('http://localhost:3333/auth/user', {
-                    credentials: 'include',
-                });
-                const content = await response.json();
-                setFoto_user(content.foto_user);
-                setid(content.id);
-                setEmail(content.email);
-                setUsername(content.username)
+                try {
+                    const response = await fetch('http://localhost:3333/auth/user', {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+                    setFoto_user(content.foto_user);
+                    setid(content.id);
+                    setEmail(content.email);
+                    setUsername(content.username)
+                } catch (error) {
+
+                }
             }
         )();
     });
@@ -246,7 +250,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                         <p className=' mt-4 text-blue-200 font-serif italic uppercase'>level 8-86%</p>
                     </div>
                     <div className='mt-6'>
-                        <Link className="text-base font-bold flex justify-center items-center text-[#2c4d82]" href={"/Profile"}><span className="underline py-2 px-12 bg-white border rounded-full hover:scale-110 duration-300">Profile</span>
+                        <Link className="text-base font-bold flex justify-center items-center text-[#2c4d82]" href={"/profile"}><span className="underline py-2 px-12 bg-white border rounded-full hover:scale-110 duration-300">Profile</span>
                         </Link>
                         <h1 className="flex  mt-[50px] ">Recent Activities</h1>
 
@@ -293,7 +297,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                     <div className="  inline-block font-bold mr-1 ">Choose photo</div>
                     <form>
 
-                    <input onChange={handleFileChange} className="p-2 block  -mt-6 mb-5 text-xs text-gray-900 border border-gray-900 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  ml-[120px]  w-72" type="File" accept="/image/*" name="File" placeholder="Name" />
+                        <input onChange={handleFileChange} className="p-2 block  -mt-6 mb-5 text-xs text-gray-900 border border-gray-900 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  ml-[120px]  w-72" type="File" accept="/image/*" name="File" placeholder="Name" />
                     </form>
                     <img id="image-container" src={update_foto_user} alt="Resized Image" />
                 </div>

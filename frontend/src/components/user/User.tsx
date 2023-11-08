@@ -10,12 +10,16 @@ function Mutaulfriends({ user, amis }: { user: userProps, amis: Array<userProps>
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${user.id}`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
+                try {
 
-                setAmisid(Array.from(content));
+                    const response = await fetch(`http://localhost:3333/friends/accepted-friends/${user.id}`, {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+                    setAmisid(Array.from(content));
+                } catch (error) {
+
+                }
 
             }
         )();
@@ -121,13 +125,18 @@ const User = ({ currentUser, users, amis }: { currentUser: userProps, users: Arr
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/received-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setfriend_reciver(counte)
-                    return;
+                try {
+
+                    const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/received-requests`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setfriend_reciver(counte)
+                        return;
+                    }
+                } catch (error) {
+
                 }
             }
         )();
@@ -135,15 +144,20 @@ const User = ({ currentUser, users, amis }: { currentUser: userProps, users: Arr
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setFriend_request(counte)
-                    //   console.log(counte[1]?.receiver);
-                    // setrequestt(cont)
-                    return;
+                try {
+
+                    const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setFriend_request(counte)
+                        //   console.log(counte[1]?.receiver);
+                        // setrequestt(cont)
+                        return;
+                    }
+                } catch (error) {
+
                 }
             }
         )();
@@ -287,10 +301,10 @@ const User = ({ currentUser, users, amis }: { currentUser: userProps, users: Arr
                                     <div className='flex justify-start  flex-col   '>
                                         <button onClick={() => profailamis(user.sender.username, user.sender.id)} >
                                             <div className='normal-case no-underline  flex items-center font-semibold font-serif  ml-3  mt-7' >
-                                            <p className='text-black text-sm'>
-                                                {user.sender.username}
-                                            </p>
-                                            
+                                                <p className='text-black text-sm'>
+                                                    {user.sender.username}
+                                                </p>
+
                                             </div>
                                         </button>
                                         <div className='ml-3'>
@@ -401,10 +415,10 @@ const User = ({ currentUser, users, amis }: { currentUser: userProps, users: Arr
                                     <div className='flex justify-start  flex-col  '>
                                         <button onClick={() => profailamis(user.receiver.username, user.receiver.id)} >
                                             <div className='normal-case no-underline font-semibold font-serif  ml-3 flex justify-start justify-items-center items-start  mt-7' >
-                                            <p className='text-black text-sm'>
-                                                        {user.receiver.username}
-                                                    </p>
-                                                </div>
+                                                <p className='text-black text-sm'>
+                                                    {user.receiver.username}
+                                                </p>
+                                            </div>
                                         </button>
                                         <div className='ml-3'>
 

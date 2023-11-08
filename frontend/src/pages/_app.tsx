@@ -8,12 +8,13 @@ import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks
 import Image from 'next/image';
 import { Open_Sans } from 'next/font/google'
 import { userProps } from '@/interface/data';
-import ThemeContext from '@/hooks/themeContext';
-import ThemeContextindex from '@/hooks/themeContext';
-import  {useRouter } from 'next/navigation';
-import { Transition}  from '@headlessui/react';
+// import ThemeContext from '@/hooks/themeContext';
+import { useRouter } from 'next/navigation';
+import { Transition } from '@headlessui/react';
+import { createContext, } from 'react'
+import { getBack } from '@/hooks/appContexts';
 const font = Open_Sans({ subsets: ['latin'] })
-
+// import {useConta}
 export interface CardInvitation {
   currentUser: userProps;
   opponent: userProps;
@@ -59,9 +60,10 @@ export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hide
   )
 }
 
-'{ id: number; createdAt: string; updatedAt: string; email: string; hash: string; username: string; firstName: string; lastName: string; foto_user: string; isOnline: false; userId: number; flag: false; flag1: false; length: any; }'
+// '{ id: number; createdAt: string; updatedAt: string; email: string; hash: string; username: string; firstName: string; lastName: string; foto_user: string; isOnline: false; userId: number; flag: false; flag1: false; length: any; }'
 
-'{ id: number; createdAt: string; updatedAt: string; email: string; hash: string; username: string; firstName: string; lastName: string; foto_user: string; isOnline: false; userId: number; flag: false; flag1: false; length: any; }'
+// '{ id: number; createdAt: string; updatedAt: string; email: string; hash: string; username: string; firstName: string; lastName: string; foto_user: string; isOnline: false; userId: number; flag: false; flag1: false; length: any; }'
+// const getBakc = createContext<string>('')
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const isSideMenuVisible = !router.asPath.startsWith('/auth/login');
@@ -95,14 +97,19 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
       (
         async () => {
-          const response = await fetch('http://localhost:3333/auth/user', {
-            credentials: 'include',
-          });
-          if (response.status != 200) {
-            router.push('/auth/login');
-            return;
+          try {
+
+            const response = await fetch('http://localhost:3333/auth/user', {
+              credentials: 'include',
+            });
+            if (response.status != 200) {
+              router.push('/auth/login');
+              return;
+            }
+            const content = await response.json();
+          } catch (error) {
+
           }
-          const content = await response.json();
         }
       )();
     }
@@ -174,21 +181,30 @@ export default function App({ Component, pageProps, router }: AppProps) {
     router.push(pathOfGame)
 
   }
+  const [clickToSplit, setclickToSplit] = useState<boolean>(false)
+  const [path, setpath] = useState('/')
+  useEffect(() => {
+    if (router.route != '/search')
+      setpath(router.route)
+  })
 
   return (
     <>
-    
+      <getBack.Provider value={path}>
         <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
           hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
         <div className={`${font.className}   font-medium `}>
           {isSideMenuVisible && isSideMenuVisible2 &&
             <>
-              <Navbar/>
+              <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
               <SideMenu currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
             </>
           }
-          <Component  {...modifiedPageProps} />
+          <div className="home mt-16">
+            <Component  {...modifiedPageProps} />
+          </div>
         </div>
+      </getBack.Provider>
     </>
   )
 }

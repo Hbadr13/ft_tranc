@@ -43,14 +43,19 @@ const UseProfile = ({ currentUser }: { currentUser: userProps }) => {
   useEffect(() => {
     (
       async () => {
-        const response = await fetch('http://localhost:3333/auth/user', {
-          credentials: 'include',
-        });
-        const content = await response.json();
-        setFoto_user(content.foto_user);
-        setid(content.id);
-        setEmail(content.email);
-        setUsername(content.username)
+        try {
+
+          const response = await fetch('http://localhost:3333/auth/user', {
+            credentials: 'include',
+          });
+          const content = await response.json();
+          setFoto_user(content.foto_user);
+          setid(content.id);
+          setEmail(content.email);
+          setUsername(content.username)
+        } catch (error) {
+
+        }
         // setUsername(content.username);
 
         // console.log(content.id);
@@ -102,11 +107,15 @@ const UseProfile = ({ currentUser }: { currentUser: userProps }) => {
   useEffect(() => {
     (
       async () => {
-        const response = await fetch(`http://localhost:3333/friends/accepted-friends/${id}`, {
-          credentials: 'include',
-        });
-        const content = await response.json();
-        setAmis(content);
+        try {
+
+          const response = await fetch(`http://localhost:3333/friends/accepted-friends/${id}`, {
+            credentials: 'include',
+          });
+          const content = await response.json();
+          setAmis(content);
+        } catch (error) {
+        }
       }
     )();
   }, [query, amis, id]);

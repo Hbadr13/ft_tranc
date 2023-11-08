@@ -57,7 +57,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
 
 
         if (numberPart === currentUser.id) {
-            router.push("/Profile")
+            router.push("/profile")
 
         }
     }, [currentUser.id, numberPart]);
@@ -68,12 +68,17 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${numberPart}`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
+                try {
 
-                setAmisid(Array.from(content));
+                    const response = await fetch(`http://localhost:3333/friends/accepted-friends/${numberPart}`, {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+
+                    setAmisid(Array.from(content));
+                } catch (error) {
+
+                }
 
             }
         )();
@@ -81,12 +86,17 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser.id}`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
+                try {
 
-                setAmis(Array.from(content));
+                    const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser.id}`, {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+
+                    setAmis(Array.from(content));
+                } catch (error) {
+
+                }
 
             }
         )();
@@ -139,17 +149,22 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/users/one/${usernamePart}/${numberPart}`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
+                try {
 
-                    setUsername(counte.username)
-                    setEmail(counte.email)
-                    setFoto_user(counte.foto_user)
-                    // setrequestt(cont)
-                    return;
+                    const response = await fetch(`http://localhost:3333/users/one/${usernamePart}/${numberPart}`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+
+                        setUsername(counte.username)
+                        setEmail(counte.email)
+                        setFoto_user(counte.foto_user)
+                        // setrequestt(cont)
+                        return;
+                    }
+                } catch (error) {
+
                 }
             }
         )();
@@ -157,13 +172,18 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/received-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setreceived(counte)
-                    return;
+                try {
+
+                    const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/received-requests`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setreceived(counte)
+                        return;
+                    }
+                } catch (error) {
+
                 }
             }
         )();
@@ -171,14 +191,19 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${numberPart}/send-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setFlag2(counte);
-                    // setrequestt(cont)
-                    return;
+                try {
+
+                    const response = await fetch(`http://localhost:3333/friends/${numberPart}/send-requests`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setFlag2(counte);
+                        // setrequestt(cont)
+                        return;
+                    }
+                } catch (error) {
+
                 }
             }
         )();
@@ -193,15 +218,20 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setsendr(counte)
-                    //   console.log(counte[1]?.receiver);
-                    // setrequestt(cont)
-                    return;
+                try {
+
+                    const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setsendr(counte)
+                        //   console.log(counte[1]?.receiver);
+                        // setrequestt(cont)
+                        return;
+                    }
+                } catch (error) {
+
                 }
             }
         )();
@@ -283,11 +313,15 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser.id}`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
-                setAmis(content);
+                try {
+
+                    const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser.id}`, {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+                    setAmis(content);
+                } catch (error) {
+                }
             }
         )();
     }, [query, currentUser.id, check, check1, check2, numberPart, currentFileName]);

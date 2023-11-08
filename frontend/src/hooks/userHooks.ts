@@ -27,13 +27,18 @@ export const checklogin = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch('http://localhost:3333/auth/user', {
-                    credentials: 'include',
-                });
+                try {
 
-                if (response.status == 200) {
-                    router.push('/');
-                    return;
+                    const response = await fetch('http://localhost:3333/auth/user', {
+                        credentials: 'include',
+                    });
+
+                    if (response.status == 200) {
+                        router.push('/');
+                        return;
+                    }
+                } catch (error) {
+
                 }
             }
         )();
@@ -44,11 +49,16 @@ export const fetchAllUsers = ({ setUsers, query, currentUser }:
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/users/${currentUser.id}`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
-                setUsers(content);
+                try {
+
+                    const response = await fetch(`http://localhost:3333/users/${currentUser.id}`, {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+                    setUsers(content);
+                } catch (error) {
+
+                }
             }
         )();
     }, [query, currentUser]);
@@ -64,11 +74,16 @@ export const fetchAllAmis = ({ setAmis, query, currentUser }: fetchAllAmisprops)
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser.id}`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
-                setAmis(content);
+                try {
+
+                    const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser.id}`, {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+                    setAmis(content);
+                } catch (error) {
+
+                }
 
             }
         )();
@@ -79,11 +94,16 @@ export const fetchCurrentUser = ({ setCurrentUser }: { setCurrentUser: (currentU
     useEffect(() => {
         (
             async () => {
-                const response = await fetch('http://localhost:3333/auth/user', {
-                    credentials: 'include',
-                });
-                const content = await response.json();
-                setCurrentUser(content);
+                try {
+
+                    const response = await fetch('http://localhost:3333/auth/user', {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+                    setCurrentUser(content);
+                } catch (error) {
+
+                }
             }
         )();
     }, []);

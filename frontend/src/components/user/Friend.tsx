@@ -7,19 +7,24 @@ import { any } from "zod";
 
 
 function LevelBar(userid: any) {
-  
+
   let flag1 = 0;
   const [amis_id, setAmisid] = useState<Array<userProps>>([])
 
   useEffect(() => {
     (
       async () => {
-        const response = await fetch(`http://localhost:3333/friends/accepted-friends/${userid.userid}`, {
-          credentials: 'include',
-        });
-        const content = await response.json();
+        try {
 
-        setAmisid(Array.from(content));
+          const response = await fetch(`http://localhost:3333/friends/accepted-friends/${userid.userid}`, {
+            credentials: 'include',
+          });
+          const content = await response.json();
+
+          setAmisid(Array.from(content));
+        } catch (error) {
+
+        }
 
       }
     )();
@@ -69,14 +74,19 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   useEffect(() => {
     (
       async () => {
-        const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
-          credentials: 'include',
-        });
-        const counte = await response.json();
-        if (response.status == 200) {
-          setsend(Array.from(counte))
-          // setrequestt(cont)
-          return;
+        try {
+
+          const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
+            credentials: 'include',
+          });
+          const counte = await response.json();
+          if (response.status == 200) {
+            setsend(Array.from(counte))
+            // setrequestt(cont)
+            return;
+          }
+        } catch (error) {
+
         }
       }
     )();
@@ -165,10 +175,10 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                   className="  w-14 h-auto  rounded-full " // Adjust the width as needed
                 />
                 {/* <div> */}
-                <div className=' rounded-xl  mt-2 flex  justify-start items-start flex-col  '> 
-                {/* <div className="bg-black  h-8  w-32 flex flex-row  items-start">  */}
-                <button className="  flex  capitalize " onClick={() => profailamis(user.username, user.id)}> {`${user.username}`} </button>
-                {/* </div> */}
+                <div className=' rounded-xl  mt-2 flex  justify-start items-start flex-col  '>
+                  {/* <div className="bg-black  h-8  w-32 flex flex-row  items-start">  */}
+                  <button className="  flex  capitalize " onClick={() => profailamis(user.username, user.id)}> {`${user.username}`} </button>
+                  {/* </div> */}
 
                   {
                     (user.id == currentUser.id) ?
