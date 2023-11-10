@@ -119,6 +119,23 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                         <div className={`w-[20px] h-[16px] ${light} rounded-tr-[15px]`}></div>
                     </div>
                 </div>
+                <div className='relative py-2 pl-2 rounde w-full bg-red-300s mt-10'>
+                    <div className={`${activeButton == 5 ? 'block' : 'hidden'} -top-[8px]  right-0 absolute w-[20px] h-[16px]   ${grey}`}>
+                        <div className={`w-[20px] h-[16px] ${light} rounded-br-[15px]`}>
+                        </div>
+                    </div>
+                    <div onClick={() => setActiveButton(5)} className={`${activeButton == 5 ? grey : light} p-1 rounded-l-full transition-padding duration-100 hover:p-2`}>
+                        <Link className={`flex items-center space-x-4 p-2 rounded-full ${light} w-full`} href='/user'>
+                            <Image src='/icons-user-account-black.png' className='' alt='search' width={20} height={20}></Image>
+                            <span className={`hidden sm:block ${activeButton == 5 ? 'text-blue-900  font-bold' : ''} ${splitSidebar ? '' : 'sm:hidden'}`}>
+                                Play
+                            </span>
+                        </Link>
+                    </div>
+                    <div className={`${activeButton == 5 ? 'block' : 'hidden'} -buttom-[8px]  right-0 absolute w-[20px] h-[16px] ${grey}`}>
+                        <div className={`w-[20px] h-[16px] ${light} rounded-tr-[15px]`}></div>
+                    </div>
+                </div>
                 <div className=' py-2 pl-2 rounde w-full bg-red-300s pt-28 '>
                     <div onClick={() => setActiveButton(10)} className={`p-1 rounded-l-full transition-padding duration-100 hover:p-2`}>
                         <Link className={` bg-[#aaaaaa4e]  flex items-center justify-center sm:justify-normal space-x-4 p-2 rounded-xl ${light} w-full`} href='/'>

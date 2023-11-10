@@ -42,6 +42,56 @@ export class FriendsService {
     }
   }
   
+  async blockedfriends(seenderId: number, reeceiverId: number): Promise<void> {
+    // Check if the friendship already exists (optional)
+    const existingFriendship = await this.prisma.friendRequest.findFirst({
+      where: {
+        senderId: seenderId,
+        receiverId: reeceiverId,
+      },
+    });
+    const existingFriendship1 = await this.prisma.friendRequest.findFirst({
+      where: {
+        senderId: reeceiverId,
+        receiverId:seenderId,
+      },
+    }); 
+    console.log(existingFriendship , existingFriendship1)
+    if (!existingFriendship && !existingFriendship1) {
+      // Create a friend request in the database
+      await this.prisma.friendRequest.create({
+        data: {
+          senderId: seenderId,
+          receiverId: reeceiverId,
+          status: 'blocked', // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
+        },
+      });
+    }
+    else 
+    {
+      const friendRequest = await this.prisma.friendRequest.findFirst({
+        where: {
+          senderId: reeceiverId,
+          receiverId: seenderId,
+        },
+        include: {
+          sender: true, // Include the sender of the request
+          receiver: true, // Include the receiver of the request
+        },
+      });
+      await this.prisma.friendRequest.update({
+        where: {
+          id: friendRequest.id,
+        },
+        data: {
+          status: 'blocked',
+        },
+      });
+
+
+    }
+  }
+  
   async acceptFriendRequest(requestId: number, sendId :number): Promise<void> {
     // Check if the friend request exists and is pending
     const friendRequest = await this.prisma.friendRequest.findFirst({
@@ -53,6 +103,7 @@ export class FriendsService {
         sender: true, // Include the sender of the request
         receiver: true, // Include the receiver of the request
       },
+      
     });
     // console.log(friendRequest);
     
@@ -175,6 +226,7 @@ export class FriendsService {
     });
     return  data_rese.receivedFriendRequests
   }
+
   async getReceivedFriendRequests1(receiverId: number) {
     return this.prisma.friendRequest.findMany({
       where: {
@@ -212,6 +264,7 @@ export class FriendsService {
     });
     return  data_rese.sentFriendRequests
   }
+  
   async deleteFriendRequest(requestId: number, sendId: number) {
     const friendRequest = await this.prisma.friendRequest.findFirst({
       where: {
@@ -223,13 +276,15 @@ export class FriendsService {
         receiver: true, // Include the receiver of the request
       },
     });
+    if (!friendRequest || friendRequest.status !== 'pending') {
+      throw new NotFoundException('Friend request not found or already accepted/rejected.');
+    }
     await this.prisma.friendRequest.delete({
       where: {
         id: friendRequest.id
       },
     });
   }
- 
  
 
 }

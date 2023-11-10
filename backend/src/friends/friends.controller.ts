@@ -39,6 +39,19 @@ export class FriendsController {
       // Handle other potential errors
     }
   }
+  @Post('blocked-friend-request/:requestId/:id')
+  async blockedfriends(@Param('requestId') requestId: number, @Param('id') id: number) {
+    try {
+      await this.friendsService.blockedfriends(Number(requestId), Number(id));
+
+      return { message: 'Friend request accepted successfully' };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(error.message);
+      }
+      // Handle other potential errors
+    }
+  }
   @Post('refuse-friend-request/:requestId')
   async refuseFriendRequest(@Param('requestId') requestId: number) {
     try {

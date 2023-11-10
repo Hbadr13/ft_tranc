@@ -18,7 +18,7 @@ function LevelBar({ value }: LevelBarpros) {
 
     return (
         <div className="bg-gray-200 h-5  w-80 rounded-full">
-            <div className="bg-cyan-500 h-5 rounded-full relative" style={{ width: progressWidth }}>
+            <div className=" bg-blue-400 h-5 rounded-full relative" style={{ width: progressWidth }}>
                 {/* <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
             {`${value}%`} */}
                 {/* </span> */}
@@ -55,9 +55,9 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
 
     useEffect(() => {
 
-
+    
         if (numberPart === currentUser.id) {
-            router.push("/Profile")
+            router.push("/profile")
 
         }
     }, [currentUser.id, numberPart]);
@@ -199,8 +199,6 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                 const counte = await response.json();
                 if (response.status == 200) {
                     setsendr(counte)
-                    //   console.log(counte[1]?.receiver);
-                    // setrequestt(cont)
                     return;
                 }
             }
@@ -217,6 +215,24 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
             if (response.ok) {
                 console.log('Friend request sent successfully.');
                 setisfriend(!isfriend);
+            } else {
+                setIsOpen(false);
+                console.error('Failed to send friend request.');
+            }
+        } catch (error) {
+            console.error('Error sending friend request:', error);
+        }
+    };
+    const blockedfriend = async () => {
+        try {
+
+            const response = await fetch(`http://localhost:3333/friends/blocked-friend-request/${currentUser.id}/${numberPart}`, {
+                method: 'POST',
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                console.log('Friend blocked sent successfully.');
             } else {
                 setIsOpen(false);
                 console.error('Failed to send friend request.');
@@ -262,24 +278,6 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
         }
     };
 
-
-    // fetchCurrentUser(setid);
-    // fetchAllAmis({ setAmis, query, id });
-    //   useEffect(() => {
-    //     (
-    //         async () => {
-    //             const response = await fetch(`http://localhost:3333/friends/accepted-friends/${numberPart}`, {
-    //                 credentials: 'include',
-    //             });
-    //             const content = await response.json();
-
-    //             setAmisid(content);
-
-    //         }
-    //     )();
-    // }, [query, numberPart, isfriend]);
-    // useEffect(() => {
-
     useEffect(() => {
         (
             async () => {
@@ -298,8 +296,6 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
 
     }, [numberPart, currentFileName])
 
-
-    // }, [sendr, numberPart, received, flag2])
     useEffect(() => {
 
         amis.filter((usr: any) => {
@@ -333,24 +329,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
         // setFlag2(true)
     }, [sendr, numberPart, isfriend, received, currentFileName, amis, amis_id, setFlag1, flag2, delete_request])
 
-
-
-    // console.log(flag2)
     return (
-
-
-        // <section className="bg-blue-100 min-h-screen flex items-center justify-center">
-        //     <div className= "flex bg-blue-50  rounded-2xl  max-w-5xl p-5 items-center">
-        //         <div className="md:w-1/2 px-0 md:px-16">
-        //             <div className="flex flex-col  bg-blue-500 rounded-2xl md:px-16" >
-        //                 <h2 className="font-bold text-2xl text-[#002D74]">Your Profile</h2>
-        //                 <div className=" flex  flex-wrap h-16 w-16 md:block mt-4 ">
-        //                     <img className="rounded-full w-full object-cover" src="https://images.unsplash.com/photo-1616606103915-dea7be788566?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1887&q=80" alt="Login" />
-        //                 </div>
-        //             </div>
-        //         </div >
-        //     </div>
-        // </section>
         <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start   p-6 '>
             <div className='  flex-none     w-96 mt-[120px] mb-10  h-[100%]    drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]     shadow-blue-600 justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
                 <div className="text-center">
@@ -359,7 +338,8 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                         <img
                             src={foto_user}
                             alt="Your Image Alt Text"
-                            className="w-44 h-auto  rounded-full inline-block" // Adjust the width as needed
+                            className=" w-52 h-52   border-2 border-[#E3E8EC]  rounded-[40px] inline-block" // Adjust the width as needed
+                            // className="w-44 h-auto   border-2 border-[#E3E8EC]  rounded-full inline-block" // Adjust the width as needed
                         />
                     </div>
                     <div className='mt-6'>
@@ -432,8 +412,8 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                         />
                         {/* <button className="flex justify-center  items-center mt-6  bg-[#f4f5f8] transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-12 hover:scale-105 ">Login</button> */}
                     </div>
-                    <div className="mt-8">
-                        <button className="bg-[#dbeafe]   transition-all active:scale-100 rounded-xl  text-[#2c4d82] py-2 px-32 hover:scale-105 ">Logout</button>
+                    <div className="mt-8" onClick={blockedfriend}>
+                        <button className="bg-[#dbeafe]   transition-all active:scale-100 rounded-xl  text-[#2c4d82] py-2 px-32 hover:scale-105 ">Blocked</button>
                     </div>
                 </div>
             </div>

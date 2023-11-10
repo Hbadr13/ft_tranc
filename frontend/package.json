@@ -31,7 +31,8 @@
   },
   "devDependencies": {
     "@heroicons/react": "^2.0.18",
-    "@types/uuid": "^9.0.6"
+    "@types/uuid": "^9.0.6",
+    "daisyui": "^3.9.4"
   },
   "description": "<h1 style=\"colore:blue\">Header Section:</h1>",
   "main": "next.config.js",

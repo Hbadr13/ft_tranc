@@ -18,8 +18,8 @@ function LevelBar({ value }: LevelBarpros) {
 
 
     return (
-        <div className="bg-gray-200 h-5  w-80 rounded-full">
-            <div className="bg-cyan-500 h-5 rounded-full relative" style={{ width: progressWidth }}>
+        <div className="bg-gray-200 h-5   w-80 rounded-full">
+            <div className="bg-black h-5 rounded-full relative" style={{ width: progressWidth }}>
                 {/* <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
           {`${value}%`} */}
                 {/* </span> */}
@@ -74,8 +74,8 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                     const ctx = canvas.getContext('2d');
 
                     // Set the desired dimensions (h and w)
-                    const newWidth = 200;
-                    const newHeight = 200;
+                    const newWidth = 800;
+                    const newHeight = 700;
 
                     canvas.width = newWidth;
                     canvas.height = newHeight;
@@ -117,18 +117,17 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
             });
 
             if (res.status == 200) {
-                console.log("_sdsdsdsdf")
+                // console.log("_sdsdsdsdf")
                 const form = e.target;
-             ;
-                router.push('/Profile');
+                router.push('/profile');
             } else {
                 
-                router.push('/Profile');
+                router.push('/profile');
                 
             }
             
         } catch (error) {
-            router.push('/Profile');
+            router.push('/profile');
           
             console.log("kin wahd error hna: ", error);
         }
@@ -225,7 +224,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
         //     </div>
         // </section>
         <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start  p-6 '>
-            <div className='  flex-none     w-96 mt-[120px] mb-10  h-[100%]  shadow-2xl  shadow-blue-600 justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
+            <div className='  flex-none   z-20   w-96 mt-[120px] mb-10  h-[100%] drop-shadow-2xl   justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
                 <div className="text-center">
                     <span>My Profile</span>
                     <div className="mt-6">
@@ -233,7 +232,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                             <img
                                 src={foto_user}
                                 alt="Your Image Alt Text"
-                                className="w-44 h-auto rounded-full inline-block"
+                                className="w-44 h-auto   border-2 border-[#E3E8EC]  rounded-full inline-block"
                             />
                         )}
                     </div>
@@ -246,7 +245,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                         <p className=' mt-4 text-blue-200 font-serif italic uppercase'>level 8-86%</p>
                     </div>
                     <div className='mt-6'>
-                        <Link className="text-base font-bold flex justify-center items-center text-[#2c4d82]" href={"/Profile"}><span className="underline py-2 px-12 bg-white border rounded-full hover:scale-110 duration-300">Profile</span>
+                        <Link className="text-base font-bold flex justify-center items-center text-[#2c4d82]" href={"/profile"}><span className="underline py-2 px-12 bg-white border rounded-full hover:scale-110 duration-300">Profile</span>
                         </Link>
                         <h1 className="flex  mt-[50px] ">Recent Activities</h1>
 
@@ -262,9 +261,9 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                     </div>
                 </div>
             </div>
-            <div className="">
+            <div className="z-10">
 
-                <div className=" flex flex-col gap-8    h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[150px] min-h-[845px] rounded-r-[80px] rounded-[0px]">
+                <div className=" flex flex-col gap-8     h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[150px] min-h-[845px] rounded-r-[0px] rounded-[0px]">
                     <p className="  text-[25px]  font-bold mt-44  mr-28">Settings</p>
 
                     <Link className=" mt-5   py-2  w-[257px] h-10  flex justify-center  bg-[#3b82f6] hover:scale-110   duration-300 text-white text-base font-bold" href={"/EditProfile"}> <span className="">Profile Settings</span></Link>
@@ -273,7 +272,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
 
 
 
-                    <Link className="text-base font-bold flex justify-center items-center text-[#2c4d82]" href={"/Profile"}><span className="underline py-2 px-[102px] mt-10 bg-white border  hover:scale-110 duration-300">Profile</span>
+                    <Link className="text-base font-bold flex justify-center items-center text-[#2c4d82]" href={"/profile"}><span className="underline py-2 px-[102px] mt-10 bg-white border  hover:scale-110 duration-300">Profile</span>
                     </Link>
 
 
@@ -282,37 +281,37 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                 </div>
 
             </div>
-            <div className=" flex  flex-col md:opacity-150 bg mt-[160px] min-h-[845px]  bg-blue-50  w-[700px] h-16 rounded-r-[50px] rounded-s-[80px] p-6" >
+            <div className=" flex  flex-col md:opacity-150 bg mt-[151px] min-h-[845px]  bg-blue-50  w-[700px] h-16 rounded-r-2xl rounded-s-[1px] p-6" >
                 <div className="h-10   flex  -ml-16 mt-32 w-auto">
                     <span className=" py-2 px-[102px] font-bold flex  text-blue-500 ">Edit Your Personal Setting</span>
                 </div>
                 <div>
                 </div>
 
-                <div className="inline-block mt-8   ml-20 ">
-                    <div className="  inline-block font-bold mr-1 ">Choose photo</div>
+                <div className="inline-block mt-8  mr-5 ml-20 ">
+                    <div className="  inline-block font-bold text-sm ">Choose photo</div>
                     <form>
 
-                    <input onChange={handleFileChange} className="p-2 block  -mt-6 mb-5 text-xs text-gray-900 border border-gray-900 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  ml-[120px]  w-72" type="File" accept="/image/*" name="File" placeholder="Name" />
+                    <input onChange={handleFileChange} className="p-2 block  -mt-6 mb-5 text-xs text-gray-900 border border-gray-900 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  ml-[119px]  w-72" type="File" accept="/image/*" name="File" placeholder="Name" />
                     </form>
-                    <img id="image-container" src={update_foto_user} alt="Resized Image" />
+                
                 </div>
                 <div className="inline-block mt-4   ml-20 ">
 
-                    <div className="  inline-block font-bold mr-10">Full Name</div>
-                    <input onChange={(e) => setupdate_name(e.target.value)} className="p-2  rounded-xl  text-gray-900 border border-gray-900 rouncursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 w-72" type="text" name="text" placeholder="Name" />
+                    <div className="  inline-block font-bold text-sm mr-8">Full Name</div>
+                    <input onChange={(e) => setupdate_name(e.target.value)} className="p-2  rounded-xl  text-gray-900 border border-gray-900 rouncursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 ml-4 w-72" type="text" name="text" placeholder="Name" />
                 </div>
                 <div className="inline-block mt-8   ml-20 ">
+                            
 
-
-                    <div className="  inline-block font-bold mr-[74px]">Email</div>
-                    <input onChange={(e) => setupdate_email(e.target.value)} className="p-2  rounded-xl text-gray-900 border border-gray-900 rouncursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 w-72" type="Email" name="Email" placeholder="Email" />
+                    <div className="  inline-block text-sm font-bold mr-[76px]">Email</div>
+                    <input onChange={(e) => setupdate_email(e.target.value)} className="p-2 ml-1 rounded-xl text-gray-900 border border-gray-900 rouncursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 w-72" type="Email" name="Email" placeholder="Email" />
                 </div>
 
-                <div className="inline-block mt-6   ml-20 ">
+                <div className="inline-block mt-4  text-sm  ml-20 ">
                     <label>
                         <div className="  inline-block font-bold mr-[58px]">gender</div>
-                        <select required value={gender} onChange={(e) => setupdate_gender(e.target.value)} className="p-2 mt-5 rounded-xl  text-gray-900 border border-gray-900 rouncursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600w-72" >
+                        <select required value={gender} onChange={(e) => setupdate_gender(e.target.value)} className="p-2 mt-5 rounded-xl ml-3 text-gray-900 border border-gray-900 rouncursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600w-72" >
                             <option value="">Select gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
@@ -322,6 +321,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                 {/* <div className="4"> */}
 
                 <button className="bg-[#002D74]  mt-24   ml-44 w-44 rounded-xl text-white py-2 hover:scale-105 " onClick={handleSubmit}>Save Changes</button>
+                
 
                 {/* </div> */}
 

@@ -182,7 +182,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
           hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
         <div className={`${font.className}   font-medium `}>
           {isSideMenuVisible && isSideMenuVisible2 &&
-            <>
+            <>  
               <Navbar/>
               <SideMenu currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
             </>

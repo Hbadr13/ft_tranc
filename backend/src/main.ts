@@ -1,9 +1,10 @@
-import {NestFactory} from '@nestjs/core'
-import {AppModule}  from './app.module'
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './app.module'
 import { ValidationPipe } from '@nestjs/common';
 import *as  cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 import * as express from 'express';
+import { HttpExceptionFilter } from './auth/common/filters/HttpExceptionFilter';
 
 
 
@@ -20,14 +21,15 @@ async function bootstrap() {
         origin: 'http://localhost:3000',
         credentials: true
     })
-    app.useGlobalPipes( new ValidationPipe({
-        whitelist:true,
+    app.useGlobalPipes(new ValidationPipe({
+        whitelist: true,
     }));
     app.use(express.json({ limit: '50mb' }));
-  app.use(express.urlencoded({ limit: '50mb', extended: true }));
+    app.useGlobalFilters(new HttpExceptionFilter());
+    app.use(express.urlencoded({ limit: '50mb', extended: true }));
     // app.use(cors());
-    await app.listen(3333);    
+    await app.listen(3333);
 }
-bootstrap(); 
+bootstrap();
 
 
