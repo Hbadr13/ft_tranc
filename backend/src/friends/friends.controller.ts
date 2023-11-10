@@ -19,7 +19,6 @@ export class FriendsController {
   ): Promise<void> {
 
     const userId = id;
-    console.log("+++++++++++++++++++++++++++++")
     // console.log(userId) // Assuming you have stored user information in the request object during authentication
     if (Number(userId) != Number(friendId)) {
       console.log("________________________________________________________")
@@ -85,6 +84,20 @@ export class FriendsController {
   async getSendFriendRequests(@Param('userId') userId: number) {
     if (Number(userId) > 0)
       return this.friendsService.getSendFriendRequests(Number(userId));
+    else
+      return {}
+  }
+  @Get(':userId/received-blocked')
+  async getReceivedFriendBlocked(@Param('userId') userId: number) {
+    if (Number(userId) > 0)
+      return this.friendsService.getReceivedFriendBlocked(Number(userId));
+    else
+      return {}
+  }
+  @Get(':userId/send-blocked')
+  async getSendFriendBlocked(@Param('userId') userId: number) {
+    if (Number(userId) > 0)
+      return this.friendsService.getSendFriendblocked(Number(userId));
     else
       return {}
   }

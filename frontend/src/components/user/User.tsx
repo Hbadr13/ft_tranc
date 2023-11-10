@@ -232,9 +232,9 @@ const User = ({ currentUser, users }: { currentUser: userProps, users: Array<use
     // console.log("friend_reciver", setfriend_add)
 
     return (
-        <div className='flex justify-center  items-center justify-items-center    h-auto w-auto  flex-col bsg-[#f6f6f9]'>
+        <div className='    flex justify-center   items-center     flex-col'>
 
-            <div className='flex flex-auto justify-start items-start  ml-10   flex-col  w-auto h-auto mt-20  rounded-xl shadow-2xl  bg-clip-border p-6 border-4 border-[#c6c0ba] border-solid'>
+            <div className='  flex-auto justify-start items-start    ml-10   flex-col  w-auto h-auto mt-36  rounded-xl drop-shadow-2xl  bg-clip-border p-6 border-2 bg-white  border-solid'>
                 <div className='flex flex-auto bxg-red-600 flex-row  justify-start  items-start'>
                     <div className="flex-auto border-t-4  mt-3 w-10 h-0  bg-black border-black ..."></div>
 
@@ -252,7 +252,7 @@ const User = ({ currentUser, users }: { currentUser: userProps, users: Array<use
                             <div className='flex    rounded-xl items-start  '>
 
                                 {/* <LevelBar user={user} amis={amis} id={currentUser.id} flag={1} /> */}
-                                <div className=' bg-[#0F161D] border-4  border-[#005AB5] w-48 h-[300px] shadow-2xl  rounded-xl  flex  flex-col  '>
+                                <div className=' bg-[#0F161D] border-4  border-[#005AB5] w-48 h-[300px] drop-shadow-2xl  rounded-xl  flex  flex-col  '>
                                     <button onClick={() => profailamis(user.sender.username, user.sender.id)}>
 
                                         <div className='flex justify-center mt-3'>
@@ -308,7 +308,7 @@ const User = ({ currentUser, users }: { currentUser: userProps, users: Array<use
 
 
 
-                            <div className='  w-[300 px]  h-24   shadow-xl   rounded-xl border-[1px] border-[#005AB5]  mt-4 flex flex-row '>
+                            <div className='  w-[300 px]  h-24   drop-shadow-xl   rounded-xl border-[1px] border-[#005AB5]  mt-4 flex flex-row '>
 
                                 <div className='bg-[#0F161D] rounded-l-xl border-r-[2px] w-72 h-24  flex flex-row'>
                                     <button onClick={() => profailamis(user.sender.username, user.sender.id)} >
@@ -381,7 +381,7 @@ const User = ({ currentUser, users }: { currentUser: userProps, users: Array<use
                             <div className='flex    rounded-xl items-start  '>
 
                                 {/* <LevelBar user={user} amis={amis} id={currentUser.id} flag={1} /> */}
-                                <div className=' bg-[#0F161D] border-4 border-[#005AB5] w-48 h-[300px] shadow-2xl  rounded-xl  flex  flex-col   '>
+                                <div className=' bg-[#0F161D] border-4 border-[#005AB5] w-48 h-[300px] drop-shadow-2xl  rounded-xl  flex  flex-col   '>
                                     <button onClick={() => profailamis(user.receiver.username, user.receiver.id)}>
 
                                         <div className='flex justify-center mt-3'>
@@ -431,7 +431,7 @@ const User = ({ currentUser, users }: { currentUser: userProps, users: Array<use
 
 
 
-                            <div className=' w-[300 px]  h-24   shadow-xl  -m-3  rounded-xl border-[1px] border-[#005AB5]  mt-4 flex flex-row '>
+                            <div className=' w-[300 px]  h-24   drop-shadow-xl  -m-3  rounded-xl border-[1px] border-[#005AB5]  mt-4 flex flex-row '>
 
 
                                 <div className='bg-[#0F161D] rounded-l-xl border-r-[2px] w-72 h-24  flex flex-row '>
@@ -500,7 +500,7 @@ const User = ({ currentUser, users }: { currentUser: userProps, users: Array<use
                                     <div className='flex    rounded-xl items-start  '>
 
                                         {/* <LevelBar user={user} amis={amis} id={currentUser.id} flag={1} /> */}
-                                        <div className=' bg-[#0F161D] border-4 border-[#005AB5] w-48 h-[300px] shadow-2xl  rounded-xl  flex  flex-col  '>
+                                        <div className=' bg-[#0F161D] border-4 border-[#005AB5] w-48 h-[300px] drop-shadow-2xl  rounded-xl  flex  flex-col  '>
                                             <div className='flex justify-center  mt-3'>
                                                 <img
                                                     src={user.foto_user}
@@ -554,7 +554,7 @@ const User = ({ currentUser, users }: { currentUser: userProps, users: Array<use
                             (user.flag) ?
                                 (
 
-                                    <div className='       w-[419px]  h-24  -m-3 shadow-xl   rounded-xl border-[1px] border-[#dee1e9]  mt-4 flex flex-row '>
+                                    <div className='       w-[419px]  h-24  -m-3 drop-shadow-xl   rounded-xl border-[1px] border-[#dee1e9]  mt-4 flex flex-row '>
                                         <div className='bg-[#0F161D] rounded-l-xl border-r-[2px] w-80 h-24  flex flex-row'>
                                             <div className='flex justify-start items-center m-4'>
                                                 <img

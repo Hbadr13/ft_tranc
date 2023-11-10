@@ -226,6 +226,36 @@ export class FriendsService {
     });
     return  data_rese.receivedFriendRequests
   }
+  async getReceivedFriendBlocked(userId: number, status: string = 'blocked') {
+    console.log(userId)
+    const data_rese = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        receivedFriendRequests: {
+          where: {
+            status: status,
+          },
+          select: {
+            id: false,
+            status: false,
+            sender: {
+              select: 
+              {
+                id: true,
+                username: true,
+                foto_user:true, // Include any fields you need from the sender
+                // Add other fields as needed
+              },
+            },
+            // Add other fields from the FriendRequest model as needed
+          },
+          
+        },
+      },
+    });
+  
+    return  data_rese.receivedFriendRequests
+  }
 
   async getReceivedFriendRequests1(receiverId: number) {
     return this.prisma.friendRequest.findMany({
@@ -253,11 +283,36 @@ export class FriendsService {
               {
                 id: true,
                 username: true,
-                foto_user:true, // Include any fields you need from the sender
-                // Add other fields as needed
+                foto_user:true,
               },
             },
-            // Add other fields from the FriendRequest model as needed
+       
+          },
+        },
+      },
+    });
+    return  data_rese.sentFriendRequests
+  }
+  async getSendFriendblocked(userId: number, status: string = 'blocked') {
+    const data_rese = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        sentFriendRequests: {
+          where: {
+            status: status,
+          },
+          select: {
+            id: false,
+            status: false,
+            receiver: {
+              select: 
+              {
+                id: true,
+                username: true,
+                foto_user:true,
+              },
+            },
+       
           },
         },
       },

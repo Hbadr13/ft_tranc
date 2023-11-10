@@ -18,10 +18,10 @@ function LevelBar({ value }: LevelBarpros) {
 
 
     return (
-        <div className="bg-gray-200 h-5   w-80 rounded-full">
-            <div className="bg-black h-5 rounded-full relative" style={{ width: progressWidth }}>
+        <div className="bg-white h-5  drop-shadow-lg  shadow-indigo-500/40    w-80 rounded-2xl">
+            <div className="bg-[#0ea5e9] h-5 rounded-full " style={{ width: progressWidth }}>
                 {/* <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
-          {`${value}%`} */}
+              {`${value}%`} */}
                 {/* </span> */}
             </div>
         </div>
@@ -121,14 +121,14 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                 const form = e.target;
                 router.push('/profile');
             } else {
-                
+
                 router.push('/profile');
-                
+
             }
-            
+
         } catch (error) {
             router.push('/profile');
-          
+
             console.log("kin wahd error hna: ", error);
         }
     };
@@ -223,7 +223,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
         //         </div >
         //     </div>
         // </section>
-        <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start  p-6 '>
+        <div className='flex  flex-wrap  justify-center  min-h-screen  min-w-screen  items-center  p-6 '>
             <div className='  flex-none   z-20   w-96 mt-[120px] mb-10  h-[100%] drop-shadow-2xl   justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
                 <div className="text-center">
                     <span>My Profile</span>
@@ -232,7 +232,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                             <img
                                 src={foto_user}
                                 alt="Your Image Alt Text"
-                                className="w-44 h-auto   border-2 border-[#E3E8EC]  rounded-full inline-block"
+                                className=" w-52 h-52   border-2 border-[#E3E8EC]  rounded-[40px] inline-block" // Adjust the width as needed
                             />
                         )}
                     </div>
@@ -263,7 +263,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
             </div>
             <div className="z-10">
 
-                <div className=" flex flex-col gap-8     h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[150px] min-h-[845px] rounded-r-[0px] rounded-[0px]">
+                <div className=" flex flex-col gap-8     h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[80px] min-h-[845px] rounded-r-[0px] rounded-[0px]">
                     <p className="  text-[25px]  font-bold mt-44  mr-28">Settings</p>
 
                     <Link className=" mt-5   py-2  w-[257px] h-10  flex justify-center  bg-[#3b82f6] hover:scale-110   duration-300 text-white text-base font-bold" href={"/EditProfile"}> <span className="">Profile Settings</span></Link>
@@ -281,7 +281,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                 </div>
 
             </div>
-            <div className=" flex  flex-col md:opacity-150 bg mt-[151px] min-h-[845px]  bg-blue-50  w-[700px] h-16 rounded-r-2xl rounded-s-[1px] p-6" >
+            <div className=" flex  flex-col md:opacity-150 bg mt-[80px] min-h-[845px]  bg-blue-50  w-[700px] h-16 rounded-r-2xl rounded-s-[1px] p-6" >
                 <div className="h-10   flex  -ml-16 mt-32 w-auto">
                     <span className=" py-2 px-[102px] font-bold flex  text-blue-500 ">Edit Your Personal Setting</span>
                 </div>
@@ -292,9 +292,9 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                     <div className="  inline-block font-bold text-sm ">Choose photo</div>
                     <form>
 
-                    <input onChange={handleFileChange} className="p-2 block  -mt-6 mb-5 text-xs text-gray-900 border border-gray-900 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  ml-[119px]  w-72" type="File" accept="/image/*" name="File" placeholder="Name" />
+                        <input onChange={handleFileChange} className="p-2 block  -mt-6 mb-5 text-xs text-gray-900 border border-gray-900 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  ml-[119px]  w-72" type="File" accept="/image/*" name="File" placeholder="Name" />
                     </form>
-                
+
                 </div>
                 <div className="inline-block mt-4   ml-20 ">
 
@@ -302,7 +302,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                     <input onChange={(e) => setupdate_name(e.target.value)} className="p-2  rounded-xl  text-gray-900 border border-gray-900 rouncursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 ml-4 w-72" type="text" name="text" placeholder="Name" />
                 </div>
                 <div className="inline-block mt-8   ml-20 ">
-                            
+
 
                     <div className="  inline-block text-sm font-bold mr-[76px]">Email</div>
                     <input onChange={(e) => setupdate_email(e.target.value)} className="p-2 ml-1 rounded-xl text-gray-900 border border-gray-900 rouncursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 w-72" type="Email" name="Email" placeholder="Email" />
@@ -321,7 +321,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                 {/* <div className="4"> */}
 
                 <button className="bg-[#002D74]  mt-24   ml-44 w-44 rounded-xl text-white py-2 hover:scale-105 " onClick={handleSubmit}>Save Changes</button>
-                
+
 
                 {/* </div> */}
 

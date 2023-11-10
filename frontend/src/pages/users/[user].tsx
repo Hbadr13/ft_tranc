@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import path from 'path';
 import { send } from 'process';
 import { useEffect, useState } from 'react';
+import { NullLiteral } from 'typescript';
 
 interface LevelBarpros {
     value: number
@@ -17,10 +18,10 @@ function LevelBar({ value }: LevelBarpros) {
     const progressWidth = `${value}%`;
 
     return (
-        <div className="bg-gray-200 h-5  w-80 rounded-full">
-            <div className=" bg-blue-400 h-5 rounded-full relative" style={{ width: progressWidth }}>
+        <div className="bg-white h-5  drop-shadow-lg  shadow-indigo-500/40    w-80 rounded-2xl">
+            <div className="bg-[#0ea5e9] h-5 rounded-full " style={{ width: progressWidth }}>
                 {/* <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
-            {`${value}%`} */}
+              {`${value}%`} */}
                 {/* </span> */}
             </div>
         </div>
@@ -35,6 +36,8 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     const [Email, setEmail] = useState("");
     const [foto_user, setFoto_user] = useState("");
     const [check, setCheck] = useState(0);
+    const [check_blocked1, setCheck_bloked1] = useState(true);
+    const [check_blocked2, setCheck_bloked2] = useState(true);
     const [check1, setCheck1] = useState(0);
     const [check2, setCheck2] = useState(0);
     const [isOpen, setIsOpen] = useState(false)
@@ -47,6 +50,8 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
 
     const [received, setreceived] = useState<Array<any>>([]);
     const [sendr, setsendr] = useState<Array<any>>([]);
+    const [received_blocked, setreceived_blocked] = useState<Array<any>>([]);
+    const [sendr_blocked, setsendr_blocked] = useState<Array<any>>([]);
     const router = useRouter()
     const parts = currentFileName.split('.');
     const numberPart: number = Number(parts[1]);
@@ -55,7 +60,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
 
     useEffect(() => {
 
-    
+
         if (numberPart === currentUser.id) {
             router.push("/profile")
 
@@ -157,6 +162,21 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     useEffect(() => {
         (
             async () => {
+                const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/received-blocked`, {
+                    credentials: 'include',
+                });
+                const counte = await response.json();
+                if (response.status == 200) {
+                    setreceived_blocked(counte)
+                    console.log("counte", counte)
+                    return;
+                }
+            }
+        )();
+    }, [currentUser.id, numberPart, isOpen, currentFileName]);
+    useEffect(() => {
+        (
+            async () => {
                 const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/received-requests`, {
                     credentials: 'include',
                 });
@@ -186,10 +206,39 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     useEffect(() => {
         (
             async () => {
+                const response = await fetch(`http://localhost:3333/friends/${numberPart}/send-requests`, {
+                    credentials: 'include',
+                });
+                const counte = await response.json();
+                if (response.status == 200) {
+                    setFlag2(counte);
+                    // setrequestt(cont)
+                    return;
+                }
+            }
+        )();
+    }, [sendr, received, currentUser.id, numberPart, isOpen]);
+    useEffect(() => {
+        (
+            async () => {
                 setCheck(0);
             }
         )();
     }, [numberPart]);
+    useEffect(() => {
+        (
+            async () => {
+                const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-blocked`, {
+                    credentials: 'include',
+                });
+                const counte = await response.json();
+                if (response.status == 200) {
+                    setsendr_blocked(counte)
+                    return;
+                }
+            }
+        )();
+    }, [currentUser.id, numberPart, received, check, check1, isOpen, check2, currentFileName]);
     useEffect(() => {
         (
             async () => {
@@ -305,6 +354,27 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
 
         })
         // useEffect(() => {
+        if (Array.isArray(received_blocked)) {
+            received_blocked.map((user: any) => {
+                // Your mapping logic here
+                if (user.sender.id == numberPart) {
+
+                    console.log("check_blocked1")
+                    setCheck_bloked1(false)
+                }
+            });
+        } else { }
+        if (Array.isArray(sendr_blocked)) {
+            sendr_blocked.map((user: any) => {
+                console.log("check_blocked2")
+                // Your mapping logic here
+                if (user.receiver.id == numberPart) {
+                    setCheck_bloked2(false)
+                }
+            });
+        } else {
+            // Handle the case when 'received' is not an array (e.g., show an error message)
+        }
         if (Array.isArray(received)) {
             received.map((user: any) => {
                 // Your mapping logic here
@@ -330,133 +400,146 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     }, [sendr, numberPart, isfriend, received, currentFileName, amis, amis_id, setFlag1, flag2, delete_request])
 
     return (
-        <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start   p-6 '>
-            <div className='  flex-none     w-96 mt-[120px] mb-10  h-[100%]    drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]     shadow-blue-600 justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
-                <div className="text-center">
-                    <span>Profile {username}</span>
-                    <div className="mt-6">
-                        <img
-                            src={foto_user}
-                            alt="Your Image Alt Text"
-                            className=" w-52 h-52   border-2 border-[#E3E8EC]  rounded-[40px] inline-block" // Adjust the width as needed
-                            // className="w-44 h-auto   border-2 border-[#E3E8EC]  rounded-full inline-block" // Adjust the width as needed
-                        />
-                    </div>
-                    <div className='mt-6'>
-                        <h1 className="text-xl font-bold uppercase">{username}</h1>
-                        <span className="text-sm  font-serif italic flex justify-center mt-3">{Email}</span>
-                    </div>
-                    <div className="mt-8">
-                        <LevelBar value={60} />
-                        <p className=' mt-4 text-blue-200 font-serif italic uppercase'>level 8-86%</p>
-                    </div>
-                    <div className='mt-6'>
-                        <div className="text-base font-bold flex justify-around items-center text-[#2c4d82]">
-                            {
+        <>
+            {
+                (!check_blocked1 || !check_blocked2) ?
+                    (
+                        (!check_blocked1) ?
+                            (
+                                <div className=' flex z-30 blur-sm  '>
 
-                                (!flag) ?
-                                    (
-                                        <div className="text-base font-bold flex items-center  space-x-2  text-[#2c4d82]">
-                                            <div className=" py-2 px-5 bg-[#dbeafe]  flex  items-center  space-x-1  border rounded-full hover:scale-110 duration-300">
-                                                <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
-                                                <span className='normal-case'>Friends</span>
-                                            </div>
-                                            <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
-                                            <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</Link>
+                                    <div className=' flex justify-center h-44 w-56 items-center bg-black'> hada  li tablocka</div>
+                                </div>
+                            ) :
+                            (
 
+                                <div> hada li bolcka</div>
+                            )
+                    ) :
 
-                                        </div>
-                                    ) :
-                                    (!flag1) ?
-                                        (
-                                            (!isfriend) ?
+                    (<div className={`flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start   p-6 `}>
+                        <div className='  flex-none     w-96 mt-[120px] mb-10  h-[100%]    drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]     shadow-blue-600 justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
+                            <div className="text-center">
+                                <span>Profile {username}</span>
+                                <div className="mt-6">
+                                    <img
+                                        src={foto_user}
+                                        alt="Your Image Alt Text"
+                                        className=" w-52 h-52   border-2 border-[#E3E8EC]  rounded-[40px] inline-block" // Adjust the width as needed
+                                    // className="w-44 h-auto   border-2 border-[#E3E8EC]  rounded-full inline-block" // Adjust the width as needed
+                                    />
+                                </div>
+                                <div className='mt-6'>
+                                    <h1 className="text-xl font-bold uppercase">{username}</h1>
+                                    <span className="text-sm  font-serif italic flex justify-center mt-3">{Email}</span>
+                                </div>
+                                <div className="mt-8">
+                                    <LevelBar value={60} />
+                                    <p className=' mt-4 text-blue-200 font-serif italic uppercase'>level 8-86%</p>
+                                </div>
+                                <div className='mt-6'>
+                                    <div className="text-base font-bold flex justify-around items-center text-[#2c4d82]">
+                                        {
+
+                                            (!flag) ?
                                                 (
                                                     <div className="text-base font-bold flex items-center  space-x-2  text-[#2c4d82]">
-                                                        <div className=" py-2 px-4 bg-[#dbeafe]  flex  items-center  border rounded-full hover:scale-110 duration-300">
+                                                        <div className=" py-2 px-5 bg-[#dbeafe]  flex  items-center  space-x-1  border rounded-full hover:scale-110 duration-300">
                                                             <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
-                                                            <button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={sendRequestForaccpet} >Confrim</button>
+                                                            <span className='normal-case'>Friends</span>
                                                         </div>
-                                                        <button className="py-2 px-7 bg-[#dbeafe] border rounded-full  hover:scale-110 duration-300 " onClick={sendRequestForaccpet}>Delete request</button>
+                                                        <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
+                                                        <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</Link>
 
-                                                    </div>) :
-                                                (<div className="text-base font-bold flex items-center  space-x-2  text-[#2c4d82]">
-                                                    <div className=" py-2 px-5 bg-[#dbeafe]  flex  items-center  space-x-1  border rounded-full hover:scale-110 duration-300">
-                                                        <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
-                                                        <span className='normal-case'>Friends</span>
+
                                                     </div>
-                                                    <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
-                                                    <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</Link>
-                                                </div>)
-                                        ) :
-
-                                        (
-
-                                            (
-                                                (!isOpen) ?
+                                                ) :
+                                                (!flag1) ?
                                                     (
-                                                        <button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={sendRequest} >Add friend</button>
-                                                    ) :
-                                                    (<button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={CanacelRequest} >Canacel requset</button>)
-                                            )
-                                        )
+                                                        (!isfriend) ?
+                                                            (
+                                                                <div className="text-base font-bold flex items-center  space-x-2  text-[#2c4d82]">
+                                                                    <div className=" py-2 px-4 bg-[#dbeafe]  flex  items-center  border rounded-full hover:scale-110 duration-300">
+                                                                        <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
+                                                                        <button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={sendRequestForaccpet} >Confrim</button>
+                                                                    </div>
+                                                                    <button className="py-2 px-7 bg-[#dbeafe] border rounded-full  hover:scale-110 duration-300 " onClick={sendRequestForaccpet}>Delete request</button>
 
-                            }
+                                                                </div>) :
+                                                            (<div className="text-base font-bold flex items-center  space-x-2  text-[#2c4d82]">
+                                                                <div className=" py-2 px-5 bg-[#dbeafe]  flex  items-center  space-x-1  border rounded-full hover:scale-110 duration-300">
+                                                                    <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
+                                                                    <span className='normal-case'>Friends</span>
+                                                                </div>
+                                                                <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
+                                                                <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</Link>
+                                                            </div>)
+                                                    ) :
+
+                                                    (
+
+                                                        (
+                                                            (!isOpen) ?
+                                                                (
+                                                                    <button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={sendRequest} >Add friend</button>
+                                                                ) :
+                                                                (<button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={CanacelRequest} >Canacel requset</button>)
+                                                        )
+                                                    )
+
+                                        }
+
+                                    </div>
+                                    <h1 className="flex  mt-[50px] ">Recent Activities</h1>
+
+                                    <img
+                                        src="https://w0.peakpx.com/wallpaper/616/177/HD-wallpaper-table-tennis-neon-icon-blue-background-neon-symbols-table-tennis-neon-icons-table-tennis-sign-sports-signs-table-tennis-icon-sports-icons.jpg"
+                                        alt="Your"
+                                        className="w-80 mt-6 h-60  rounded-[32px] inline-block"
+                                    />
+                                    {/* <button className="flex justify-center  items-center mt-6  bg-[#f4f5f8] transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-12 hover:scale-105 ">Login</button> */}
+                                </div>
+                                <div className="mt-8" onClick={blockedfriend}>
+                                    <button className="bg-[#dbeafe]   transition-all active:scale-100 rounded-xl  text-[#2c4d82] py-2 px-32 hover:scale-105 ">Blocked</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="">
+
+                            <div className=" flex flex-col gap-8    h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[150px] min-h-[845px] rounded-r-[80px] rounded-[0px] p-6">
+                                {(!check || check == 2 || !check1) ? (<div>
+                                    <button onClick={() => freind_ranck(1)} className=" mt-60 px-[101px] py-2 text-base font-bold    bg-black   hover:bg-[#3b82f6] hover:scale-110 duration-300 text-white">Friends</button>
+                                </div>) : null}
+                                {(check && check != 2 && check1) ? (<div>
+                                    <button onClick={() => freind_ranck(1)} className=" mt-60 px-[101px] py-2   text-base font-bold   bg-[#3b82f6]  hover:bg-black hover:scale-110 duration-300 text-white">Friends</button>
+                                </div>) : null}
+                                {(!check || check == 1 || !check2) ? (<div>
+                                    <button onClick={() => freind_ranck1(2)} className=" mt-60 px-[110px] py-2   text-base font-bold  bg-black   hover:bg-[#3b82f6]  hover:scale-110 duration-300 text-white">Rank</button>
+                                </div>) : null}
+                                {(check && check != 1 && check2) ? (<div>
+                                    <button onClick={() => freind_ranck1(2)} className=" mt-60 px-[110px] py-2 text-base font-bold  bg-[#3b82f6]  hover:bg-black  hover:scale-110 duration-300 text-white">Rank</button>
+                                </div>) : null}
+
+
+                            </div>
 
                         </div>
-                        <h1 className="flex  mt-[50px] ">Recent Activities</h1>
+                        {(check && (check1 || check2)) ? (<div className=" flex   justify-start     md:opacity-150 bg mt-[160px] min-h-[845px]    w-[400px] h-16 rounded-r-[50px] p-6"  >
+                            {
+                                check === 1 && <Friends amis_id={amis_id} amis={amis} currentUser={currentUser} />
 
-                        <img
-                            src="https://w0.peakpx.com/wallpaper/616/177/HD-wallpaper-table-tennis-neon-icon-blue-background-neon-symbols-table-tennis-neon-icons-table-tennis-sign-sports-signs-table-tennis-icon-sports-icons.jpg"
-                            alt="Your"
-                            className="w-80 mt-6 h-60  rounded-[32px] inline-block"
-                        />
-                        {/* <button className="flex justify-center  items-center mt-6  bg-[#f4f5f8] transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-12 hover:scale-105 ">Login</button> */}
+                            }
+                            {
+                                check === 2 && <Rank />
+                            }
+
+
+                        </div>) : null
+                        }
                     </div>
-                    <div className="mt-8" onClick={blockedfriend}>
-                        <button className="bg-[#dbeafe]   transition-all active:scale-100 rounded-xl  text-[#2c4d82] py-2 px-32 hover:scale-105 ">Blocked</button>
-                    </div>
-                </div>
-            </div>
-            <div className="">
-
-                <div className=" flex flex-col gap-8    h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[150px] min-h-[845px] rounded-r-[80px] rounded-[0px] p-6">
-                    {(!check || check == 2 || !check1) ? (<div>
-                        <button onClick={() => freind_ranck(1)} className=" mt-60 px-[101px] py-2 text-base font-bold    bg-black   hover:bg-[#3b82f6] hover:scale-110 duration-300 text-white">Friends</button>
-                    </div>) : null}
-                    {(check && check != 2 && check1) ? (<div>
-                        <button onClick={() => freind_ranck(1)} className=" mt-60 px-[101px] py-2   text-base font-bold   bg-[#3b82f6]  hover:bg-black hover:scale-110 duration-300 text-white">Friends</button>
-                    </div>) : null}
-                    {(!check || check == 1 || !check2) ? (<div>
-                        <button onClick={() => freind_ranck1(2)} className=" mt-60 px-[110px] py-2   text-base font-bold  bg-black   hover:bg-[#3b82f6]  hover:scale-110 duration-300 text-white">Rank</button>
-                    </div>) : null}
-                    {(check && check != 1 && check2) ? (<div>
-                        <button onClick={() => freind_ranck1(2)} className=" mt-60 px-[110px] py-2 text-base font-bold  bg-[#3b82f6]  hover:bg-black  hover:scale-110 duration-300 text-white">Rank</button>
-                    </div>) : null}
-
-
-                </div>
-
-            </div>
-            {(check && (check1 || check2)) ? (<div className=" flex   justify-start     md:opacity-150 bg mt-[160px] min-h-[845px]    w-[400px] h-16 rounded-r-[50px] p-6"  >
-                {
-                    check === 1 && <Friends amis_id={amis_id} amis={amis} currentUser={currentUser} />
-
-                }
-                {
-                    check === 2 && <Rank />
-                }
-
-
-            </div>) : null
+                    )
             }
-        </div>
-        //       <div class="grid grid-rows-3 grid-flow-col gap-4">
-        //   <div class="row-start-6  row-span-2  bg-black ...">01</div>
-        //   <div class="row-end-6 row-span-2 ...">02</div>
-        //   <div class="row-start-1 row-end-4 ...">03</div>
-        // </div>
-
-
+        </>
     );
 };
 

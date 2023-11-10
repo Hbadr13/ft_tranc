@@ -17,8 +17,8 @@ function LevelBar({ value }: LevelBarpros) {
 
 
   return (
-    <div className="bg-gray-200 h-5   w-80 rounded-full">
-      <div className="bg-cyan-500 h-5   rounded-full relative" style={{ width: progressWidth }}>
+    <div className="bg-white h-5  drop-shadow-lg  shadow-indigo-500/40    w-80 rounded-2xl">
+      <div className="bg-[#0ea5e9] h-5 rounded-full " style={{ width: progressWidth }}>
         {/* <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
           {`${value}%`} */}
         {/* </span> */}
@@ -114,7 +114,7 @@ const UseProfile = ({ currentUser }: { currentUser: userProps }) => {
   return (
 
     <>
-      <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start p-6 '>
+      <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen    items-center p-6 '>
         <div className='  flex-none   z-20 w-96 mt-[120px] mb-10  h-[100%]  shadow-xl  shadow-[#728edb] justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
           <div className="text-center">
             <span>My Profile</span>
@@ -152,7 +152,7 @@ const UseProfile = ({ currentUser }: { currentUser: userProps }) => {
         </div>
         <div className="">
 
-          <div className=" flex flex-col    h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[160px] min-h-[845px] rounded-r-[80px]  p-6">
+          <div className=" flex flex-col    h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[85px] min-h-[845px] rounded-r-[80px]  p-6">
             {(!check || check == 2 || !check1) ? (<div>
               <button onClick={() => freind_ranck(1)} className=" mt-60 px-[99px] py-2 text-base font-bold   bg-black   hover:bg-[#3b82f6] hover:scale-110 duration-300 text-white">Friends</button>
             </div>) : null}
@@ -170,7 +170,7 @@ const UseProfile = ({ currentUser }: { currentUser: userProps }) => {
           </div>
 
         </div>
-        {(check && (check1 || check2)) ? (<div className=" flex   justify-start   md:opacity-150 bg mt-[167px] min-h-[845px]    w-[400px] h-16 rounded-r-[50px] p-6"  >
+        {(check && (check1 || check2)) ? (<div className=" flex   justify-start   md:opacity-150 bg mt-[100px] min-h-[845px]    w-[400px] h-16 rounded-r-[50px] p-6"  >
           {
             check === 1 && <Friends amis_id={amis} amis={amis} currentUser={currentUser} />
 
