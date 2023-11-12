@@ -185,16 +185,21 @@ const User = ({ currentUser, users }: { currentUser: userProps, users: Array<use
         let filterUser: any = users.filter((user: userProps) => {
             user.flag = true;
             user.flag1 = true;
-            amis.filter((usr: userProps) => {
+       
+            if (Array.isArray(amis)) {
 
-                if (usr.id == user.id) {
-                    user.flag = false;
+                amis.map((usr: any) => {
+                    if (usr.id == user.id) {
+                        user.flag = false;
+    
+    
+                    }
 
 
-                }
+                });
+            } else {
 
-            })
-            // useEffect(() => {
+            }
             if (Array.isArray(friend_reciver)) {
 
                 friend_reciver.map((use: any) => {

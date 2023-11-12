@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import path from 'path';
 import { send } from 'process';
 import { useEffect, useState } from 'react';
-import { NullLiteral } from 'typescript';
+import { NullLiteral, isDoStatement } from 'typescript';
 
 interface LevelBarpros {
     value: number
@@ -41,6 +41,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     const [check1, setCheck1] = useState(0);
     const [check2, setCheck2] = useState(0);
     const [isOpen, setIsOpen] = useState(false)
+    const [isOpen1, setIsOpen1] = useState(0)
     const [isfriend, setisfriend] = useState(false)
     // const [id, setid] = useState(0)
     const [query, setQuery] = useState('')
@@ -95,7 +96,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
 
             }
         )();
-    }, [query, numberPart, isfriend, check, check1, check2]);
+    }, [query, numberPart, isfriend, check, check1, isOpen, check2]);
     useEffect(() => {
         (
             async () => {
@@ -173,7 +174,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                 }
             }
         )();
-    }, [currentUser.id, numberPart, isOpen, currentFileName]);
+    }, [currentUser.id, numberPart, isOpen, isOpen1, currentFileName]);
     useEffect(() => {
         (
             async () => {
@@ -187,7 +188,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                 }
             }
         )();
-    }, [currentUser.id, numberPart, isOpen, currentFileName]);
+    }, [currentUser.id, numberPart, isOpen1, currentFileName]);
     useEffect(() => {
         (
             async () => {
@@ -238,7 +239,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                 }
             }
         )();
-    }, [currentUser.id, numberPart, received, check, check1, isOpen, check2, currentFileName]);
+    }, [currentUser.id, numberPart, received, check, check1, isOpen, isOpen1, check2, currentFileName]);
     useEffect(() => {
         (
             async () => {
@@ -279,13 +280,41 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                 method: 'POST',
                 credentials: 'include',
             });
+            console.log(isOpen)
 
             if (response.ok) {
+                setIsOpen1(1);
+                console.log(isOpen)
                 console.log('Friend blocked sent successfully.');
             } else {
-                setIsOpen(false);
+                setIsOpen(true);
                 console.error('Failed to send friend request.');
             }
+        } catch (error) {
+            console.error('Error sending friend request:', error);
+        }
+    };
+    const Unblockedfriend = async () => {
+        try {
+            const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${currentUser.id}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+            console.log(isOpen1)
+            
+            if (response.ok) {
+                router.push(`/user`)
+                // setIsOpen1(0);
+                // console.log(isOpen1)
+                // setIsOpen(true);
+                console.log('Friend Unblocked sent successfully.');
+            } else {
+
+                setIsOpen1(2);
+
+                console.error('Failed to Unblock friend request.');
+            }
+
         } catch (error) {
             console.error('Error sending friend request:', error);
         }
@@ -317,7 +346,6 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
 
             if (response.ok) {
                 setIsOpen(false);
-
                 console.log('delete-friend-request sent successfully.');
             } else {
                 console.error('Failed to delete-friend-request.');
@@ -337,13 +365,20 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                 setAmis(content);
             }
         )();
-    }, [query, currentUser.id, check, check1, check2, numberPart, currentFileName]);
+    }, [query, currentUser.id, check, check1, check2, numberPart, isOpen, isOpen1, currentFileName]);
 
     useEffect(() => {
         setFlag(true)
         setFlag1(true)
 
     }, [numberPart, currentFileName])
+    useEffect(() => {
+        setCheck_bloked1(true)
+        setCheck_bloked2(true)
+
+
+
+    }, [numberPart, currentFileName, isOpen1])
 
     useEffect(() => {
 
@@ -396,25 +431,36 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
         } else {
             // Handle the case when 'received' is not an array (e.g., show an error message)
         }
-        // setFlag2(true)
-    }, [sendr, numberPart, isfriend, received, currentFileName, amis, amis_id, setFlag1, flag2, delete_request])
+    
+
+    }, [sendr, numberPart, isfriend, received, sendr_blocked, received_blocked, currentFileName, amis, amis_id, setFlag1, flag2, isOpen, delete_request])
 
     return (
         <>
             {
                 (!check_blocked1 || !check_blocked2) ?
                     (
-                        (!check_blocked1) ?
-                            (
-                                <div className=' flex z-30 blur-sm  '>
+                        (
+                            (!check_blocked1) ?
+                                (
+                                    <div> hada li bolcka</div>
+                                ) :
 
-                                    <div className=' flex justify-center h-44 w-56 items-center bg-black'> hada  li tablocka</div>
+                                <div className=' flex z-10  h-screen w-screen  justify-center items-center '>
+
+                                    <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-white bg-black '>
+                                        <p className=' text-xl  -mt-10'> Unblock @{username} ?</p>
+                                        <span className=' text-sm mt-6'> They will  be able to follow you and view your Tweets </span>
+                                        <button>
+                                            <div className=' flex justify-center items-center text-black  bg-white  w-56  rounded-2xl h-10 mt-8 border-2  border-blue-500 hover:scale-110 duration-300' onClick={Unblockedfriend}>Unblock</div>
+                                        </button>
+                                        <button>
+                                            <div className=' flex justify-center items-center text-white mt-6 w-56 h-10 rounded-2xl  border-2  border-blue-500 hover:scale-110 duration-300'>Canecel</div>
+                                        </button>
+                                    </div>
                                 </div>
-                            ) :
-                            (
 
-                                <div> hada li bolcka</div>
-                            )
+                        )
                     ) :
 
                     (<div className={`flex  flex-wrap  justify-center min-h-screen  min-w-screen   items-start   p-6 `}>
@@ -463,7 +509,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                                                                         <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                                                                         <button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={sendRequestForaccpet} >Confrim</button>
                                                                     </div>
-                                                                    <button className="py-2 px-7 bg-[#dbeafe] border rounded-full  hover:scale-110 duration-300 " onClick={sendRequestForaccpet}>Delete request</button>
+                                                                    <button className="py-2 px-7 bg-[#dbeafe] border rounded-full  hover:scale-110 duration-300 " onClick={CanacelRequest}>Delete request</button>
 
                                                                 </div>) :
                                                             (<div className="text-base font-bold flex items-center  space-x-2  text-[#2c4d82]">

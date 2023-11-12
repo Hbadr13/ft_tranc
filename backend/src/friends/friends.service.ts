@@ -56,7 +56,6 @@ export class FriendsService {
         receiverId:seenderId,
       },
     }); 
-    console.log(existingFriendship , existingFriendship1)
     if (!existingFriendship && !existingFriendship1) {
       // Create a friend request in the database
       await this.prisma.friendRequest.create({
@@ -71,8 +70,8 @@ export class FriendsService {
     {
       const friendRequest = await this.prisma.friendRequest.findFirst({
         where: {
-          senderId: reeceiverId,
-          receiverId: seenderId,
+          senderId: seenderId,
+          receiverId: reeceiverId,
         },
         include: {
           sender: true, // Include the sender of the request
@@ -331,7 +330,7 @@ export class FriendsService {
         receiver: true, // Include the receiver of the request
       },
     });
-    if (!friendRequest || friendRequest.status !== 'pending') {
+    if (!friendRequest || (friendRequest.status !== 'pending' && friendRequest.status !== 'blocked') ) {
       throw new NotFoundException('Friend request not found or already accepted/rejected.');
     }
     await this.prisma.friendRequest.delete({
@@ -340,6 +339,5 @@ export class FriendsService {
       },
     });
   }
- 
 
 }

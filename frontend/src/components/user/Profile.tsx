@@ -114,7 +114,7 @@ const UseProfile = ({ currentUser }: { currentUser: userProps }) => {
   return (
 
     <>
-      <div className='flex  flex-wrap  justify-center min-h-screen  min-w-screen    items-center p-6 '>
+      <div className='flex  flex-wrap  ml-12 justify-center min-h-screen  min-w-screen    items-center p-6 '>
         <div className='  flex-none   z-20 w-96 mt-[120px] mb-10  h-[100%]  shadow-xl  shadow-[#728edb] justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
           <div className="text-center">
             <span>My Profile</span>
