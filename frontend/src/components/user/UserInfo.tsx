@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
+import Image from 'next/image'
 export default function Home() {
   const [foto_user, setfoto_user] = useState("");
   const [username, setUsername] = useState("");
@@ -50,13 +50,31 @@ export default function Home() {
     <div className="mx-auto flex justify-end py-1 pr-2">
       <div onClick={toggleDropdown} className="">
         <button className=" flex h-10 w-10 items-center  overflow-hidden rounded-lg bg-slate-700 text-slate-100 ring-slate-100  hover:shadow-md hover:ring-2">
-          <img className=" object-cover " src={foto_user} alt="Profile" />
+          {/* <img className=" object-cover " src={foto_user} alt="Profile" /> */}
+          <div className={'w-full h-full relative'}>
+            <Image
+              className=''
+              src={foto_user}
+              alt="user profile"
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
         </button>
         {isOpen && (
           <div className="absolute right-2 mt-2 flex w-60 flex-col gap-3 rounded-xl bg-slate-900 p-4 text-slate-100 shadow-lg">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg border-2 border-slate-600">
-                <img className="w-full object-cover" src={foto_user} alt="Profile" />
+                {/* <img className="w-full object-cover" src={foto_user} alt="Profile" /> */}
+                <div className={'w-full h-full relative'}>
+                  <Image
+                    className=''
+                    src={foto_user}
+                    alt="user profile"
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </div>
               </div>
               <div>
                 <div className="flex gap-1 text-sm font-semibold">

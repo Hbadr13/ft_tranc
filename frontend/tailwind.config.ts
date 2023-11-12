@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        CusColor_light: '#f6f6f',
+        CusColor_light: '#f6f6f9',
         CusColor_primary: '#1976D2',
         CusColor_light_primary: '#CFE8FF',
         CusColor_grey: '#eee',

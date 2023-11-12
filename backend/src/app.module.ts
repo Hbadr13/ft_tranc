@@ -13,6 +13,7 @@ import { GameModule } from './game/game.module';
 import { OnlineModule } from './online/online.module';
 import { RoomService } from './game/room/room.service';
 import { UpdateService } from './game/update/update.service';
+import { RecentModule } from './search/recent.module';
 
 
 
@@ -24,7 +25,7 @@ import { UpdateService } from './game/update/update.service';
         }),
         ConfigModule.forRoot({
             isGlobal: true
-        }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule ,GameModule,OnlineModule],
+        }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule ,GameModule,OnlineModule, RecentModule],
     providers: [GameGateway, UserService,RoomService,UpdateService],
 })
 export class AppModule implements NestModule {

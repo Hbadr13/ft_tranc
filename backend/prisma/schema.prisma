@@ -20,7 +20,7 @@ model User {
   isOnline               Boolean
   history                History[]
   room                   String?
-
+  Recent                 Int[]
   friends                Friendship[]    @relation("UserFriends")
   friendOf               Friendship[]    @relation("UserFriendOf")
   sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")

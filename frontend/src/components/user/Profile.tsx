@@ -6,7 +6,7 @@ import Rank from "./Rank";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
 import { userProps } from "@/interface/data";
 
-
+import Image from 'next/image'
 
 interface LevelBarpros {
   value: number
@@ -139,12 +139,22 @@ const UseProfile = ({ currentUser }: { currentUser: userProps }) => {
       <div className='  flex-none     w-96 mt-[120px] mb-10  h-[100%]  shadow-2xl  shadow-blue-600 justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
         <div className="text-center">
           <span>My Profile</span>
-          <div className="mt-6">
-            <img
+          <div className="mt-6 flex justify-center">
+            {/* <img
               src={foto_user}
               alt="Your Image Alt Text"
               className="w-44 h-auto  rounded-full inline-block" // Adjust the width as needed
-            />
+            /> */}
+            <div className={'  w-52 h-40 relative '}>
+              <Image
+                className=' rounded-3xl'
+                src={foto_user}
+                alt="user profile"
+                layout="fill"
+                objectFit="cover"
+              />
+
+            </div>
           </div>
           <div className='mt-6'>
             <h1 className="text-xl font-bold">{username}</h1>

@@ -53,6 +53,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.[0];
         if (selectedFile) {
+            console.log('size: ', selectedFile)
             const reader = new FileReader();
 
             reader.onload = (event) => {
@@ -74,8 +75,8 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                     const ctx = canvas.getContext('2d');
 
                     // Set the desired dimensions (h and w)
-                    const newWidth = 200;
-                    const newHeight = 200;
+                    const newWidth = img.width;
+                    const newHeight = img.height;
 
                     canvas.width = newWidth;
                     canvas.height = newHeight;
@@ -88,7 +89,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                     if (imageContainer) {
                         imageContainer.src = resizedImageURL;
                     }
-                    setupdate_foto_user(resizedImageURL);
+                    // setupdate_foto_user(resizedImageURL);
                     // console.log(resizedImageURL)
                 };
 

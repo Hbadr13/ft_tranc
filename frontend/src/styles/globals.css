@@ -2,22 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --SideMenu-color: #1ba098;
-  --light: #f6f6f9;
-  --primary: #1976D2;
-  --light-primary: #CFE8FF;
-  --grey: #eee;
-  --dark-grey: #AAAAAA;
-  --dark: #363949;
-  --danger: #D32F2F;
-  --light-danger: #FECDD3;
-  --warning: #FBC02D;
-  --light-warning: #FFF2C6;
-  --success: #388E3C;
-  --light-success: #BBF7D0;
 
-}
 
 
 .body {
@@ -94,25 +79,6 @@
   display: block;
 }
 
-@media (max-width: 768px) {
-  .sidebar {
-    width: 52px;
-    transition: all 0.3s ease;
-  }
-
-  .sidebar span {
-    transition: all 0.1s ease;
-    visibility: hidden;
-  }
-
-  .home {
-    left: 52px;
-    width: calc(100% - 52px);
-    transition: all 0.3s ease;
-
-  }
-}
-
 .sidebar span {
   transition: all 0.1s ease;
   display: block;
@@ -133,4 +99,113 @@
   width: calc(100% - 52px);
   right: 0;
   transition: all 0.3s ease;
+}
+
+.sidebar.displaySidebar {
+  transition: all 0.3s ease;
+  width: 150px;
+  display: block;
+  z-index: 40;
+}
+
+.sidebar.displaySidebar span {
+  transition: all 0.1s ease;
+  visibility: visible;
+}
+
+.Search {
+  width: 100%;
+  padding-right: 5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 2.5rem;
+}
+
+.Search.display {
+  width: 100%;
+  border-width: 1px;
+  padding-right: 6rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1.0rem;
+  /* z-index: 2; */
+}
+
+.Search.display:focus {
+  /* background:; */
+}
+
+.submetButton {
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.submetButton.display {
+  transition: all 0.3s ease;
+  display: block;
+
+}
+
+@media (max-width: 1280px) {
+  .sidebar {
+    width: 52px;
+    transition: all 0.3s ease;
+  }
+
+  .sidebar span {
+    transition: all 0.1s ease;
+    visibility: hidden;
+  }
+
+  .home {
+    left: 52px;
+    width: calc(100% - 52px);
+    transition: all 0.3s ease;
+
+  }
+
+  .navbar {
+    right: 0;
+    transition: all 0.3s ease;
+    width: calc(100% - 52px);
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .home {
+    left: 0px;
+    width: calc(100%);
+    transition: all 0.3s ease;
+
+  }
+
+  .navbar {
+    transition: all 0.3s ease;
+    width: calc(100% - 52px);
+  }
+
+  .Search {
+    width: 0%;
+    padding: 0rem;
+    padding-right: 0rem;
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+    padding-left: 0rem;
+  }
+  .submetButton {
+    transition: all 0.3s ease;
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .Search.display {
+    padding-left: 2.5rem;
+  }
+}
+
+.hideScroll::-webkit-scrollbar {
+  display: none;
 }

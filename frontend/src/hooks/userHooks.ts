@@ -55,7 +55,7 @@ export const fetchAllUsers = ({ setUsers, query, currentUser }:
                         credentials: 'include',
                     });
                     const content = await response.json();
-                    setUsers(content);
+                    setUsers(Array.from(content));
                 } catch (error) {
 
                 }
@@ -80,7 +80,7 @@ export const fetchAllAmis = ({ setAmis, query, currentUser }: fetchAllAmisprops)
                         credentials: 'include',
                     });
                     const content = await response.json();
-                    setAmis(content);
+                    setAmis(Array.from(content));
                 } catch (error) {
 
                 }

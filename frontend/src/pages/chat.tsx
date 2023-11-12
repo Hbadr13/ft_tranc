@@ -24,7 +24,7 @@
 
 // export default ThemeSwitcher;
 import { useState, useEffect, useRef } from 'react';
-
+import Image from 'next/image';
 const HideOnClickOutside = () => {
   const [isVisible, setIsVisible] = useState(true);
   const ref1 = useRef<any>();
@@ -47,14 +47,33 @@ const HideOnClickOutside = () => {
   }, []);
 
   return (
-    <div className="relative">
-      <button ref={ref1} onClick={handleClickOutside1}>Toggle Div</button>
+    // <div className="relative">
+    //   <button ref={ref1} onClick={handleClickOutside1}>Toggle Div</button>
 
-      {isVisible ? (
-        <div ref={ref2} className="bg-blue-500 text-white p-4 absolute top-0 left-0 mt-10">
-          This is the div you want to hide.
+    //   {isVisible ? (
+    //     <div ref={ref2} className="bg-blue-500 text-white p-4 absolute top-0 left-0 mt-10">
+    //       This is the div you want to hide.
+    //     </div>
+    //   ) : null}
+    // </div>
+    // <Image src={'/car.jpg'} width={200} height={200}></Image>
+    <div>
+      <div className={'w-[20%] h-[100px] relative '}>
+        <Image
+          src="/car.jpg"
+          alt="My Image"
+          layout="fill"
+          objectFit="cover"
+        />
+      </div>
+      <div className="relative w-10 h-10 ">
+        <button className="bg-blue-200 p-4 w-full h-full absolute isnset-0 opacity-100 hover:opacity-0">
+          H
+        </button>
+        <div className="bg-green-200 p-4 h-full w-full absolute insewt-0 opacity-0  hover:opacity-100">
+          N
         </div>
-      ) : null}
+      </div>
     </div>
   );
 };
