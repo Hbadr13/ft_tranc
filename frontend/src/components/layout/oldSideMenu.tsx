@@ -7,10 +7,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { useState, ChangeEvent } from 'react'
-import UserInfo from './user/UserInfo'
+import UserInfo from '../user/UserInfo'
 import { io } from 'socket.io-client'
 import { AppProps, BoxSearchrProps, userProps } from '@/interface/data'
-import { CustomLinkSideMenuProps } from './model'
+import { CustomLinkSideMenuProps } from '../../interface/model'
 import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks'
 import { idText } from 'typescript'
 

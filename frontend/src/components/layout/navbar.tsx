@@ -1,11 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
-import UserInfo from './user/UserInfo'
+import React, { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react'
+import UserInfo from '../user/UserInfo'
 import { AppProps, userProps } from '@/interface/data'
 import { useRouter } from 'next/router'
 import { Transition } from '@headlessui/react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { handelSendRequest } from '@/handeler/handelbutttons'
 
+import { fetchData } from '@/hooks/appContexts';
+import { usefetchDataContext } from '@/hooks/usefetchDataContext'
 
 
 const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
@@ -15,13 +18,20 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
     const [click, setclick] = useState(true)
     const [recentSearches, setRecentSearches] = useState<Array<userProps>>([])
     const [query, setQuery] = useState('')
+    const [Ssend, setSend] = useState<boolean>(false)
     const router = useRouter()
     const [filterUser, setfilterUser] = useState<Array<userProps>>([])
+    const [newAmis, setAmis] = useState<Array<userProps>>(amis)
+
+    const { refreshData, setRefreshData } = usefetchDataContext()
+
+
 
     const toggleTheme = () => {
         document.body.classList.toggle('dark');
     };
     const handelOnSubmit = () => {
+        // setRefreshData((pr) => !pr)
         const search = query.trim().replace(/\s+/g, ' ')
         if (query.replace(/\s+/g, '')) {
             router.push(`/search?query=${search}`)
@@ -36,7 +46,23 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
             }
         }
     }
+    useEffect(() => {
+        (
+            async () => {
+                try {
 
+                    const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser.id}`, {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+                    setAmis(Array.from(content));
+                } catch (error) {
+
+                }
+
+            }
+        )();
+    }, [refreshData, amis]);
     const handelClickInInput = async () => {
         setclickInInput((pr) => !pr)
         setclick(true)
@@ -60,7 +86,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
         if (query.replace(/\s+/g, '')) {
             const usrs = users.filter((user: userProps) => {
                 user.flag = true
-                amis.filter((usr: userProps) => {
+                newAmis.filter((usr: userProps) => {
                     if (usr.id == user.id) {
                         user.flag = false
                     }
@@ -73,7 +99,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
         if (query == '') {
             const usrs = recentSearches.filter((user: userProps) => {
                 user.flag = true
-                amis.filter((usr: userProps) => {
+                newAmis.filter((usr: userProps) => {
                     if (usr.id == user.id) {
                         user.flag = false
                     }
@@ -83,7 +109,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
             )
             setfilterUser(usrs)
         }
-    }, [query, users, amis, recentSearches])
+    }, [query, users, newAmis, recentSearches])
 
     const handelClickProfile = async (id: Number) => {
         try {
@@ -123,14 +149,36 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
             }
         });
     });
-    const [seachActive, setSeachActive] = useState(false)
+    const [arrayOfsender, setarrayOfsender] = useState<Array<Number>>([])
+    useEffect(() => {
+        (
+            async () => {
+                try {
+                    const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+                    if (response.status == 200) {
+                        const arrayy: Array<Number> = []
+                        Array.from(content).map((item: any) => {
+                            arrayy.push(item.receiver.id)
+                        })
+                        setSend((pr) => pr)
+                        setarrayOfsender(arrayy)
+                        console.log('hellloooo');
+                        return;
+                    }
+                } catch (error) {
+
+                }
+            }
+        )();
+    }, [currentUser, query, Ssend, refreshData]);
     const handelButtonSearch = () => {
-        setSeachActive((pr) => !pr)
         const search = document.querySelector('.Search')
         search?.classList.toggle('display')
         const submetButton = document.querySelector('.submetButton')
         submetButton?.classList.toggle('display')
-        // console.log('heoo')
     }
     return (
         <>
@@ -139,7 +187,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                     <div className="relative ">
                         <button onClick={handelButtonSearch} className="absolute  z-50 inset-y-0 -left-8  md:left-0 flex items-center pl-3 md:pointer-events-none">
                             <svg className=" w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                             </svg>
                         </button>
                         <input onClick={handelClickInInput} value={query} ref={refInput} onChange={(e) => { setQuery(e.target.value); setclick(true) }} autoComplete='off' onKeyDown={handelOnKeyDown}
@@ -171,29 +219,26 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                                     </div>
                                     {
                                         filterUser.map((user: userProps) => (
-                                            <div className='flex items-center' >
-                                                <div className={'z-10 absolute left-5 w-[18px] h-[18px] opacity-60   flex justify-center items-center'}>
+                                            <div key={user.username + String(user.id)} className='flex items-center' >
+                                                <button className={'z-10 absolute left-5 w-[18px] h-[18px] opacity-60   flex justify-center items-center'}>
                                                     <Image
-
                                                         className=' bg-CusColor_grey  absolute opacity-100 hover:opacity-0'
                                                         src={query == '' ? '/clean.png' : '/search.png'}
                                                         alt="user profile"
-                                                        layout="fill"
-                                                        objectFit="cover"
+                                                        width={200}
+                                                        height={200}
 
                                                     />
-                                                    <button>
-                                                        <Image
-                                                            className=' bg-CusColor_grey  absolute opacity-100 hover:opacity-0'
-                                                            src={query == '' ? '/recent.png' : '/search.png'}
-                                                            alt="user profile"
-                                                            layout="fill"
-                                                            objectFit="cover"
-                                                            onClick={() => handelClearOneFromSearch(user.id)}
+                                                    <Image
+                                                        className=' bg-CusColor_grey  absolute opacity-100 hover:opacity-0'
+                                                        src={query == '' ? '/recent.png' : '/search.png'}
+                                                        alt="user profile"
+                                                        width={200}
+                                                        height={200}
+                                                        onClick={() => handelClearOneFromSearch(user.id)}
 
-                                                        />
-                                                    </button>
-                                                </div>
+                                                    />
+                                                </button>
                                                 <div className={`flex w-[100%] justify-between hover:bg-slate-200 p-2 rounded-xl  `}
 
                                                     onClick={() => handelClickProfile(user.id)}
@@ -204,13 +249,16 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                                                             <div className={`absolute z-40 right-0 w-[11px] h-[11px]  bg-white rounded-full flex justify-center items-center ${(!user.flag) ? ' ' : ' hidden '}`}>
                                                                 <div className={` w-[8px] h-[8px]  rounded-full ${onlineUsersss.includes(user.id) ? 'bg-green-500' : 'bg-red-500'}`} />
                                                             </div>
+
                                                             <div className={'w-[40px] h-[40px] relative '}>
                                                                 <Image
-                                                                    className=' rounded-xl'
+                                                                    className='rounded-xl'
                                                                     src={user.foto_user}
                                                                     alt="user profile"
-                                                                    layout="fill"
-                                                                    objectFit="cover"
+                                                                    fill
+                                                                    sizes="()"
+                                                                    style={{ objectFit: "cover" }}
+
                                                                 />
                                                             </div>
                                                         </div>
@@ -231,12 +279,21 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                                                         {
 
                                                             user.flag ? (
+                                                                arrayOfsender.includes(user.id) ? (
+                                                                    <div className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
+                                                                        <Image src='/friend-request.png' className=' fill-red-700  text-red-200' alt='search' width={24} height={24} />
+                                                                    </div>
+                                                                ) : (
+                                                                    <button onClick={() => handelSendRequest({ id: currentUser.id, friendId: user.id, setSend: setSend })} className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
+                                                                        <Image src='/add-friend.svg' className=' fill-red-700  text-red-200' alt='search' width={20} height={20} />
+                                                                    </button>
+
+                                                                )
+                                                            ) : (
                                                                 <Link href={'/game'} className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
-                                                                    <Image src='/add-friend.svg' className=' fill-red-700  text-red-200' alt='search' width={20} height={20} />
+                                                                    <Image src='/icons-ping-pong-black.png' className=' ' alt='search' width={20} height={20}></Image>
                                                                 </Link>
-                                                            ) : (<Link href={'/game'} className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
-                                                                <Image src='/icons-ping-pong-black.png' className=' ' alt='search' width={20} height={20}></Image>
-                                                            </Link>)
+                                                            )
                                                         }
 
                                                         <Link href={'/chat'} className=' bg-blue-300 p-2 rounded-md  hover:ring-offset-2 hover:ring-2 duration-300'>

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, RefObject } from 'react'
-import Pong from '../../components/game/game'
+import PlayWithComputer from '../../components/game/computer'
 import { AppProps, userProps } from '@/interface/data';
 import ListOfFriends from '@/components/game/listOfFriends';
 import { useRouter } from 'next/router';
-
+import PlayOnline from '@/components/game/online';
+import Link from 'next/link';
 const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) => {
     const router = useRouter()
     // console.log(router.query.online)
@@ -29,13 +30,11 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
 
         if (router.asPath == '/game?online=true') {
             console.log(router.query.friends)
-            console.log(1111111)
             setroom(router.query.rome);
             setselectPlayer("online")
             setlistOfFriends(false)
         }
         else if (router.asPath == '/game?online=true&friends=listoffriends') {
-            console.log(2222222)
             setselectPlayer("")
             setlistOfFriends(true)
         }
@@ -84,30 +83,34 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
         selectPlayer: selectPlayer,
         info: "Some Info"
     };
+    const [color, setcolor] = useState('red');
+    useEffect(() => {
+        setcolor('red')
+    }, [router])
     return (
         <>
             <div className=' w-full '>
-                <div className='absolute flex justify-center w-[100%] items-center h-[500px] space-x-5'>
+                <div className='flex justify-center w-[100%] items-center h-[500px] space-x-5'>
                     {
                         selectPlayer == '' && !listOfFriends && (
                             <>
-                                <button className="rounded-2xl w-[20%] h-[200px] bg-black text-yellow-600 font-extralight text-4xl hover:bg-gray-800"
+                                <button className="rounded-2xl w-[20%] h-[200px] bg-CusColor_primary text-cyan-50 font-extralight text-4xl hover:bg-gray-800"
                                     onClick={handelButtonPlayOnline}
                                 >
                                     <span>play with friend </span>
                                     <span className='text-2xl'>online</span>
                                 </button>
-                                <button className="rounded-2xl w-[20%] h-[200px] bg-black text-yellow-600 font-extralight text-4xl hover:bg-gray-800"
+                                <button className="rounded-2xl w-[20%] h-[200px] bg-CusColor_primary text-cyan-50 font-extralight text-4xl hover:bg-gray-800"
                                     onClick={() => router.push("/game?offline=true")}
                                 >
                                     <span>play with friend </span>
                                     <span className='text-2xl'>offline</span>
                                 </button>
-                                <button className="rounded-2xl w-[20%] h-[200px] bg-black text-yellow-600 font-extralight text-4xl hover:bg-gray-800"
-                                    onClick={() => router.push("/game?computer=true")}
+                                <Link className="rounded-2xl w-[20%] h-[200px] bg-CusColor_primary text-cyan-50 font-extralight text-4xl hover:bg-gray-800"
+                                    href={"/game/ai?settings=true"}
                                 >
                                     play with computer
-                                </button>
+                                </Link>
                             </>
                         )
                     }
@@ -121,9 +124,9 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                     ) : null
                 }
                 {
-                    (selectPlayer === 'online' && room !== '') || (selectPlayer === 'computer' || selectPlayer === 'offline') ? (
+                    (selectPlayer === 'online' && room !== '') ? (
                         <div className={`w-full absolute ${rejectRequest ? ' hidden ' : ''}`}>
-                            <Pong
+                            < PlayOnline
                                 selectPlayer={selectPlayer}
                                 setselectPlayer={setselectPlayer}
                                 room={room}
@@ -134,6 +137,21 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
 
                     ) : null
                 }
+                {/* {
+                    (selectPlayer === 'computer' || selectPlayer === 'offline') ? (
+                        // <div className={`w-full absolute ${rejectRequest ? ' hidden ' : ''}`}>
+                        //     <PlayWithComputer
+                        //         selectPlayer={selectPlayer}
+                        //         setselectPlayer={setselectPlayer}
+                        //         room={room}
+                        //         currentUser={currentUser}
+                        //         socketApp={socket}
+                        //     />
+                        // </div>
+
+                        <Settings value='hole' setcolor={setcolor}></Settings>
+                    ): null
+                } */}
                 {
                     (rejectRequest && !hidden) ? (
                         <div className='w-full h-full  flex justify-center items-center z-50 absolute'>
@@ -167,3 +185,13 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
 }
 
 export default Index
+
+// import React from 'react'
+
+// const index = () => {
+//     return (
+//         <div>index</div>
+//     )
+// }
+
+// export default index

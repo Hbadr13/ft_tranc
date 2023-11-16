@@ -9,6 +9,7 @@ import path from 'path';
 import { send } from 'process';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { usefetchDataContext } from '@/hooks/usefetchDataContext';
 interface LevelBarpros {
     value: number
 }
@@ -52,6 +53,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
     const numberPart: number = Number(parts[1]);
     const usernamePart: string = parts[0];
     const [number, setNumber] = useState(0);
+    const { refreshData, setRefreshData } = usefetchDataContext()
 
     useEffect(() => {
 
@@ -154,12 +156,12 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                     const response = await fetch(`http://localhost:3333/users/one/${usernamePart}/${numberPart}`, {
                         credentials: 'include',
                     });
-                    const counte = await response.json();
+                    const content = await response.json();
                     if (response.status == 200) {
 
-                        setUsername(counte.username)
-                        setEmail(counte.email)
-                        setFoto_user(counte.foto_user)
+                        setUsername(content.username)
+                        setEmail(content.email)
+                        setFoto_user(content.foto_user)
                         // setrequestt(cont)
                         return;
                     }
@@ -177,9 +179,9 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                     const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/received-requests`, {
                         credentials: 'include',
                     });
-                    const counte = await response.json();
+                    const content = await response.json();
                     if (response.status == 200) {
-                        setreceived(counte)
+                        setreceived(content)
                         return;
                     }
                 } catch (error) {
@@ -196,9 +198,9 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                     const response = await fetch(`http://localhost:3333/friends/${numberPart}/send-requests`, {
                         credentials: 'include',
                     });
-                    const counte = await response.json();
+                    const content = await response.json();
                     if (response.status == 200) {
-                        setFlag2(counte);
+                        setFlag2(content);
                         // setrequestt(cont)
                         return;
                     }
@@ -223,10 +225,10 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                     const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
                         credentials: 'include',
                     });
-                    const counte = await response.json();
+                    const content = await response.json();
                     if (response.status == 200) {
-                        setsendr(counte)
-                        //   console.log(counte[1]?.receiver);
+                        setsendr(content)
+                        //   console.log(content[1]?.receiver);
                         // setrequestt(cont)
                         return;
                     }
@@ -247,6 +249,8 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
             if (response.ok) {
                 console.log('Friend request sent successfully.');
                 setisfriend(!isfriend);
+                setRefreshData((pr) => !pr)
+
             } else {
                 setIsOpen(false);
                 console.error('Failed to send friend request.');
@@ -255,6 +259,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
             console.error('Error sending friend request:', error);
         }
     };
+
     const sendRequest = async () => {
         try {
             const response = await fetch(`http://localhost:3333/friends/send-request/${numberPart}/${currentUser.id}`, {
@@ -264,7 +269,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
 
             if (response.ok) {
                 setIsOpen(true);
-
+                setRefreshData((pr) => !pr)
                 console.log('Friend request sent successfully.');
             } else {
                 console.error('Failed to send friend request.');
@@ -273,7 +278,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
             console.error('Error sending friend request:', error);
         }
     };
-    const CanacelRequest = async () => {
+    const cancelRequest = async () => {
         try {
             const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${currentUser.id}`, {
                 method: 'DELETE',
@@ -282,7 +287,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
 
             if (response.ok) {
                 setIsOpen(false);
-
+                setRefreshData((pr) => !pr)
                 console.log('delete-friend-request sent successfully.');
             } else {
                 console.error('Failed to delete-friend-request.');
@@ -335,13 +340,13 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
 
     // }, [sendr, numberPart, received, flag2])
     useEffect(() => {
+        if (Array.isArray(amis)) {
+            amis.filter((usr: any) => {
+                if (usr.id == numberPart)
+                    setFlag(false)
+            })
+        } else { }
 
-        amis.filter((usr: any) => {
-
-            if (usr.id == numberPart)
-                setFlag(false)
-
-        })
         // useEffect(() => {
         if (Array.isArray(received)) {
             received.map((user: any) => {
@@ -366,7 +371,6 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
         }
         // setFlag2(true)
     }, [sendr, numberPart, isfriend, received, currentFileName, amis, amis_id, setFlag1, flag2, delete_request])
-
 
 
     // console.log(flag2)
@@ -422,7 +426,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                                     (
                                         <div className="text-base font-bold flex items-center  space-x-2  text-[#2c4d82]">
                                             <div className=" py-2 px-5 bg-[#dbeafe]  flex  items-center  space-x-1  border rounded-full hover:scale-110 duration-300">
-                                                <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
+                                                <svg width="20" height="20" fill="black" enableBackground="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clipRule="evenodd" fill="none" fillRule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" strokeMiterlimit="10" strokeWidth="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                                                 <span className='normal-case'>Friends</span>
                                             </div>
                                             <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
@@ -437,7 +441,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                                                 (
                                                     <div className="text-base font-bold flex items-center  space-x-2  text-[#2c4d82]">
                                                         <div className=" py-2 px-4 bg-[#dbeafe]  flex  items-center  border rounded-full hover:scale-110 duration-300">
-                                                            <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
+                                                            <svg width="20" height="20" fill="black" enableBackground="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clipRule="evenodd" fill="none" fillRule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" strokeMiterlimit="10" strokeWidth="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                                                             <button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={sendRequestForaccpet} >Confrim</button>
                                                         </div>
                                                         <button className="py-2 px-7 bg-[#dbeafe] border rounded-full  hover:scale-110 duration-300 " onClick={sendRequestForaccpet}>Delete request</button>
@@ -445,7 +449,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                                                     </div>) :
                                                 (<div className="text-base font-bold flex items-center  space-x-2  text-[#2c4d82]">
                                                     <div className=" py-2 px-5 bg-[#dbeafe]  flex  items-center  space-x-1  border rounded-full hover:scale-110 duration-300">
-                                                        <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
+                                                        <svg width="20" height="20" fill="black" enableBackground="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clipRule="evenodd" fill="none" fillRule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" strokeMiterlimit="10" strokeWidth="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                                                         <span className='normal-case'>Friends</span>
                                                     </div>
                                                     <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
@@ -460,7 +464,7 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
                                                     (
                                                         <button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={sendRequest} >Add friend</button>
                                                     ) :
-                                                    (<button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={CanacelRequest} >Canacel requset</button>)
+                                                    (<button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={cancelRequest} >Cancel requset</button>)
                                             )
                                         )
 
@@ -540,6 +544,6 @@ export async function getServerSideProps(context: any) {
 
 export default YourComponent;
 
-function setreceived(counte: any) {
+function setreceived(content: any) {
     throw new Error('Function not implemented.');
 }

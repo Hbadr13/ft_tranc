@@ -43,7 +43,7 @@ function getTheDateAndTheTime(dateString: string) {
 }
 const dateString = "2023-10-28T09:04:35.054Z";
 
-console.log(getTheDateAndTheTime(dateString));
+// console.log(getTheDateAndTheTime(dateString));
 
 const ListOfFriends = ({ onlineUsersss, currentUser, users, amis, socket, setOpponent }: ExtendedAppProps) => {
     const router = useRouter()
@@ -53,6 +53,7 @@ const ListOfFriends = ({ onlineUsersss, currentUser, users, amis, socket, setOpp
     const [historiqueHidden, sethistoriqueHidden] = useState<Number>(-1);
     const [matchs, setMatchs] = useState<Array<any>>([])
     const handelChallenge = async (e: any) => {
+        console.log('hi')
         try {
             const response = await fetch(`http://localhost:3333/users/getbyuserid/${e.target.value}`, {
                 credentials: 'include',
@@ -103,7 +104,7 @@ const ListOfFriends = ({ onlineUsersss, currentUser, users, amis, socket, setOpp
         } catch (error) {
         }
     }
-    const handelCHistorique = async (e: any) => {
+    const handelHistorique = async (e: any) => {
         sethistoriqueHidden((prev) => prev == -1 ? Number(e.target.value) : -1)
         try {
             const response = await fetch(`http://localhost:3333/game/update/${currentUser.id}/${e.target.value}`, {
@@ -152,7 +153,7 @@ const ListOfFriends = ({ onlineUsersss, currentUser, users, amis, socket, setOpp
                                         </div>
                                         <div className="flex justify-between ">
                                             <button value={`${user.id}`} onClick={handelChallenge} className='bg-[#77A6F7]    rounded-xl px-4 py-2'>Challenge</button>
-                                            <button value={`${user.id}`} onClick={handelCHistorique} className='bg-white border-black border-2 rounded-xl px-4 py-2'>Historique</button>
+                                            <button value={`${user.id}`} onClick={handelHistorique} className='bg-white border-black border-2 rounded-xl px-4 py-2'>Historique</button>
                                         </div>
                                     </div>
                                     <div className={`bg-red-200 w-[250px] h-[170px] absolute z-10  -bottom-[190px] rounded-3xl p-3 duration-200 ${!(user.id === selectUser) ? 'hidden' : ""}`}>hello {user.id}</div>

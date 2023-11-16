@@ -4,12 +4,17 @@ import Image from 'next/image'
 import { getBack } from '@/hooks/appContexts'
 import { AppProps, userProps } from '@/interface/data'
 import Link from 'next/link'
+import { handelSendRequest } from '@/handeler/handelbutttons'
+import { usefetchDataContext } from '@/hooks/usefetchDataContext'
 const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
     const router = useRouter()
     const oldpath = useContext(getBack)
     const [filterUser, setfilterUser] = useState<Array<userProps>>([])
     const [currentPath, setcurrentPath] = useState<string>('')
     const [recentSearches, setRecentSearches] = useState<Array<userProps>>([])
+    const [arrayOfsender, setarrayOfsender] = useState<Array<Number>>([])
+    const [Ssend, setSend] = useState<boolean>(false)
+    const { refreshData, setRefreshData } = usefetchDataContext()
 
     const qr: string | string[] | undefined = router.query.query
     let query: string = "";
@@ -57,8 +62,6 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
             setfilterUser(usrs)
         }
         if (router.asPath == '/search') {
-
-            console.log('hellllo')
             const usrs = recentSearches.filter((user: userProps) => {
                 user.flag = true
                 amis.filter((usr: userProps) => {
@@ -72,7 +75,30 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
             setfilterUser(usrs)
         }
     }, [query, users, amis, recentSearches, router])
+    useEffect(() => {
+        (
+            async () => {
+                try {
+                    const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+                    if (response.status == 200) {
+                        const arrayy: Array<Number> = []
+                        Array.from(content).map((item: any) => {
+                            arrayy.push(item.receiver.id)
+                        })
+                        setSend((pr) => pr)
+                        setarrayOfsender(arrayy)
+                        console.log('hellloooo');
+                        return;
+                    }
+                } catch (error) {
 
+                }
+            }
+        )();
+    }, [currentUser, query, Ssend, refreshData]);
 
 
     useEffect(() => {
@@ -138,7 +164,7 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                 <div className=" hidden  sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5  place-items-center  sm:mx-10 md:mx-20  xl:mx-32 ">
                     {
                         filterUser.map((user: userProps) => (
-                            <div className="w-[100%] h-[220px] max-w-[180px] bg-white m-2 p-2 rounded-xl flex flex-col items-start shadow-md space-y-1">
+                            <div key={user.id} className="w-[100%] h-[220px] max-w-[180px] bg-white m-2 p-2 rounded-xl flex flex-col items-start shadow-md space-y-1">
                                 <Link className='w-full flex justify-between hover:bg-slate-200  rounded-xl '
                                     href={`/users/${user.username}.${user.id}`}
                                 >
@@ -147,8 +173,9 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                                             className=' rounded-xl'
                                             src={user.foto_user}
                                             alt="user profile"
-                                            layout="fill"
-                                            objectFit="cover"
+                                            sizes='()'
+                                            fill
+                                            style={{ objectFit: "cover" }}
                                         />
 
                                     </div>
@@ -171,13 +198,17 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                                 </div>
                                 <div className="flex justify-between text-[11px] font-bol w-full ">
                                     {user.flag ? (
-                                        <div className=" relative w-[50%] flex bg-slate-800 hover:bg-slate-600 text-white p-2 rounded-lg  justify-center items-center ">
+                                        !arrayOfsender.includes(user.id) ? (<div className=" relative w-[50%] flex bg-slate-800 hover:bg-slate-600 text-white p-2 rounded-lg  justify-center items-center ">
                                             <Image className=' absolute   left-[2px]' width={20} height={20} src={'/add-user.png'} alt='addfriend'></Image>
-                                            <button className=' absolute right-[2px]' > Add friend</button>
-                                        </div>
+                                            <button onClick={() => handelSendRequest({ id: currentUser.id, friendId: user.id, setSend: setSend })} className=' absolute right-[2px]' > Add friend</button>
+                                        </div>) :
+                                            (<div className=" relative w-[50%] flex bg-slate-800 hover:bg-slate-600 text-white p-2 rounded-lg  justify-center items-center ">
+                                                {/* <Image className=' absolute   left-[2px]' width={20} height={20} src={'/add-user.png'} alt='addfriend'></Image> */}
+                                                <button className=' absolute right-[2px]' > Cancel request</button>
+                                            </div>)
                                     ) : (
                                         <div className="w-[45%] flex bg-slate-800 hover:bg-slate-600 text-white p-1 rounded-lg  justify-center items-center ">
-                                                <Image className=' ' width={20} height={20} src={'/icons-ping-pong-white.png'} alt='addfriend'></Image>
+                                            <Image className=' ' width={20} height={20} src={'/icons-ping-pong-white.png'} alt='addfriend'></Image>
                                             <button className='pl-2' >  Play</button>
                                         </div>
                                     )}
@@ -194,29 +225,26 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                 <div className="block sm:hidden mx-2">
                     {
                         filterUser.map((user: userProps) => (
-                            <div className='flex items-center' >
-                                <div className={'z-10 absolute left-3 w-[18px] h-[18px] opacity-60   flex justify-center items-center'}>
+                            <div key={user.id} className='flex items-center' >
+                                <button className={'z-10 absolute left-3 w-[18px] h-[18px] opacity-60   flex justify-center items-center'}>
                                     <Image
-
                                         className=' bg-CusColor_grey  absolute opacity-100 hover:opacity-0'
                                         src={query == '' ? '/clean.png' : '/search.png'}
                                         alt="user profile"
-                                        layout="fill"
-                                        objectFit="cover"
+                                        width={200}
+                                        height={200}
 
                                     />
-                                    <button>
-                                        <Image
-                                            className=' bg-CusColor_grey  absolute opacity-100 hover:opacity-0'
-                                            src={query == '' ? '/recent.png' : '/search.png'}
-                                            alt="user profile"
-                                            layout="fill"
-                                            objectFit="cover"
-                                            onClick={() => handelClearOneFromSearch(user.id)}
+                                    <Image
+                                        className=' bg-CusColor_grey  absolute opacity-100 hover:opacity-0'
+                                        src={query == '' ? '/recent.png' : '/search.png'}
+                                        alt="user profile"
+                                        width={200}
+                                        height={200}
+                                        onClick={() => handelClearOneFromSearch(user.id)}
 
-                                        />
-                                    </button>
-                                </div>
+                                    />
+                                </button>
                                 <div className={`flex w-[100%] justify-between hover:bg-slate-200 p-2 rounded-xl  `}
 
                                     onClick={() => handelClickProfile(user.id)}
@@ -232,8 +260,9 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                                                     className=' rounded-xl'
                                                     src={user.foto_user}
                                                     alt="user profile"
-                                                    layout="fill"
-                                                    objectFit="cover"
+                                                    fill
+                                                    sizes="()"
+                                                    style={{ objectFit: "cover" }}
                                                 />
                                             </div>
                                         </div>
@@ -254,9 +283,17 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                                         {
 
                                             user.flag ? (
-                                                <Link href={'/game'} className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
-                                                    <Image src='/add-friend.svg' className=' fill-red-700  text-red-200' alt='search' width={20} height={20} />
-                                                </Link>
+
+                                                arrayOfsender.includes(user.id) ? (
+                                                    <div className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
+                                                        <Image src='/friend-request.png' className=' fill-red-700  text-red-200' alt='search' width={24} height={24} />
+                                                    </div>
+                                                ) : (
+                                                    <button onClick={() => handelSendRequest({ id: currentUser.id, friendId: user.id, setSend: setSend })} className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
+                                                        <Image src='/add-friend.svg' className=' fill-red-700  text-red-200' alt='search' width={20} height={20} />
+                                                    </button>
+
+                                                )
                                             ) : (<Link href={'/game'} className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
                                                 <Image src='/icons-ping-pong-black.png' className=' ' alt='search' width={20} height={20}></Image>
                                             </Link>)
@@ -280,7 +317,7 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                             <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
                         </div>
                         <div className=" z-10">
-                            <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                            <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
                         </div>
                         <div className="">
                             <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>

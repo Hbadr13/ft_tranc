@@ -150,8 +150,8 @@ const UseProfile = ({ currentUser }: { currentUser: userProps }) => {
                 className=' rounded-3xl'
                 src={foto_user}
                 alt="user profile"
-                layout="fill"
-                objectFit="cover"
+                fill
+                style={{ objectFit: "cover" }}
               />
 
             </div>

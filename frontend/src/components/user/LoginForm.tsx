@@ -101,7 +101,7 @@ export default function LoginForm() {
       const form = e.target;
       form.reset();
 
-      console.log("kin wahd hna: ", error);
+      // console.log("kin wahd hna: ", error);
     }
   }
   return (

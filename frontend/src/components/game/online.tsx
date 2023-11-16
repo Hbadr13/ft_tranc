@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, RefObject } from "react";
-import { startGame } from "../../utils/main";
-import { Player, Ball, GameInfo } from "../../utils/class";
-import { InfoGameFromClientProps } from "@/components/model";
+// import { startGame } from "./main";
+// import { Player, Ball, GameInfo } from "./class";
+import { InfoGameFromClientProps } from "@/interface/model";
 import { io } from "socket.io-client";
 import { useRouter } from "next/router";
 import { userProps } from "@/interface/data";
@@ -17,26 +17,268 @@ interface InfoGameprops {
     socketApp: Socket
 }
 
-const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: InfoGameprops) => {
-    let [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-    let [ball, setball] = useState(new Ball(200, 50, "red", 10, GameInfo.VELOCIT, GameInfo.VELOCIT, GameInfo.SPEED));
-    let [computer, setcomputer] = useState(new Player(0, 0));
-    let [player, setplayer] = useState(new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y));
+const PlayOnline = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: InfoGameprops) => {
 
-    let HoAreYou = useRef(0);
+    class Player {
+        name: string = "";
+        x: number = 0;
+        y: number = 0;
+        width: number = 10;
+        height: number = 100;
+        color: string = "#FFFFFF";
+        top: number = 0;
+        bottom: number = 0;
+        right: number = 0;
+        left: number = 0;
+        score: number = 0;
+        status: string = "Pause";
+        youWonRrLost: string = "";
+        id: number = -1;
+        opponentId: number = -1;
+
+        public constructor(x: number, y: number) {
+            this.x = x;
+            this.y = y;
+        }
+        public setBorder(): void {
+            this.top = this.y;
+            this.bottom = this.y + this.height;
+            this.right = this.x + this.width;
+            this.left = this.x;
+        }
+    }
+
+    class Ball {
+        raduis: number;
+        color: string;
+        x: number = 0;
+        y: number = 0;
+        top: number = 0;
+        bottom: number = 0;
+        right: number = 0;
+        left: number = 0;
+        velocityX: number = 0;
+        velocityY: number = 0;
+        speed: number;
+        public constructor(
+            x: number,
+            y: number,
+            color: string,
+            raduis: number,
+            velocityX: number,
+            velocityY: number,
+            speed: number
+        ) {
+            this.x = x;
+            this.y = y;
+            this.color = color;
+            this.raduis = raduis;
+            this.velocityX = velocityX * -1;
+            this.velocityY = velocityY;
+            this.speed = speed;
+        }
+        public setBorder(): void {
+            this.top = this.y - this.raduis;
+            this.bottom = this.y + this.raduis;
+            this.right = this.x + this.raduis;
+            this.left = this.x - this.raduis;
+        }
+        public checkCollision(selectPlayer: Player): boolean {
+            return (
+                this.bottom > selectPlayer.top &&
+                this.top < selectPlayer.bottom &&
+                this.right > selectPlayer.left &&
+                this.left < selectPlayer.right
+            );
+        }
+    }
+
+    const GameInfo = {
+        FPS: 1000 / 60,
+        PLAYER_HEIGHT: 100,
+        PLAYER_WIDTH: 10,
+        PLAYER_X: 0,
+        PLAYER_Y: 0,
+        BALL_START_SPEED: 2,
+        RADIUS_BALL: 10,
+        VELOCIT: 0.1,
+        LEVEL: 0.005,
+        ANGLE: Math.PI / 4,
+        SPEED: 0.3,
+        CANVAS_WIDTH: 0,
+        CANVAS_HIEGHT: 0,
+        ACCELERATION: 0.05,
+    };
+
+    class Canvas {
+        canvas: HTMLCanvasElement;
+        ctx: CanvasRenderingContext2D | null;
+        width: number;
+        height: number;
+        flag: number = 0;
+        public constructor(canvas: HTMLCanvasElement) {
+            this.canvas = canvas;
+            this.ctx = this.canvas.getContext("2d");
+            this.width = canvas.width;
+            this.height = canvas.height;
+        }
+        public ClearCanvas(): void {
+            if (!this.ctx) return;
+            this.ctx.fillStyle = "#000000";
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+        public drawRect(object: Player): void {
+            if (!this.ctx) return;
+            this.ctx.fillStyle = "#FFFFFF";
+            this.ctx.fillRect(object.x, object.y, object.width, object.height);
+        }
+        public drawCircle(ball: Ball): void {
+            if (!this.ctx) return;
+            this.ctx.fillStyle = ball.color;
+            this.ctx.beginPath();
+            this.ctx.arc(ball.x, ball.y, ball.raduis, 0, Math.PI * 2, true);
+            this.ctx.closePath();
+            this.ctx.fill();
+        }
+
+        public drawText(text: string, x: number, y: number, color: string) {
+            if (!this.ctx) return;
+            this.ctx.fillStyle = color;
+            this.ctx.font = "40px fantasy";
+            this.ctx.fillText(text, x, y);
+        }
+
+        public drawMedianLine(lineInfo: {
+            w: number;
+            h: number;
+            step: number;
+            color: string;
+        }): void {
+            if (!this.ctx) return;
+            for (let i = 0; i < 2000; i += lineInfo.step) {
+                this.ctx.fillStyle = lineInfo.color;
+                this.ctx.fillRect(
+                    this.width / 2 - lineInfo.w / 2,
+                    i,
+                    lineInfo.w,
+                    lineInfo.h
+                );
+            }
+        }
+        public moveBall(ball: Ball, selectPlayer: Player): void {
+            {
+                let angle = Math.PI / 4;
+                let whenCollision =
+                    (ball.y - (selectPlayer.y + selectPlayer.height / 2)) /
+                    (selectPlayer.height / 2);
+                const direction = ball.x > this.width / 2 ? -1 : 1;
+                let newAngle = GameInfo.ANGLE * whenCollision;
+                ball.velocityX = direction * ball.speed * Math.cos(newAngle);
+                ball.velocityY = ball.speed * Math.sin(newAngle);
+                ball.speed += GameInfo.ACCELERATION;
+            }
+        }
+    }
+
+
+
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [ball, setball] = useState(new Ball(200, 50, "red", 10, GameInfo.VELOCIT, GameInfo.VELOCIT, GameInfo.SPEED));
+    const [computer, setcomputer] = useState(new Player(0, 0));
+    const [player, setplayer] = useState(new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y));
+    const HoAreYou = useRef(0);
     const myCanvasRef = useRef<HTMLCanvasElement>(null);
     const [socket, setsocket] = useState<any>();
     const [numberPlayer, setnumberPlayer] = useState(0);
     const [computerScore, setcomputerScore] = useState(0);
     const [playerScore, setplayerScore] = useState(0);
+
+    const [computerStatus, setcomputerStatus] = useState('');
+    const [playerStatus, setplayerStatus] = useState('');
+    // const [gameStatus, setgameStatus] = useState('Pause')
     const [gamaIsStart, setgamaIsStart] = useState(0)
     const [YouWon, setYouWon] = useState(0);
     const YouWonOrLostPlayAgain = useRef("");
-    const [opponentId, setopponentId] = useState<Number>(-1);
+    // const [opponentId, setopponentId] = useState<Number>(-1);
     const opponentIdd = useRef<Number>(-1);
-    const [gameStatus, setgameStatus] = useState('Pause')
 
     const router = useRouter();
+
+
+    function LinearInterpolation(pos1: number, pos2: number, t: number) {
+        return pos1 + (pos2 - pos1) * t;
+    }
+
+    const updateGameLoop = (MyCanvas: Canvas, mousePosition: { x: number; y: number }, ball: Ball, player: Player, computer: Player, selectPlayer: string, HoAreYou: any) => {
+
+        GameInfo.CANVAS_WIDTH = MyCanvas.width;
+        GameInfo.CANVAS_HIEGHT = MyCanvas.height;
+        if (selectPlayer === "computer") {
+            const newY = LinearInterpolation(computer.y, ball.y - computer.height / 2, GameInfo.LEVEL);
+            if (newY > -10 && (newY + computer.height < MyCanvas.height + 10))
+                computer.y = newY;
+        }
+        else {
+            if (mousePosition.x > -10 && (mousePosition.x + computer.height < MyCanvas.height + 10))
+                computer.y = mousePosition.x;
+        }
+
+        if (mousePosition.y > -10 && (mousePosition.y + player.height < MyCanvas.height + 10))
+            player.y = mousePosition.y;
+        if (HoAreYou.current == 1)
+            return
+
+        ball.x += ball.velocityX;
+        ball.y += ball.velocityY;
+        ball.setBorder();
+        player.setBorder();
+        computer.setBorder();
+        if (ball.bottom + 2 > MyCanvas.height || ball.top - 2 < 0)
+            ball.velocityY *= -1;
+
+        let selectPlayerCollision = ball.x < MyCanvas.width / 2 ? player : computer;
+        if (ball.checkCollision(selectPlayerCollision))
+            MyCanvas.moveBall(ball, selectPlayerCollision);
+    };
+
+    const renderGameOverScreen = (
+        MyCanvas: Canvas,
+        ball: Ball,
+        player: Player,
+        computer: Player
+    ) => {
+        MyCanvas.ClearCanvas();
+        MyCanvas.drawRect(player);
+        MyCanvas.drawRect(computer);
+        MyCanvas.drawMedianLine({ w: 2, h: 10, step: 20, color: "#FFFFFF" });
+        MyCanvas.drawCircle(ball);
+
+        MyCanvas.drawText(String(player.score), 300, 60, "white");
+        MyCanvas.drawText(String(computer.score), 700, 60, "white");
+    };
+    interface startGameProps {
+        myCanvasRef: React.RefObject<HTMLCanvasElement>;
+        mousePosition: { x: number; y: number };
+        ball: Ball;
+        player: Player;
+        computer: Player;
+        selectPlayer: string;
+        HoAreYou: any
+    }
+    function startGame({ myCanvasRef, mousePosition, ball, player, computer, selectPlayer, HoAreYou }: startGameProps) {
+        if (!myCanvasRef.current) return;
+        const MyCanvas = new Canvas(myCanvasRef.current);
+        computer.x = MyCanvas.width - 10
+        if (computer.status == 'Resume' || player.status == 'Resume')
+            return
+        updateGameLoop(MyCanvas, mousePosition, ball, player, computer, selectPlayer, HoAreYou);
+        renderGameOverScreen(MyCanvas, ball, player, computer);
+    }
+
+
+
+
+
 
     useEffect(() => {
         socket?.on("start", () => {
@@ -52,10 +294,17 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
             setnumberPlayer(2);
 
             setInterval(() => {
-                if (YouWonOrLostPlayAgain.current === "won" || YouWonOrLostPlayAgain.current === "lost") {
+                if (computer.status == 'Resume' || player.status == 'Resume')
                     return
+                if (YouWonOrLostPlayAgain.current === "won" || YouWonOrLostPlayAgain.current === "lost") {
+                    {
+                        // const s = (new Player(0, 0));
+                        // console.log('score:', s.score)
+                        // setplayer(new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y));
+                        return
+                    }
                 }
-
+                // console.log('problem--->', computer.status, '~', player.status)
                 if (HoAreYou.current == 0) {
                     if (player.youWonRrLost == "won") {
                         YouWonOrLostPlayAgain.current = "won"
@@ -86,15 +335,15 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
                     {
                         try {
                             const sendData = async () => {
-                                if (HoAreYou.current == 0) {
-                                    console.log('myGools:', player.score)
-                                    console.log('opponentGools :', computer.score)
+                                // if (HoAreYou.current == 0) {
+                                //     console.log('myGools:', player.score)
+                                //     console.log('opponentGools :', computer.score)
 
-                                } else if (HoAreYou.current == 1) {
-                                    console.log('myGools:', computer.score)
-                                    console.log('opponentGools:', player.score)
+                                // } else if (HoAreYou.current == 1) {
+                                //     console.log('myGools:', computer.score)
+                                //     console.log('opponentGools:', player.score)
 
-                                }
+                                // }
                                 // console.log()
                                 const response = await fetch(`http://localhost:3333/game/update/${currentUser.id}`, {
                                     method: "POST",
@@ -120,12 +369,14 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
                 startGame({ myCanvasRef, mousePosition, ball, player, computer, selectPlayer, HoAreYou });
                 setcomputerScore(computer.score);
                 setplayerScore(player.score);
+                setplayerStatus(player.status)
+                setcomputerStatus(computer.status)
                 if (HoAreYou.current == 0) {
                     if (ball.x < 0) {
                         computer.score += 1;
                         ball.x = GameInfo.CANVAS_WIDTH / 2;
                         ball.y = GameInfo.CANVAS_HIEGHT / 2;
-                        ball.velocityX = GameInfo.VELOCIT;
+                        ball.velocityX = -GameInfo.VELOCIT;
                         ball.velocityY = GameInfo.VELOCIT;
                         ball.speed = GameInfo.SPEED
                     }
@@ -133,7 +384,7 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
                         player.score += 1;
                         ball.x = GameInfo.CANVAS_WIDTH / 2;
                         ball.y = GameInfo.CANVAS_HIEGHT / 2;
-                        ball.velocityX = GameInfo.VELOCIT;
+                        ball.velocityX = -GameInfo.VELOCIT;
                         ball.velocityY = GameInfo.VELOCIT;
                         ball.speed = GameInfo.SPEED
                     }
@@ -163,13 +414,13 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
                             y: ball.y,
                             playerScore: player.score,
                             computerScore: computer.score,
-                            statuee: gameStatus
+                            // statuee: gameStatus
                         });
                     }
                 }
-            }, 1000 / 30);
+            }, 1000 / 60);
         });
-    });
+    },[socket]);
 
     useEffect(() => {
         const canvas = myCanvasRef.current;
@@ -223,14 +474,14 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
             // player.id = currentUser.id
             // player.opponentId = oppnenid
             opponentIdd.current = oppnenid
-            setopponentId(oppnenid)
+            // setopponentId(oppnenid)
         })
         socket?.on("indexPlayer", (index: number) => {
             HoAreYou.current = index;
         });
 
         socket?.on("ResumePause", (value: string) => {
-            setgameStatus(value)
+            // setgameStatus(value)
             player.status = value
             computer.status = value
         })
@@ -262,7 +513,7 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
         });
         socket?.on("documentHidden", (flag: boolean) => {
             const value = "Resume"
-            setgameStatus(value)
+            // setgameStatus(value)
             player.status = value
             computer.status = value
         })
@@ -301,11 +552,11 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
         }
     };
     const handelButtonGameStatus = () => {
-        const status = gameStatus === 'Pause' ? 'Resume' : 'Pause'
+        const status = player.status === 'Pause' ? 'Resume' : 'Pause'
         socket?.emit('ResumePause', status)
         computer.status = status
         player.status = status
-        setgameStatus(status)
+        // setgameStatus(status)
     }
     const handelButtonLeave = () => {
         setselectPlayer('')
@@ -359,7 +610,7 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
                             </div>
 
                             <button onClick={handelButtonGameStatus} className="bg-slate-400 w-[20%] h-[90%] rounded-2xl flex justify-center items-center text-3xl">
-                                {gameStatus}
+                                {player.status}
                             </button>
 
                             <div className="bg-slate-400 w-[20%] h-[90%] rounded-2xl flex justify-center items-center text-3xl">
@@ -436,4 +687,4 @@ const Pong = ({ selectPlayer, setselectPlayer, room, currentUser, socketApp }: I
     );
 };
 
-export default Pong;
+export default PlayOnline;

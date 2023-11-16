@@ -1,7 +1,7 @@
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
-import SideMenu from '@/components/sideMenu';
-import Navbar from '@/components/navbar';
+import SideMenu from '@/components/layout/sideMenu';
+import Navbar from '@/components/layout/navbar';
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks';
@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { Transition } from '@headlessui/react';
 import { createContext, } from 'react'
 import { getBack } from '@/hooks/appContexts';
+import { fetchData } from '@/hooks/appContexts';
 const font = Open_Sans({ subsets: ['latin'] })
 // import {useConta}
 export interface CardInvitation {
@@ -181,8 +182,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
     router.push(pathOfGame)
 
   }
-  const [clickToSplit, setclickToSplit] = useState<boolean>(false)
   const [path, setpath] = useState('/')
+  const [refreshData, setRefreshData] = useState<boolean>(false)
   useEffect(() => {
     if (router.route != '/search')
       setpath(router.route)
@@ -190,21 +191,25 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
   return (
     <>
-      <getBack.Provider value={path}>
-        <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
-          hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
-        <div className={`${font.className}   font-medium `}>
-          {isSideMenuVisible && isSideMenuVisible2 &&
-            <>
-              <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
-              <SideMenu currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
-            </>
-          }
-          <div className="home mt-16">
-            <Component  {...modifiedPageProps} />
+      <fetchData.Provider value={{ setRefreshData: setRefreshData, refreshData: refreshData }}>
+        <getBack.Provider value={path}>
+
+          <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
+            hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
+          <div className={`${font.className}   font-medium `}>
+            {isSideMenuVisible && isSideMenuVisible2 &&
+              <>
+                <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
+                <SideMenu currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
+
+              </>
+            }
+            <div className="home mt-16">
+              <Component  {...modifiedPageProps} />
+            </div>
           </div>
-        </div>
-      </getBack.Provider>
+        </getBack.Provider>
+      </fetchData.Provider>
     </>
   )
 }

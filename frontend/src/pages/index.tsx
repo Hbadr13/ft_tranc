@@ -14,7 +14,7 @@ function Index({ onlineUsersss, currentUser, users, amis }: AppProps) {
 
   return (
     <>
-
+      This is home
     </>
 
   );

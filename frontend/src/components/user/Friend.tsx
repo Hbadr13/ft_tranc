@@ -91,7 +91,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
       }
     )();
   }, [currentUser.id, isOpen]);
-  const CanacelRequest = async (numberPart: number) => {
+  const cancelRequest = async (numberPart: number) => {
     try {
       const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${currentUser.id}`, {
         method: 'DELETE',
@@ -202,7 +202,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                     (<div className="flex">
 
                       <div className=" py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300   flex  items-center  space-x-1  border rounded-full hover:bg-[white] hover:scale-110 duration-300">
-                        <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
+                        <svg width="20" height="20" fill="black" enableBackground="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clipRule="evenodd" fill="none" fillRule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" strokeMiterlimit="10" strokeWidth="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                       </div>
                       <div className=" py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300   flex  items-center  space-x-1  border rounded-full hover:bg-[#eeecec] hover:scale-110 duration-300">
 
@@ -248,7 +248,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                           (
 
                             <div className="">
-                              <button onClick={() => CanacelRequest(user.id)} className="flex float-none   py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300  hover:bg-[white] hover:scale-110 items-center      border rounded-full duration-300"><svg width="20" height="20" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M496 224c-79.6 0-144 64.4-144 144s64.4 144 144 144 144-64.4 144-144-64.4-144-144-144zm64 150.3c0 5.3-4.4 9.7-9.7 9.7h-60.6c-5.3 0-9.7-4.4-9.7-9.7v-76.6c0-5.3 4.4-9.7 9.7-9.7h12.6c5.3 0 9.7 4.4 9.7 9.7V352h38.3c5.3 0 9.7 4.4 9.7 9.7v12.6zM320 368c0-27.8 6.7-54.1 18.2-77.5-8-1.5-16.2-2.5-24.6-2.5h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h347.1c-45.3-31.9-75.1-84.5-75.1-144zm-96-112c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128z" /></svg>
+                              <button onClick={() => cancelRequest(user.id)} className="flex float-none   py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300  hover:bg-[white] hover:scale-110 items-center      border rounded-full duration-300"><svg width="20" height="20" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M496 224c-79.6 0-144 64.4-144 144s64.4 144 144 144 144-64.4 144-144-64.4-144-144-144zm64 150.3c0 5.3-4.4 9.7-9.7 9.7h-60.6c-5.3 0-9.7-4.4-9.7-9.7v-76.6c0-5.3 4.4-9.7 9.7-9.7h12.6c5.3 0 9.7 4.4 9.7 9.7V352h38.3c5.3 0 9.7 4.4 9.7 9.7v12.6zM320 368c0-27.8 6.7-54.1 18.2-77.5-8-1.5-16.2-2.5-24.6-2.5h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h347.1c-45.3-31.9-75.1-84.5-75.1-144zm-96-112c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128z" /></svg>
                               </button>
                             </div>
 

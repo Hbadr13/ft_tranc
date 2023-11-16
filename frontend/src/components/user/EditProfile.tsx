@@ -53,7 +53,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.[0];
         if (selectedFile) {
-            console.log('size: ', selectedFile)
+            // console.log('size: ', selectedFile)
             const reader = new FileReader();
 
             reader.onload = (event) => {
@@ -118,7 +118,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
             });
 
             if (res.status == 200) {
-                console.log("_sdsdsdsdf")
+                // console.log("_sdsdsdsdf")
                 const form = e.target;
                 ;
                 router.push('/profile');
@@ -131,7 +131,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
         } catch (error) {
             router.push('/profile');
 
-            console.log("kin wahd error hna: ", error);
+            // console.log("kin wahd error hna: ", error);
         }
     };
 
@@ -156,7 +156,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
     useEffect(() => {
         (
             async () => {
-                console.log(update_foto_user);
+                // console.log(update_foto_user);
                 if (update_foto_user)
                     setupdate_gender(update_foto_user)
                 else if (!update_foto_user && (foto_user == falq1 || foto_user == flaq2) && update_gender)

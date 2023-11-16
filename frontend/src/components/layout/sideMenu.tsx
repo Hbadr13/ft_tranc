@@ -5,9 +5,9 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import UserInfo from './user/UserInfo'
+import UserInfo from '../user/UserInfo'
 import { AppProps, BoxSearchrProps, userProps } from '@/interface/data'
-import { CustomLinkSideMenuProps } from './model'
+import { CustomLinkSideMenuProps } from '../../interface/model'
 import { useRouter } from 'next/router'
 
 
@@ -61,7 +61,7 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
     })
     useEffect(() => {
         const lst: Array<string> = ['/', '/chat', '/profile', '/user', '/game', '/search']
-        console.log(router.route, ':', lst.indexOf(router.route))
+        // console.log(router.route, ':', lst.indexOf(router.route))
         if (lst.indexOf(router.route) != -1)
             setActiveButton(lst.indexOf(router.route) + 1)
     }, [router])
@@ -75,9 +75,8 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
             </div>
             <div className={`text-md sidebar  hidden  md:block  fixed top-0 z-40  pt-20 h-screen  ${light}  space-y-3`}>
                 <span id='' hidden={isDivHidden} className="z-50 -top-1  right-9 absolute  duration-300" >
-                    <Image src='/ping-pong-2.png' className={` z-50 xl:block`} alt='home' width={65} height={30}></Image>
+                    <Image src='/ping-pong-2.png' className={` z-50 xl:block w-auth-auto  `} alt='home' width={65} height={30} priority={true}></Image>
                 </span>
-
 
                 <div className='relative p-2 md:p-0 md:py-2 md:pl-2  w-full bg-red-300s '>
                     <div className={`${activeButton == 1 ? 'block' : 'hidden'} -top-[8px]  right-0 absolute w-[20px] h-[16px]   ${grey}`}>
