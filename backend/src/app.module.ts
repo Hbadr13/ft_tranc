@@ -14,7 +14,7 @@ import { OnlineModule } from './online/online.module';
 import { RoomService } from './game/room/room.service';
 import { UpdateService } from './game/update/update.service';
 import { RecentModule } from './search/recent.module';
-
+import { ChatModule } from './chat/chat.module';
 
 
 @Module({
@@ -25,8 +25,9 @@ import { RecentModule } from './search/recent.module';
         }),
         ConfigModule.forRoot({
             isGlobal: true
-        }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule ,GameModule,OnlineModule, RecentModule],
+        }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule ,GameModule,OnlineModule, RecentModule, ChatModule],
     providers: [GameGateway, UserService,RoomService,UpdateService],
+    controllers: [],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
