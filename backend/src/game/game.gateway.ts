@@ -24,7 +24,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
   private players: Array<{ _client: Socket; _room: string }> = [];
-  private rromes: Map<string, number> = new Map<string, number>();
+  private rrooms: Map<string, number> = new Map<string, number>();
 
   private IdOfPlayer: Map<Socket, number> = new Map<Socket, number>();
 
@@ -47,13 +47,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       );
       if (user) {
         client.to(user._room).emit('leaveRoom', {});
-        if (this.rromes.get(user._room) === 1)
+        if (this.rrooms.get(user._room) === 1)
           client.to(user._room).emit('availableRoom');
-        this.rromes.delete(user._room);
+        this.rrooms.delete(user._room);
       }
       // console.log(`Game: Client disconnected: ${this.IdOfPlayer.get(client)}`);
       await this.userService.makeUserOutGame(this.IdOfPlayer.get(client));
-      await this.roomService.deleteRome(this.IdOfPlayer.get(client));
+      await this.roomService.deleteRoom(this.IdOfPlayer.get(client));
       this.IdOfPlayer.delete(client);
     } catch (error) { }
   }
@@ -69,10 +69,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('joinRoom')
   handleCreatRoom(client: Socket, { room, userId }): void {
     console.log(userId);
-    if (!this.rromes.get(room)) {
-      this.rromes.set(room, 1);
+    if (!this.rrooms.get(room)) {
+      this.rrooms.set(room, 1);
     } else {
-      this.rromes.set(room, this.rromes.get(room) + 1);
+      this.rrooms.set(room, this.rrooms.get(room) + 1);
     }
     this.players.push({ _client: client, _room: room });
     client.join(room);
@@ -80,8 +80,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const index = this.players.findIndex(
       (item) => item._client.id === client.id,
     );
-    if (index != -1) client.emit('indexPlayer', this.rromes.get(room) - 1);
-    if (this.rromes.get(room) == 2) this.server.to(room).emit('start', 2);
+    if (index != -1) client.emit('indexPlayer', this.rrooms.get(room) - 1);
+    if (this.rrooms.get(room) == 2) this.server.to(room).emit('start', 2);
   }
 
   @SubscribeMessage('dataOfplayer')

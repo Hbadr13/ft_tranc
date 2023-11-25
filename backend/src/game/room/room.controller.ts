@@ -4,7 +4,7 @@ import { roomDto } from '../dto/game';
 
 @Controller('game/room')
 export class RoomController {
-  constructor(private readonly roomService: RoomService) {}
+  constructor(private readonly roomService: RoomService) { }
   @Get('/:userId')
   async getRoom(@Param('userId') userId: string) {
     return this.roomService.getRoom(Number(userId));
@@ -14,7 +14,7 @@ export class RoomController {
     return this.roomService.creatRoom(Number(userId), body);
   }
   @Delete('/:userId')
-  async deleteRome(@Param('userId') userId: string) {
-    return this.roomService.deleteRome(Number(userId));
+  async deleteRoom(@Param('userId') userId: string) {
+    return this.roomService.deleteRoom(Number(userId));
   }
 }

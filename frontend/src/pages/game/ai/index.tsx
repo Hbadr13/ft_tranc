@@ -17,14 +17,13 @@ const AiSetting = () => {
 
     return (
         <>
-            {'hello->' + ballTheme}
             {
                 routerPage == 'play' ? (
                     <PlayWithComputer selectPlayer={selectPlayer} setselectPlayer={setselectPlayer} ballTheme={ballTheme}
                         canvasTheme={canvasTheme} gameLevel={gameLevel} />
                 ) : (
                     <Settings ballTheme={ballTheme} setballTheme={setballTheme} canvasTheme={canvasTheme} setcanvasTheme={setcanvasTheme}
-                        setRouterPage={setRouterPage} gameLevel={gameLevel} setgameLevel={setgameLevel} />
+                        setRouterPage={setRouterPage} gameLevel={gameLevel} setgameLevel={setgameLevel} selectPlayer={selectPlayer} />
                 )
             }
         </>

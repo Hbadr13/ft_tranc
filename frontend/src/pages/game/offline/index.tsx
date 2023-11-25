@@ -1,19 +1,33 @@
-import Link from 'next/link'
-import React from 'react'
-import Play from './play'
+import PlayWithComputer from '@/components/game/computer'
+import Settings from '@/components/game/settings'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 
-const index = () => {
+const AiSetting = () => {
+    const router = useRouter()
+    const [routerPage, setRouterPage] = useState('')
+    const [ballTheme, setballTheme] = useState('')
+    const [canvasTheme, setcanvasTheme] = useState('black')
+    const [gameLevel, setgameLevel] = useState('esay')
+    const [selectPlayer, setselectPlayer] = useState('offline')
+    useEffect(() => {
+        if (router.asPath != '/game/offline?play=true')
+            setRouterPage('')
+    }, [router])
+
     return (
         <>
-        
-            <div  className='h-[400px] hidden'>index</div>
-            <Link className='h-[400px] hidden p-2 bg-blue-400 rounded-lg m-10' href={'/game/offline/play'}>start game</Link>
-            <Play selectPlayer={''} setselectPlayer={function (selectPlayer: string): void {
-                throw new Error('Function not implemented.')
-            }} />
+            {
+                routerPage == 'play' ? (
+                    <PlayWithComputer selectPlayer={selectPlayer} setselectPlayer={setselectPlayer} ballTheme={ballTheme}
+                        canvasTheme={canvasTheme} gameLevel={gameLevel} />
+                ) : (
+                    <Settings ballTheme={ballTheme} setballTheme={setballTheme} canvasTheme={canvasTheme} setcanvasTheme={setcanvasTheme}
+                        setRouterPage={setRouterPage} gameLevel={gameLevel} setgameLevel={setgameLevel} selectPlayer={selectPlayer} />
+                )
+            }
         </>
     )
 }
 
-export default index
-
+export default AiSetting

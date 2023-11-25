@@ -127,21 +127,28 @@ class Canvas {
     }
     public ClearCanvas(): void {
         if (!this.ctx) return;
-        this.ctx.fillStyle = this.gameInfo.CANVAS_COLOR
+        this.ctx.fillStyle = '#B79595'
+        // this.ctx.fillStyle = this.gameInfo.CANVAS_COLOR
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        // var img = new Image();
+        // img.src = '/ping-pong.png';
+        // this.ctx.drawImage(img, 0, -50, this.canvas.width, this.canvas.height + 100);
     }
     public drawRect(object: Player): void {
         if (!this.ctx) return;
         this.ctx.fillStyle = object.color;
         this.ctx.fillRect(object.x, object.y, object.width, object.height);
     }
-    public drawCircle(ball: Ball): void {
+    public drawTheBall(ball: Ball): void {
         if (!this.ctx) return;
-        this.ctx.fillStyle = ball.color;
-        this.ctx.beginPath();
-        this.ctx.arc(ball.x, ball.y, ball.raduis, 0, Math.PI * 2, true);
-        this.ctx.closePath();
-        this.ctx.fill();
+        // this.ctx.fillStyle = ball.color;
+        // this.ctx.beginPath();
+        // this.ctx.arc(ball.x, ball.y, ball.raduis, 0, Math.PI * 2, true);
+        // this.ctx.closePath();
+        // this.ctx.fill();
+        var img = new Image();
+        img.src = '/tennis.png';
+        this.ctx.drawImage(img, ball.x - 10, ball.y - 10, 20, 20);
     }
 
     public drawText(text: string, x: number, y: number, color: string) {
@@ -177,7 +184,6 @@ class Canvas {
     }
 }
 
-
 function LinearInterpolation(pos1: number, pos2: number, t: number) {
     return pos1 + (pos2 - pos1) * t;
 }
@@ -188,25 +194,25 @@ const updateGameLoop = (MyCanvas: Canvas, mousePosition: { x: number; y: number 
     GameInfo.CANVAS_HIEGHT = MyCanvas.height;
     if (selectPlayer === "computer") {
         const newY = LinearInterpolation(computer.y, ball.y - computer.height / 2, GameInfo.LEVEL);
-        if (newY > -10 && (newY + computer.height < MyCanvas.height + 10))
+        if (newY > -10 && (newY + computer.height < GameInfo.CANVAS_HIEGHT + 10))
             computer.y = newY;
     }
     else {
-        if (mousePosition.x > -10 && (mousePosition.x + computer.height < MyCanvas.height + 10))
+        if (mousePosition.x > -10 && (mousePosition.x + computer.height < GameInfo.CANVAS_HIEGHT + 10))
             computer.y = mousePosition.x;
     }
 
-    if (mousePosition.y > -10 && (mousePosition.y + player.height < MyCanvas.height + 10))
+    if (mousePosition.y > -0 && (mousePosition.y + player.height < GameInfo.CANVAS_HIEGHT + 0))
         player.y = mousePosition.y;
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
     ball.setBorder();
     player.setBorder();
     computer.setBorder();
-    if (ball.bottom + 2 > MyCanvas.height || ball.top - 2 < 0)
+    if (ball.bottom + 2 > GameInfo.CANVAS_HIEGHT || ball.top - 2 < 0)
         ball.velocityY *= -1;
 
-    let selectPlayerCollision = ball.x < MyCanvas.width / 2 ? player : computer;
+    let selectPlayerCollision = ball.x < GameInfo.CANVAS_WIDTH / 2 ? player : computer;
     if (ball.checkCollision(selectPlayerCollision))
         MyCanvas.moveBallWenCollision(ball, selectPlayerCollision);
 };
@@ -216,16 +222,13 @@ const renderGameOverScreen = (MyCanvas: Canvas, ball: Ball, player: Player, comp
     MyCanvas.drawRect(player);
     MyCanvas.drawRect(computer);
     MyCanvas.drawMedianLine({ w: 2, h: 10, step: 20, color: "#FFFFFF" });
-    MyCanvas.drawCircle(ball);
-
-    MyCanvas.drawText(String(player.score), 300, 60, "white");
-    MyCanvas.drawText(String(computer.score), 700, 60, "white");
+    MyCanvas.drawTheBall(ball);
 };
 
 function startGame({ myCanvasRef, mousePosition, ball, player, computer, selectPlayer, GameInfo }: startGameProps) {
     if (!myCanvasRef.current) return;
     const MyCanvas = new Canvas(myCanvasRef.current, GameInfo);
-    computer.x = MyCanvas.width - 10
+    computer.x = GameInfo.CANVAS_WIDTH - 10
     if (computer.status == 'Resume' || player.status == 'Resume')
         return
     updateGameLoop(MyCanvas, mousePosition, ball, player, computer, selectPlayer, GameInfo);
@@ -234,19 +237,18 @@ function startGame({ myCanvasRef, mousePosition, ball, player, computer, selectP
 
 
 
-
 const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasTheme, gameLevel }: InfoGameprops) => {
 
-    let level: number = 0.0
+    let level: number = 0.05
     if (gameLevel == 'easy')
         level = 0.05
-    if (gameLevel == 'midiam')
+    if (gameLevel == 'medium')
         level = 0.08
     if (gameLevel == 'hard')
         level = 0.1
 
     const GameInfo = {
-        FPS: 1000 / 60,
+        FPS: 1000 / 100,
         PLAYER_COLOR: canvasTheme == "white" ? 'black' : 'white',
         PLAYER_HEIGHT: 100,
         PLAYER_WIDTH: 10,
@@ -256,11 +258,11 @@ const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasThem
         BALL_COLOR: ballTheme != '' ? ballTheme : "red",
         BALL_START_SPEED: 2,
         ANGLE: Math.PI / 4,
-        ACCELERATION: 0.2,
+        ACCELERATION: 0.8,
         RADIUS_BALL: 10,
         LEVEL: level,
-        VELOCIT: 3,
-        SPEED: 4,
+        VELOCIT: 5,
+        SPEED: 5,
 
         CANVAS_HIEGHT: 0,
         CANVAS_COLOR: canvasTheme != '' ? canvasTheme : "black",
@@ -273,18 +275,15 @@ const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasThem
 
 
 
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [mousePosition] = useState({ x: 0, y: 0 });
     const [computerStatus, setcomputerStatus] = useState('');
     const [computerScore, setcomputerScore] = useState(0);
     const [playerStatus, setplayerStatus] = useState('');
     const [playerScore, setplayerScore] = useState(0);
     const YouWonOrLostPlayAgain = useRef("");
-    // const [YouWon, setYouWon] = useState(0);
 
     const myCanvasRef = useRef<HTMLCanvasElement>(null);
     const router = useRouter();
-
-
 
     useEffect(() => {
         setInterval(() => {
@@ -292,17 +291,12 @@ const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasThem
                 return
             if (YouWonOrLostPlayAgain.current === "won" || YouWonOrLostPlayAgain.current === "lost") {
                 return
-
             }
-            if (player.youWonRrLost == "won") {
+            if (player.youWonRrLost == "won")
                 YouWonOrLostPlayAgain.current = "won"
-                // setYouWonPlayAgain(true)
-            }
-            if (player.youWonRrLost == "lost") {
-                // setYouWonOrLostPlayAgain(true)
-                YouWonOrLostPlayAgain.current = "lost"
-            }
 
+            if (player.youWonRrLost == "lost")
+                YouWonOrLostPlayAgain.current = "lost"
 
             startGame({ myCanvasRef, mousePosition, ball, player, computer, selectPlayer, GameInfo });
             setcomputerScore(computer.score);
@@ -346,24 +340,24 @@ const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasThem
         document.addEventListener("keydown", (event) => {
             const keyPressed = event.key;
             if (keyPressed === "a") {
-                mousePosition.y += 5;
+                mousePosition.y += 1;
             }
             if (keyPressed === "w") {
-                mousePosition.y -= 5;
+                mousePosition.y -= 1;
             }
             if (keyPressed === "ArrowDown") {
-                mousePosition.x += 5;
+                mousePosition.x += 1;
             }
             if (keyPressed === "ArrowUp") {
-                mousePosition.x -= 5;
+                mousePosition.x -= 1;
             }
         });
-    });
+    }, []);
 
     const handleMouseMove = (e: any) => {
         const rect = e.target.getBoundingClientRect();
-        mousePosition.y = e.clientY - rect.top - 25;
-        mousePosition.x = e.clientY - rect.top - 25;
+        mousePosition.y = e.clientY - rect.top - 50;
+        // mousePosition.x = e.clientY - rect.top - 25;
     };
 
     const handelButtonGameStatus = () => {
@@ -392,20 +386,24 @@ const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasThem
         ball.x = 200;
         ball.y = 50;
     }
+    // const divHieght = useRef(400)
     return (
-        <>
-            <div className="w-full h-[600px] flex justify-center items-center mt-20">
+        <div className="Gamebackground w-full h-screen -z-10  flex justify-center items-center">
+
+            <div className="  relative w-full h-[600px] flex justify-center items-center mt-20 "
+            >
+
                 {
                     selectPlayer === "computer" ||
                         selectPlayer === "offline" ? (
-                        <div className={`w-full h-[100%] flex items-center flex-col space-y-10`}>
-
+                        <div className={` relative w-full h-[100%] flex items-center flex-col space-y-10`}>
+                            <div className="h-10 z-20 bg-red-100 lg:bg-blue-300 md:bg-red-300 2xl:bg-red-600">aa</div>
                             <canvas
-                                className={`bg-black rounded-2xl w-[90%] h-[50%]   md:h-[60%]  md:w-[60%] 2xl:h-[70%] 2xl:w-[40%]${false ? 'hidden' : ''}`}
-                                onMouseMove={handleMouseMove}
+                                className={` bg-blac rounded-lg md:rounded-2xl w-[99%] h-[70%]   md:h-[70%]  md:w-[60%] 2xl:h-[100%] 2xl:w-[60%] `}
                                 ref={myCanvasRef}
-                                height={400}
-                                width={800}
+                                height={450}
+                                onMouseMove={handleMouseMove}
+                                width={900}
                             >
                             </canvas>
                             <div className="w-[400px] h-[70px] rounded-2xl flex justify-around items-center">
@@ -426,11 +424,12 @@ const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasThem
                             </div>
                         </div>
                     ) : null}
+
                 {
-                    YouWonOrLostPlayAgain.current === 'won' || YouWonOrLostPlayAgain.current === 'lost' ? (
+                    YouWonOrLostPlayAgain.current === 'won' ? (
                         <div className="w-[40%] h-[40%] bg-slate-200  rounded-3xl  absolute ">
                             <div className="flex flex-col items-center justify-center space-y-6 h-[50%]">
-                                <h1 className="text-3xl text-green-600">{YouWonOrLostPlayAgain.current === 'won' ? 'You Won' : 'You Lost'}</h1>
+                                <h1 className="text-3xl text-green-600">You Won</h1>
                                 <h3 className="text-xl ">Play Again</h3>
                             </div>
                             <div className="flex  items-center justify-center space-x-6 h-[50%]">
@@ -441,12 +440,36 @@ const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasThem
                                     onClick={handelButtonYouLost}
                                 >NO</button>
                             </div>
+                            --=={YouWonOrLostPlayAgain.current}
                         </div>
                     ) : null
                 }
+                {
+                    YouWonOrLostPlayAgain.current === 'lost' ? (
+                        <div className="w-[40%] h-[40%] bg-slate-200  rounded-3xl  absolute ">
+                            <div className="flex flex-col items-center justify-center space-y-6 h-[50%]">
+                                <h1 className="text-3xl text-red-600">You Lost</h1>
+                                <h3 className="text-xl ">Play Again</h3>
+                            </div>
+                            <div className="flex  items-center justify-center space-x-6 h-[50%]">
+                                <button className="ease-in-out duration-500 bg-green-400 px-6 py-2 rounded-xl  outline outline-offset-2 outline-black hover:text-xl hover:px-8 hover:py-3 text-white font-bold"
+                                    onClick={handelButtonPlayAgain}
+                                >OK</button>
+                                <button className="ease-in-out duration-500 bg-red-400 px-6 py-2 rounded-xl  outline outline-offset-2 outline-black hover:text-xl hover:px-8 hover:py-3 text-white font-bold"
+                                    onClick={handelButtonYouLost}
+                                >NO</button>
+                            </div>
+                            --=={YouWonOrLostPlayAgain.current}
+                        </div>
+                    ) : null
+                }
+                {
+
+                }
             </div>
 
-        </>
+        </div>
+
     );
 };
 

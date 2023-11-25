@@ -4,7 +4,7 @@ import { roomDto } from '../dto/game';
 
 @Injectable()
 export class RoomService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async getRoom(userId: number) {
     const user = await this.prisma.user.findUnique({
@@ -25,7 +25,7 @@ export class RoomService {
     });
     return data;
   }
-  async deleteRome(userId: number) {
+  async deleteRoom(userId: number) {
     const data = await this.prisma.user.update({
       where: {
         id: userId,

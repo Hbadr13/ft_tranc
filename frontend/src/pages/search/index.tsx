@@ -149,7 +149,7 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
     return (
         <>
             <menu>
-                <div className='w-full flex justify-center'>
+                <div className='w-full flex justify-center mt-14'>
                     <div className='w-[100%] flex justify-between border-b-[1px] border-black border-opacity-10 sm:mx-10 md:mx-20   xl:mx-32 p-2 mb-4'>
                         <div className="py-2">
                             {currentPath == '/search' ? 'Recent' : 'All results'}

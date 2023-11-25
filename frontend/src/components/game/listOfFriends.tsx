@@ -88,10 +88,10 @@ const ListOfFriends = ({ onlineUsersss, currentUser, users, amis, socket, setOpp
                     });
 
                     socket?.emit("areYouReady", {
-                        OpponentId: e.target.value, currentPlayer: currentUser, pathOfGame: `/game?online=true`
+                        OpponentId: e.target.value, currentPlayer: currentUser, pathOfGame: `/game/online?settings=true`
                     })
                     setOpponent(e.target.value)
-                    router.push(`/game?online=true`);
+                    router.push(`/game/online?settings=true`);
 
                 }
                 else {
@@ -122,7 +122,10 @@ const ListOfFriends = ({ onlineUsersss, currentUser, users, amis, socket, setOpp
         <>
             <div className='w-full mt-20  flex flex-col space-y-3 justify-center items-center  '>
                 <div className='rounded-2xl space-y-4 w-[100%] sm:w-[70%] md:w-[60%] xl:w-[50%]  bg-white flex flex-col justify-center items-center '>
-                    <div className='border-b-2 w-full flex items-center justify-center p-2'>
+                    <div className='relative border-b-2 w-full flex items-center justify-center p-2'>
+                        <button className='flex justify-center items-center' onClick={() => router.push('/game')}>
+                            <Image src={'/game/back.png'} alt='get back' width={20} height={20} className=" absolute left-4" />
+                        </button>
                         <h1 className='text-black ' >Friends</h1>
                     </div>
                     {

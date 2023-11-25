@@ -195,33 +195,20 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, room, currentUser, socketAp
 
     const [computerStatus, setcomputerStatus] = useState('');
     const [playerStatus, setplayerStatus] = useState('');
-    // const [gameStatus, setgameStatus] = useState('Pause')
     const [gamaIsStart, setgamaIsStart] = useState(0)
     const [YouWon, setYouWon] = useState(0);
     const YouWonOrLostPlayAgain = useRef("");
-    // const [opponentId, setopponentId] = useState<Number>(-1);
     const opponentIdd = useRef<Number>(-1);
 
     const router = useRouter();
-
-
-    function LinearInterpolation(pos1: number, pos2: number, t: number) {
-        return pos1 + (pos2 - pos1) * t;
-    }
 
     const updateGameLoop = (MyCanvas: Canvas, mousePosition: { x: number; y: number }, ball: Ball, player: Player, computer: Player, selectPlayer: string, HoAreYou: any) => {
 
         GameInfo.CANVAS_WIDTH = MyCanvas.width;
         GameInfo.CANVAS_HIEGHT = MyCanvas.height;
-        if (selectPlayer === "computer") {
-            const newY = LinearInterpolation(computer.y, ball.y - computer.height / 2, GameInfo.LEVEL);
-            if (newY > -10 && (newY + computer.height < MyCanvas.height + 10))
-                computer.y = newY;
-        }
-        else {
-            if (mousePosition.x > -10 && (mousePosition.x + computer.height < MyCanvas.height + 10))
-                computer.y = mousePosition.x;
-        }
+
+        if (mousePosition.x > -10 && (mousePosition.x + computer.height < MyCanvas.height + 10))
+            computer.y = mousePosition.x;
 
         if (mousePosition.y > -10 && (mousePosition.y + player.height < MyCanvas.height + 10))
             player.y = mousePosition.y;
@@ -297,28 +284,19 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, room, currentUser, socketAp
                 if (computer.status == 'Resume' || player.status == 'Resume')
                     return
                 if (YouWonOrLostPlayAgain.current === "won" || YouWonOrLostPlayAgain.current === "lost") {
-                    {
-                        // const s = (new Player(0, 0));
-                        // console.log('score:', s.score)
-                        // setplayer(new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y));
-                        return
-                    }
+                    return
                 }
-                // console.log('problem--->', computer.status, '~', player.status)
                 if (HoAreYou.current == 0) {
                     if (player.youWonRrLost == "won") {
                         YouWonOrLostPlayAgain.current = "won"
-                        // setYouWonPlayAgain(true)
                     }
                     if (player.youWonRrLost == "lost") {
-                        // setYouWonOrLostPlayAgain(true)
                         YouWonOrLostPlayAgain.current = "lost"
                     }
                 }
                 if (HoAreYou.current == 1) {
                     if (computer.youWonRrLost == "won") {
                         YouWonOrLostPlayAgain.current = "won"
-                        // setYouWonPlayAgain(true)
                     }
                     if (computer.youWonRrLost == "lost") {
                         YouWonOrLostPlayAgain.current = "lost"
@@ -335,16 +313,6 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, room, currentUser, socketAp
                     {
                         try {
                             const sendData = async () => {
-                                // if (HoAreYou.current == 0) {
-                                //     console.log('myGools:', player.score)
-                                //     console.log('opponentGools :', computer.score)
-
-                                // } else if (HoAreYou.current == 1) {
-                                //     console.log('myGools:', computer.score)
-                                //     console.log('opponentGools:', player.score)
-
-                                // }
-                                // console.log()
                                 const response = await fetch(`http://localhost:3333/game/update/${currentUser.id}`, {
                                     method: "POST",
                                     credentials: "include",
@@ -395,32 +363,28 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, room, currentUser, socketAp
                         player.youWonRrLost = "lost"
                     }
                 }
-                if (selectPlayer == "online") {
-                    if (opponentIdd.current == -1)
-                        socket.emit("opponentId", currentUser.id)
-                    if (HoAreYou.current == 0) {
+                if (opponentIdd.current == -1)
+                    socket.emit("opponentId", currentUser.id)
+                if (HoAreYou.current == 0) {
 
-                        socket?.emit("dataOfplayer", player);
-                    }
+                    socket?.emit("dataOfplayer", player);
+                }
 
-                    if (HoAreYou.current == 1) {
-                        socket?.emit("dataOfcomputer", computer);
-
-                    }
-                    if (HoAreYou.current == 0) {
-
-                        socket?.emit("moveBall", {
-                            x: ball.x,
-                            y: ball.y,
-                            playerScore: player.score,
-                            computerScore: computer.score,
-                            // statuee: gameStatus
-                        });
-                    }
+                if (HoAreYou.current == 1) {
+                    socket?.emit("dataOfcomputer", computer);
+                }
+                if (HoAreYou.current == 0) {
+                    socket?.emit("moveBall", {
+                        x: ball.x,
+                        y: ball.y,
+                        playerScore: player.score,
+                        computerScore: computer.score,
+                        // statuee: gameStatus
+                    });
                 }
             }, 1000 / 60);
         });
-    },[socket]);
+    }, [socket]);
 
     useEffect(() => {
         const canvas = myCanvasRef.current;
@@ -430,32 +394,58 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, room, currentUser, socketAp
     }, []);
 
     useEffect(() => {
-        document.addEventListener("keydown", (event) => {
-            const keyPressed = event.key;
-            if (keyPressed === "a") {
-                mousePosition.y += 5;
-            }
-            if (keyPressed === "w") {
-                mousePosition.y -= 5;
-            }
-            if (keyPressed === "ArrowDown") {
-                mousePosition.x += 5;
-            }
-            if (keyPressed === "ArrowUp") {
-                mousePosition.x -= 5;
-            }
-        });
-    });
-
-    useEffect(() => {
         try {
             const socketUrl = "http://localhost:8000";
-            // const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://e2r9p2.1337.ma:8000";
             const newSocket = io(socketUrl, {
                 query: {
                     userId: currentUser.id,
                 },
             });
+            newSocket?.on("opponentId", (oppnenid: number) => {
+                opponentIdd.current = oppnenid
+            })
+            newSocket?.on("indexPlayer", (index: number) => {
+                HoAreYou.current = index;
+            });
+
+            newSocket?.on("ResumePause", (value: string) => {
+                player.status = value
+                computer.status = value
+            })
+            newSocket?.on("leaveRoom", () => {
+                player.status = 'Pause'
+                computer.status = 'Pause'
+                setYouWon(1)
+            })
+            newSocket?.on("dataOfplayer", (plyr: Player) => {
+                if (HoAreYou.current == 1) {
+                    mousePosition.y = plyr.y;
+                    if (plyr.youWonRrLost === "won")
+                        computer.youWonRrLost = "lost"
+                    if (plyr.youWonRrLost === "lost")
+                        computer.youWonRrLost = "won"
+                }
+            });
+            newSocket?.on("dataOfcomputer", (comptr: Player) => {
+                if (HoAreYou.current == 0)
+                    mousePosition.x = comptr.y;
+            });
+            newSocket?.on("movebb", (obj: any) => {
+                if (HoAreYou.current == 1) {
+                    ball.x = obj.x;
+                    ball.y = obj.y;
+                    computer.score = obj.computerScore;
+                    player.score = obj.playerScore;
+                }
+            });
+            newSocket?.on("documentHidden", (flag: boolean) => {
+                const value = "Resume"
+                player.status = value
+                computer.status = value
+            })
+            newSocket?.on("availableRoom", (flag: boolean) => {
+                console.log("this rome available")
+            })
             setsocket(newSocket);
             return () => {
                 newSocket.disconnect();
@@ -466,61 +456,6 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, room, currentUser, socketAp
         }
     }, []);
 
-    useEffect(() => {
-        socket?.on("opponentId", (oppnenid: number) => {
-            // console.log('oppnenid====>>', oppnenid)
-            // computer.id = currentUser.id
-            // computer.opponentId = oppnenid
-            // player.id = currentUser.id
-            // player.opponentId = oppnenid
-            opponentIdd.current = oppnenid
-            // setopponentId(oppnenid)
-        })
-        socket?.on("indexPlayer", (index: number) => {
-            HoAreYou.current = index;
-        });
-
-        socket?.on("ResumePause", (value: string) => {
-            // setgameStatus(value)
-            player.status = value
-            computer.status = value
-        })
-        socket?.on("leaveRoom", () => {
-            player.status = 'Pause'
-            computer.status = 'Pause'
-            setYouWon(1)
-        })
-        socket?.on("dataOfplayer", (plyr: Player) => {
-            if (HoAreYou.current == 1) {
-                mousePosition.y = plyr.y;
-                if (plyr.youWonRrLost === "won")
-                    computer.youWonRrLost = "lost"
-                if (plyr.youWonRrLost === "lost")
-                    computer.youWonRrLost = "won"
-            }
-        });
-        socket?.on("dataOfcomputer", (comptr: Player) => {
-            if (HoAreYou.current == 0)
-                mousePosition.x = comptr.y;
-        });
-        socket?.on("movebb", (obj: any) => {
-            if (HoAreYou.current == 1) {
-                ball.x = obj.x;
-                ball.y = obj.y;
-                computer.score = obj.computerScore;
-                player.score = obj.playerScore;
-            }
-        });
-        socket?.on("documentHidden", (flag: boolean) => {
-            const value = "Resume"
-            // setgameStatus(value)
-            player.status = value
-            computer.status = value
-        })
-        socket?.on("availableRoom", (flag: boolean) => {
-            console.log("this rome available")
-        })
-    })
 
     if (selectPlayer === "computer" || selectPlayer === "offline") {
         socket?.emit("startWithComputer", room);
@@ -531,7 +466,7 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, room, currentUser, socketAp
         if (HoAreYou.current == 0) mousePosition.y = e.clientY - rect.top - 25;
         if (HoAreYou.current == 1) mousePosition.x = e.clientY - rect.top - 25;
     };
-    const sendMessage = async () => {
+    const searchForRoome = async () => {
         try {
             const response = await fetch(`http://localhost:3333/game/room/${currentUser.id}`, {
                 credentials: 'include',
@@ -581,7 +516,7 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, room, currentUser, socketAp
                 {numberPlayer == 0 &&
                     selectPlayer === "online" ? (
                     <div>
-                        <button className="bg-red-400 w-[80px] h-[90px] rounded-2xl text-3xl mx-2" onClick={sendMessage}>join room</button>
+                        <button className="bg-red-400 w-[80px] h-[90px] rounded-2xl text-3xl mx-2" onClick={searchForRoome}>join room</button>
                     </div>
                 ) : null}
                 {numberPlayer == 1 &&

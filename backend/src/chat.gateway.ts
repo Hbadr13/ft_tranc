@@ -30,18 +30,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (rm) client.to(rm).emit('message', message);
     // Socket
   }
-  @SubscribeMessage('rome')
-  handleCreatRome(client: Socket, rome: string): void {
-    client.join(rome);
+  @SubscribeMessage('room')
+  handleCreatRoom(client: Socket, room: string): void {
+    client.join(room);
     // console.log(this.players);
-    this.players.set(client.id, rome);
+    this.players.set(client.id, room);
   }
 
   // @SubscribeMessage('y')
   // handleCreatpostion(client: Socket, y: number): void {
-  //   // client.join(rome);
+  //   // client.join(room);
   //   this.server.emit('y', y);
   //   console.log('Chat: -------- ', y);
-  //   // this.players.set(client.id, rome);
+  //   // this.players.set(client.id, room);
   // }
 }
+

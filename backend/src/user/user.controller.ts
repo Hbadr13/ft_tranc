@@ -10,7 +10,7 @@ import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Get('/:userId')
   async getAllUsers(@Param('userId') userId: string) {
@@ -35,7 +35,7 @@ export class UserController {
       bd.email,
     );
   }
-  @Get('d/:userId')
+  @Get('getbyuserid/:userId')
   async getByUserId(@Param('userId') userId: string) {
     // console.log('userId--->', userId);
     // console.log('userName--->', userName)

@@ -1,4 +1,5 @@
 import '@/styles/globals.css'
+import '@/styles/game.css'
 import type { AppProps } from 'next/app'
 import SideMenu from '@/components/layout/sideMenu';
 import Navbar from '@/components/layout/navbar';
@@ -26,35 +27,23 @@ export interface CardInvitation {
 }
 
 export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hideRequest, myIdFromOpponent, handerAcceptButton }: CardInvitation) => {
-
+  const [hide, setHide] = useState(false)
   return (<>
     {
-      (myIdFromOpponent === Number(currentUser.id)) ?
+      myIdFromOpponent === Number(currentUser.id) ?
         (
-
-          <Transition
-            show={hideRequest}
-            enter="transition-opacity duration-100"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition-opacity duration-300"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-
-            <div className={` z-40 absolute w-full h-screen  flex justify-center items-center`}>
-              <div className=' w-[30%] h-[30%] bg-white rounded-3xl shadow-sm shadow-black flex flex-col justify-around items-center'>
-                <div className="flex flex-col justify-around items-center border-b-2 border-blue-600  space-y-3">
-                  <Image className='rounded-full w-24' height={200} width={200} alt={`image:${opponent.username}`} src={opponent.foto_user}></Image>
-                  <h1>{opponent.username}</h1>
-                </div>
-                <div className='flex justify-around items-center  w-full'>
-                  <button onClick={handerRefuseButton} className='m-2 border-2 border-black rounded-xl py-1 px-4 duration-500 ease-in-out hover:py-2 hover:px-5 hover:text-xl'>Refuse</button>
-                  <button onClick={handerAcceptButton} className='m-2 border-2 border-black rounded-xl py-1 px-4 bg-[#77A6F7] duration-500 ease-in-out hover:py-2 hover:px-5 hover:text-xl'>Accept</button>
-                </div>
+          <div className={` z-40 absolute w-full h-screen -top-10  flex justify-center items-center`}>
+            <div className=' w-[30%] h-[30%] bg-white rounded-3xl shadow-sm shadow-black flex flex-col justify-around items-center'>
+              <div className="flex flex-col justify-around items-center border-b-2 border-blue-600  space-y-3">
+                <Image className='rounded-full w-24' height={200} width={200} alt={`image:${opponent.username}`} src={opponent.foto_user}></Image>
+                <h1>{opponent.username}</h1>
+              </div>
+              <div className='flex justify-around items-center  w-full'>
+                <button onClick={handerRefuseButton} className='m-2 border-2 border-black rounded-xl py-1 px-4 duration-500 ease-in-out hover:py-2 hover:px-5 hover:text-xl'>Refuse</button>
+                <button onClick={handerAcceptButton} className='m-2 border-2 border-black rounded-xl py-1 px-4 bg-[#77A6F7] duration-500 ease-in-out hover:py-2 hover:px-5 hover:text-xl'>Accept</button>
               </div>
             </div>
-          </Transition>
+          </div>
         ) : null
     }
   </>
@@ -82,6 +71,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
   const [currentUser, setCurrentUser] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false });
   const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false });
   // const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, });
+  const [rejectRequest, setrejectRequest] = useState(false)
 
   const [amis, setAmis] = useState<any>([])
   const [flag, setflag] = useState<boolean>(true)
@@ -95,7 +85,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
   useEffect(() => {
     if (isSideMenuVisible3 && isSideMenuVisible2) {
-
       (
         async () => {
           try {
@@ -140,6 +129,10 @@ export default function App({ Component, pageProps, router }: AppProps) {
         setopponent(currentPlayer);
         sethideRequest(true)
       });
+      newSocket?.on("rejectRequest", () => {
+        console.log('hello---')
+        setrejectRequest(true)
+      })
       return () => {
         newSocket.disconnect();
       };
@@ -160,7 +153,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
   const handerRefuseButton = async () => {
     sethideRequest((prev) => !prev)
-    // setmyIdFromOpponent(-2)
+    setmyIdFromOpponent(-2)
     try {
       const responseDelete = await fetch(`http://localhost:3333/game/room/${currentUser.id}`, {
         method: 'DELETE',
@@ -176,7 +169,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
   }
 
   const handerAcceptButton = () => {
-
+    setmyIdFromOpponent(-2)
     sethideRequest((prev) => !prev)
     console.log(pathOfGame)
     router.push(pathOfGame)
@@ -187,13 +180,19 @@ export default function App({ Component, pageProps, router }: AppProps) {
   useEffect(() => {
     if (router.route != '/search')
       setpath(router.route)
-  })
+  }, [router])
 
+  // useEffect(() => {
+  //   socket?.on("rejectRequest", () => {
+  //     console.log('hello---')
+  //     setrejectRequest(true)
+  //   })
+  // }, [])
   return (
     <>
       <fetchData.Provider value={{ setRefreshData: setRefreshData, refreshData: refreshData }}>
         <getBack.Provider value={path}>
-
+          <RejectRequestComp rejectRequest={rejectRequest} setrejectRequest={setrejectRequest} />
           <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
             hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
           <div className={`${font.className}   font-medium `}>
@@ -204,7 +203,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
               </>
             }
-            <div className="home mt-16">
+            <div className="home">
               <Component  {...modifiedPageProps} />
             </div>
           </div>
@@ -213,4 +212,23 @@ export default function App({ Component, pageProps, router }: AppProps) {
     </>
   )
 }
-
+const RejectRequestComp = ({ rejectRequest, setrejectRequest }: { rejectRequest: boolean, setrejectRequest: (rejectRequest: boolean) => void }) => {
+  return (
+    <>
+      {
+        (rejectRequest) ? (
+          <div className='w-full h-full flex justify-center items-center z-50 absolute top-0  '>
+            <div className=' shadow-2xl w-[300px] h-[200px] bg-white flex flex-col justify-around item-center  rounded-3xl'>
+              <div className="flex justify-around item-center ">
+                <h1 className=''>reject you Request</h1>
+              </div>
+              <div className="flex justify-around item-center">
+                <button onClick={() => setrejectRequest(false)} className='bg-[#77A6F7] px-5  py-1 rounded-xl'>OK</button>
+              </div>
+            </div>
+          </div>
+        ) : null
+      }
+    </>
+  )
+}
