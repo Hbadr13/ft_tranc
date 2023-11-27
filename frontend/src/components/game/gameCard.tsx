@@ -9,6 +9,9 @@ import Image from 'next/image';
 import OnlineCard from './cards/onlineCard';
 import ComputerCard from './cards/computerCard';
 import MatchingCard from './cards/matchingCard';
+import { GameCardsProps, userProps } from '@/interface/data';
+
+
 
 const ButtonSlideNavToRight = () => {
     const swiper = useSwiper()
@@ -36,8 +39,8 @@ const ButtonSlideNavToLeft = () => {
     )
 }
 
-
-export const GameCards = ({ setselectPlayer }: { setselectPlayer: (selectPlayer: string) => void }) => {
+// { onlineUsersss, currentUser, users, amis, socket }: AppProps
+export const GameCards = ({ currentUser, socket, setselectPlayer }: GameCardsProps) => {
     return (
         <>
             <div className="w-full flex justify-center items-center mt-[120px]">
@@ -52,7 +55,7 @@ export const GameCards = ({ setselectPlayer }: { setselectPlayer: (selectPlayer:
                             <OnlineCard setselectPlayer={setselectPlayer} />
                         </SwiperSlide>
                         <SwiperSlide className='w-full h-full ' >
-                            <MatchingCard setselectPlayer={setselectPlayer} />
+                            <MatchingCard />
                         </SwiperSlide>
                         <SwiperSlide className='w-full h-full ' >
                             <ComputerCard setselectPlayer={setselectPlayer} />

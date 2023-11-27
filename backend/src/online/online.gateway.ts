@@ -6,6 +6,7 @@ import {
   SubscribeMessage,
   MessageBody,
 } from '@nestjs/websockets';
+import { exit } from 'process';
 import { Server, Socket } from 'socket.io';
 
 
@@ -29,7 +30,7 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
   private onlineUsers: Map<Socket, number> = new Map();
-  private allUserInGame: Set<string> = new Set();
+  private searchForOpponent: Map<Socket, userProps> = new Map();
 
 
   handleConnection(client: Socket) {
@@ -46,6 +47,7 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   handleDisconnect(client: Socket) {
     this.onlineUsers.delete(client);
+    this.searchForOpponent.delete(client)
     const myset: Set<number> = new Set();
     Array.from(this.onlineUsers).map((item) => myset.add(item[1]))
     this.server.emit('updateOnlineUsers', Array.from(myset));
@@ -53,6 +55,7 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   @SubscribeMessage('areYouReady')
   handleCreatInfo(client: Socket, { OpponentId, currentPlayer, pathOfGame }: { OpponentId: string, currentPlayer: userProps, pathOfGame: string }): void {
+    console.log('reedy')
     this.onlineUsers.forEach((value: any, key: any) => {
       if (value == OpponentId) {
         key.emit("areYouReady", { OpponentId, currentPlayer, pathOfGame })
@@ -67,6 +70,31 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
         key.emit("rejectRequest")
       }
     })
+  }
+  @SubscribeMessage('searchForOpponent')
+  handelSearchForOpponent(client: Socket, { currentUser }: { currentUser: userProps }): void {
+    console.log('----------------------')
+    try {
+      if (currentUser.username != '' && client != undefined) {
+        this.searchForOpponent.set(client, currentUser)
+        this.searchForOpponent.forEach((user_value: any, sock_key: any) => {
+          if (currentUser.id != user_value.id) {
+            sock_key.emit('searchForOpponent', currentUser)
+            client.emit('searchForOpponent', user_value)
+            console.log('currentUser:', user_value.username, ' socket', sock_key.id)
+            this.searchForOpponent.delete(client)
+            this.searchForOpponent.delete(sock_key)
+            throw new Error('ExitLoopException');
+          }
+        })
+      }
+    } catch (error) {
+    }
+    // this.onlineUsers.forEach((value: any, key: any) => {
+    //   if (value == opponent.id) {
+    //     key.emit("rejectRequest")
+    //   }
+    // })
   }
 
 

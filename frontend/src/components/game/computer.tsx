@@ -147,7 +147,7 @@ class Canvas {
         // this.ctx.closePath();
         // this.ctx.fill();
         var img = new Image();
-        img.src = '/tennis.png';
+        img.src = '/game/ball-3.svg';
         this.ctx.drawImage(img, ball.x - 10, ball.y - 10, 20, 20);
     }
 
@@ -399,7 +399,7 @@ const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasThem
                         <div className={` relative w-full h-[100%] flex items-center flex-col space-y-10`}>
                             <div className="h-10 z-20 bg-red-100 lg:bg-blue-300 md:bg-red-300 2xl:bg-red-600">aa</div>
                             <canvas
-                                className={` bg-blac rounded-lg md:rounded-2xl w-[99%] h-[70%]   md:h-[70%]  md:w-[60%] 2xl:h-[100%] 2xl:w-[60%] `}
+                                    className={`  border-2 rounded-sm md:rounded-lg w-[99%] h-[70%]   md:h-[70%]  md:w-[60%] 2xl:h-[100%] 2xl:w-[60%] `}
                                 ref={myCanvasRef}
                                 height={450}
                                 onMouseMove={handleMouseMove}

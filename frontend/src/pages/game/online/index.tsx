@@ -1,5 +1,6 @@
 import PlayWithComputer from '@/components/game/computer'
 import ListOfFriends from '@/components/game/listOfFriends'
+import Matching from '@/components/game/matching'
 import PlayOnline from '@/components/game/online'
 import Settings from '@/components/game/settings'
 import { AppProps } from '@/interface/data'
@@ -17,11 +18,15 @@ const AiSetting = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps
     const [opponent, setOpponent] = useState('')
 
     useEffect(() => {
-        if (router.asPath == '/game/online?listoffriends=true')
-            {
-                setRouterPage('')
-                
-                setlistOfFriends(true)}
+        if (router.asPath == '/game/online?listoffriends=true') {
+            setRouterPage('')
+
+            setlistOfFriends(true)
+        }
+        else if (router.asPath == '/game/online?search=true') {
+            setlistOfFriends(false)
+            setRouterPage('search')
+        }
         else if (router.asPath == '/game/online?play=true') {
             setlistOfFriends(false)
             setRouterPage('play')
@@ -56,6 +61,13 @@ const AiSetting = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps
                         <ListOfFriends currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} setOpponent={setOpponent} />
                     </div>
 
+                ) : null
+            }
+            {
+                routerPage == 'search' ? (
+                    <div className="h-screen w-full">
+                        <Matching onlineUsersss={onlineUsersss} users={users} amis={amis} currentUser={currentUser} socket={socket}></Matching>
+                    </div>
                 ) : null
             }
         </>

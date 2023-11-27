@@ -167,13 +167,15 @@ const UseProfile = ({ currentUser }: { currentUser: userProps }) => {
           <div className='mt-6'>
             <Link className="text-base font-bold flex justify-center items-center text-[#2c4d82]" href={"/EditProfile"}><span className="underline py-2 px-12 bg-white border rounded-full hover:scale-110 duration-300">Edit Profile</span>
             </Link>
-            <h1 className="flex  mt-[50px] ">Recent Activities</h1>
-
-            <img
+            {/* <h1 className="flex  mt-[50px] ">Recent Activities</h1> */}
+            <div className=" relative   w-80 mt-6 h-60  rounded-md ">
+              <Image src={'/game/gold.svg'} fill alt="gold"></Image>
+            </div>
+            {/* <img
               src="https://w0.peakpx.com/wallpaper/616/177/HD-wallpaper-table-tennis-neon-icon-blue-background-neon-symbols-table-tennis-neon-icons-table-tennis-sign-sports-signs-table-tennis-icon-sports-icons.jpg"
               alt="Your"
               className="w-80 mt-6 h-60  rounded-[32px] inline-block"
-            />
+            /> */}
             {/* <button className="flex justify-center  items-center mt-6  bg-[#f4f5f8] transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-12 hover:scale-105 ">Login</button> */}
           </div>
           <div className="mt-8">

@@ -30,7 +30,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(client: Socket) {
     try {
-      // console.log('hello')
+      console.log('handle connect game gateway')
       const userId = Number(client.handshake.query.userId);
       if (userId < 1) return;
       this.IdOfPlayer.set(client, userId);

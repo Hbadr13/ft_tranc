@@ -34,3 +34,10 @@ export interface BoxSearchrProps {
     users: Array<userProps>;
     amis: Array<userProps>;
 }
+
+export interface GameCardsProps {
+    currentUser: userProps;
+    socket: Socket
+    setselectPlayer: (selectPlayer: string) => void
+
+}

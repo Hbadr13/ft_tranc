@@ -109,7 +109,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
   useEffect(() => {
     try {
-
+      console.log('hello')
       const newSocket = io('http://localhost:8001', {
         query: {
           userId: currentUser.id,

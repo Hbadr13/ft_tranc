@@ -1,6 +1,30 @@
 import React from 'react'
 import Image from 'next/image'
-const MatchingCard = ({ setselectPlayer }: { setselectPlayer: (selectPlayer: string) => void }) => {
+import { useRouter } from 'next/router'
+const MatchingCard = () => {
+    const router = useRouter();
+    const handelButtonPlayOnline = async () => {
+        try {
+
+            const response = await fetch('http://localhost:3333/auth/user', {
+                credentials: 'include',
+            });
+            if (response.status == 200) {
+
+                const content = await response.json()
+                if (content.isOnline === false)
+                    router.push('/game/online?search=true')
+                else {
+                    console.log('cant play')
+                    // setCantPlayOnline(true)
+                }
+            }
+
+        } catch (error) {
+
+        }
+
+    }
     return (
         <div className='w-full h-full'>
             <div className="w-full h-full flex justify-center items-center">
@@ -21,7 +45,7 @@ const MatchingCard = ({ setselectPlayer }: { setselectPlayer: (selectPlayer: str
                                     <div className="">Play against users online</div>
                                 </div>
                             </div>
-                            <button className=' bg-[#c3a64e] hover:bg-[#e2c867] text-[#55461f] hover:py-3 hover:px-14 hover:text-xl duration-150  py-2 px-12 rounded-md'>
+                            <button onClick={handelButtonPlayOnline} className=' bg-[#c3a64e] hover:bg-[#e2c867] text-[#55461f] hover:py-3 hover:px-14 hover:text-xl duration-150  py-2 px-12 rounded-md'>
                                 Play
                             </button>
                         </div>

@@ -1,8 +1,12 @@
 import {
   IsEmail,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsString,
+  Max,
+  Min,
+  isInt,
   isString,
 } from 'class-validator';
 
@@ -28,4 +32,12 @@ export class roomDto {
   @IsString()
   @IsNotEmpty()
   room: string;
+}
+
+export class AchievementDto {
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  @IsNotEmpty()
+  points: number;
 }

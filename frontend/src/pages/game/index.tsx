@@ -80,7 +80,7 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                     {
                         selectPlayer == '' && !listOfFriends && (
                             <div className='relative overflow-hidden w-full '>
-                                <GameCards setselectPlayer={setselectPlayer} />
+                                <GameCards currentUser={currentUser} socket={socket} setselectPlayer={setselectPlayer} />
                             </div>
                         )
                     }
