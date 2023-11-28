@@ -25,7 +25,7 @@ const Matching = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps)
             if (response.status == 200) {
                 const content = await response.json();
                 if (content.isOnline == false) {
-                    console.log('hi')
+                    console.log('hi')   
 
                     const room: string = uuid();
 
@@ -76,7 +76,7 @@ const Matching = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps)
                 <div className="   w-full h-[80%] flex  justify-center items-center space-x-10">
                     <div className="w-[100px] h-[100px]  relative ">
                         <Image className='rounded-md' src={currentUser.foto_user} alt='image user' fill objectFit='cover' />
-                    </div>
+                    </div>  
                     <div className="w-[50px] h-[50px]  relative ">
                         <Image className='rounded-md' src={'/game/vs.png'} alt='image user' fill objectFit='cover' />
                     </div>   <div className="w-[100px] h-[100px]  relative ">

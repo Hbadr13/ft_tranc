@@ -31,26 +31,6 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
         setrejectRequest(false)
         router.push("/game")
     }
-    const handelButtonPlayOnline = async () => {
-        try {
-
-            const response = await fetch('http://localhost:3333/auth/user', {
-                credentials: 'include',
-            });
-            if (response.status == 200) {
-
-                const content = await response.json()
-                if (content.isOnline === false)
-                    router.push('/game?online=true&friends=listoffriends')
-                else
-                    setCantPlayOnline(true)
-            }
-
-        } catch (error) {
-
-        }
-
-    }
 
 
     const [gameStart, setGameStart] = useState(true);
