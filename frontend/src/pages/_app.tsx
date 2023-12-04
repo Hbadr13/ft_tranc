@@ -204,7 +204,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
               </>
             }
-            <div className="home mt-16">
+            <div className="home mt-14">
               <Component  {...modifiedPageProps} />
             </div>
           </div>

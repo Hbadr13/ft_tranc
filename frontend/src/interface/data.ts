@@ -1,5 +1,22 @@
 import { Socket } from "socket.io-client";
 
+export interface messageProps {
+    id: number,
+    content: string,
+    createdAt: string,
+    senderId: number
+}
+
+export interface channelProps {
+    id: number,
+    createdAt: string,
+    updatedAt: string,
+    name: string,
+    type: string,
+    description: string,
+    password: string
+}
+
 export interface userProps {
 
     flag1: boolean;    // 
@@ -11,6 +28,7 @@ export interface userProps {
     username: string,
     firstName: string,
     lastName: string,
+    message: Array<messageProps>,
     foto_user: string,
     isOnline: boolean,
     userId: number
@@ -19,9 +37,11 @@ export interface userProps {
 
 
 export interface AppProps {
+    [x: string]: any;
     onlineUsersss: Array<number>,
     currentUser: userProps,
     users: Array<userProps>,
+    messages: Array<userProps>,
     amis: Array<userProps>,
     socket: Socket,
 }

@@ -26,29 +26,63 @@ model User {
   friendOf               Friendship[]    @relation("UserFriendOf")
   sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
   receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
-  messagesSent           Message[]       @relation("sentMessages")
-  messagesReceived       Message[]       @relation("receivedMessages")
+  conversations          Conversation[]
+  Messages               Message[]
+  memberships            Membership[]
+}
+
+model Conversation {
+  id           Int       @id @default(autoincrement())
+  createdAt    DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime? @updatedAt @db.Timestamp(6)
+  type         String
+  participants User[]
+  room         Room?     @relation(fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  roomId       Int?      @unique
+  messages     Message[]
 }
 
 model Message {
-  id        Int      @id @default(autoincrement())
-  text      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int          @id @default(autoincrement())
+  content   String
+  createdAt DateTime     @default(now()) @db.Timestamp(6)
+  sender    User         @relation(fields: [senderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   senderId  Int
-  receiverId Int
-  sender    User     @relation("sentMessages", fields: [senderId], references: [id])
-  receiver  User     @relation("receivedMessages", fields: [receiverId], references: [id])
+  chat      Conversation @relation(fields: [chatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  chatId    Int
+}
+
+model Room {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar()
+  description  String?       @db.VarChar()
+  type         String
+  conversation Conversation?
+  password     String?       @db.VarChar()
+  createdAt    DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime?     @updatedAt @db.Timestamp(6)
+  Memberships  Membership[]  @relation("membership")
+}
+
+model Membership {
+  id       Int       @id @default(autoincrement())
+  isOwner  Boolean   @default(false)
+  isAdmin  Boolean   @default(false)
+  isBanned Boolean   @default(false)
+  timeMute DateTime?
+  room     Room      @relation("membership", fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  roomId   Int
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId   Int
 }
 
 model FriendRequest {
-  id     Int    @id @default(autoincrement())
-  status String
-  senderId Int
-  sender   User @relation("SentFriendRequests", fields: [senderId], references: [id])
+  id         Int    @id @default(autoincrement())
+  status     String
+  senderId   Int
+  sender     User   @relation("SentFriendRequests", fields: [senderId], references: [id])
   receiverId Int
-
-  receiver   User @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
+  receiver   User   @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
 }
 
 model History {

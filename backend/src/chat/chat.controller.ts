@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ChatService } from './chat.service';
 
 @Controller('chat')
@@ -7,18 +7,55 @@ export class ChatController {
     constructor(private chatService: ChatService) {
     }
 
-    @Get('/:id/:id1')
-    async findAll(@Param('id') params: string, @Param('id1') params1: string) {
-        return await this.chatService.getMessage(params, params1);
+    @Post('createChannel/:idUser')
+    async CreateChannel(@Body() body, @Param('idUser') idUser: number) {
+        await this.chatService.createChannel(body, Number(idUser))
     }
 
-    @Post('/:id')
-    async create(@Body() body) {
-        await this.chatService.createMessage(body);
+    @Post('joinChannel/:idUser/:idRoom')
+    async JoinChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number) {
+        await this.chatService.joinChannel(Number(idUser), Number(idRoom))
     }
 
-    @Delete('/:id')
-    async DeletedMessage(@Param('id') params: string) {
-        return this.chatService.DeleteMessage(params);
+    @Get('allChannelByUserId/:idUser')
+    async GetAllChannelByUserId(@Param('idUser') idUser: number) {
+        return await this.chatService.getAllChannelByUserId(Number(idUser));
     }
+
+    @Post('sendMessageToChannel/:idRoom/:idUser')
+    async SendMessageToChannel(@Body() body, @Param('idRoom') idRoom: number, @Param('idUser') idUser: number) {
+        await this.chatService.sendMessageToChannel(body, Number(idRoom), Number(idUser))
+    }
+
+    @Get('allMessagesChannel/:idUser/:idRoom')
+    async GetallMessagesChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number) {
+        return await this.chatService.getallMessagesChannel(Number(idUser), Number(idRoom))
+    }
+
+    @Post('directMessage/:idSender/:idReceiver')
+    async SendDirectMessage(@Body() body, @Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
+        await this.chatService.sendDirectMessage(body, Number(idSender), Number(idReceiver))
+    }
+
+    @Get('getConversationDirect/:idSender/:idReceiver')
+    async GetConversationDirect(@Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
+        return await this.chatService.getConversationDirect(Number(idSender), Number(idReceiver))
+    }
+
+    @Delete('deleteConversationDirect/:idSender/:idReceiver')
+    async DeleteConversationDirect(@Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
+        await this.chatService.deleteConversationDirect(Number(idSender), Number(idReceiver))
+    }
+    // @Get('conversation/:id')
+    // async getConversation(@Param('id') id: number) {
+    //     return await this.chatService.getConversation(Number(id))
+    // }
+
+
+    // /////////////////// room by id ///////////////////////
+
+    // @Delete('/channel/:id')
+    // async deletedRoom(@Param('id') id: number) {
+    //     return this.chatService.deletedRoom(Number(id));
+    // }
 }
