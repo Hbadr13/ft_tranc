@@ -6,16 +6,17 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { FriendsModule } from './friends/friends.module';
 import { JwtModule } from '@nestjs/jwt';
-import { GameGateway } from './game/game.gateway';
 import { UserService } from './user/user.service';
 import { json } from 'express';
 import { GameModule } from './game/game.module';
 import { OnlineModule } from './online/online.module';
 import { RoomService } from './game/room/room.service';
-import { UpdateService } from './game/update/update.service';
 import { RecentModule } from './search/recent.module';
+import { HistoryService } from './game/history/history.service';
+import { GameService } from './game/game.service';
+// import { HistoryModule } from './game/history/history.module';
 
-
+   
 
 @Module({
     imports: [
@@ -25,11 +26,11 @@ import { RecentModule } from './search/recent.module';
         }),
         ConfigModule.forRoot({
             isGlobal: true
-        }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule ,GameModule,OnlineModule, RecentModule],
-    providers: [GameGateway, UserService,RoomService,UpdateService],
+        }), AuthModule, UserModule, PrismaModule, FriendsModule, GameModule, OnlineModule, RecentModule],
+    providers: [],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-      consumer.apply(json({ limit: '10mb' })).forRoutes('*');
+        consumer.apply(json({ limit: '10mb' })).forRoutes('*');
     }
 }

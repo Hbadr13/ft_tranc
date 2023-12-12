@@ -15,6 +15,7 @@ export interface userProps {
     isOnline: boolean,
     userId: number
     flag?: boolean
+    room: string
 }
 
 
@@ -23,6 +24,10 @@ export interface AppProps {
     currentUser: userProps,
     users: Array<userProps>,
     amis: Array<userProps>,
+    socket: Socket,
+}
+export interface AppPropsNow {
+    onlineUsersss: Array<number>,
     socket: Socket,
 }
 
@@ -41,3 +46,5 @@ export interface GameCardsProps {
     setselectPlayer: (selectPlayer: string) => void
 
 }
+
+export const userData = { id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false, room: '' }

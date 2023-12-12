@@ -41,6 +41,17 @@
 
 }
 
+.Dashboard {
+  min-height: 800px;
+  height: calc(100vh - 56px);
+}
+
+@media (max-width: 768px) {
+  .Dashboard {
+    height: auto;
+  }
+}
+
 .test {
   display: flex;
   justify-content: space-around;
@@ -131,9 +142,6 @@
   /* z-index: 2; */
 }
 
-.Search.display:focus {
-  /* background:; */
-}
 
 .submetButton {
   transition: all 0.3s ease;
@@ -181,6 +189,13 @@
 
   }
 
+  .home.close {
+    left: 0px;
+    width: calc(100% - 52px);
+    transition: all 0.3s ease;
+
+  }
+
   .navbar {
     transition: all 0.3s ease;
     width: calc(100% - 52px);
@@ -194,6 +209,7 @@
     padding-bottom: 0rem;
     padding-left: 0rem;
   }
+
   .submetButton {
     transition: all 0.3s ease;
     display: none;

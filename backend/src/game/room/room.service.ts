@@ -21,17 +21,21 @@ export class RoomService {
       },
       data: {
         room: body.room,
+        opponentId: Number(body.opponentId)
       },
     });
     return data;
   }
-  async deleteRoom(userId: number) {
+  async  deleteRoom(userId: number) {
+    // console.log('clear room')
     const data = await this.prisma.user.update({
       where: {
         id: userId,
       },
       data: {
         room: '',
+        opponentId: 0,
+        isOnline: false
       },
     });
     return data;

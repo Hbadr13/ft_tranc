@@ -16,32 +16,18 @@ export class UserService {
     });
     return user;
   }
-  async makeUserInGame(id: number): Promise<User | undefined> {
+  async makeUserInGame(id: number) {
     // Replace this with your actual logic to find a user by username
-    const user = await this.prisma.user.update({
+    await this.prisma.user.update({
       where: {
         id: id,
       },
       data: {
-        isOnline: true, // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
+        isOnline: true,
       }
     });
-
-    return user;
   }
-  async makeUserOutGame(id: number): Promise<User | undefined> {
-    // Replace this with your actual logic to find a user by username
-    const user = await this.prisma.user.update({
-      where: {
-        id: id,
-      },
-      data: {
-        isOnline: false, // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
-      }
-    });
 
-    return user;
-  }
   async findAllUsers(userAId: number) {
     const users = await this.prisma.user.findMany();
     const filteredUsers = users.filter(user => user.id !== userAId);

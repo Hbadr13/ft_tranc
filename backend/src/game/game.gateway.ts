@@ -1,4 +1,3 @@
-import io from 'socket.io-client';
 import { UserService } from '../user/user.service';
 
 import {
@@ -9,33 +8,47 @@ import {
   SubscribeMessage,
   MessageBody,
 } from '@nestjs/websockets';
+
 import { Server, Socket } from 'socket.io';
 import { RoomService } from './room/room.service';
-import { UpdateService } from './update/update.service';
-import { updateDto } from './dto/game';
+import { HistoryService } from './history/history.service';
+import { historyDto } from './dto/game';
+import { userProps } from 'src/online/online.gateway';
+import { BALL, Canvas, Game, Player } from './interface';
+import { GameService } from './game.service';
 
-@WebSocketGateway(8000, { cors: '*' })
+@WebSocketGateway(
+  {
+    cors: {
+      origin: '*'
+    },
+    namespace: 'gameGateway'
+  }
+)
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
-    private readonly userService: UserService,
-    private readonly roomService: RoomService,
-    private readonly updateserver: UpdateService,
+    private userService: UserService,
+    private roomService: RoomService,
+    private gameService: GameService,
+    private gameHistory: HistoryService
+
   ) { }
   @WebSocketServer()
   server: Server;
-  private players: Array<{ _client: Socket; _room: string }> = [];
-  private rrooms: Map<string, number> = new Map<string, number>();
 
-  private IdOfPlayer: Map<Socket, number> = new Map<Socket, number>();
+  IdOfPlayer: Map<Socket, number> = new Map<Socket, number>();
+  players: Array<{ _client: Socket; _room: string, user_id: number }> = [];
+  rooms: Map<string, number> = new Map<string, number>();
+  ballPosition: Map<string, { x: number, y: number }> = new Map<string, { x: number, y: number }>();
+  matchs: Map<string, number> = new Map<string, number>();
+
+  games: Map<string, Game> = new Map<string, Game>();
 
   async handleConnection(client: Socket) {
     try {
-      console.log('handle connect game gateway')
       const userId = Number(client.handshake.query.userId);
       if (userId < 1) return;
       this.IdOfPlayer.set(client, userId);
-      const content = await this.userService.makeUserInGame(userId);
-      // console.log(`Game: Client connected: ${this.IdOfPlayer.get(client)}`);
     } catch (error) { }
   }
 
@@ -46,18 +59,45 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         (item) => item._client.id != client.id,
       );
       if (user) {
-        client.to(user._room).emit('leaveRoom', {});
-        if (this.rrooms.get(user._room) === 1)
-          client.to(user._room).emit('availableRoom');
-        this.rrooms.delete(user._room);
+        client.to(user._room).emit('leaveRoom');
+        await this.roomService.deleteRoom(this.IdOfPlayer.get(client));
+        this.rooms.delete(user._room);
+        this.IdOfPlayer.delete(client);
+        const game = this.games.get(user._room)
+        if (game)
+          this.leaveTheGame({ game: game, userid: user.user_id })
+
       }
-      // console.log(`Game: Client disconnected: ${this.IdOfPlayer.get(client)}`);
-      await this.userService.makeUserOutGame(this.IdOfPlayer.get(client));
-      await this.roomService.deleteRoom(this.IdOfPlayer.get(client));
-      this.IdOfPlayer.delete(client);
     } catch (error) { }
   }
 
+  async leaveTheGame({ game, userid }) {
+    try {
+      const opponentid = game.player1_Id == userid ? game.player2_Id : game.player1_Id
+      if (game.player1.status == '' && game.player2.status == '' && game.player1_Id != -1 && game.player2_Id != -1) {
+        game.player1_Id = -1
+        game.player2_Id = -1
+        console.log('hona-------------11', userid)
+        await this.gameHistory.updateUsershistory(userid, {
+          opponentId: opponentid,
+          status: 'lost',
+          myGools: 0,
+          opponentGools: 3
+        })
+        await this.gameHistory.updateUsershistory(opponentid, {
+          opponentId: userid,
+          status: 'won',
+          myGools: 3,
+          opponentGools: 0
+        })
+      }
+      game.gameFinish = false
+      this.games.delete(game.room)
+
+    } catch (error) {
+    }
+
+  }
   @SubscribeMessage('documentHidden')
   handleMessage(client: Socket, flag: boolean): void {
     const user = this.players.find((item) => item._client.id == client.id);
@@ -67,46 +107,138 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('joinRoom')
-  handleCreatRoom(client: Socket, { room, userId }): void {
-    console.log(userId);
-    if (!this.rrooms.get(room)) {
-      this.rrooms.set(room, 1);
-    } else {
-      this.rrooms.set(room, this.rrooms.get(room) + 1);
+  async handleCreatRoom(client: Socket, { room, userId, opponentId }) {
+    if (room == '' || this.rooms.get(room) == 2)
+      return
+    try {
+      this.players.forEach((value, key) => {
+        if (value.user_id == userId)
+          throw new Error('ExitLoopException');
+      })
+      if (!this.rooms.get(room)) {
+        this.rooms.set(room, 1);
+      } else {
+        this.rooms.set(room, this.rooms.get(room) + 1);
+      }
+      this.players.push({ _client: client, _room: room, user_id: userId });
+      const content = await this.userService.makeUserInGame(userId);
+      client.join(room);
+
+      const index = this.players.findIndex(
+        (item) => item._client.id === client.id,
+      );
+      if (this.rooms.get(room) == 2) {
+        const canvasWidth = 900
+        const canvasHeight = 450
+        const playerHeight = 100
+        const playerWidth = 20
+        const player1 = new Player(0, canvasHeight / 2 - playerHeight / 2, 20, 100, 'player1')
+        const player2 = new Player(canvasWidth - 20, canvasHeight / 2 - playerHeight / 2, 20, 100, 'player2')
+        const ball = new BALL({ ballX: 200, ballY: 200, velocityX: 8, velocityY: 6, acceLeration: 0.5, speeD: 10, raduis: 15 })
+        const canvas = new Canvas({ width: canvasWidth, height: canvasHeight, velocityX: 8, velocityY: 6, speeD: 10 })
+        this.games.set(room, {
+          proteted: false,
+          status: 'Resume',
+          gameId: 0,
+          player1: player1,
+          player2: player2,
+          player1_Id: userId,
+          player2_Id: opponentId,
+          gameFinish: true,
+          Ball: ball,
+          canvas: canvas,
+          score: 3
+        })
+        const game = this.games.get(room)
+        this.server.to(room).emit('initGame', JSON.stringify({
+          game: game,
+          type: 'update',
+        }));
+        game.gameId = setInterval(() => {
+          if (!game.gameFinish)
+            clearInterval(game.gameId)
+          if (game.status == 'Pause' || game.player1.pause || game.player2.pause)
+            return
+          this.gameService.updateGame({ game: game, room: room, server: this.server })
+          this.gameService.checkIfgameOver({ game: game })
+          if (game.player1.status != '' && game.player2.status != '')
+            this.updateHistory({ game: game })
+          this.server.to(room).emit('updateGame', JSON.stringify({
+            game: game,
+            type: 'update',
+          }));
+        }, 1000 / 60);
+      }
+    } catch (error) {
+
     }
-    this.players.push({ _client: client, _room: room });
+  }
+  async updateHistory({ game }: { game: Game }) {
+    try {
+      console.log(game.player1_Id, game.player1.status, game.player1.score)
+      console.log(game.player2_Id, game.player2.status, game.player2.score)
+      await this.gameHistory.updateUsershistory(game.player1_Id, {
+        opponentId: game.player2_Id,
+        status: game.player1.status,
+        myGools: game.player1.score,
+        opponentGools: game.player2.score
+      })
+      await this.gameHistory.updateUsershistory(game.player2_Id, {
+        opponentId: game.player1_Id,
+        status: game.player2.status,
+        myGools: game.player2.score,
+        opponentGools: game.player1.score
+      })
+    } catch (error) {
+    }
+
+  }
+  @SubscribeMessage('MouseMove')
+  handleMouseMove(client: Socket, { newPositionX, newPositionY, room, userid }) {
+    const game = this.games.get(room)
+    if (game) {
+      if (userid == game.player2_Id)
+        game.player1.y = newPositionY
+      else if (userid == game.player1_Id)
+        game.player2.y = newPositionY
+    }
+  }
+  @SubscribeMessage('joinMatch')
+  handleCreatMatch(client: Socket, { room, userId }): void {
+    if (!this.matchs.get(room)) {
+      this.matchs.set(room, 1);
+    } else {
+      this.matchs.set(room, this.matchs.get(room) + 1);
+    }
+    this.players.push({ _client: client, _room: room, user_id: userId });
     client.join(room);
 
     const index = this.players.findIndex(
       (item) => item._client.id === client.id,
     );
-    if (index != -1) client.emit('indexPlayer', this.rrooms.get(room) - 1);
-    if (this.rrooms.get(room) == 2) this.server.to(room).emit('start', 2);
+    if (this.matchs.get(room) == 1) this.server.to(room).emit('onePlayerR');
+    if (this.matchs.get(room) == 2) this.server.to(room).emit('towPlayerR');
   }
 
-  @SubscribeMessage('dataOfplayer')
-  handleDataOfplayer(client: Socket, player: any) {
-    const user = this.players.find((item) => item._client.id == client.id);
-    if (user) client.to(user._room).emit('dataOfplayer', player);
-  }
 
-  @SubscribeMessage('dataOfcomputer')
-  handleCreatpostion2(client: Socket, computer: any) {
-
-    const user = this.players.find((item) => item._client.id == client.id);
-    if (user) client.to(user._room).emit('dataOfcomputer', computer);
-  }
-  @SubscribeMessage('opponentId')
-  handleOpponentId(client: Socket, id: Number): void {
-    // console.log('opponentId:', id)
-    const user = this.players.find((item) => item._client.id == client.id);
-    if (user) client.to(user._room).emit('opponentId', id);
-  }
-
-  @SubscribeMessage('moveBall')
-  handleMoveBall(client: Socket, ball: any): void {
-    const user = this.players.find((item) => item._client.id == client.id);
-    if (user) this.server.to(user._room).emit('movebb', ball);
+  @SubscribeMessage('playAgain')
+  handlePlayAgain(client: Socket, { room, userId }): void {
+    const game = this.games.get(room)
+    if (!game)
+      return
+    if (game.player1_Id == userId)
+      game.player1.status = ''
+    if (game.player2_Id == userId)
+      game.player2.status = ''
+    console.log('play', game.player1.status, game.player2.status)
+    if (game.player1.status == '' && game.player2.status == '') {
+      game.player1.score = 0
+      game.player2.score = 0
+      game.Ball.ballX = game.canvas.width / 2
+      game.Ball.ballY = game.canvas.height / 2
+      game.status = 'resume'
+      this.server.to(room).emit('playAgainIsDone')
+    }
   }
 
   @SubscribeMessage('startWithComputer')
@@ -115,8 +247,19 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('ResumePause')
-  handlegameResumePause(client: Socket, index: number): void {
-    const user = this.players.find((item) => item._client.id == client.id);
-    if (user) client.to(user._room).emit('ResumePause', index);
+  handlegameResumePause(client: Socket, { room, userId }): void {
+    const game = this.games.get(room)
+    if (!game)
+      return
+    if (game.status == 'Pause')
+      return
+    if (game.player1_Id == userId) {
+      if (!game.player2.pause)
+        game.player1.pause = !game.player1.pause
+    } else if (game.player2_Id == userId) {
+      if (!game.player1.pause)
+        game.player2.pause = !game.player2.pause
+    }
   }
+
 }

@@ -59,11 +59,16 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
             }
         });
     })
+    const [friendsComp, setfriendsComp] = useState(false)
     useEffect(() => {
         const lst: Array<string> = ['/', '/chat', '/profile', '/user', '/game', '/search']
         // console.log(router.route, ':', lst.indexOf(router.route))
         if (lst.indexOf(router.route) != -1)
             setActiveButton(lst.indexOf(router.route) + 1)
+        if (router.asPath == '/game/online?listoffriends=true')
+            setfriendsComp(true)
+        else
+            setfriendsComp(false)
     }, [router])
     return (
         <>
@@ -154,20 +159,20 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                 </div>
 
                 <div className='relative p-2 md:p-0 md:py-2 md:pl-2 w-full bg-red-300s mt-10'>
-                    <div className={`${activeButton == 5 ? 'block' : 'hidden'} -top-[8px]  right-0 absolute w-[20px] h-[16px]  bg-[#09247c]`}>
+                    <div className={`${activeButton == 5 ? 'block' : 'hidden'} -top-[8px]  right-0 absolute w-[20px] h-[16px]  ${friendsComp ? ' bg-CusColor_grey' : 'bg-[#09247c]'}`}>
                         <div className={`w-[20px] h-[16px] ${light} rounded-none md:rounded-br-[15px]`}>
                         </div>
                     </div>
-                    <div className={`${activeButton == 5 ? 'bg-[#09247c] ' : light} p-1 rounded-full md:rounded-none md:rounded-l-full transition-padding duration-100 hover:p-2`}>
-                        <Link onClick={() => setActiveButton(5)} className={`flex items-center space-x-4 p-2 rounded-full ${light} w-full`} href='/game?start'>
+                    <div className={`${activeButton == 5 ? `${friendsComp ? ' bg-CusColor_grey' : 'bg-[#09247c]'}` : light} p-1 rounded-full md:rounded-none md:rounded-l-full transition-padding duration-100 hover:p-2`}>
+                        < Link onClick={() => setActiveButton(5)} className={`flex items-center space-x-4 p-2 rounded-full ${light} w-full`} href='/game'>
                             <Image src='/icons-ping-pong-black.png' className='' alt='prin-pong' width={20} height={20}></Image>
                             <span className={` ${activeButton == 5 ? 'text-blue-900  font-bold' : ''} `}>
                                 Play
                             </span>
                         </Link>
                     </div>
-                    <div className={`${activeButton == 5 ? 'block' : 'hidden'} -buttom-[8px]  right-0 absolute w-[20px] h-[16px] bg-[#09247c]`}>
-                        <div className={`w-[20px] h-[16px] ${light} rounded-none md:rounded-tr-[15px]`}></div>
+                    <div className={`${activeButton == 5 ? 'block' : 'hidden'} -buttom-[8px]  right-0 absolute w-[20px] h-[16px] ${friendsComp ? ' bg-CusColor_grey' : 'bg-[#09247c]'}`}>
+                        < div className={`w-[20px] h-[16px] ${light} rounded-none md:rounded-tr-[15px]`}></div>
                     </div>
                 </div>
 
@@ -199,7 +204,7 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                     </div>
                 </div>
 
-            </div>
+            </div >
         </>
 
     )

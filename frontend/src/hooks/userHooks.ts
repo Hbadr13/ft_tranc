@@ -44,8 +44,8 @@ export const checklogin = () => {
         )();
     });
 }
-export const fetchAllUsers = ({ setUsers, query, currentUser }:
-    { setUsers: (users: any) => void, query: string, currentUser: userProps }) => {
+export const fetchAllUsers = ({ setUsers, currentUser }:
+    { setUsers: (users: any) => void, currentUser: userProps }) => {
     useEffect(() => {
         (
             async () => {
@@ -61,16 +61,15 @@ export const fetchAllUsers = ({ setUsers, query, currentUser }:
                 }
             }
         )();
-    }, [query, currentUser]);
+    }, [currentUser]);
 }
 
 interface fetchAllAmisprops {
     setAmis: (amis: any) => void;
-    query: string;
     currentUser: userProps
 }
 
-export const fetchAllAmis = ({ setAmis, query, currentUser }: fetchAllAmisprops) => {
+export const fetchAllAmis = ({ setAmis, currentUser }: fetchAllAmisprops) => {
     useEffect(() => {
         (
             async () => {
@@ -87,7 +86,7 @@ export const fetchAllAmis = ({ setAmis, query, currentUser }: fetchAllAmisprops)
 
             }
         )();
-    }, [query, currentUser]);
+    }, [currentUser]);
 }
 export const fetchCurrentUser = ({ setCurrentUser }: { setCurrentUser: (currentUser: any) => void }) => {
 
@@ -107,4 +106,15 @@ export const fetchCurrentUser = ({ setCurrentUser }: { setCurrentUser: (currentU
             }
         )();
     }, []);
+}
+export const getCurrentUser = async () => {
+    try {
+        const response = await fetch('http://localhost:3333/auth/user', {
+            credentials: 'include',
+        });
+        const content = await response.json();
+        return content
+    } catch (error) {
+
+    }
 }

@@ -90,7 +90,6 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                         })
                         setSend((pr) => pr)
                         setarrayOfsender(arrayy)
-                        console.log('hellloooo');
                         return;
                     }
                 } catch (error) {

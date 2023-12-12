@@ -1,30 +1,58 @@
-import React, { useRef, useState } from 'react';
-// Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { AppPropsNow } from '@/interface/data';
+import { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
+import { ReactNode, useEffect } from 'react';
 
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
+const MyComponent = ({ children }: { children: ReactNode; }) => {
+  const router = useRouter();
+  // useEffect(() => {
+  //   const handleBeforeUnload = (e: any) => {
+  //     const confirmationMessage = 'Are you sure you want to leave? Your changes may not be saved.';
+  //     e.returnValue = confirmationMessage;
+  //     return confirmationMessage;
+  //   };
+  //   window.addEventListener('beforeunload', handleBeforeUnload);
+  // }, []);
 
 
-// import required modules
-import { Pagination } from 'swiper/modules';
-
-export default function App() {
   return (
     <>
-      <Swiper pagination={true} modules={[Pagination]} className="mySwiper">
-        <SwiperSlide>Slide 1</SwiperSlide>
-        <SwiperSlide>Slide 2</SwiperSlide>
-        <SwiperSlide>Slide 3</SwiperSlide>
-        <SwiperSlide>Slide 4</SwiperSlide>
-        <SwiperSlide>Slide 5</SwiperSlide>
-        <SwiperSlide>Slide 6</SwiperSlide>
-        <SwiperSlide>Slide 7</SwiperSlide>
-        <SwiperSlide>Slide 8</SwiperSlide>
-        <SwiperSlide>Slide 9</SwiperSlide>
-      </Swiper>
+      {children}
     </>
   );
+};
+
+import React from 'react'
+
+const Chat = ({ socket }: AppPropsNow) => {
+  const router = useRouter();
+  useEffect(() => {
+    const handleBeforeUnload = (e: any) => {
+
+      const confirmationMessage = 'Are you sure you want to leave? Your changes may not be saved.';
+      e.returnValue = confirmationMessage;
+      return confirmationMessage;
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
+
+  // useEffect(() => {
+  //   socket?.emit('kayna2')
+  //   router.beforePopState(({ url, as, options }) => {
+  //     // // I only want to allow these two routes!
+  //     // if (as !== '/' && as !== '/other') {
+  //     //   // Have SSR render bad routes as a 404.
+  //     //   window.location.href = as
+  //     //   return false
+  //     // }
+
+  //     return true
+  //   })
+  // }, [router])
+  return (
+    <div>Chat</div>
+  )
 }
 
+export default Chat

@@ -7,10 +7,11 @@ import {
   Max,
   Min,
   isInt,
+  isNumber,
   isString,
 } from 'class-validator';
 
-export class updateDto {
+export class historyDto {
   @IsNumber()
   @IsNotEmpty()
   opponentId: Number;
@@ -32,6 +33,10 @@ export class roomDto {
   @IsString()
   @IsNotEmpty()
   room: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  opponentId: Number;
 }
 
 export class AchievementDto {

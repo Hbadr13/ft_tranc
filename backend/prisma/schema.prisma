@@ -18,11 +18,12 @@ model User {
   lastName               String?
   foto_user              String?
   level                  Float?
-  // won                    Int?
-  // lost                   Int?
+  won                    Int?
+  lost                   Int?
   isOnline               Boolean
   history                History[]
   room                   String?
+  opponentId             Int?
   Recent                 Int[]
   friends                Friendship[]    @relation("UserFriends")
   friendOf               Friendship[]    @relation("UserFriendOf")

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, RefObject } from "react";
 import { useRouter } from "next/router";
+import { Ball, Canvas, Player } from "./class";
 
 
 export interface InfoGameprops {
@@ -18,8 +19,9 @@ export interface GameInfoProps {
     ACCELERATION: number,
     CANVAS_COLOR: string,
     PLAYER_WIDTH: number,
+    MEDIANLINE: string,
     RADIUS_BALL: number,
-    BALL_COLOR: string,
+    THE_BALL: string,
     PLAYER_X: number,
     PLAYER_Y: number,
     VELOCIT: number,
@@ -39,159 +41,14 @@ export interface startGameProps {
 }
 
 
-class Player {
-    youWonRrLost: string = "";
-    status: string = "Pause";
-    opponentId: number = -1;
-    color: string = "red";
-    height: number = 100;
-    width: number = 10;
-    score: number = 0;
-    bottom: number = 0;
-    right: number = 0;
-    name: string = "";
-    left: number = 0;
-    top: number = 0;
-    x: number = 0;
-    y: number = 0;
-    id: number = -1;
-
-    public constructor(x: number, y: number, widht: number, height: number, color: string) {
-        this.y = y;
-        this.width = widht
-        this.height = height
-        this.x = x;
-        this.color = color
-    }
-    public setBorder(): void {
-        this.bottom = this.y + this.height;
-        this.right = this.x + this.width;
-        this.left = this.x;
-        this.top = this.y;
-    }
-}
-
-
-class Ball {
-    velocityX: number = 0;
-    velocityY: number = 0;
-    bottom: number = 0;
-    right: number = 0;
-    left: number = 0;
-    top: number = 0;
-    raduis: number;
-    color: string;
-    x: number = 0;
-    y: number = 0;
-    speed: number;
-    Gameinfo: any
-    public constructor(x: number, y: number, gameInfo: GameInfoProps) {
-        this.velocityX = gameInfo.VELOCIT * -1;
-        this.raduis = gameInfo.RADIUS_BALL;
-        this.velocityY = gameInfo.VELOCIT;
-        this.color = gameInfo.BALL_COLOR;
-        this.speed = gameInfo.SPEED;
-        this.Gameinfo = gameInfo
-        this.x = x;
-        this.y = y;
-    }
-    public setBorder(): void {
-        this.bottom = this.y + this.raduis;
-        this.right = this.x + this.raduis;
-        this.left = this.x - this.raduis;
-        this.top = this.y - this.raduis;
-    }
-    public checkCollision(selectPlayer: Player): boolean {
-        return (
-            this.bottom > selectPlayer.top &&
-            this.top < selectPlayer.bottom &&
-            this.right > selectPlayer.left &&
-            this.left < selectPlayer.right
-        );
-    }
-}
-class Canvas {
-    ctx: CanvasRenderingContext2D | null;
-    canvas: HTMLCanvasElement;
-    flag: number = 0;
-    height: number;
-    width: number;
-    gameInfo: GameInfoProps
-
-    public constructor(canvas: HTMLCanvasElement, GameInfo: GameInfoProps) {
-        this.canvas = canvas;
-        this.ctx = this.canvas.getContext("2d");
-        this.height = canvas.height;
-        this.width = canvas.width;
-        this.gameInfo = GameInfo
-    }
-    public ClearCanvas(): void {
-        if (!this.ctx) return;
-        this.ctx.fillStyle = '#B79595'
-        // this.ctx.fillStyle = this.gameInfo.CANVAS_COLOR
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        // var img = new Image();
-        // img.src = '/ping-pong.png';
-        // this.ctx.drawImage(img, 0, -50, this.canvas.width, this.canvas.height + 100);
-    }
-    public drawRect(object: Player): void {
-        if (!this.ctx) return;
-        this.ctx.fillStyle = object.color;
-        this.ctx.fillRect(object.x, object.y, object.width, object.height);
-    }
-    public drawTheBall(ball: Ball): void {
-        if (!this.ctx) return;
-        // this.ctx.fillStyle = ball.color;
-        // this.ctx.beginPath();
-        // this.ctx.arc(ball.x, ball.y, ball.raduis, 0, Math.PI * 2, true);
-        // this.ctx.closePath();
-        // this.ctx.fill();
-        var img = new Image();
-        img.src = '/game/ball-3.svg';
-        this.ctx.drawImage(img, ball.x - 10, ball.y - 10, 20, 20);
-    }
-
-    public drawText(text: string, x: number, y: number, color: string) {
-        if (!this.ctx) return;
-        this.ctx.fillStyle = color;
-        this.ctx.font = "40px fantasy";
-        this.ctx.fillText(text, x, y);
-    }
-
-    public drawMedianLine(lineInfo: { w: number; h: number; step: number; color: string }): void {
-        if (!this.ctx) return;
-        for (let i = 0; i < 2000; i += lineInfo.step) {
-            this.ctx.fillStyle = lineInfo.color;
-            this.ctx.fillRect(
-                this.width / 2 - lineInfo.w / 2,
-                i,
-                lineInfo.w,
-                lineInfo.h
-            );
-        }
-    }
-    public moveBallWenCollision(ball: Ball, selectPlayer: Player): void {
-        {
-            let whenCollision =
-                (ball.y - (selectPlayer.y + selectPlayer.height / 2)) /
-                (selectPlayer.height / 2);
-            const direction = ball.x > this.width / 2 ? -1 : 1;
-            let newAngle = this.gameInfo.ANGLE * whenCollision;
-            ball.velocityX = direction * ball.speed * Math.cos(newAngle);
-            ball.velocityY = ball.speed * Math.sin(newAngle);
-            ball.speed += this.gameInfo.ACCELERATION;
-        }
-    }
-}
-
 function LinearInterpolation(pos1: number, pos2: number, t: number) {
     return pos1 + (pos2 - pos1) * t;
 }
 
 const updateGameLoop = (MyCanvas: Canvas, mousePosition: { x: number; y: number }, ball: Ball, player: Player, computer: Player, selectPlayer: string, GameInfo: any) => {
 
-    GameInfo.CANVAS_WIDTH = MyCanvas.width;
-    GameInfo.CANVAS_HIEGHT = MyCanvas.height;
+    // GameInfo.CANVAS_WIDTH = MyCanvas.width;
+    // GameInfo.CANVAS_HIEGHT = MyCanvas.height;
     if (selectPlayer === "computer") {
         const newY = LinearInterpolation(computer.y, ball.y - computer.height / 2, GameInfo.LEVEL);
         if (newY > -10 && (newY + computer.height < GameInfo.CANVAS_HIEGHT + 10))
@@ -211,7 +68,10 @@ const updateGameLoop = (MyCanvas: Canvas, mousePosition: { x: number; y: number 
     computer.setBorder();
     if (ball.bottom + 2 > GameInfo.CANVAS_HIEGHT || ball.top - 2 < 0)
         ball.velocityY *= -1;
-
+    if (ball.top < -2)
+        ball.y += 5
+    if (ball.bottom > MyCanvas.height + 2)
+        ball.y -= 5
     let selectPlayerCollision = ball.x < GameInfo.CANVAS_WIDTH / 2 ? player : computer;
     if (ball.checkCollision(selectPlayerCollision))
         MyCanvas.moveBallWenCollision(ball, selectPlayerCollision);
@@ -221,7 +81,7 @@ const renderGameOverScreen = (MyCanvas: Canvas, ball: Ball, player: Player, comp
     MyCanvas.ClearCanvas();
     MyCanvas.drawRect(player);
     MyCanvas.drawRect(computer);
-    MyCanvas.drawMedianLine({ w: 2, h: 10, step: 20, color: "#FFFFFF" });
+    MyCanvas.drawMedianLine({ w: 2, h: 10, step: 20, color: MyCanvas.gameInfo.MEDIANLINE });
     MyCanvas.drawTheBall(ball);
 };
 
@@ -239,44 +99,47 @@ function startGame({ myCanvasRef, mousePosition, ball, player, computer, selectP
 
 const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasTheme, gameLevel }: InfoGameprops) => {
 
-    let level: number = 0.05
+    let level: number = 0.14
     if (gameLevel == 'easy')
-        level = 0.05
+        level = 0.14
     if (gameLevel == 'medium')
-        level = 0.08
+        level = 0.25
     if (gameLevel == 'hard')
-        level = 0.1
+        level = 0.40
 
     const GameInfo = {
-        FPS: 1000 / 100,
+        FPS: 1000 / 60,
         PLAYER_COLOR: canvasTheme == "white" ? 'black' : 'white',
         PLAYER_HEIGHT: 100,
         PLAYER_WIDTH: 10,
         PLAYER_X: 0,
         PLAYER_Y: 0,
 
-        BALL_COLOR: ballTheme != '' ? ballTheme : "red",
+        THE_BALL: ballTheme,
         BALL_START_SPEED: 2,
         ANGLE: Math.PI / 4,
-        ACCELERATION: 0.8,
-        RADIUS_BALL: 10,
+        RADIUS_BALL: 15,
+        ACCELERATION: 0.3,
         LEVEL: level,
-        VELOCIT: 5,
-        SPEED: 5,
-
-        CANVAS_HIEGHT: 0,
-        CANVAS_COLOR: canvasTheme != '' ? canvasTheme : "black",
-        CANVAS_WIDTH: 0,
+        VELOCIT: 10,
+        SPEED: 10,
+        RIGHT_PADDEL: canvasTheme == 'canva1' ? "#35d399" : canvasTheme == 'canva2' ? '#f2f3f5' : '#070D37',
+        LEFT_PADDEL: canvasTheme == 'canva1' ? "#fb7185" : canvasTheme == 'canva2' ? '#f2f3f5' : '#070D37',
+        CANVAS_COLOR: canvasTheme == 'canva1' ? "#f2f3f5" : canvasTheme == 'canva2' ? '#1f1a1b' : '#548bf8',
+        MEDIANLINE: canvasTheme == 'canva1' ? "black" : canvasTheme == 'white' ? '#f2f3f5' : 'white',
+        CANVAS_HIEGHT: 450,
+        CANVAS_WIDTH: 900,
     };
 
-    const [player] = useState(new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y, GameInfo.PLAYER_WIDTH, GameInfo.PLAYER_HEIGHT, GameInfo.PLAYER_COLOR));
-    const [computer] = useState(new Player(0, 0, GameInfo.PLAYER_WIDTH, GameInfo.PLAYER_HEIGHT, GameInfo.PLAYER_COLOR));
-    const [ball] = useState(new Ball(200, 50, GameInfo));
 
-
+    const [player] = useState(new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y, GameInfo.PLAYER_WIDTH, GameInfo.PLAYER_HEIGHT, GameInfo.LEFT_PADDEL));
+    const [computer] = useState(new Player(0, 0, GameInfo.PLAYER_WIDTH, GameInfo.PLAYER_HEIGHT, GameInfo.RIGHT_PADDEL));
+    const [ball] = useState(new Ball(GameInfo.CANVAS_WIDTH / 2, GameInfo.CANVAS_HIEGHT / 2, GameInfo));
 
     const [mousePosition] = useState({ x: 0, y: 0 });
     const [computerStatus, setcomputerStatus] = useState('');
+
+
     const [computerScore, setcomputerScore] = useState(0);
     const [playerStatus, setplayerStatus] = useState('');
     const [playerScore, setplayerScore] = useState(0);
@@ -284,7 +147,6 @@ const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasThem
 
     const myCanvasRef = useRef<HTMLCanvasElement>(null);
     const router = useRouter();
-
     useEffect(() => {
         setInterval(() => {
             if (computer.status == 'Resume' || player.status == 'Resume')
@@ -306,17 +168,19 @@ const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasThem
             if (ball.x < 0) {
                 computer.score += 1;
                 ball.x = GameInfo.CANVAS_WIDTH / 2;
-                ball.y = GameInfo.CANVAS_HIEGHT / 2;
-                ball.velocityX = -GameInfo.VELOCIT;
-                ball.velocityY = GameInfo.VELOCIT;
+                ball.y = GameInfo.CANVAS_HIEGHT / 3;
+                ball.velocityX = GameInfo.VELOCIT;
+                GameInfo.VELOCIT *= -1
+                ball.velocityY = Math.abs(GameInfo.VELOCIT);
                 ball.speed = GameInfo.SPEED
             }
             if (ball.x > GameInfo.CANVAS_WIDTH) {
                 player.score += 1;
                 ball.x = GameInfo.CANVAS_WIDTH / 2;
-                ball.y = GameInfo.CANVAS_HIEGHT / 2;
-                ball.velocityX = -GameInfo.VELOCIT;
-                ball.velocityY = GameInfo.VELOCIT;
+                ball.y = GameInfo.CANVAS_HIEGHT / 3;
+                ball.velocityX = GameInfo.VELOCIT;
+                GameInfo.VELOCIT *= -1
+                ball.velocityY = Math.abs(GameInfo.VELOCIT);
                 ball.speed = GameInfo.SPEED
             }
             if (player.score >= 3) {
@@ -383,8 +247,8 @@ const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasThem
         player.youWonRrLost = ""
         computer.score = 0
         player.score = 0
-        ball.x = 200;
-        ball.y = 50;
+        ball.x = GameInfo.CANVAS_WIDTH / 2;
+        ball.y = GameInfo.CANVAS_HIEGHT / 2;
     }
     // const divHieght = useRef(400)
     return (
@@ -399,7 +263,7 @@ const PlayWithComputer = ({ selectPlayer, setselectPlayer, ballTheme, canvasThem
                         <div className={` relative w-full h-[100%] flex items-center flex-col space-y-10`}>
                             <div className="h-10 z-20 bg-red-100 lg:bg-blue-300 md:bg-red-300 2xl:bg-red-600">aa</div>
                             <canvas
-                                    className={`  border-2 rounded-sm md:rounded-lg w-[99%] h-[70%]   md:h-[70%]  md:w-[60%] 2xl:h-[100%] 2xl:w-[60%] `}
+                                className={`  border-2 rounded-sm md:rounded-lg w-[99%] h-[70%]   md:h-[70%]  md:w-[60%] 2xl:h-[100%] 2xl:w-[60%] `}
                                 ref={myCanvasRef}
                                 height={450}
                                 onMouseMove={handleMouseMove}

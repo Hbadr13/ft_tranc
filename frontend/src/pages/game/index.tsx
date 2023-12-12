@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, RefObject } from 'react'
 import PlayWithComputer from '../../components/game/computer'
-import { AppProps, userProps } from '@/interface/data';
+import { AppProps, userData, userProps } from '@/interface/data';
 import ListOfFriends from '@/components/game/listOfFriends';
 import { useRouter } from 'next/router';
 import PlayOnline from '@/components/game/online';
@@ -10,7 +10,9 @@ import OnlineCard from '@/components/game/cards/onlineCard';
 import ComputerCard from '@/components/game/cards/computerCard';
 import MatchingCard from '@/components/game/cards/matchingCard';
 import { GameCards } from '@/components/game/gameCard';
-const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) => {
+import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks';
+
+const Index = ({ onlineUsersss, socket }: AppProps) => {
     const router = useRouter()
     const [room, setroom] = useState<any>('');
     const [listOfFriends, setlistOfFriends] = useState<boolean>(false);
@@ -20,13 +22,13 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     const [rejectRequest, setrejectRequest] = useState(false)
     const [cantPlayOnline, setCantPlayOnline] = useState(false)
 
+    const [amis, setAmis] = useState<any>([])
+    const [users, setUsers] = useState<Array<any>>([]);
+    const [currentUser, setCurrentUser] = useState<userProps>(userData);
+    fetchCurrentUser({ setCurrentUser })
+    fetchAllUsers({ setUsers, currentUser })
+    fetchAllAmis({ setAmis, currentUser })
 
-    useEffect(() => {
-        if (router.asPath != '/game?start')
-            setGameStart(false)
-        else
-            setGameStart(true)
-    }, [router])
     const handelButtonRejectRequest = () => {
         setrejectRequest(false)
         router.push("/game")
@@ -35,58 +37,35 @@ const Index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
 
     const [gameStart, setGameStart] = useState(true);
     return (
-        <div className="Gamebackground w-full h-screen">
-            {gameStart ? (<div className=" flex justify-center items-cener ">
-                <div className={'relative mt-[120px] w-full sm:w-[90%] md:w-[70%] xl:w-[50] h-[600px]   rounded-2xl  '}>
-                    <div className=" Circles absolute w-[50%] z-10 h-[50%]  -left-32 -top-10 rounded-full" />
-                    <div className=" Circles absolute  opacity-50 rotate-180 w-[400px] z-10 h-[400px]  -right-5 md:-right-20 -bottom-10 rounded-full" />
-                    <Image
-                        className='rounded-xl z-20  shadow-2xl '
-                        src="/game/click-to-start-3.gif"
-                        alt="My Image"
-                        layout="fill"
-                        objectFit="cover"
-                    />
-                    <div className="absolute text-3xl z-20  bottom-32 inset-x-0  flex justify-center items-center ClickToStartGame">
-                        <button
-                            onClick={() => { router.push('/game') }}
-                            className=" ">Click To Start</button>
-                    </div>
-                </div>
-            </div>) : null
-            }
-            <div hidden={gameStart} className=' w-full  '>
-                <div className='flex justify-center w-[100%] items-center '>
-                    {
-                        selectPlayer == '' && !listOfFriends && (
-                            <div className='relative overflow-hidden w-full '>
-                                <GameCards currentUser={currentUser} socket={socket} setselectPlayer={setselectPlayer} />
-                            </div>
-                        )
-                    }
-                </div>
-                {
-                    listOfFriends ? (
-                        <div className=" absolute w-full">
-                            <ListOfFriends currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} setOpponent={setOpponent} />
-                        </div>
-                    ) : null
-                }
-                {
-                    (selectPlayer === 'online' && room !== '') ? (
-                        <div className={`w-full absolute ${rejectRequest ? ' hidden ' : ''}`}>
-                            < PlayOnline
-                                selectPlayer={selectPlayer}
-                                setselectPlayer={setselectPlayer}
-                                room={room}
-                                currentUser={currentUser}
-                                socketApp={socket}
-                            />
+        <div className="Gamebackground w-full h-screen  flex  justify-center">
+            {/* <div className="  w-full sm:w-[90%]  md:w-[80%] lg:w-[70%] xl:w-[50] h-[600px] mt-[140px  rounded-2xl "> */}
+            <div className="relative bg-whie z-10 overflow-hidden w-full sm:w-[90%]  md:w-[80%] lg:w-[70%] xl:w-[50]  h-[450px] md:h-[500px] lg:h-[550px] xl:h-[650px] mt-[140px] max-w-[1200px] rounded-2xl bg-slate-40   p-2 md:p-4">
+
+                {gameStart ? (
+                    <div className={'relative w-full h-full -[600p]   rounded-2xl  '}>
+
+                        <div className=" Circles absolute w-[50%] z-10 h-[50%]  -left-32 -top-10 rounded-full" />
+                        <div className=" Circles absolute  opacity-50 rotate-180 w-[400px] z-10 h-[400px]  -right-5 md:-right-20 -bottom-10 rounded-full" />
+                        <Image
+                            className='rounded-xl z-20  shadow-2xl  '
+                            src="/game/click-to-start-3.gif"
+                            alt="My Image"
+                            layout="fill"
+                            objectFit="cover"
+                        />
+                        <div className="ClickToStartGame absolute text-3xl z-20  bottom-32 inset-x-0  flex justify-center items-center ">
+                            <button
+                                onClick={() => { setGameStart(false) }}
+                                className=" ">Click To Start</button>
                         </div>
 
-                    ) : null
+                    </div>) : null
                 }
-
+                {
+                    !gameStart && selectPlayer == '' && !listOfFriends && (
+                        <GameCards currentUser={currentUser} socket={socket} setselectPlayer={setselectPlayer} />
+                    )
+                }
                 {
                     (cantPlayOnline) ? (
                         <div className='w-full h-full  flex justify-center items-center z-50 absolute'>

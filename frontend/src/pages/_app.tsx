@@ -8,13 +8,15 @@ import { io } from 'socket.io-client';
 import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks';
 import Image from 'next/image';
 import { Open_Sans } from 'next/font/google'
-import { userProps } from '@/interface/data';
+import { userData, userProps } from '@/interface/data';
 // import ThemeContext from '@/hooks/themeContext';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { Transition } from '@headlessui/react';
 import { createContext, } from 'react'
 import { getBack } from '@/hooks/appContexts';
 import { fetchData } from '@/hooks/appContexts';
+import { string } from 'zod';
+import { useRouter } from 'next/router';
 const font = Open_Sans({ subsets: ['latin'] })
 // import {useConta}
 export interface CardInvitation {
@@ -55,33 +57,33 @@ export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hide
 // '{ id: number; createdAt: string; updatedAt: string; email: string; hash: string; username: string; firstName: string; lastName: string; foto_user: string; isOnline: false; userId: number; flag: false; flag1: false; length: any; }'
 // const getBakc = createContext<string>('')
 
-export default function App({ Component, pageProps, router }: AppProps) {
+export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter()
   const isSideMenuVisible = !router.asPath.startsWith('/auth/login');
   const isSideMenuVisible2 = !router.asPath.startsWith('/register')
   const isSideMenuVisible3 = !router.asPath.startsWith('/auth/login')
 
-  const [onlineUsersss, setOnlineUsersss] = useState<Array<number>>([]);
   const [socket, setSocket] = useState<any>();
   const [hideRequest, sethideRequest] = useState<boolean>(true);
 
-  const [query, setquery] = useState("");
   const [myIdFromOpponent, setmyIdFromOpponent] = useState<number>(-2);
-
-  const [users, setUsers] = useState<Array<any>>([]);
-  const [currentUser, setCurrentUser] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false });
-  const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false });
+  const [room, setRoom] = useState('')
+  const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false, room: '' });
   // const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, });
   const [rejectRequest, setrejectRequest] = useState(false)
 
-  const [amis, setAmis] = useState<any>([])
   const [flag, setflag] = useState<boolean>(true)
-  const [pathOfGame, setpathOfGame] = useState<string>('')
+  // const [pathOfGame, setpathOfGame] = useState<string>('')
   // const router = useRouter()
 
 
+  const [onlineUsersss, setOnlineUsersss] = useState<Array<number>>([]);
+  const [amis, setAmis] = useState<any>([])
+  const [users, setUsers] = useState<Array<any>>([]);
+  const [currentUser, setCurrentUser] = useState<userProps>(userData);
   fetchCurrentUser({ setCurrentUser })
-  fetchAllUsers({ setUsers, query: "", currentUser })
-  fetchAllAmis({ setAmis, query, currentUser })
+  fetchAllUsers({ setUsers, currentUser })
+  fetchAllAmis({ setAmis, currentUser })
 
   useEffect(() => {
     if (isSideMenuVisible3 && isSideMenuVisible2) {
@@ -109,8 +111,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
   useEffect(() => {
     try {
-      console.log('hello')
-      const newSocket = io('http://localhost:8001', {
+      const newSocket = io('http://localhost:3333/OnlineGateway', {
         query: {
           userId: currentUser.id,
           amis: amis,
@@ -122,16 +123,21 @@ export default function App({ Component, pageProps, router }: AppProps) {
       newSocket?.on("updateOnlineUsers", (amisOnline: any) => {
         setOnlineUsersss(amisOnline)
       });
-      newSocket?.on("areYouReady", ({ OpponentId, currentPlayer, pathOfGame }: { OpponentId: string, currentPlayer: userProps, pathOfGame: string }) => {
+      newSocket?.on("areYouReady", ({ OpponentId, currentPlayer, room }: { OpponentId: string, currentPlayer: userProps, room: string }) => {
         console.log("areYouReady")
+        setRoom(room)
         setmyIdFromOpponent(Number(OpponentId))
-        setpathOfGame(pathOfGame);
+        // setpathOfGame(pathOfGame);
         setopponent(currentPlayer);
         sethideRequest(true)
       });
       newSocket?.on("rejectRequest", () => {
-        console.log('hello---')
+        // console.log('hello---')
         setrejectRequest(true)
+      })
+      newSocket?.on("rejectAcceptRequesthidden", () => {
+        sethideRequest((prev) => !prev)
+        setmyIdFromOpponent(-2)
       })
       return () => {
         newSocket.disconnect();
@@ -152,6 +158,9 @@ export default function App({ Component, pageProps, router }: AppProps) {
   };
 
   const handerRefuseButton = async () => {
+
+    socket?.emit('rejectAcceptRequesthidden', { currentUser: currentUser });
+    setRoom('')
     sethideRequest((prev) => !prev)
     setmyIdFromOpponent(-2)
     try {
@@ -159,35 +168,54 @@ export default function App({ Component, pageProps, router }: AppProps) {
         method: 'DELETE',
         credentials: 'include',
       });
-      console.log(responseDelete)
+      console.log('id->:', opponent.id)
+      const responseDelete2 = await fetch(`http://localhost:3333/game/room/${opponent.id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
     } catch (error) {
 
     }
-
     setflag(true)
     socket.emit("rejectRequest", { currentUser, opponent });
   }
 
-  const handerAcceptButton = () => {
+  const handerAcceptButton = async () => {
+    socket?.emit('userjointToGame', { userId: currentUser.id })
+    socket?.emit('rejectAcceptRequesthidden', { currentUser: currentUser });
+    socket?.emit('deleteFromsearchForOpponent');
     setmyIdFromOpponent(-2)
     sethideRequest((prev) => !prev)
-    console.log(pathOfGame)
-    router.push(pathOfGame)
-
+    console.log(room)
+    const response = await fetch(`http://localhost:3333/game/room/${currentUser.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        'room': room,
+        'opponentId': Number(opponent.id),
+      }),
+      credentials: 'include',
+    });
+    if (response.ok)
+      router.push('/game/online?settings=true')
   }
-  const [path, setpath] = useState('/')
+  const [path, setpath] = useState('')
   const [refreshData, setRefreshData] = useState<boolean>(false)
+  const [oldPath, setOldPath] = useState('')
   useEffect(() => {
+    if ((oldPath == '/game/online?search=true' && router.asPath != '/game/online?settings=true') || oldPath == '/game/online?settings=true')
+      socket?.emit('withdrawalFromMatching')
+    if (oldPath == '/game/online?settings=true' && router.asPath != '/game/online?play=true')
+      socket?.emit('DeleteuserFromGame', { userId: currentUser.id })
+
+    console.log('-----------------slkdfjafd')
+    setOldPath(router.asPath)
     if (router.route != '/search')
       setpath(router.route)
   }, [router])
 
-  // useEffect(() => {
-  //   socket?.on("rejectRequest", () => {
-  //     console.log('hello---')
-  //     setrejectRequest(true)
-  //   })
-  // }, [])
   return (
     <>
       <fetchData.Provider value={{ setRefreshData: setRefreshData, refreshData: refreshData }}>
@@ -203,7 +231,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
               </>
             }
-            <div className="home">
+            <div className="home ">
               <Component  {...modifiedPageProps} />
             </div>
           </div>
