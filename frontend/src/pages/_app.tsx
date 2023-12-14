@@ -68,7 +68,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const [myIdFromOpponent, setmyIdFromOpponent] = useState<number>(-2);
   const [room, setRoom] = useState('')
-  const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false, room: '' });
+  const [opponent, setopponent] = useState<userProps>(userData);
   // const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, });
   const [rejectRequest, setrejectRequest] = useState(false)
 
