@@ -45,4 +45,7 @@ export class AchievementDto {
   @Max(100)
   @IsNotEmpty()
   points: number;
+  @IsString()
+  @IsNotEmpty()
+  status: string
 }

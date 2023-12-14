@@ -17,12 +17,24 @@ export class AchievementService {
   }
   async updateLevel(userId: number, body: AchievementDto) {
     let newLevel: number = 0
-
+    let ifWon = 0
+    let ifLost = 0
+    console.log(userId, body)
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
       }
     });
+    if (body.status == 'won')
+      ifWon = 1
+    if (body.status == 'lost')
+      ifLost = 1
+
+    if (!user.won)
+      user.won = 0
+    if (!user.lost)
+      user.lost = 0
+
     if (user.level < 5)
       newLevel = body.points / 100
 
@@ -36,7 +48,9 @@ export class AchievementService {
         id: userId,
       },
       data: {
-        level: user.level + newLevel
+        level: user.level + newLevel,
+        won: user.won + ifWon,
+        lost: user.lost + ifLost,
       },
     });
     // return data;

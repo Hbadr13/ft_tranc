@@ -10,7 +10,7 @@ interface ExtendedAppProps extends AppPropsNow {
 
 
 
-function getTheDateAndTheTime(dateString: string) {
+export function getTheDateAndTheTime(dateString: string) {
 
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -44,7 +44,7 @@ function getTheDateAndTheTime(dateString: string) {
 const dateString = "2023-10-28T09:04:35.054Z";
 
 
-export const handelChallenge = async ({ oppId, socket, currentUser, selectUser, setselectUser, router }: any) => {
+export const handelChallenge = async ({ oppId, socket, currentUser, selectUser, setselectUser, router, setclick }: any) => {
     const response = await fetch(`http://localhost:3333/users/getbyuserid/${oppId}`, {
         credentials: 'include',
     });
@@ -64,6 +64,8 @@ export const handelChallenge = async ({ oppId, socket, currentUser, selectUser, 
                 credentials: 'include',
             });
             if (response.ok) {
+                if (setclick)
+                    setclick(false)
                 socket?.emit('userjointToGame', { userId: currentUser.id })
                 socket?.emit("areYouReady", {
                     OpponentId: oppId, currentPlayer: currentUser, room: room

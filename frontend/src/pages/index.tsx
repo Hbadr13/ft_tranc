@@ -6,6 +6,7 @@ import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { AppProps, userProps } from '@/interface/data';
+import History from '@/components/game/history';
 
 
 
@@ -22,7 +23,7 @@ function Index({ onlineUsersss, currentUser, users, amis }: AppProps) {
           <div className="w-full xl:w-[60%] h-full  rounded-xl ">
             rank
           </div>
-          <div className="  hidden xl:block w-[40%] h-full   rounded-xl">
+          <div className="  hidden xl:block w-[40%] h-full   rounded-xl ">
             info
           </div>
         </div>
@@ -30,7 +31,9 @@ function Index({ onlineUsersss, currentUser, users, amis }: AppProps) {
       <div className=" w-full md:w-[55%]  h-[800px] md:h-full rounded-xl flex flex-col gap-5   mb-10">
         <div className="h-[50%] w-full flex gap-5">
           <div className="w-[40%] h-full bg-red-400 rounded-xl">
-            user matches
+            <div className="">won:{currentUser.level}</div>
+            <div className="">lost:{currentUser.lost}</div>
+            <div className="">level:{currentUser.level}</div>
           </div>
           {/* <Image src={'/game/grad/grad-1.svg'} fill alt='1'></Image> */}
           <div className="w-[60%] h-full   flex">
@@ -47,8 +50,8 @@ function Index({ onlineUsersss, currentUser, users, amis }: AppProps) {
             </div>
           </div>
         </div>
-        <div className="h-[50%] w-full bg-blue-400">
-          user history
+        <div className="hideScroll overflow-auto h-[50%] w-full bg-blue-400 rounded-xl ">
+          <History currentUser={currentUser} users={users}></History>
         </div>
       </div>
     </menu>

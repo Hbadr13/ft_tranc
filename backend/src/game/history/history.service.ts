@@ -14,7 +14,6 @@ export class HistoryService {
         data: {
           myGools: Number(body.myGools),
           opponentGools: Number(body.opponentGools),
-
           status: body.status,
           opponentId: Number(body.opponentId),
           user: {

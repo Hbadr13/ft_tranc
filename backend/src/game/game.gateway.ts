@@ -16,6 +16,7 @@ import { historyDto } from './dto/game';
 import { userProps } from 'src/online/online.gateway';
 import { BALL, Canvas, Game, Player } from './interface';
 import { GameService } from './game.service';
+import { AchievementService } from './achievement/achievement.service';
 
 @WebSocketGateway(
   {
@@ -30,7 +31,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private userService: UserService,
     private roomService: RoomService,
     private gameService: GameService,
-    private gameHistory: HistoryService
+    private gameHistory: HistoryService,
+    private achievementService: AchievementService
 
   ) { }
   @WebSocketServer()
@@ -64,9 +66,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.rooms.delete(user._room);
         this.IdOfPlayer.delete(client);
         const game = this.games.get(user._room)
-        if (game)
+        game.gameFinish = false
+        this.games.delete(user._room)
+        // return
+        if (game) {
+          console.log('hona-------------11', game.player1_Id, game.player2_Id)
           this.leaveTheGame({ game: game, userid: user.user_id })
+        }
 
+        // console.log('hona-------------12', user.user_id)
       }
     } catch (error) { }
   }
@@ -74,10 +82,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async leaveTheGame({ game, userid }) {
     try {
       const opponentid = game.player1_Id == userid ? game.player2_Id : game.player1_Id
-      if (game.player1.status == '' && game.player2.status == '' && game.player1_Id != -1 && game.player2_Id != -1) {
+      console.log('gmae status', game.status)
+      if (game.player1.status == '' && game.player2.status == '' && game.status != 'Pause') {
+        console.log('d5al', game.status)
         game.player1_Id = -1
         game.player2_Id = -1
-        console.log('hona-------------11', userid)
         await this.gameHistory.updateUsershistory(userid, {
           opponentId: opponentid,
           status: 'lost',
@@ -90,10 +99,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
           myGools: 3,
           opponentGools: 0
         })
+        await this.achievementService.updateLevel(userid, { points: 5, status: 'lost' })
+        await this.achievementService.updateLevel(opponentid, { points: 60, status: 'won' })
       }
-      game.gameFinish = false
-      this.games.delete(game.room)
-
     } catch (error) {
     }
 
@@ -175,8 +183,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   async updateHistory({ game }: { game: Game }) {
     try {
-      console.log(game.player1_Id, game.player1.status, game.player1.score)
-      console.log(game.player2_Id, game.player2.status, game.player2.score)
+      // console.log(game.player1_Id, game.player1.status, game.player1.score)
+      // console.log(game.player2_Id, game.player2.status, game.player2.score)
       await this.gameHistory.updateUsershistory(game.player1_Id, {
         opponentId: game.player2_Id,
         status: game.player1.status,
@@ -189,6 +197,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         myGools: game.player2.score,
         opponentGools: game.player1.score
       })
+      await this.achievementService.updateLevel(game.player1_Id, { points: game.player1.points, status: game.player1.status })
+      await this.achievementService.updateLevel(game.player2_Id, { points: game.player2.points, status: game.player2.status })
     } catch (error) {
     }
 
@@ -230,7 +240,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       game.player1.status = ''
     if (game.player2_Id == userId)
       game.player2.status = ''
-    console.log('play', game.player1.status, game.player2.status)
+    // console.log('play', game.player1.status, game.player2.status)
     if (game.player1.status == '' && game.player2.status == '') {
       game.player1.score = 0
       game.player2.score = 0

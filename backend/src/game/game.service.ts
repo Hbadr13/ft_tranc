@@ -42,7 +42,7 @@ export class GameService {
             game.Ball.ballY -= 5
         let selectPlayerCollision = game.Ball.ballX < game.canvas.width / 2 ? game.player1 : game.player2;
         if (this.checkCollision({ game: game, selectPlayerCollision: selectPlayerCollision })) {
-            const Angle = Math.PI / 4
+            const Angle = Math.PI / 6
             const whenCollision =
                 (game.Ball.ballY - (selectPlayerCollision.y + selectPlayerCollision.height / 2)) /
                 (selectPlayerCollision.height / 2);

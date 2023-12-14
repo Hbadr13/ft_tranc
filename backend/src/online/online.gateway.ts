@@ -69,7 +69,7 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.server.emit('updateOnlineUsers', Array.from(myset));
       if (this.userInGame.get(userid)) {
         if (this.userInGame.get(userid).id == client.id) {
-          console.log('remove client from game', userid)
+          // console.log('remove client from game', userid)
 
           await this.prisma.user.update({
             where: { id: userid },
@@ -80,6 +80,15 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
           })
         }
         this.userInGame.delete(userid)
+      } {
+        await this.prisma.user.update({
+          where: { id: userid },
+          data: {
+            room: '',
+            isOnline: false
+          }
+        })
+
       }
     } catch (error) {
 
@@ -90,7 +99,7 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (userId < 1)
       return
     if (!this.userInGame.get(userId)) {
-      console.log('userjointToGame:', userId, client.id)
+      // console.log('userjointToGame:', userId, client.id)
       this.userInGame.set(userId, client)
     }
   }
@@ -108,7 +117,7 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
           }
         })
         this.userInGame.delete(userId)
-        console.log('remove client from game', userId)
+        // console.log('remove client from game', userId)
       }
     }
   }

@@ -6,7 +6,8 @@ import { AppProps, userProps } from '@/interface/data'
 import Link from 'next/link'
 import { handelSendRequest } from '@/handeler/handelbutttons'
 import { usefetchDataContext } from '@/hooks/usefetchDataContext'
-const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
+import { handelChallenge } from '@/components/game/listOfFriends'
+const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) => {
     const router = useRouter()
     const oldpath = useContext(getBack)
     const [filterUser, setfilterUser] = useState<Array<userProps>>([])
@@ -15,6 +16,7 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
     const [arrayOfsender, setarrayOfsender] = useState<Array<Number>>([])
     const [Ssend, setSend] = useState<boolean>(false)
     const { refreshData, setRefreshData } = usefetchDataContext()
+    const [selectUser, setselectUser] = useState<Number>(-1);
 
     const qr: string | string[] | undefined = router.query.query
     let query: string = "";
@@ -208,7 +210,8 @@ const index = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                                     ) : (
                                         <div className="w-[45%] flex bg-slate-800 hover:bg-slate-600 text-white p-1 rounded-lg  justify-center items-center ">
                                             <Image className=' ' width={20} height={20} src={'/icons-ping-pong-white.png'} alt='addfriend'></Image>
-                                            <button className='pl-2' >  Play</button>
+                                            <button onClick={() => onlineUsersss.includes(user.id) ? handelChallenge({ oppId: user.id, socket: socket, currentUser: currentUser, selectUser: selectUser, setselectUser: setselectUser, router: router }) : undefined}
+                                                className='pl-2' >  Play</button>
                                         </div>
                                     )}
                                     <div className="w-[45%] flex bg-[#eee] hover:bg-[#d6d5d5] text-black  p-1 rounded-lg justify-center items-center ">

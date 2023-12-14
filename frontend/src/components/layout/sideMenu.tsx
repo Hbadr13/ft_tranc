@@ -65,6 +65,9 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
         // console.log(router.route, ':', lst.indexOf(router.route))
         if (lst.indexOf(router.route) != -1)
             setActiveButton(lst.indexOf(router.route) + 1)
+        if (router.asPath.includes('users/'))
+            setActiveButton(4)
+
         if (router.asPath == '/game/online?listoffriends=true')
             setfriendsComp(true)
         else

@@ -9,9 +9,10 @@ import { handelSendRequest } from '@/handeler/handelbutttons'
 
 import { fetchData } from '@/hooks/appContexts';
 import { usefetchDataContext } from '@/hooks/usefetchDataContext'
+import { handelChallenge } from '../game/listOfFriends'
 
 
-const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
+const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) => {
     const refCardSearch = useRef<any>();
     const refInput = useRef<any>();
     const [clickInInput, setclickInInput] = useState(false)
@@ -22,7 +23,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
     const router = useRouter()
     const [filterUser, setfilterUser] = useState<Array<userProps>>([])
     const [newAmis, setAmis] = useState<Array<userProps>>(amis)
-
+    const [selectUser, setselectUser] = useState<Number>(-1);
     const { refreshData, setRefreshData } = usefetchDataContext()
 
 
@@ -81,7 +82,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                 setclick(false)
             }
         })
-    })
+    }, [])
     useEffect(() => {
         if (query.replace(/\s+/g, '')) {
             const usrs = users.filter((user: userProps) => {
@@ -148,7 +149,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                 setclick(false)
             }
         });
-    });
+    }, []);
     const [arrayOfsender, setarrayOfsender] = useState<Array<Number>>([])
     useEffect(() => {
         (
@@ -289,9 +290,10 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
 
                                                                 )
                                                             ) : (
-                                                                <Link href={'/game'} className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
+                                                                <button onClick={() => onlineUsersss.includes(user.id) ? handelChallenge({ oppId: user.id, socket: socket, currentUser: currentUser, selectUser: selectUser, setselectUser: setselectUser, router: router, setclick: setclick }) : undefined}
+                                                                    className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
                                                                     <Image src='/icons-ping-pong-black.png' className=' ' alt='search' width={20} height={20}></Image>
-                                                                </Link>
+                                                                </button>
                                                             )
                                                         }
 
