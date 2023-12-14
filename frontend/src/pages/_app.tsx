@@ -67,6 +67,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
   const isSideMenuVisible = !router.asPath.startsWith('/auth/login');
   const isSideMenuVisible2 = !router.asPath.startsWith('/register')
   const isSideMenuVisible3 = !router.asPath.startsWith('/auth/login')
+  const isSideMenuVisible4 = !router.asPath.startsWith(`/enter-2fa/`)
 
   const [onlineUsersss, setOnlineUsersss] = useState<Array<number>>([]);
   const [socket, setSocket] = useState<any>();
@@ -91,14 +92,14 @@ export default function App({ Component, pageProps, router }: AppProps) {
   fetchAllAmis({ setAmis, query, currentUser })
 
   useEffect(() => {
-    if (isSideMenuVisible3 && isSideMenuVisible2) {
+    if (isSideMenuVisible3 && isSideMenuVisible2 &&  isSideMenuVisible4 ) {
 
       (
         async () => {
           const response = await fetch('http://localhost:3333/auth/user', {
             credentials: 'include',
           });
-          if (response.status != 200) {
+          if (response.status != 200 && response.status != 201) {
             router.push('/auth/login');
             return;
           }
@@ -181,7 +182,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
         <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
           hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
         <div className={`${font.className}   font-medium `}>
-          {isSideMenuVisible && isSideMenuVisible2 &&
+          {isSideMenuVisible && isSideMenuVisible2  &&  isSideMenuVisible4 && 
             <>  
               <Navbar/>
               <SideMenu currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />

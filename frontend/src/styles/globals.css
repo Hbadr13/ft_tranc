@@ -40,3 +40,45 @@
     --light-success: #BBF7D0;
 
 }
+@media (max-width: 768px) {
+  .Dashboard {
+    height:auto;
+}
+}
+.Dashboard {
+  min-height: 800px;
+  height: calc(100vh - 56px);
+}
+
+.trapezoid {
+	border-bottom: 40px solid rgb(191, 219, 254);
+	border-left: 12px solid transparent;
+	border-right: 12px solid transparent;
+	height: 0;
+	width: 125px;
+}
+.trapezoid1 {
+	border-bottom: 30px solid rgb(191, 219, 254);
+	border-left: 10px solid transparent;
+	border-right: 0px solid transparent;
+	height: 0;
+	width: 100px;
+}
+.trapezoid2 {
+	border-bottom: 30px solid rgb(191, 219, 254);
+	border-left: 00px solid transparent;
+	border-right: 10px solid transparent;
+	height: 0;
+	width: 100px;
+}
+.parallelogram {
+	width: 100px;
+	height: 30px;
+	transform: skew(20deg);
+	background: #e0d0d0;
+}
+.rectangle {
+  height: 50px;
+  width: 100px;
+  background-color: #555;
+}

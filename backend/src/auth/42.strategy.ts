@@ -9,8 +9,8 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
   
 
       super({
-        clientID: 'u-s4t2ud-e9b9f639acf5e3e698308785599b9e071818393fbeace281d5b697ed69d4e9b0',
-        clientSecret: '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',
+        clientID: 'u-s4t2ud-4dbd9c7e3c0febef50e798297398f8060095fd1fd970f736b468268cf238faed',
+        clientSecret: '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',
         callbackURL: 'http://localhost:3333/auth/42/callback',
         
       });

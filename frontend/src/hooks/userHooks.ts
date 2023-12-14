@@ -13,7 +13,7 @@ export const checkAuth = () => {
                 const response = await fetch('http://localhost:3333/auth/user', {
                     credentials: 'include',
                 });
-                if (response.status != 200) {
+                if (response.status != 200 && response.status != 201 ) {
                     router.push('/auth/login');
                     return;
                 }

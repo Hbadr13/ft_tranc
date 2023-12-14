@@ -2,6 +2,7 @@ import { Socket } from "socket.io-client";
 
 export interface userProps {
 
+
     flag1: boolean;    // 
     id: number,
     createdAt: string,
@@ -11,6 +12,7 @@ export interface userProps {
     username: string,
     firstName: string,
     lastName: string,
+    level: number,
     foto_user: string,
     isOnline: boolean,
     userId: number

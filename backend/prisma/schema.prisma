@@ -17,6 +17,10 @@ model User {
   firstName              String?
   lastName               String?
   foto_user              String?
+  twoFactorSecret       String?
+  tempSecret             String?
+  level                  String?
+  isTwoFactorEnabled     Boolean @default(false)
   isOnline               Boolean
   history                History[]
   room                   String?

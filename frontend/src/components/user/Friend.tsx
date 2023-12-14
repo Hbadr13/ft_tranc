@@ -46,7 +46,7 @@ function LevelBar(userid: any) {
 
 
 
-const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, amis: Array<userProps>, currentUser: userProps }) => {
+const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, amis: Array<userProps>, currentUser: number}) => {
 
   // const [query, setQuery] = useState('')
   // const [id, setid] = useState(0)
@@ -69,7 +69,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   useEffect(() => {
     (
       async () => {
-        const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
+        const response = await fetch(`http://localhost:3333/friends/${currentUser}/send-requests`, {
           credentials: 'include',
         });
         const counte = await response.json();
@@ -80,10 +80,10 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
         }
       }
     )();
-  }, [currentUser.id, isOpen]);
+  }, [currentUser, isOpen]);
   const CanacelRequest = async (numberPart: number) => {
     try {
-      const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${currentUser.id}`, {
+      const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${currentUser}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -127,11 +127,11 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
     setallfriends(filterUser)
     setIsOpen(false);
     setcansle_request(false);
-  }, [isOpen, amis_id, amis, currentUser.id, send])
+  }, [isOpen, amis_id, amis, currentUser, send])
   // fetchCurrentUser(setid);
   const sendRequest = async (numberPart: number) => {
     try {
-      const response = await fetch(`http://localhost:3333/friends/send-request/${numberPart}/${currentUser.id}`, {
+      const response = await fetch(`http://localhost:3333/friends/send-request/${numberPart}/${currentUser}`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -150,10 +150,10 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   };
 
   return (
-    <div className="flex  flex-none    shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-500 -m-6  mb-8    mt-10  rounded-r-[40px]   w-[450px] h-[700px] ">
+    <div className="flex  flex-none     -m-6  mb-8    mt-  rounded-r-[40px]  ml-4  w-[450px] h-[700px] ">
 
 
-      <div className=" overflow-y-auto  bg-white rounded-2xl max-h-[680px] mt-2">
+      <div className=" overflow-y-scroll  scrollbar-hide bg-white  w-[430px] drop-shadow shadow-md shadow-black rounded-2xl max-h-[980px] mt-2">
         {
           (allfriends.length) ? allfriends.map((user: any) => (
 
@@ -162,7 +162,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                 <img
                   src={user.foto_user}
                   alt="Your Image Alt Text"
-                  className="  w-14 h-auto  rounded-full " // Adjust the width as needed
+                  className="  w-14 h-14  rounded-full " // Adjust the width as needed
                 />
                 {/* <div> */}
                 <div className=' rounded-xl  mt-2 flex  justify-start items-start flex-col  '> 
@@ -171,7 +171,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                 {/* </div> */}
 
                   {
-                    (user.id == currentUser.id) ?
+                    (user.id == currentUser) ?
                       (<div></div>) :
                       // <div className="mt-8 ">
                       <div>
@@ -183,7 +183,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                 </div>
               </div>
               {
-                (user.id == currentUser.id) ?
+                (user.id == currentUser) ?
                   (<div></div>) :
 
 
@@ -251,8 +251,10 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
 
               }
             </div>
-          )) : (<div>makin tah7d</div>
-          )
+          )) :  (
+            <div className=" flex mt-72 ml-6 bg-blue-600 text-white w-96 h-10 drop-shadow shadow-md shadow-black   items-center justify-center rounded-lg  rounded-white">This is an empty list</div>
+
+        )
         }
       </div>
     </div>

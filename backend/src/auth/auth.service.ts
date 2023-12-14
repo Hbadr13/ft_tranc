@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 // import { PrismaClientKnownRequestError } from '@prisma/client';
 import { PrismaClient, Prisma, User } from '@prisma/client';
 // import { Prisma, User } from '@prisma/client';
 import { ForbiddenException } from '@nestjs/common';
+import { Response, Request } from 'express';
+
+import * as speakeasy from 'speakeasy';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
 import { JwtPayload } from './jwt/jwt-payload.interface';
 import { UserService } from 'src/user/user.service';
+import { authenticator } from 'otplib';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +21,7 @@ export class AuthService {
     private readonly prisma: PrismaClient,
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
   async create(data: Prisma.UserCreateInput): Promise<User> {
     return this.prisma.user.create({
       data,
@@ -28,6 +32,95 @@ export class AuthService {
     return this.prisma.user.findUnique({
       where: condition,
     });
+  }
+
+
+  async setTwoFactor(id: string, code: string): Promise<any> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id: Number(id),
+        },
+      });
+      if (!user || !user.tempSecret) {
+        throw new NotFoundException('User or tempSecret not found');
+      }
+      
+      const verified = authenticator.check(code, user.tempSecret);
+      
+      if (!verified) {
+        throw new   NotFoundException('Invalid 2FA code');
+      }
+      await this.prisma.user.update({
+        where: {
+          id: Number(id),
+        },
+        data: {
+          isTwoFactorEnabled: true,
+          twoFactorSecret: user.tempSecret,
+        },
+
+      });
+        return user;
+    } catch (error) {
+      throw new NotFoundException('Unable to set two-factor authentication');
+    }
+  }
+  async   verifyTwoFactor(dto: AuthDto): Promise<any> {
+    // Assuming you use some form of authentication and the user object is attached to the request
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Check if 2FA is enabled for the user
+    if (!user.twoFactorSecret) {
+      throw new ForbiddenException('Two-Factor Authentication is not enabled for this user');
+    }
+    // console.log("dto.foto_user, user.twoFactorSecret", dto.foto_user, user.twoFactorSecret)
+    const verified = authenticator.check(dto.twoFactorSecret, user.twoFactorSecret);
+  
+    
+    if (!verified) {
+      throw new ForbiddenException('Invalid Two-Factor Authentication code');
+    }
+
+    // If 2FA code is valid, return the user
+    return user;
+  }
+  async   verifyTwoFactor_intra(dto: AuthDto): Promise<any> {
+    // Assuming you use some form of authentication and the user object is attached to the request
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: Number(dto.foto_user),
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Check if 2FA is enabled for the user
+    if (!user.twoFactorSecret) {
+      throw new ForbiddenException('Two-Factor Authentication is not enabled for this user');
+    }
+    // console.log("dto.foto_user, user.twoFactorSecret", dto.foto_user, user.twoFactorSecret)
+    const verified = authenticator.check(dto.twoFactorSecret, user.twoFactorSecret);
+  
+  
+   
+    
+    if (!verified) {
+      throw new ForbiddenException('Invalid Two-Factor Authentication code');
+    }
+
+    // If 2FA code is valid, return the user
+    return user;
   }
   async validateUser(payload: JwtPayload): Promise<User | null> {
     // Implement your logic to validate the user based on the JWT payload
@@ -58,6 +151,7 @@ export class AuthService {
           isOnline: false,
           // foto_user: dto.foto_user,
           foto_user: dto.foto_user,
+          twoFactorSecret: null,
           hash,
         },
       });
