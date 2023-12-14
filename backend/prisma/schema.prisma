@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                     Int             @id @default(autoincrement())
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  email                  String          @unique
+  hash                   String
+  username               String          @unique
+  firstName              String?
+  lastName               String?
+  foto_user              String?
+  level                  Float?
+  won                    Int?
+  lost                   Int?
+  twoFactorSecret        String?
+  tempSecret             String?
+  isTwoFactorEnabled     Boolean         @default(false)
+  isOnline               Boolean
+  history                History[]
+  room                   String?
+  opponentId             Int?
+  Recent                 Int[]
+  friends                Friendship[]    @relation("UserFriends")
+  friendOf               Friendship[]    @relation("UserFriendOf")
+  sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
+  userId                 Int?
+}
+
+model FriendRequest {
+  id     Int    @id @default(autoincrement())
+  status String
+
+  senderId Int
+  sender   User @relation("SentFriendRequests", fields: [senderId], references: [id])
+
+  receiverId Int
+  receiver   User @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
+}
+
+model History {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  opponentId    Int
+  status        String
+  myGools       Int
+  opponentGools Int
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+}
+
+model Friendship {
+  id     Int    @id @default(autoincrement())
+  status String // You can use this to track the status of the friendship (e.g., 'accepted', 'pending', 'rejected')
+
+  userAId Int
+  userA   User @relation("UserFriends", fields: [userAId], references: [id])
+
+  userBId Int
+  userB   User @relation("UserFriendOf", fields: [userBId], references: [id])
+}
