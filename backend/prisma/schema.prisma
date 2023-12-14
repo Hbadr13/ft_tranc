@@ -20,6 +20,9 @@ model User {
   level                  Float?
   won                    Int?
   lost                   Int?
+  twoFactorSecret        String?
+  tempSecret             String?
+  isTwoFactorEnabled     Boolean         @default(false)
   isOnline               Boolean
   history                History[]
   room                   String?

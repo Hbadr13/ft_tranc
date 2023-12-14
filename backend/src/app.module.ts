@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
@@ -15,6 +15,10 @@ import { RecentModule } from './search/recent.module';
 import { HistoryService } from './game/history/history.service';
 import { GameService } from './game/game.service';
 // import { HistoryModule } from './game/history/history.module';
+// import { UpdateService } from './game/update/update.service';
+import { JwtAuthGuard } from './auth/jwt/jwt-auth.guard';
+import { JwtMiddleware } from './auth/jwt/jwt.middleware';
+
 
    
 

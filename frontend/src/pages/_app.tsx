@@ -62,6 +62,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const isSideMenuVisible = !router.asPath.startsWith('/auth/login');
   const isSideMenuVisible2 = !router.asPath.startsWith('/register')
   const isSideMenuVisible3 = !router.asPath.startsWith('/auth/login')
+  const isSideMenuVisible4 = !router.asPath.startsWith(`/enter-2fa/`)
 
   const [socket, setSocket] = useState<any>();
   const [hideRequest, sethideRequest] = useState<boolean>(true);
@@ -86,28 +87,20 @@ export default function App({ Component, pageProps }: AppProps) {
   fetchAllAmis({ setAmis, currentUser })
 
   useEffect(() => {
-    if (isSideMenuVisible3 && isSideMenuVisible2) {
+    if (isSideMenuVisible3 && isSideMenuVisible2 && isSideMenuVisible4) {
       (
         async () => {
-          try {
-
-            const response = await fetch('http://localhost:3333/auth/user', {
-              credentials: 'include',
-            });
-            if (response.status != 200) {
-              router.push('/auth/login');
-              return;
-            }
-            const content = await response.json();
-          } catch (error) {
-
+          const response = await fetch('http://localhost:3333/auth/user', {
+            credentials: 'include',
+          });
+          if (response.status != 200 && response.status != 201) {
+            router.push('/auth/login');
+            return;
           }
         }
       )();
     }
   });
-
-
 
   useEffect(() => {
     try {
@@ -224,7 +217,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
             hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
           <div className={`${font.className}   font-medium `}>
-            {isSideMenuVisible && isSideMenuVisible2 &&
+            {isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible4 &&
               <>
                 <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
                 <SideMenu currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />

@@ -23,9 +23,11 @@ export default function Home() {
             credentials: 'include',
           });
           const content = await response.json();
-          setfoto_user(content.foto_user);
-          setEmail(content.email);
-          setUsername(content.username);
+          if (response.ok) {
+            setfoto_user(content.foto_user);
+            setEmail(content.email);
+            setUsername(content.username);
+          }
         } catch (error) {
 
         }

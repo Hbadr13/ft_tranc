@@ -92,7 +92,9 @@ export default function RegisterForm() {
           "username": name,
           "lastName": name,
           "password": password,
-          "foto_user": gender
+          "foto_user": gender,
+          "twoFactorSecret" : "",
+
         }),
       });
 

@@ -7,6 +7,6 @@ export default function Home({ onlineUsersss, currentUser, users, amis }: AppPro
 
   return (
     <main>
-      <User currentUser={currentUser} users={users} amis={amis}/>
+      <User />
     </main>);
 }

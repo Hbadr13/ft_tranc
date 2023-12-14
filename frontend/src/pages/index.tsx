@@ -1,4 +1,5 @@
 
+
 import Image from 'next/image'
 
 
@@ -7,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { AppProps, userProps } from '@/interface/data';
 import History from '@/components/game/history';
+import Leaderboard from '@/components/game/leaderboard';
 
 
 
@@ -19,13 +21,8 @@ function Index({ onlineUsersss, currentUser, users, amis }: AppProps) {
         <div className="w-full h-[100px] md:h-[20%] bg-slate-300 rounded-xl">
           user online
         </div>
-        <div className="w-full  h-[500px] md:h-[80%]  bg-[#f7f7f7]  shadow-md rounded-xl flex p-5" >
-          <div className="w-full xl:w-[60%] h-full  rounded-xl ">
-            rank
-          </div>
-          <div className="  hidden xl:block w-[40%] h-full   rounded-xl ">
-            info
-          </div>
+        <div className="w-full  h-[500px] md:h-[80%]  bg-[#f7f7f7 bg-green-200  shadow-md rounded-xl flex p-5" >
+          <Leaderboard currentUser={currentUser} />
         </div>
       </div>
       <div className=" w-full md:w-[55%]  h-[800px] md:h-full rounded-xl flex flex-col gap-5   mb-10">

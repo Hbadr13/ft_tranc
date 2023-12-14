@@ -51,7 +51,7 @@ function LevelBar(userid: any) {
 
 
 
-const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, amis: Array<userProps>, currentUser: userProps }) => {
+const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, amis: Array<userProps>, currentUser: number}) => {
 
   // const [query, setQuery] = useState('')
   // const [id, setid] = useState(0)
@@ -74,26 +74,21 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   useEffect(() => {
     (
       async () => {
-        try {
-
-          const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
-            credentials: 'include',
-          });
-          const counte = await response.json();
-          if (response.status == 200) {
-            setsend(Array.from(counte))
-            // setrequestt(cont)
-            return;
-          }
-        } catch (error) {
-
+        const response = await fetch(`http://localhost:3333/friends/${currentUser}/send-requests`, {
+          credentials: 'include',
+        });
+        const counte = await response.json();
+        if (response.status == 200) {
+          setsend(Array.from(counte))
+          // setrequestt(cont)
+          return;
         }
       }
     )();
-  }, [currentUser.id, isOpen]);
-  const cancelRequest = async (numberPart: number) => {
+  }, [currentUser, isOpen]);
+  const CanacelRequest = async (numberPart: number) => {
     try {
-      const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${currentUser.id}`, {
+      const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${currentUser}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -137,11 +132,11 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
     setallfriends(filterUser)
     setIsOpen(false);
     setcansle_request(false);
-  }, [isOpen, amis_id, amis, currentUser.id, send])
+  }, [isOpen, amis_id, amis, currentUser, send])
   // fetchCurrentUser(setid);
   const sendRequest = async (numberPart: number) => {
     try {
-      const response = await fetch(`http://localhost:3333/friends/send-request/${numberPart}/${currentUser.id}`, {
+      const response = await fetch(`http://localhost:3333/friends/send-request/${numberPart}/${currentUser}`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -160,10 +155,10 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   };
 
   return (
-    <div className="flex  flex-none    shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-500 -m-6  mb-8    mt-10  rounded-r-[40px]   w-[450px] h-[700px] ">
+    <div className="flex  flex-none     -m-6  mb-8    mt-  rounded-r-[40px]  ml-4  w-[450px] h-[700px] ">
 
 
-      <div className=" overflow-y-auto  bg-white rounded-2xl max-h-[680px] mt-2">
+      <div className=" overflow-y-scroll  scrollbar-hide bg-white  w-[430px] drop-shadow shadow-md shadow-black rounded-2xl max-h-[980px] mt-2">
         {
           (allfriends.length) ? allfriends.map((user: any) => (
 
@@ -172,7 +167,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                 <img
                   src={user.foto_user}
                   alt="Your Image Alt Text"
-                  className="  w-14 h-auto  rounded-full " // Adjust the width as needed
+                  className="  w-14 h-14  rounded-full " // Adjust the width as needed
                 />
                 {/* <div> */}
                 <div className=' rounded-xl  mt-2 flex  justify-start items-start flex-col  '>
@@ -181,7 +176,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                   {/* </div> */}
 
                   {
-                    (user.id == currentUser.id) ?
+                    (user.id == currentUser) ?
                       (<div></div>) :
                       // <div className="mt-8 ">
                       <div>
@@ -193,7 +188,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                 </div>
               </div>
               {
-                (user.id == currentUser.id) ?
+                (user.id == currentUser) ?
                   (<div></div>) :
 
 
@@ -248,7 +243,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                           (
 
                             <div className="">
-                              <button onClick={() => cancelRequest(user.id)} className="flex float-none   py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300  hover:bg-[white] hover:scale-110 items-center      border rounded-full duration-300"><svg width="20" height="20" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M496 224c-79.6 0-144 64.4-144 144s64.4 144 144 144 144-64.4 144-144-64.4-144-144-144zm64 150.3c0 5.3-4.4 9.7-9.7 9.7h-60.6c-5.3 0-9.7-4.4-9.7-9.7v-76.6c0-5.3 4.4-9.7 9.7-9.7h12.6c5.3 0 9.7 4.4 9.7 9.7V352h38.3c5.3 0 9.7 4.4 9.7 9.7v12.6zM320 368c0-27.8 6.7-54.1 18.2-77.5-8-1.5-16.2-2.5-24.6-2.5h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h347.1c-45.3-31.9-75.1-84.5-75.1-144zm-96-112c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128z" /></svg>
+                              <button onClick={() => CanacelRequest(user.id)} className="flex float-none   py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300  hover:bg-[white] hover:scale-110 items-center      border rounded-full duration-300"><svg width="20" height="20" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M496 224c-79.6 0-144 64.4-144 144s64.4 144 144 144 144-64.4 144-144-64.4-144-144-144zm64 150.3c0 5.3-4.4 9.7-9.7 9.7h-60.6c-5.3 0-9.7-4.4-9.7-9.7v-76.6c0-5.3 4.4-9.7 9.7-9.7h12.6c5.3 0 9.7 4.4 9.7 9.7V352h38.3c5.3 0 9.7 4.4 9.7 9.7v12.6zM320 368c0-27.8 6.7-54.1 18.2-77.5-8-1.5-16.2-2.5-24.6-2.5h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h347.1c-45.3-31.9-75.1-84.5-75.1-144zm-96-112c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128z" /></svg>
                               </button>
                             </div>
 
@@ -261,8 +256,10 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
 
               }
             </div>
-          )) : (<div>makin tah7d</div>
-          )
+          )) :  (
+            <div className=" flex mt-72 ml-6 bg-blue-600 text-white w-96 h-10 drop-shadow shadow-md shadow-black   items-center justify-center rounded-lg  rounded-white">This is an empty list</div>
+
+        )
         }
       </div>
     </div>

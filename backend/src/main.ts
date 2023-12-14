@@ -1,9 +1,13 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { ValidationPipe } from '@nestjs/common';
+import { UnauthorizedException, ValidationPipe } from '@nestjs/common';
 import *as  cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 import * as express from 'express';
+import { HttpExceptionFilter } from './auth/common/filters/HttpExceptionFilter';
+import { JwtMiddleware } from './auth/jwt/jwt.middleware';
+import { JwtService } from '@nestjs/jwt';
+
 
 
 
@@ -20,14 +24,23 @@ async function bootstrap() {
         origin: 'http://localhost:3000',
         credentials: true
     })
+
+
+    // app.use((req, res, next) => new JwtMiddleware(jwtService).use(req, res, next));
+    // const jwtService = app.get(JwtService);
+
+    // Apply JwtMiddleware globally
+    
     app.useGlobalPipes(new ValidationPipe({
         whitelist: true,
     }));
-    app.use(express.json({ limit: '50mb' }));
-    app.use(express.urlencoded({ limit: '50mb', extended: true }));
-    // app.use(cors());
-    // app.useWebSocketAdapter(new IoAdapter(app));
+    app.use(express.json({ limit: '300mb' }));
+    app.useGlobalFilters(new HttpExceptionFilter());
+    app.use(express.urlencoded({ limit: '300mb', extended: true }));
 
+
+
+    // app.use(cors());
     await app.listen(3333);
 }
 bootstrap();
