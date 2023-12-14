@@ -6,6 +6,6 @@ const nextConfig = {
 module.exports = nextConfig
 module.exports = {
   images: {
-    domains: ['cdn.intra.42.fr', 'i.pinimg.com/', 'i.pinimg.com']
+    domains: ['cdn.intra.42.fr', 'i.pinimg.com/', 'i.pinimg.com', 'fakestoreapi.com']
   },
 };

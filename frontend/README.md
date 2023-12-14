@@ -1,7 +1,7 @@
 <h1 style="colore:blue">Header Section:</h1>
 
 <h1 style="colore:blue">header</h1>
-navbar
+SideMenu
 topbar
 header-nav
 header-section

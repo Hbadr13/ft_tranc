@@ -8,13 +8,27 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      colors: {
+        CusColor_light: '#f6f6f9',
+        CusColor_primary: '#1976D2',
+        CusColor_light_primary: '#CFE8FF',
+        CusColor_grey: '#eee',
+        CusColor_dark_grey: '#AAAAAA',
+        CusColor_dark: '#363949',
+        CusColor_danger: '#D32F2F',
+        CusColor_light_danger: '#FECDD3',
+        CusColor_warning: '#FBC02D',
+        CusColor_light_warning: '#FFF2C6',
+        CusColor_success: '#388E3C',
+        CusColor_light_success: '#BBF7D0',
       },
+
     },
   },
-  plugins: [],
+  // plugins: [],
+  darkMode: 'class',
+  plugins: [
+    require('tailwind-scrollbar-hide')
+  ],
 }
 export default config
