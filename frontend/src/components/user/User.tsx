@@ -1,5 +1,6 @@
 import { userData, userProps } from '@/interface/data';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { any, number, set } from 'zod';
 function Mutaulfriends({ user, amis }: { user: userProps, amis: Array<userProps> }) {
@@ -285,92 +286,20 @@ const User = () => {
         setIsOpen1("can");
 
     }, [currentUser1]);
-    // useEffect(() => {
-
-    // useEffect(() => {
-    //     let freid = 0;
-    //     let filterUser: Array<userProps> = users.filter((user: userProps) => {
-    //         user.flag = true;
-    //         user.flag1 = true;
-
-    //         if (Array.isArray(amis)) {
-
-    //             amis.map((usr: any) => {
-    //                 if (usr.id == user.id) {
-    //                     user.flag = false;
-    //                 }
-
-    //             });
-    //         } else {
-
-    //         }
-    //         if (Array.isArray(received_blocked)) {
-    //             received_blocked.map((userr: any) => {
-    //                 // Your mapping logic here
-    //                 if (userr.sender.id == user.id)
-    //                     user.flag = false;
-
-
-    //             });
-
-    //         } else { }
-    //         if (Array.isArray(sendr_blocked)) {
-    //             sendr_blocked.map((userr: any) => {
-
-
-    //                 if (userr.receiver.id == user.id)
-    //                     user.flag = false;
-
-    //             });
-
-    //         } else {
-    //             // Handle the case when 'received' is not an array (e.g., show an error message)
-    //         }
-    //         if (Array.isArray(friend_reciver)) {
-
-    //             friend_reciver.map((use: any) => {
-    //                 if (use.sender.id == user.id)
-    //                     user.flag = false;
-
-    //             });
-
-    //         } else {
-
-    //         }
-    //         if (Array.isArray(friend_request)) {
-    //             friend_request.map((use: any) => {
-    //                 if (use.receiver.id == user.id) {
-    //                     user.flag = false;
-    //                 }
-    //             });
-    //         } else {
-    //         }
-
-    //         // if (user.flag == true)
-    //         return user
-    //     })
-    //     if(amis && friend_request && friend_reciver  && sendr_blocked)
-    //         setallfriends(filterUser);
-    //     setIsOpen(0)
-
-    // }, [amis, currentUser1, isOpen, friend_reciver, friend_request])
-
-    // console.log("friend_reciver", setfriend_add)
 
     return (
-        <div className='    flex justify-center   items-center     flex-col'>
+        <div className='    flex justify-center bg-white   items-center     flex-col'>
 
-            <div className='  flex-auto justify-start items-start    ml-10   flex-col  w-auto h-auto mt-10  rounded-xl drop-shadow-2xl  bg-clip-border p-6 border-2 bg-white  border-solid'>
-                <div className='flex flex-auto bxg-red-600 flex-row mt-7  justify-start  items-start'>
+            <div className='  flex-auto justify-start items-start    w-full     flex-col  sm:w-auto md:auto  h-auto mt-10  rounded-xl drop-shadow-2xl  bg-clip-border ps-6 border-2 bg-white   dark:bg-CusColor_dark  border-solid'>
+                <div className='flex flex-auto bxg-red-600 flex-row mt-7  sm:justify-start  sm:items-start justify-center items-center'>
 
 
                     <div className="border-4    text-black  text-base  w-96 flex justify-center items-center drop-shadow shadow-md shadow-black   rounded-lg bg-white borsder-blue-600  ...">Friend requests</div>
 
                     <div className="sm:flex flex-auto  roundesd-2xl border-t-4  mt-3  hidden w-64 h-1 drop-shadow shadow-md shadow-black   border-[#eee] ..."></div>
                 </div>
-                <div className=' mt-7  lg:ml-3 hidden   sm:grid  md:grid 
-         lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0    lg:gap-x-4 lg:gap-y-4  mr-10 sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4  md:flex-row justify-center   '>
 
+                <div className={`  hidden  ${friend_reciver.length != 0 ? '   sm:grid  md:grid  m-3 mt-7  lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0     lg:gap-x-4 lg:gap-y-4    sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4' : ' sm:flex w-full bg-bdlack  '}  md:flex-row justify-center  `}>
                     {
 
 
@@ -425,36 +354,31 @@ const User = () => {
 
 
                         )) : (
-                            <div className=''>
-                                {/* <footer className='w-[60%]  shadow-xl rounded-2xl mt-20 py-10 flex flex-col justify-center items-center space-y-3'>
-                                    <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
-                                        <div className="">
-                                            <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
-                                        </div>
-                                        <div className=" z-10">
-                                            <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
-                                        </div>
-                                        <div className="">
-                                            <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
-                                        </div>
+
+                            <footer className='  w-full  rounded-2xl   flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
                                     </div>
-                                    <div className=" w-[50%] text-center  text-xl font-semibold">
-                                        <h1>No user found</h1>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
                                     </div>
-                                    <div className=' w-[50%]   text-center'>
-                                        <h2> Sorry, We couldn't find any user </h2>
-                                        <h2 className={`${currentPath == '/search' ? 'hidden' : 'block'}`}>with the name "{query}" .Please try again.</h2>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
                                     </div>
-                                    <div className="space-x-3">
-                                        <button onClick={handelClearSearch} className='w-[120px] border-2 border-slate-300 py-2  rounded-md  font-bold hover:bg-slate-300 duration-300 '>Clear search</button>
-                                        <button onClick={handelGetBack} className='w-[120px] border-2  bg-blue-300 py-2  text-blue-800 rounded-md  font-bold hover:bg-blue-400 duration-300'>Get back</button>
-                                    </div>
-                                </footer> */}
-                            </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                </div>
+
+                            </footer>
                         )
                     }
                 </div>
-                <div className='  sm:hidden md:hidden flex  justify-center justify-items-center  flex-col  lg:hidden   mt-7 '>
+                <div className='  sm:hidden md:hidden flex  justify-center items-center  flex-col  lg:hidden   mt-7 '>
 
                     {
                         (friend_reciver.length) ? friend_reciver.map((user: any) => (
@@ -510,23 +434,43 @@ const User = () => {
 
                             </div>
 
-                        )) : null
+                        )) : (
+
+                            <footer className='w-full   rounded-2xl  flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-8 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                </div>
+
+                            </footer>
+
+                        )
 
                     }
                 </div>
 
                 {/* <div className="border-t-4  mt-7   w-96  h-0  border-black ..."></div> */}
-                <div className='flex flex-auto bxg-red-600 flex-row mt-7  justify-start  items-start'>
+                <div className='flex flex-auto bxg-red-600 flex-row mt-7  sm:justify-start  sm:items-start justify-center items-center'>
 
 
                     <div className="border-4    text-black  text-base  w-96 flex justify-center items-center drop-shadow shadow-md shadow-black   rounded-lg bg-white borsder-blue-600  ...">Friend requests</div>
 
                     <div className="sm:flex flex-auto  roundesd-2xl border-t-4  mt-3  hidden w-64 h-1 drop-shadow shadow-md shadow-black   border-[#eee] ..."></div>
                 </div>
-
-                <div className=' hidden  sm:grid  md:grid  m-3 mt-7
-         lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0    lg:gap-x-4 lg:gap-y-4    sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4  md:flex-row justify-center   '>
-
+                <div className={`  hidden  ${friend_request.length != 0 ? '   sm:grid  md:grid  m-3 mt-7  lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0     lg:gap-x-4 lg:gap-y-4    sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4' : ' sm:flex w-full bg-bdlack  '}  md:flex-row justify-center  `}>
                     {
 
 
@@ -574,10 +518,35 @@ const User = () => {
 
 
 
-                        )) : null
+                        )) : (
+
+                            <footer className='w-full   rounded-2xl mt-5 py-10 flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                    {/* <h2 className={`${currentPath == '/search' ? 'hidden' : 'block'}`}>with the name "{query}" .Please try again.</h2> */}
+                                </div>
+
+                            </footer>
+
+                        )
+
                     }
                 </div>
-                <div className='  sm:hidden md:hidden flex  justify-center justify-items-center flex-col  m-3 mt-7  lg:hidden     '>
+                <div className='  sm:hidden md:hidden flex  justify-center  items-center flex-col  m-3 mt-7  lg:hidden     '>
 
                     {
                         (friend_request.length) ? friend_request.map((user: any) => (
@@ -629,25 +598,49 @@ const User = () => {
 
                             </div>
 
-                        )) : null
+                        )) : (
+
+                            <footer className='w-full   rounded-2xl  flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-8 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                    {/* <h2 className={`${currentPath == '/search' ? 'hidden' : 'block'}`}>with the name "{query}" .Please try again.</h2> */}
+                                </div>
+
+                            </footer>
+
+                        )
+
 
                     }
                 </div>
 
                 {/* <div className="border-t-4  mt-7   w-96  h-0  border-black ..."></div> */}
-                <div className='flex flex-auto bxg-red-600 flex-row mt-7  justify-start  items-start'>
+                <div className='flex flex-auto bxg-red-600 flex-row mt-7 sm:justify-start  sm:items-start justify-center items-center'>
                     {/* <div className="flex-auto border-t-4  mt-3 w-10 h-0  bg-white bordser-blue-600 ..."></div> */}
 
                     <div className="border-4    text-black  text-base  w-96 flex justify-center items-center drop-shadow shadow-md shadow-black   rounded-lg bg-white borsder-blue-600 ...">People you may know</div>
 
-                    <div className=" md:flex flex-auto  roundesd-2xl border-t-4  mt-3  hidden w-64 h-1 drop-shadow shadow-md shadow-black   border-[#eee] ..."></div>
+                    <div className="sm:flex flex-auto  roundesd-2xl border-t-4  mt-3  hidden w-64 h-1 drop-shadow shadow-md shadow-black   border-[#eee] ..."></div>
                 </div>
-                <div className=' hidden  sm:grid  md:grid  m-3 mt-7
-         lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0     lg:gap-x-4 lg:gap-y-4    sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4  md:flex-row justify-center  '>
 
+
+                <div className={`  hidden  ${allfriends.length != 0 ? '   sm:grid  md:grid  m-3 mt-7  lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0     lg:gap-x-4 lg:gap-y-4    sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4' : ' sm:flex w-full bg-bdlack  '}  md:flex-row justify-center  `}>
                     {
                         (allfriends.length) ? allfriends.map((user: userProps) => (
-
 
 
                             <div className='flex    rounded-xl items-start  '>
@@ -691,10 +684,38 @@ const User = () => {
 
                                 </div>
 
+
                             </div>
 
+                        )) : (
 
-                        )) : null
+                            <footer className='w-full   rounded-2xl mt-8 rpy-10 flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                    {/* <h2 className={`${currentPath == '/search' ? 'hidden' : 'block'}`}>with the name "{query}" .Please try again.</h2> */}
+                                </div>
+                                <div className="space-x-3">
+                                    {/* <button onClick={handelClearSearch} className='w-[120px] border-2 border-slate-300 py-2  rounded-md  font-bold hover:bg-slate-300 duration-300 '>Clear search</button> */}
+                                    {/* <button onClick={handelGetBack} className='w-[120px] border-2  bg-blue-300 py-2  text-blue-800 rounded-md  font-bold hover:bg-blue-400 duration-300'>Get back</button> */}
+                                </div>
+                            </footer>
+
+                        )
+
 
                     }
 
@@ -749,7 +770,35 @@ const User = () => {
 
                             </div>
 
-                        )) : null
+                        )) : (
+
+                            <footer className='w-full   rounded-2xl mt-5 pys-10 flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-8 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                    {/* <h2 className={`${currentPath == '/search' ? 'hidden' : 'block'}`}>with the name "{query}" .Please try again.</h2> */}
+                                </div>
+                                <div className="space-x-3">
+                                    {/* <button onClick={handelClearSearch} className='w-[120px] border-2 border-slate-300 py-2  rounded-md  font-bold hover:bg-slate-300 duration-300 '>Clear search</button> */}
+                                    {/* <button onClick={handelGetBack} className='w-[120px] border-2  bg-blue-300 py-2  text-blue-800 rounded-md  font-bold hover:bg-blue-400 duration-300'>Get back</button> */}
+                                </div>
+                            </footer>
+
+                        )
+
 
                     }
                 </div>

@@ -149,9 +149,9 @@ export class AuthService {
           username: dto.username, // Replace with the desired username
           lastName: dto.lastName, // Replace with the user's last name
           isOnline: false,
-          // won: 0,
-          // lost: 0,
-          // level: 0,
+          won: 0,
+          lost: 0,
+          level: 0,
           // foto_user: dto.foto_user,
           foto_user: dto.foto_user,
           twoFactorSecret: null,

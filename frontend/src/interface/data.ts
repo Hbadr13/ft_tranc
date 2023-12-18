@@ -1,4 +1,10 @@
 import { Socket } from "socket.io-client";
+export interface messageProps {
+    id: number,
+    content: string,
+    createdAt: string,
+    senderId: number
+}
 
 export interface userProps {
 
@@ -12,7 +18,6 @@ export interface userProps {
     username: string,
     firstName: string,
     lastName: string,
-    level: number,
     foto_user: string,
     isOnline: boolean,
     userId: number
