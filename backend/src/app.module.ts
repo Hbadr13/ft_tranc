@@ -33,11 +33,11 @@ import { ChatModule } from './chat/chat.module';
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(json({ limit: '10mb' })).forRoutes('*');
-        consumer
-            .apply(JwtMiddleware)
+        // consumer
+        //     .apply(JwtMiddleware)
 
-            .forRoutes(
-                { path: '*', method: RequestMethod.ALL }, // Apply the middleware to specific routes
-            );
+        //     .forRoutes(
+        //         { path: '*', method: RequestMethod.ALL }, // Apply the middleware to specific routes
+        //     );
     }
 }

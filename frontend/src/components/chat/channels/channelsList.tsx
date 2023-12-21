@@ -6,6 +6,7 @@ import { channelProps } from '@/interface/data'
 export default function ChannelsConversationList({ currentUser, setConv }: { currentUser: userProps, setConv: (value: number) => void }) {
 
   const [click, setClick] = useState(false)
+
   const [channel, setChannel] = useState<channelProps[]>([]);
 
   useEffect(() => {
@@ -23,49 +24,52 @@ export default function ChannelsConversationList({ currentUser, setConv }: { cur
   }, [currentUser.id]);
 
   return (
-    <div className=" w-[456px] h-[870px] px-6 py-5 bug-white boruder-zinc-200 flex-col justify-start items-start gap-6 inline-flex">
-      <div className="w-[50%] bg-blue-400  justify-center items-center">
-        <div className="w-[185px] justify-center items-center gap-2 flex">
-          <div className="w-5 h-5 relative" />
+    <div className=' w-full h-full bgf-black flex justify-center items-center flex-col'>
+      {
+        !click ? (
           <button onClick={() => setClick(true)} className=" text-white  mft-3   px-5 py-3 bg-blue-400 rounded-[52px] justify-center w-96 items-center  duration-300 hover:scale-105">
             <div className=" justify-center items-center gap-2 flex">
-              <h1 className="">Start New Chat</h1>
+              <h1 className="">Create New Channel</h1>
             </div>
           </button>
-        </div>
-      </div>
-      <div className="flex-col bg-white 0  w-[300px]  overflow-y-scroll drop-shadow shadow-md rounded-md justify-center items-center scrollbar-hide">
+        ) : null
+      }
 
-        <div className="">
-          {
-            click ? (
+      <div className=" w-full">
+        {
+          click ? (
+            <div className=" bg-sky-300 w-full h-full flex  flex-col items-center justify-center shadow-xl drop-shadow-xl   rounded-2xl">
+              <div className=" bfg-slate-600 w-full  mt-2 ml-3 ">
+                <button onClick={() => setClick(false)} className="w-6 h-6  rounded-full">
+                  <img className=' ' src='https://cdn-icons-png.flaticon.com/512/66/66847.png'></img>
+                </button>
+              </div>
               <Createchannels currentUser={currentUser} />
-            ) : null
-          }
-        </div>
-        <div className="flex-auto space-y-5">
-          {channel.map((item) => (
-            <>
-              <button key={item.id} className=' bg-white self-stretch hover:bg-blue-500 hover:rounded-md justify-between items-center inline-flex' onClick={() => setConv(item.id)}>
+            </div>
 
-                <div className=" bg-bglack self-stretch justify-between items-center inline-flex">
-                  <div className="h-[58px] justify-start items-center gap-2.5 flex">
-                    <img className="w-[58px] h-[58px] rounded-full" src='https://cdn2.vectorstock.com/i/1000x1000/50/66/group-icon-in-modern-design-style-for-web-site-vector-26505066.jpg' />
-                    <div className="grow shrink basis-0 flex-col justify-start items-start gap-0.5 inline-flex">
-                      <div className="text-zinc-900 text-base font-bold font-['Fahkwang']">{item.name}</div>
-                      <div className="self-stretch text-neutral-600 text-sm font-normal font-['Fahkwang'] leading-[18px]">Hi bro cv?</div>
+          ) : (
+
+            <div className="  borhder bogjrder-sky-500  flex  flex-col items-center justify-center">
+              {
+                channel.map((item) => (
+                  <button onClick={() => setConv(item.id)} className="h-[90px] mt-6 w-[480px] px-[15px] bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
+                    <div className="h-[70px] justify-start items-center gap-2.5 flex">
+                      <img className="w-[58px] h-[58px] rounded-full" src={'https://cdn3.iconfinder.com/data/icons/34-icons/300/player20-512.png'} />
+                      <div className=" flex-col justify-start items-start gap-0.5 inline-flex my-[20px]">
+                        <h4 className="">{item.name}</h4>
+                        <p className="self-stretch h-[37px] text-neutral-600 text-sm leading-[18px]">Good point. Typography is another ?</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="self-stretch flex-col justify-between items-end inline-flex">
-                    <div className="text-gray-500 text-sm font-normal font-['Damion']">20s</div>
-                    <div className="w-6 h-6 relative" />
-                  </div>
-                </div>
-              </button>
-              <div className="self-stretch h-[0px] border border-zinc-200"></div>
-            </>
-          ))}
-        </div>
+                    <div className="flex flex-col self-stretch my-[7px]">
+                      <div className=" p-1 mb-1">15h</div>
+                      <div className=" text-CusColor_light bg-sky-500 p-1 mb-1 rounded-[100px]">{item.id}</div>
+                    </div>
+                  </button>
+                ))
+              }
+            </div>
+          )
+        }
       </div>
     </div>
   )

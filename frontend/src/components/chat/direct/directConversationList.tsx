@@ -3,7 +3,7 @@ import { AppProps, userProps } from '@/interface/data';
 
 
 
-export default function DirectConversationList({ setIdReceiver, users, currentUser }: { setIdReceiver: (value: userProps) => void, users: userProps[], currentUser: userProps }) {
+export default function DirectConversationList({ setIdReceiver, users, amis, currentUser }: { setIdReceiver: (value: userProps) => void, users: userProps[] ,amis: userProps[], currentUser: userProps }) {
 
 
     const [click, setClick] = useState(false)
@@ -61,7 +61,7 @@ export default function DirectConversationList({ setIdReceiver, users, currentUs
                                     </button>
                                 </div>
                                 <div className=" border bordnjer-sky-400">
-                                    {users.map((item: userProps) => (
+                                    {amis.map((item: userProps) => (
                                         <button onClick={() => setIdReceiver(item)} className="h-[90px] mt-6 w-[480px] px-[15px] bg-white justify-between items-center inline-flex  hover:shadow-lg   hover:shadow-sky-500 duration-1000  transition shadow-md roundfed-[52px] ">
                                             <div className="h-[70px] justify-start items-center gap-2.5 flex">
                                                 <img className="w-[58px] h-[58px] rounded-full" src={item.foto_user} />

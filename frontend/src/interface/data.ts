@@ -6,6 +6,11 @@ export interface messageProps {
     senderId: number
 }
 
+export  interface channelProps {
+    name: string,
+    id: number
+}
+
 export interface userProps {
 
 

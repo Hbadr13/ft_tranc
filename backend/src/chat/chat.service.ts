@@ -63,7 +63,7 @@ export class ChatService {
             }
         })
         const allRoom = room.memberships.map(membership => membership.room);
-        return room;
+        return allRoom;
     }
 
     async joinChannel(idUser: number, idRoom: number) {
@@ -138,6 +138,7 @@ export class ChatService {
                 },
             }
         })
+     console.log("ssssssssssssssssssssssssssssss")
         return await user.conversations[0]?.messages
     }
 
