@@ -70,7 +70,7 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
 
     const [twoFactorSecret, setTwoFactorSecret] = useState('');
     const [TwoFactor, setTwoFactor] = useState("");
-    const [success, setSuccess] = useState(false);
+    const [success, setSuccess] = useState(0);
     useEffect(() => {
         (
             async () => {
@@ -113,8 +113,14 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                     'Content-Type': 'application/json',
                 }
             })
-            const counte = await response.json();
-           
+            if (response.ok) {
+
+                const counte = await response.json();
+
+                setSuccess(2)
+
+            }
+
             // Provide the secret to the user for setup, such as displaying a QR code
         } catch (error) {
             console.error('Error enabling 2FA:', error);
@@ -135,7 +141,7 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
 
 
             if (response.ok) {
-                setSuccess(true);
+                setSuccess(1);
 
             } else {
                 // Handle error
@@ -240,11 +246,17 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                         <div className="  flex items-center justify-center flex-col  mt-32 w-96">
                             <div>
 
-                                {success ? (
+                                {success == 1 &&
                                     <div className=" npm bg-blue-600 w-80   flex justify-center items-center text-sm rounded-md h-10 text-white drop-shadow shadow-md shadow-black">Two-Factor active successfully!</div>
-                                ) : (
-                                    <div className=" flex text-blue-600 rounded-md bg-white w-80  drop-shadow shadow-md shadow-black h-10 justify-center items-center">Setting Two-Factor Authentication...</div>
-                                )}
+                                }
+                                {
+                                    success == 0 &&
+                                <div className=" flex text-blue-600 rounded-md bg-white w-80  drop-shadow shadow-md shadow-black h-10 justify-center items-center">Setting Two-Factor Authentication...</div>
+                                }
+                                {
+                                    success == 2 &&
+                                <div className=" flex text-white rounded-md  bg-red-600 w-80  drop-shadow shadow-md shadow-black h-10 justify-center items-center">Two-Factor Deactivate successfully ..!</div>
+                                }
                             </div>
                             <div className='flex  float-none justify-center items-center  w-[200px] h-[200px] drop-shadow shadow-md shadow-black bg-white border-2 border-black rounded-md mt-10 '>
 

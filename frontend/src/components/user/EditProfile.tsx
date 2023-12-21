@@ -208,7 +208,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
     fetchAllAmis({ setAmis, currentUser });
     return (
 
-        <div className='flex  flex-wrap  justify-center  min-h-screen  min-w-screen ml-10 items-center  p-6 '>
+        <div className='flex  flex-wrap  justify-center  min-h-screen  min-w-screen  items-center  p-6 '>
             <div className='  flex-none   z-20   w-[408px] mt-[120px] mb-10  h-[100%] drop-shadow-2xl   items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
                 <div className="text-center">
                     <span>My Profile</span>
@@ -289,7 +289,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                     <Link className="text-base font-bold flex justify-center items-center  text-blue-600" href={"/Listblocked"}><span className=" py-2 px-[96px] mt-10 bg-white border   hover:scale-110 duration-300">Blocked</span>
                     </Link>
 
-                    <Link className="text-base font-bold flex justify-center items-center  text-blue-600" href={"/Code_QR"}><span className=" py-2 px-[94px] mt-10 bg-white border   hover:scale-110 duration-300">Code_OR</span>
+                    <Link className="text-base font-bold flex justify-center items-center  text-blue-600" href={"/Code_QR"}><span className=" py-2 px-[92px] mt-10 bg-white border   hover:scale-110 duration-300">Code_OR</span>
                     </Link>
 
 
