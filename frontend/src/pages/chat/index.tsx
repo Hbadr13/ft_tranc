@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Socket } from "socket.io";
 import { io } from "socket.io-client";
 
-export default function index({ users }: AppProps) {
+export default function index({ users,amis }: AppProps) {
   const userData = { id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false, room: '' }
   const [currentUser, setCurrentUser] = useState<userProps>(userData);
   const [idRoom, setIdRoom] = useState(0);
@@ -44,8 +44,8 @@ export default function index({ users }: AppProps) {
   }, [currentUser]);
 
   return (
-    <div className='flex justify-center items-center'>
-      <ConversationList setIdReceiver={setIdReceiver} setButton={setButton} currentUser={currentUser} users={users} setConv={setIdRoom} />
+    <div className=' bg-sky-500 w-s flex justify-center items-center dark:bg-black'>
+      <ConversationList amis={amis} setIdReceiver={setIdReceiver} setButton={setButton} currentUser={currentUser} users={users} setConv={setIdRoom} />
       <Conversation chatSocket={chatSocket} idReceiver={idReceiver} button={button} idRoom={idRoom} currentUser={currentUser} />
       <Edit idReceiver={idReceiver} />
     </div>
