@@ -79,17 +79,7 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
                 credentials: 'include',
             });
         }
-        // const currentDate = new Date();
 
-        // // Extract hours and minutes
-        // const hours = String(currentDate.getHours()).padStart(2, '0');
-        // const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-
-        // // Format the time as "00:00"
-        // const currentTime = `${hours}:${minutes}`;
-
-        // // Print the result
-        // console.log('Current time in the local time zone (24-hour clock):', currentTime);
         chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: idReceiver.id, content: content });
         if (isend == false)
             setIsend(true)

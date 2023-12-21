@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Socket } from "socket.io";
 import { io } from "socket.io-client";
 
-export default function index({ users,amis }: AppProps) {
+export default function index({ users, amis }: AppProps) {
   const userData = { id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false, room: '' }
   const [currentUser, setCurrentUser] = useState<userProps>(userData);
   const [idRoom, setIdRoom] = useState(0);
@@ -37,6 +37,7 @@ export default function index({ users,amis }: AppProps) {
         userId: currentUser.id,
       }
     });
+
     setChatSocket(socket)
     return () => {
       socket.disconnect();
