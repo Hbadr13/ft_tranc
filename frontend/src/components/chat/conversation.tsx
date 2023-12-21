@@ -79,11 +79,11 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
         });
     }, [chatSocket])
 
-    const handleClick = async (id: number) => {
+    const handleClick = async () => {
         if (content) {
             if (!button) {
 
-                await fetch(`http://localhost:3333/chat/directMessage/${id}/${idReceiver.id}`, {
+                await fetch(`http://localhost:3333/chat/directMessage/${currentUser.id}/${idReceiver.id}`, {
                     method: 'POST',
 
                     headers: {
@@ -99,7 +99,7 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
             else {
                 console.log("sssssssssssssssssss")
 
-                await fetch(`http://localhost:3333/chat/sendMessageToChannel/${idRoom}/${id}`, {
+                await fetch(`http://localhost:3333/chat/sendMessageToChannel/${idRoom}/${currentUser.id}`, {
                     method: 'POST',
 
                     headers: {
@@ -131,6 +131,61 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
         setContent('')
 
     };
+    const handleClick1 = async (e: any) => {
+        if (e.key == 'Enter') {
+
+            if (content) {
+                if (!button) {
+
+                    await fetch(`http://localhost:3333/chat/directMessage/${currentUser.id}/${idReceiver.id}`, {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "content": content,
+                        }),
+                        credentials: 'include',
+                    });
+                    chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: idReceiver.id, content: content });
+                }
+                else {
+
+
+                    await fetch(`http://localhost:3333/chat/sendMessageToChannel/${idRoom}/${currentUser.id}`, {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "content": content,
+                        }),
+                        credentials: 'include',
+                    });
+                    chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: idRoom, content: content });
+                }
+            }
+            if (isend == false)
+                setIsend(true)
+            else if (isend == true)
+                setIsend(false)
+            setContent('')
+        }
+        // const currentDate = new Date();
+
+        // // Extract hours and minutes
+        // const hours = String(currentDate.getHours()).padStart(2, '0');
+        // const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+
+        // // Format the time as "00:00"
+        // const currentTime = `${hours}:${minutes}`;
+
+        // // Print the result
+        // console.log('Current time in the local time zone (24-hour clock):', currentTime);
+
+    };
 
     const handltime = (time: string) => {
         const dateObject = new Date(time);
@@ -160,17 +215,18 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
 
                         <div className="pl-5 pr-[295px] pt-5 pb-[11px] left-[15px] top-[939px] absolute inline-flex">
                             <input
+                                onChange={(e) => setContent(e.target.value)}
                                 className=" bg-white rounded-[30px]  w-[900px] items-center  justify-center placeholder:italic bloc  border border-sky-500  py-2 pl-9 pr-3 shadow-sm focus:outline-none    sm:text-sm"
                                 type="text"
                                 name='Type here'
                                 value={content}
                                 placeholder="Type here........"
-                                onChange={(e) => setContent(e.target.value)}
+                                autoComplete='off' onKeyDown={handleClick1}
 
                             />
                             <button
                                 className=" h-[50px] w-[50px]"
-                                onClick={() => handleClick(currentUser.id)}
+                                onClick={() => handleClick()}
                             ><img src='https://cdn-icons-png.flaticon.com/512/3682/3682321.png' className='h-[40px] w-[40px] ml-[25px]' /></button>
                         </div>
                         <div className=' overflow-y-scroll scrollbar-hide  bg-fblue-100 flex  flex-col-reverse -mt-4 p-4 w-full h-[850px] '>
@@ -195,9 +251,9 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
                                                         <div className=" max-w-[440px] w-auto h-auto p-5 ml-16  bg-white rounded-tl-[20px] rounded-tr-[20px] rounded-br-[20px] justify-center   items-center  text-xl ">
                                                             {item.content}
                                                         </div>
-                                                       { button == false && <img className="w-12 h-12  -mt-10  rounded-full" src={idReceiver.foto_user} />}
-                                                       { button == true && <img className="w-12 h-12  -mt-10  rounded-full" src={item.foto_user} />}
-                                                       
+                                                        {button == false && <img className="w-12 h-12  -mt-10  rounded-full" src={idReceiver.foto_user} />}
+                                                        {button == true && <img className="w-12 h-12  -mt-10  rounded-full" src={item.foto_user} />}
+
                                                     </div>
                                                     <div className="w-full flex">
                                                         {handltime(item.createdAt)}
