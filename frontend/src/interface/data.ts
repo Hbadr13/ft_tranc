@@ -5,7 +5,10 @@ export interface messageProps {
     createdAt: string,
     senderId: number
 }
-
+export  interface channelProps {
+    name: string,
+    id: number
+}
 export interface userProps {
 
 

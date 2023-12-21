@@ -63,7 +63,7 @@ export class ChatService {
             }
         })
         const allRoom = room.memberships.map(membership => membership.room);
-        return room;
+        return allRoom;
     }
 
     async joinChannel(idUser: number, idRoom: number) {
@@ -84,6 +84,39 @@ export class ChatService {
                 isBanned: false,
             }
         });
+        let Conversation = await this.prisma.conversation.findUnique({
+            where: {
+                type: 'channel',
+                roomId: idRoom
+            }
+        });
+        Conversation = await this.prisma.conversation.update({
+            where: {
+                id: Conversation.id
+            },
+            data: {
+                participants: {
+                    connect: {
+                        id: idUser
+                    }
+                },
+            }
+        });
+        // await this.prisma.message.create({
+        //     data: {
+        //         content: null,
+        //         sender: {
+        //             connect: {
+        //                 id: idUser
+        //             }
+        //         },
+        //         chat: {
+        //             connect: {
+        //                 id: Conversation.id
+        //             }
+        //         }
+        //     }
+        // });
     }
 
     async sendMessageToChannel(body, idRoom: number, idUser: number) {
@@ -93,6 +126,7 @@ export class ChatService {
                 roomId: idRoom
             }
         });
+        // console.log("Conversation:" ,Conversation)
         Conversation = await this.prisma.conversation.update({
             where: {
                 id: Conversation.id
@@ -123,22 +157,51 @@ export class ChatService {
     }
 
     async getallMessagesChannel(idUser: number, idRoom: number) {
+        console.log("dakhlt hana")
         const user = await this.prisma.user.findUnique({
             where: {
                 id: idUser,
             },
             include: {
+
                 conversations: {
                     where: {
                         roomId: idRoom
                     },
                     select: {
-                        messages: true
+
+                        messages: true,
+                        participants: {
+                            select: {
+                                username: true,
+                                foto_user:true,
+                                id: true
+                            }
+                        }
                     },
                 },
             }
         })
-        return await user.conversations[0]?.messages
+        if (!user.conversations[0])
+            return 0;
+
+        const conversation = user.conversations[0];
+        conversation.messages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+        const resultMessages = conversation.messages
+            .map((message) => ({
+                id: message.id,
+                content: message.content,
+                createdAt: message.createdAt,
+                senderId: message.senderId,
+                chatId: message.chatId,
+                username: conversation.participants.find((participant) => participant.id === message.senderId)?.username,
+                foto_user: conversation.participants.find((participant) => participant.id === message.senderId)?.foto_user,
+            }));
+
+        
+        return resultMessages
+        
     }
 
 
@@ -217,7 +280,7 @@ export class ChatService {
         if (!conversation)
             throw new NotFoundException('messages is empty')
 
-        const sortedMessages = conversation.messages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        conversation.messages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
         return await conversation.messages;
 
     }

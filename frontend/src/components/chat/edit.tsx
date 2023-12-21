@@ -6,7 +6,7 @@ export default function Edit({ idReceiver }: { idReceiver: userProps }) {
 
     const [click, setClick] = useState(true)
     return (
-        <div className="  bg-gray-100 p-6 m-16  w-[436px] h-[1054px]     flex justify-start items-start gap-5  rounded-[30px] border  border-sky-500">
+        <div className="  bg-gray-100 dark:bg-CusColor_dark   p-6 m-16  w-[436px] h-[1054px]     flex justify-start items-start gap-5  rounded-[30px] border  border-sky-500">
             <div className="w-full h-[547.06px] flex-col justify-center items-center gap-[26px] inline-flex">
                 <Link  className="flex-col justify-start items-center gap-3.5 flex " href={`/users/${idReceiver.username}.${idReceiver.id}`}>
                     <img className="w-[136px] h-[136px] rounded-full border-4 border-green-600" src={idReceiver.foto_user} />

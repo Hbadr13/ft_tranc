@@ -4,7 +4,7 @@ import ChannelsList from './channels/channelsList'
 import { AppProps, userProps } from '@/interface/data';
 
 
-export default function ConversationList({ setIdReceiver, setButton, currentUser, users, setConv }: { setIdReceiver: (value: userProps) => void, setButton: (value: boolean) => void, currentUser: userProps, users: userProps[], setConv: (value: number) => void }) {
+export default function ConversationList({amis, setIdReceiver, setButton, currentUser, users, setConv }: { amis: userProps[],setIdReceiver: (value: userProps) => void, setButton: (value: boolean) => void, currentUser: userProps, users: userProps[], setConv: (value: number) => void }) {
 
     const [click, setClick] = useState(true)
 
@@ -23,11 +23,11 @@ export default function ConversationList({ setIdReceiver, setButton, currentUser
                     </div>
                 </button>
             </div>
-            <div className=''>
+            <div className='w-full h-ful'>
                 {click ? (
                     setButton(false),
                     
-                    <DirectConversationList setIdReceiver={setIdReceiver} users={users} currentUser={currentUser} />
+                    <DirectConversationList setIdReceiver={setIdReceiver} users={users} amis={amis} currentUser={currentUser} />
                 ) : (
                     setButton(true),
                     <ChannelsList currentUser={currentUser} setConv={setConv} />

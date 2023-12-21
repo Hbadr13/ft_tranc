@@ -4,18 +4,21 @@ import { userProps } from '@/interface/data'
 export default function Channels({ currentUser }: { currentUser: userProps }) {
 
   const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
   const [description, setDescription] = useState('');
+  const [password, setPassword] = useState('');
+  const [Type, setType] = useState('public');
+  const [message, setMessage] = useState('');
 
-  const handleClick = async (id: number) => {
-    await fetch(`http://localhost:3333/chat/create/${id}`, {
+
+  const handleClick = async () => {
+    await fetch(`http://localhost:3333/chat/createChannel/${currentUser.id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         "name": name,
-        "type": 'protected',
+        "type": Type,
         "description": description,
         "password": password
       }),
@@ -26,38 +29,41 @@ export default function Channels({ currentUser }: { currentUser: userProps }) {
 
 
   return (
-    <>
-      <div className='flex h-screen'>
-        <div className="flex-auto w-32 bg-cust">
-          <h1 className="text-2xl font-bold mb-4">Channels</h1>
-          <div className="mb-4 flex-auto w-32 bg-cust">
-            <input
-              className="flex-grow px-4 py-2 border border-gray-300 rounded-l-md"
-              type="text"
-              placeholder="Name"
-              onChange={(e) => setName(e.target.value)}
-            />
-            <input
-              className="flex-grow px-4 py-2 border border-gray-300 rounded-l-md"
-              type="text"
-              placeholder="password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <input
-              className="flex-grow px-4 py-2 border border-gray-300 rounded-l-md"
-              type="text"
-              placeholder="description"
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            <button
-              className="bg-blue-500 text-white px-6 py-2 rounded-r-md"
-              onClick={() => handleClick(currentUser.id)}
-            >
-              Create Room
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
+
+    <div className="flex  flex-col  bg-bflack h-full w-full items-cefnter jusfftify-center shadow-xl drop-shadow-xl   rounded-[30px]">
+      <form className='flex flex-col items-center justify-center m-20' onSubmit={handleClick}>
+        <label>
+          Name:
+          <input required type="text" value={name} onChange={(e) => setName(e.target.value)} />
+        </label>
+        <br />
+        <label>
+          Description:
+          <input required type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+        </label>
+        <br />
+
+        <br />
+        <label>
+          Type:
+          <select onChange={(e) => setType(e.target.value)}>
+            <option value="public">Public</option>
+            <option value="protected">Protected</option>
+            <option value="private">Private</option>
+          </select>
+        </label>
+        {
+          Type == 'protected' &&
+          <label>
+            Password:
+            <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          </label>
+        }
+        <br />
+        <button>Submit</button>
+        <br />
+        {message && <p>{message}</p>}
+      </form>
+    </div>
   );
 };

@@ -8,69 +8,122 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
     const [isend, setIsend] = useState(false);
     const [msg, setMsg] = useState('')
 
-    useEffect(() => {
-        (
-            async () => {
-                try {
-                    const response = await fetch(`http://localhost:3333/chat/getConversationDirect/${currentUser.id}/${idReceiver.id}`,{
-                        credentials: 'include',
-                    });
-                    const content = await response.json();
-                    setMessages(Array.from(content))
-                } catch (error) {
+    if (!button) {
+        useEffect(() => {
+            (
+                async () => {
+                    try {
+                        const response = await fetch(`http://localhost:3333/chat/getConversationDirect/${currentUser.id}/${idReceiver.id}`, {
+                            credentials: 'include',
+                        });
+                        const content = await response.json();
+                        setMessages(Array.from(content))
+                    } catch (error) {
 
+                    }
                 }
-            }
-        )();
-        setContent('')
-    }, [currentUser.id, idReceiver, isend, msg]);
+            )();
+            setContent('')
+        }, [currentUser.id, idReceiver, isend, msg]);
+    }
+    else {
+        useEffect(() => {
+            (
+                async () => {
+                    try {
+                        const response = await fetch(`http://localhost:3333/chat/allMessagesChannel/${currentUser.id}/${idRoom}`, {
+                            credentials: 'include',
+                        });
+                        const content = await response.json();
+                        setMessages(Array.from(content))
+                        console.log("content :", content)
+                    } catch (error) {
+
+                    }
+                }
+            )();
+            setContent('')
+        }, [currentUser.id, idRoom, button, isend, msg]);
+    }
 
     useEffect(() => {
         chatSocket?.on('message', (message) => {
             if (message) {
                 setMsg(message);
-                // setMessages((prevMessages) => [...prevMessages, message]);
-                fetch(`http://localhost:3333/chat/directMessage/${currentUser.id}/${idReceiver.id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        "content": message,
-                    }),
-                    credentials: 'include',
-                });
+                if (button) {
+                    fetch(`http://localhost:3333/chat/directMessage/${currentUser.id}/${idReceiver.id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "content": message,
+                        }),
+                        credentials: 'include',
+                    });
+                }
+                else {
+                    fetch(`http://localhost:3333/chat/sendMessageToChannel/${idRoom}/${currentUser.id}`, {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "content": content,
+                        }),
+                        credentials: 'include',
+                    });
+                }
             }
         });
     }, [chatSocket])
 
     const handleClick = async (id: number) => {
         if (content) {
+            if (!button) {
 
-            await fetch(`http://localhost:3333/chat/directMessage/${id}/${idReceiver.id}`, {
-                method: 'POST',
+                await fetch(`http://localhost:3333/chat/directMessage/${id}/${idReceiver.id}`, {
+                    method: 'POST',
 
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    "content": content,
-                }),
-                credentials: 'include',
-            });
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "content": content,
+                    }),
+                    credentials: 'include',
+                });
+                chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: idReceiver.id, content: content });
+            }
+            else {
+                console.log("sssssssssssssssssss")
+
+                await fetch(`http://localhost:3333/chat/sendMessageToChannel/${idRoom}/${id}`, {
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "content": content,
+                    }),
+                    credentials: 'include',
+                });
+                chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: idRoom, content: content });
+            }
         }
-        const currentDate = new Date();
+        // const currentDate = new Date();
 
-        // Extract hours and minutes
-        const hours = String(currentDate.getHours()).padStart(2, '0');
-        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        // // Extract hours and minutes
+        // const hours = String(currentDate.getHours()).padStart(2, '0');
+        // const minutes = String(currentDate.getMinutes()).padStart(2, '0');
 
-        // Format the time as "00:00"
-        const currentTime = `${hours}:${minutes}`;
+        // // Format the time as "00:00"
+        // const currentTime = `${hours}:${minutes}`;
 
-        // Print the result
-        console.log('Current time in the local time zone (24-hour clock):', currentTime);
-        chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: idReceiver.id, content: content, createdAt: currentTime });
+        // // Print the result
+        // console.log('Current time in the local time zone (24-hour clock):', currentTime);
         if (isend == false)
             setIsend(true)
         else if (isend == true)
@@ -90,7 +143,7 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
         <div className="w-[1040px] h-[1054px]  relative bg-gray-100  border  border-sky-500 rounded-[30px] ">
             {
 
-                idReceiver.id != 0 ? (
+                idReceiver.id != 0 || idRoom != 0 ? (
                     <>
                         <div className=' flex w-[990px] bg-white h-[80px] rounded-[30px] mx-[25px] my-[20px]  border  border-sky-500 '>
                             <button className="h-[70px]  gap-2.5 flex my-[11px] mx-[20px] hover:scale-105 duration-300" >
@@ -142,7 +195,9 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
                                                         <div className=" max-w-[440px] w-auto h-auto p-5 ml-16  bg-white rounded-tl-[20px] rounded-tr-[20px] rounded-br-[20px] justify-center   items-center  text-xl ">
                                                             {item.content}
                                                         </div>
-                                                        <img className="w-12 h-12  -mt-10  rounded-full" src={idReceiver.foto_user} />
+                                                       { button == false && <img className="w-12 h-12  -mt-10  rounded-full" src={idReceiver.foto_user} />}
+                                                       { button == true && <img className="w-12 h-12  -mt-10  rounded-full" src={item.foto_user} />}
+                                                       
                                                     </div>
                                                     <div className="w-full flex">
                                                         {handltime(item.createdAt)}

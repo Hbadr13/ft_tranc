@@ -20,10 +20,12 @@ export class ChatController {
     @Get('allChannelByUserId/:idUser')
     async GetAllChannelByUserId(@Param('idUser') idUser: number) {
         return await this.chatService.getAllChannelByUserId(Number(idUser));
-    }
+    }   
 
     @Post('sendMessageToChannel/:idRoom/:idUser')
     async SendMessageToChannel(@Body() body, @Param('idRoom') idRoom: number, @Param('idUser') idUser: number) {
+
+    
         await this.chatService.sendMessageToChannel(body, Number(idRoom), Number(idUser))
     }
 
