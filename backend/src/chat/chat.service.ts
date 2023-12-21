@@ -123,24 +123,62 @@ export class ChatService {
     }
 
     async getallMessagesChannel(idUser: number, idRoom: number) {
-        const user = await this.prisma.user.findUnique({
-            where: {
-                id: idUser,
-            },
-            include: {
-                conversations: {
-                    where: {
-                        roomId: idRoom
-                    },
-                    select: {
-                        messages: true
+        try {
+            const user = await this.prisma.user.findUnique({
+                where: {
+                    id: idUser,
+                },
+                include: {
+                    conversations: {
+                        where: {
+                            roomId: idRoom,
+                        },
+                        select: {
+                            messages: {
+                                select: {
+                                    id: true,
+                                    content: true,
+                                    createdAt: true,
+                                    senderId: true,
+                                    sender: {
+                                        select: {
+                                            username: true,
+                                        },
+                                    },
+                                },
+                            },
+                            participants: {
+                                select: {
+                                    username: true,
+                                    id: true,
+                                },
+                            },
+                        },
                     },
                 },
+            });
+
+            if (!user || !user.conversations || user.conversations.length === 0) {
+                throw new Error("User or conversation not found");
             }
-        })
-     console.log("ssssssssssssssssssssssssssssss")
-        return await user.conversations[0]?.messages
+
+            const conversation = user.conversations[0];
+            const messagesWithUsername = conversation.messages.map((message) => ({
+                id: message.id,
+                content: message.content,
+                createdAt: message.createdAt,
+                senderId: message.senderId,
+                senderUsername: message.sender.username,
+            }));
+
+            return messagesWithUsername
+        
+        } catch (error) {
+            console.error("Error fetching messages:", error);
+            throw error;
+        }
     }
+
 
 
 
