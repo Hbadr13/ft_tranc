@@ -6,6 +6,8 @@ export class ChatService {
     constructor(private prisma: PrismaService) {
     }
 
+    /******************************************************* Channel Message ****************************************************************/
+
     async createChannel(body, idUser: number) {
         const room = await this.prisma.room.create({
             data: {
@@ -56,6 +58,7 @@ export class ChatService {
                             select: {
                                 id: true,
                                 name: true,
+                                type: true,
                             }
                         }
                     }
@@ -84,6 +87,39 @@ export class ChatService {
                 isBanned: false,
             }
         });
+        let Conversation = await this.prisma.conversation.findUnique({
+            where: {
+                type: 'channel',
+                roomId: idRoom
+            }
+        });
+        Conversation = await this.prisma.conversation.update({
+            where: {
+                id: Conversation.id
+            },
+            data: {
+                participants: {
+                    connect: {
+                        id: idUser
+                    }
+                },
+            }
+        });
+        // await this.prisma.message.create({
+        //     data: {
+        //         content: null,
+        //         sender: {
+        //             connect: {
+        //                 id: idUser
+        //             }
+        //         },
+        //         chat: {
+        //             connect: {
+        //                 id: Conversation.id
+        //             }
+        //         }
+        //     }
+        // });
     }
 
     async sendMessageToChannel(body, idRoom: number, idUser: number) {
@@ -93,6 +129,7 @@ export class ChatService {
                 roomId: idRoom
             }
         });
+        // console.log("Conversation:" ,Conversation)
         Conversation = await this.prisma.conversation.update({
             where: {
                 id: Conversation.id
@@ -123,63 +160,89 @@ export class ChatService {
     }
 
     async getallMessagesChannel(idUser: number, idRoom: number) {
-        try {
-            const user = await this.prisma.user.findUnique({
-                where: {
-                    id: idUser,
-                },
-                include: {
-                    conversations: {
-                        where: {
-                            roomId: idRoom,
-                        },
-                        select: {
-                            messages: {
-                                select: {
-                                    id: true,
-                                    content: true,
-                                    createdAt: true,
-                                    senderId: true,
-                                    sender: {
-                                        select: {
-                                            username: true,
-                                        },
-                                    },
-                                },
-                            },
-                            participants: {
-                                select: {
-                                    username: true,
-                                    id: true,
-                                },
-                            },
-                        },
+        console.log("dakhlt hana")
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id: idUser,
+            },
+            include: {
+
+                conversations: {
+                    where: {
+                        roomId: idRoom
+                    },
+                    select: {
+
+                        messages: true,
+                        participants: {
+                            select: {
+                                username: true,
+                                foto_user: true,
+                                id: true
+                            }
+                        }
                     },
                 },
-            });
-
-            if (!user || !user.conversations || user.conversations.length === 0) {
-                throw new Error("User or conversation not found");
             }
+        })
+        if (!user.conversations[0])
+            return 0;
 
-            const conversation = user.conversations[0];
-            const messagesWithUsername = conversation.messages.map((message) => ({
+        const conversation = user.conversations[0];
+        conversation.messages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+        const resultMessages = conversation.messages
+            .map((message) => ({
                 id: message.id,
                 content: message.content,
                 createdAt: message.createdAt,
                 senderId: message.senderId,
-                senderUsername: message.sender.username,
+                chatId: message.chatId,
+                username: conversation.participants.find((participant) => participant.id === message.senderId)?.username,
+                foto_user: conversation.participants.find((participant) => participant.id === message.senderId)?.foto_user,
             }));
 
-            return messagesWithUsername
-        
-        } catch (error) {
-            console.error("Error fetching messages:", error);
-            throw error;
-        }
+
+        return resultMessages
+
+    }
+
+    async allUsersChannel(roomId: number) {
+        return await this.prisma.room.findFirst({
+            where: {
+                id: roomId,
+            },
+            select: {
+                name: true,
+                Memberships: {
+                    select: {
+                        isAdmin: true,
+                        isOwner: true,
+                        isBanned: true,
+                        userId: true,
+                        user: {
+                            select: {
+                                username: true,
+                            }
+                        }
+                    }
+                }
+            }
+        })
     }
 
 
+    async allChannel() {
+        return await this.prisma.room.findMany({
+            select: {
+                id: true,
+                name: true,
+                type: true,
+                description: true,
+            }
+        })
+    }
+    /******************************************************* Direct Message ****************************************************************/
 
 
     async sendDirectMessage(body, idSender: number, idReceiver: number) {
@@ -256,7 +319,7 @@ export class ChatService {
         if (!conversation)
             throw new NotFoundException('messages is empty')
 
-        const sortedMessages = conversation.messages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        conversation.messages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
         return await conversation.messages;
 
     }

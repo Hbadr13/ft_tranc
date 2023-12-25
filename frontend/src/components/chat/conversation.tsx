@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { userProps, messageProps } from '@/interface/data'
 import { Socket } from 'socket.io-client';
 
-export default function Conversation({ chatSocket, idReceiver, button, idRoom, currentUser }: { chatSocket: Socket, idReceiver: userProps, button: boolean, idRoom: number, currentUser: userProps }) {
+export default function Conversation({ chatSocket, Receiver, button, idRoom, currentUser }: { chatSocket: Socket, Receiver: userProps, button: boolean, idRoom: number, currentUser: userProps }) {
     const [messages, setMessages] = useState<messageProps[]>([]);
     const [content, setContent] = useState('');
     const [isend, setIsend] = useState(false);
@@ -13,7 +13,7 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
             (
                 async () => {
                     try {
-                        const response = await fetch(`http://localhost:3333/chat/getConversationDirect/${currentUser.id}/${idReceiver.id}`, {
+                        const response = await fetch(`http://localhost:3333/chat/getConversationDirect/${currentUser.id}/${Receiver.id}`, {
                             credentials: 'include',
                         });
                         const content = await response.json();
@@ -24,7 +24,7 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
                 }
             )();
             setContent('')
-        }, [currentUser.id, idReceiver, isend, msg]);
+        }, [currentUser.id, Receiver, isend, msg]);
     }
     else {
         useEffect(() => {
@@ -36,7 +36,7 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
                         });
                         const content = await response.json();
                         setMessages(Array.from(content))
-                        console.log(content)
+                        console.log("content :", content)
                     } catch (error) {
 
                     }
@@ -50,42 +50,140 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
         chatSocket?.on('message', (message) => {
             if (message) {
                 setMsg(message);
-                fetch(`http://localhost:3333/chat/directMessage/${currentUser.id}/${idReceiver.id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        "content": message,
-                    }),
-                    credentials: 'include',
-                });
+                if (button) {
+                    fetch(`http://localhost:3333/chat/directMessage/${currentUser.id}/${Receiver.id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "content": message,
+                        }),
+                        credentials: 'include',
+                    });
+                }
+                else {
+                    fetch(`http://localhost:3333/chat/sendMessageToChannel/${idRoom}/${currentUser.id}`, {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "content": content,
+                        }),
+                        credentials: 'include',
+                    });
+                }
             }
         });
     }, [chatSocket])
 
-    const handleClick = async (id: number) => {
+    const handleClick = async () => {
         if (content) {
+            if (!button) {
 
-            await fetch(`http://localhost:3333/chat/directMessage/${id}/${idReceiver.id}`, {
-                method: 'POST',
+                await fetch(`http://localhost:3333/chat/directMessage/${currentUser.id}/${Receiver.id}`, {
+                    method: 'POST',
 
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    "content": content,
-                }),
-                credentials: 'include',
-            });
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "content": content,
+                    }),
+                    credentials: 'include',
+                });
+                chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Receiver.id, content: content });
+            }
+            else {
+                console.log("sssssssssssssssssss")
+
+                await fetch(`http://localhost:3333/chat/sendMessageToChannel/${idRoom}/${currentUser.id}`, {
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "content": content,
+                    }),
+                    credentials: 'include',
+                });
+                chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: idRoom, content: content });
+            }
         }
+        // const currentDate = new Date();
 
-        chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: idReceiver.id, content: content });
+        // // Extract hours and minutes
+        // const hours = String(currentDate.getHours()).padStart(2, '0');
+        // const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+
+        // // Format the time as "00:00"
+        // const currentTime = `${hours}:${minutes}`;
+
+        // // Print the result
+        // console.log('Current time in the local time zone (24-hour clock):', currentTime);
         if (isend == false)
             setIsend(true)
         else if (isend == true)
             setIsend(false)
         setContent('')
+
+    };
+    const handleClick1 = async (e: any) => {
+        if (e.key == 'Enter') {
+
+            if (content) {
+                if (!button) {
+
+                    await fetch(`http://localhost:3333/chat/directMessage/${currentUser.id}/${Receiver.id}`, {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "content": content,
+                        }),
+                        credentials: 'include',
+                    });
+                    chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Receiver.id, content: content });
+                }
+                else {
+
+
+                    await fetch(`http://localhost:3333/chat/sendMessageToChannel/${idRoom}/${currentUser.id}`, {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "content": content,
+                        }),
+                        credentials: 'include',
+                    });
+                    chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: idRoom, content: content });
+                }
+            }
+            if (isend == false)
+                setIsend(true)
+            else if (isend == true)
+                setIsend(false)
+            setContent('')
+        }
+        // const currentDate = new Date();
+
+        // // Extract hours and minutes
+        // const hours = String(currentDate.getHours()).padStart(2, '0');
+        // const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+
+        // // Format the time as "00:00"
+        // const currentTime = `${hours}:${minutes}`;
+
+        // // Print the result
+        // console.log('Current time in the local time zone (24-hour clock):', currentTime);
 
     };
 
@@ -97,40 +195,32 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
 
 
     return (
-        <div className="w-[1040px] h-[1054px]  relative bg-gray-100  border  border-sky-500 rounded-[30px] ">
+        <div className="w-[45%] h-[820px] mt-12 relative bg-gray-100  border  border-sky-500 rounded-[30px] ">
             {
 
-                idReceiver.id != 0 || idRoom != 0 ? (
+                Receiver.id != 0 ||  idRoom != 0 ? (
                     <>
-                        <div className=' flex w-[990px] bg-white h-[80px] rounded-[30px] mx-[25px] my-[20px]  border  border-sky-500 '>
-                            <button className="h-[70px]  gap-2.5 flex my-[11px] mx-[20px] hover:scale-105 duration-300" >
-                                <img className="w-[58px] h-[58px] rounded-full" src={idReceiver.foto_user} />
-                                <div className="my-[5px]">
-                                    <p className="text-black  text-xl">{idReceiver.username}</p>
-                                    <div className="justify-start items-center gap-1 inline-flex">
-                                        <div className="w-3 h-3 relative bg-green-600 rounded-[20px] " />
-                                        <div className="text-neutral-800 text-base font-normal font-['Satoshi'] leading-[18px]">Active Now</div>
+                        <div className=' flex w-[97%] bg-white h-16 rounded-[30px] border justify-start items-center  border-sky-500 ml-3 mt-2 '>
+                            {button == false && <button className="ml-4 flex hover:scale-105 p-1 space-x-2 duration-300 justify-center items-center" >
+                                <img className="w-14 h-14 rounded-full" src={Receiver.foto_user} />
+                                <div className="flex flex-col justify-start items-start">
+                                    <p className="text-black  text-lg">{Receiver.username}</p>
+                                    <div className="justify-start  -mt-1 space-x-1 items-center flex">
+                                        <div className="w-3 h-3  bg-green-600 rounded-[20px] " />
+                                        <div className="text-neutral-800 text-md font-normal">Active Now</div>
                                     </div>
                                 </div>
-                            </button>
+                            </button>}
+                            {button == true && <div className="ml-4 flex hover:scale-105 p-1 space-x-2 duration-300 justify-center items-center" >
+                                <img className="w-14 h-14 rounded-full" src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
+                                <div className="">
+                                    <p className="text-black  text-xl">{'channel name'}</p>
+                                </div>
+                            </div>}
+
                         </div>
 
-                        <div className="pl-5 pr-[295px] pt-5 pb-[11px] left-[15px] top-[939px] absolute inline-flex">
-                            <input
-                                className=" bg-white rounded-[30px]  w-[900px] items-center  justify-center placeholder:italic bloc  border border-sky-500  py-2 pl-9 pr-3 shadow-sm focus:outline-none    sm:text-sm"
-                                type="text"
-                                name='Type here'
-                                value={content}
-                                placeholder="Type here........"
-                                onChange={(e) => setContent(e.target.value)}
-
-                            />
-                            <button
-                                className=" h-[50px] w-[50px]"
-                                onClick={() => handleClick(currentUser.id)}
-                            ><img src='https://cdn-icons-png.flaticon.com/512/3682/3682321.png' className='h-[40px] w-[40px] ml-[25px]' /></button>
-                        </div>
-                        <div className=' overflow-y-scroll scrollbar-hide  bg-fblue-100 flex  flex-col-reverse -mt-4 p-4 w-full h-[850px] '>
+                        <div className=' overflow-y-scroll scrollbar-hide  bg-fblue-100 flex  flex-col-reverse mt-1  p-4 w-full  min-h-80 h-[83%] bg-bdlack '>
                             {messages.map((item, index) => (
                                 <>
                                     {
@@ -152,7 +242,9 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
                                                         <div className=" max-w-[440px] w-auto h-auto p-5 ml-16  bg-white rounded-tl-[20px] rounded-tr-[20px] rounded-br-[20px] justify-center   items-center  text-xl ">
                                                             {item.content}
                                                         </div>
-                                                        <img className="w-12 h-12  -mt-10  rounded-full" src={idReceiver.foto_user} />
+                                                        {button == false && <img className="w-12 h-12  -mt-10  rounded-full" src={Receiver.foto_user} />}
+                                                        {button == true && <img className="w-12 h-12  -mt-10  rounded-full" src={item.foto_user} />}
+
                                                     </div>
                                                     <div className="w-full flex">
                                                         {handltime(item.createdAt)}
@@ -162,6 +254,22 @@ export default function Conversation({ chatSocket, idReceiver, button, idRoom, c
                                     }
                                 </>
                             ))}
+                        </div>
+                        <div className="w-full h-12 z-h10 mt-2  flex flex-row px-3 bg-bblack">
+                            <input
+                                onChange={(e) => setContent(e.target.value)}
+                                className=" bg-white rounded-[30px]  w-full items-center  justify-center placeholder:italic bloc  border border-sky-500 px-4 shadow-sm focus:outline-none    sm:text-sm"
+                                type="text"
+                                name='Type here'
+                                value={content}
+                                placeholder="Type here........"
+                                autoComplete='off' onKeyDown={handleClick1}
+
+                            />
+                            <button
+                                className='hover:scale-110 duration-300'
+                                onClick={() => handleClick()}
+                            ><img src='https://cdn-icons-png.flaticon.com/512/3682/3682321.png' className='h-8 w-8 ml-2' /></button>
                         </div>
                     </>) : (
                     <div className='flex justify-center items-center'>No conversation select</div>

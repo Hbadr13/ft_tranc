@@ -4,15 +4,14 @@ export interface messageProps {
     content: string,
     createdAt: string,
     senderId: number
+    foto_user?: string
 }
-
 export  interface channelProps {
     name: string,
-    id: number
+    id: number,
+    type: string
 }
-
 export interface userProps {
-
 
     flag1: boolean;    // 
     id: number,

@@ -56,7 +56,7 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
     return (
         // <div className='mt-2' >
         <div className='flex  justify-center h-[600px] items-center bg-btack  w-full  flex-row'>
-            <div className="   2xl:w-[60%]  xl:h-full w-[80%] md:w-[90%]  justify-center items-center  sme:bg-black   mdw:bg-white bg-blue-500    rounded-bl-lg  rounded-t-2xl flex flex-col ">
+            <div className="   2xl:w-[60%] h-full  xl:h-full w-[80%] md:w-[90%]  justify-center items-center  sme:bg-black   mdw:bg-white bg-blue-500    rounded-bl-lg  rounded-t-2xl flex flex-col ">
                 <div className=' flex wmt-2 bg-bwlack   justify-center items-center hd-full flex-col'>
                     {
                         on == 0 && Leaderboard.map((value: any, index: any) => (

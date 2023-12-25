@@ -18,8 +18,12 @@ function Index({ onlineUsersss, currentUser, users, amis }: AppProps) {
   return (
     <menu className="w-full    Dashboard   mt-14 flex  flex-col   md:flex-row gap-5  p-5  ">
       <div className=" w-full md:w-[45%]  h-full rounded-xl flex flex-col gap-5 ">
-        <div className="w-full h-[100px] md:h-[20%] bg-slate-300 rounded-xl">
-          user online
+        <div className=" bg-blackw-full h-[100px] md:h-[20%] bg-slate-300 rounded-xl">
+          {amis.map((item) => (
+            <h1>
+              {item.username}
+            </h1>
+          ))}
         </div>
         <div className="fleex   w-full  h-[80%]   bg-[#f7f7f7 bge-green-200  shadow-md rounded-xl  p-" >
           <Leaderboard currentUser={currentUser} />

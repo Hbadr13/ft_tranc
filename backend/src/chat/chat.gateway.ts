@@ -30,8 +30,9 @@ export class ChatGateway {
   handleMessage(client: Socket, data: any) {
     console.log(data)
     this.listId.forEach((value, socket) => {
-      console.log(`${value} == ${data.senderId}`)
-      if ((value == data.ReceiverId) && data.content)
+      // console.log(`${value} == ${data.senderId}`)
+      // if ((value == data.ReceiverId) && data.content)
+      if (data.content)
         socket.emit('message', data)
     })
 

@@ -214,7 +214,7 @@ const UseProfile = () => {
         </div>
         <div className=" hidden md:flex">
 
-          <div className=" flex flex-col    h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[85px] min-h-[845px]   p-6">
+          <div className=" flex flex-col  dark:bg-slate-800  h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[85px] min-h-[845px]   p-6">
             {(check != 2) ? (<div>
               <button onClick={() => freind_ranck1(2)} className=" mt-60 px-[108px] py-2 text-base font-bold   bg-white  border hover:text-white  hover:bg-[#3b82f6]  hover:scale-110 duration-300 text-blue-600">Rank</button>
             </div>) : null}
@@ -234,7 +234,7 @@ const UseProfile = () => {
           </div>
 
         </div>
-        {(<div className=" flex   flex-col justify-center items-center md:opacity-150 bg xl:mt-[80px] sm:mt-6   rounded-md min-h-[845px]  sm:bg-blue-50  w-[550px] xl:w-[700px] h-16 xl:rounded-2xl xl:rounded-s-[1px] p-6" >
+        {(<div className=" flex   flex-col justify-center items-center md:opacity-150 bg xl:mt-[80px] sm:mt-6   rounded-md min-h-[845px] dark:bg-slate-500  sm:bg-blue-50  w-[550px] xl:w-[700px] h-16 xl:rounded-2xl xl:rounded-s-[1px] p-6" >
           {
             check === 2 && <Rank amis_id={amis} amis={amis} id={id} />
           }
