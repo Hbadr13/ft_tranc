@@ -14,9 +14,9 @@ export class ChatController {
         await this.chatService.createChannel(body, Number(idUser))
     }
 
-    @Post('joinChannel/:idUser/:idRoom')
-    async JoinChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number) {
-        await this.chatService.joinChannel(Number(idUser), Number(idRoom))
+    @Post('joinChannel/:idUser/:idRoom/:password')
+    async JoinChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number, @Param('password') password : string) {
+        await this.chatService.joinChannel(Number(idUser), Number(idRoom),password)
     }
 
     @Get('allChannelByUserId/:idUser')

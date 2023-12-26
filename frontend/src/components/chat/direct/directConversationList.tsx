@@ -60,7 +60,7 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
                             </button>
                             {
                                 amis.length !== 0 && amis.map((item: userProps) => (
-                                    <button onClick={() => setReceiver(item)} className="h-20 mt-6 w-96 p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
+                                    <button onClick={() => setReceiver(item)} className="h-20 mt-3 w-96 p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
                                         <div className="h-auto  justify-start items-center gap-2.5 flex">
                                             <img className="w-16 h-16 rounded-full" src={item.foto_user} />
                                             <div className="   flex flex-col justify-center items-start space-y-1 ">
@@ -76,7 +76,7 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
 
                         <div className="  borhder bogjrder-sky-500  flex  flex-col items-center justify-center">
                             {conversationList.map((item: any) => (
-                                <button onClick={() => setReceiver(item)} className="h-20 mt-6 w-96 p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
+                                <button onClick={() => setReceiver(item)} className="h-20 mt-3 w-96 p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
                                     <div className="h-auto  justify-start items-center gap-2.5 flex">
                                         <img className="w-16 h-16 rounded-full" src={item.foto_user} />
                                         <div className="   flex flex-col justify-center items-start space-y-1 ">

@@ -3,7 +3,7 @@ import Createchannels from './createChannels'
 import { userProps } from '@/interface/data'
 import { channelProps } from '@/interface/data'
 
-export default function ChannelsConversationList({ currentUser, setRoom , setjoinchannel }: { currentUser: userProps, setRoom: (value: channelProps) => void ,setjoinchannel: (value: boolean) => void}) {
+export default function ChannelsConversationList({ currentUser, setRoom, setjoinchannel }: { currentUser: userProps, setRoom: (value: channelProps) => void, setjoinchannel: (value: boolean) => void }) {
 
   const [click, setClick] = useState('')
 
@@ -25,7 +25,13 @@ export default function ChannelsConversationList({ currentUser, setRoom , setjoi
         }
       }
     )();
-  }, [currentUser.id]);
+  }, [currentUser.id,click]);
+  const joinchanle = async (item: any) => {
+    setRoom(item);
+    setjoinchannel(true)
+
+  }
+  // 'joinChannel/:idUser/:idRoom/:password'
 
   useEffect(() => {
     (
@@ -47,7 +53,7 @@ export default function ChannelsConversationList({ currentUser, setRoom , setjoi
   return (
     <div className=' w-full h-full bgf-black flex justify-center items-center flex-col'>
       {
-        click == '' && <button onClick={() => setClick('create')} className=" text-white  bg-blue-400 rounded-[52px] justify-center w-96 h-12 items-center  duration-300 hover:scale-105">
+        click == '' && <button onClick={() => setClick('create')} className=" text-white  -mt-4 bg-blue-400 rounded-[52px] justify-center w-96 h-12 items-center  duration-300 hover:scale-105">
           <div className=" justify-center items-center flex">
             <h1 className="">Create New Channel</h1>
           </div>
@@ -60,7 +66,7 @@ export default function ChannelsConversationList({ currentUser, setRoom , setjoi
           </div>
         </button>}
 
-      <div className='overflow-y-scrdoll scrolldbar-hide bfg-blue-500 h-[65vh] w-full'>
+      <div className='overflow-y-scrdoll scrolldbar-hide bfg-blue-500 h-[430px] w-full'>
         {
           click == 'create' &&
           <div className=" bg-sky-300 w-full h-full flex  flex-col items-center justify-center shadow-xl drop-shadow-xl   rounded-2xl">
@@ -81,7 +87,7 @@ export default function ChannelsConversationList({ currentUser, setRoom , setjoi
 
               {
                 allChannel.map((item) => (
-                  <button onClick={() => setRoom(item)} className="h-20 mt-6 w-96 px-[15px] shadow-xl drop-shadow-xl  bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
+                  <button onClick={() => joinchanle(item)} className="h-20 mt-3 w-96 px-[15px] shadow-xl drop-shadow-xl  bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
                     <div className="h-[70px] justify-start items-center gap-2.5 flex">
                       <img className="w-[58px] h-[58px] rounded-full" src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
                       <div className=" flex-col justify-start items-start gap-0.5 inline-flex my-[20px]">
@@ -102,10 +108,11 @@ export default function ChannelsConversationList({ currentUser, setRoom , setjoi
 
         {
           click == '' &&
-          <div className="  bg-sdlate-600 borhder bogjrder-sky-500  flex  flex-col items-center justify-center">
+          <div className="  bg-sdlate-600 borhder bogjrder-sky-500  flex  flex-col items-center justify-start h-[580px]  mt-1  overflow-y-scroll shadffow-xl drofp-shadow-xl scrollbar-hide">
+            {/* <div className=''> */}
             {
               channel.map((item) => (
-                <button onClick={() => setRoom(item)} className="h-20 mt-6 w-96 p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
+                <button onClick={() => setRoom(item)} className="h-20 mt-3 w-96 p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
                   <div className="h-auto  justify-start items-center gap-2.5 flex">
                     <img className="w-16 h-16 rounded-full" src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
                     <div className="   flex flex-col justify-center items-start space-y-1 ">
@@ -120,6 +127,7 @@ export default function ChannelsConversationList({ currentUser, setRoom , setjoi
                 </button>
               ))
             }
+          {/* </div> */}
           </div>}
       </div>
     </div>
