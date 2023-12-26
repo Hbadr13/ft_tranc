@@ -3,9 +3,11 @@ export interface messageProps {
     id: number,
     content: string,
     createdAt: string,
+    foto_user : string
     senderId: number
 }
 export  interface channelProps {
+    type: string;
     name: string,
     id: number
 }

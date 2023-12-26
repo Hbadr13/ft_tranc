@@ -6,6 +6,8 @@ export class ChatService {
     constructor(private prisma: PrismaService) {
     }
 
+    /******************************************************* Channel Message ****************************************************************/
+
     async createChannel(body, idUser: number) {
         const room = await this.prisma.room.create({
             data: {
@@ -56,6 +58,7 @@ export class ChatService {
                             select: {
                                 id: true,
                                 name: true,
+                                type: true,
                             }
                         }
                     }
@@ -174,7 +177,7 @@ export class ChatService {
                         participants: {
                             select: {
                                 username: true,
-                                foto_user:true,
+                                foto_user: true,
                                 id: true
                             }
                         }
@@ -199,11 +202,47 @@ export class ChatService {
                 foto_user: conversation.participants.find((participant) => participant.id === message.senderId)?.foto_user,
             }));
 
-        
+
         return resultMessages
-        
+
     }
 
+    async allUsersChannel(roomId: number) {
+        return await this.prisma.room.findFirst({
+            where: {
+                id: roomId,
+            },
+            select: {
+                name: true,
+                Memberships: {
+                    select: {
+                        isAdmin: true,
+                        isOwner: true,
+                        isBanned: true,
+                        userId: true,
+                        user: {
+                            select: {
+                                username: true,
+                            }
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+
+    async allChannel() {
+        return await this.prisma.room.findMany({
+            select: {
+                id: true,
+                name: true,
+                type: true,
+                description: true,
+            }
+        })
+    }
+    /******************************************************* Direct Message ****************************************************************/
 
 
     async sendDirectMessage(body, idSender: number, idReceiver: number) {

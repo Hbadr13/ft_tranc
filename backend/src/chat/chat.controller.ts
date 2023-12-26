@@ -7,6 +7,8 @@ export class ChatController {
     constructor(private chatService: ChatService) {
     }
 
+    /******************************************************* Channel Message ****************************************************************/
+
     @Post('createChannel/:idUser')
     async CreateChannel(@Body() body, @Param('idUser') idUser: number) {
         await this.chatService.createChannel(body, Number(idUser))
@@ -20,12 +22,10 @@ export class ChatController {
     @Get('allChannelByUserId/:idUser')
     async GetAllChannelByUserId(@Param('idUser') idUser: number) {
         return await this.chatService.getAllChannelByUserId(Number(idUser));
-    }   
+    }
 
     @Post('sendMessageToChannel/:idRoom/:idUser')
     async SendMessageToChannel(@Body() body, @Param('idRoom') idRoom: number, @Param('idUser') idUser: number) {
-
-    
         await this.chatService.sendMessageToChannel(body, Number(idRoom), Number(idUser))
     }
 
@@ -33,6 +33,21 @@ export class ChatController {
     async GetallMessagesChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number) {
         return await this.chatService.getallMessagesChannel(Number(idUser), Number(idRoom))
     }
+
+    @Get('allUsersChannel/:idRoom')
+    async AllUsersChannel(@Param('idRoom') idRoom: number) {
+        return await this.chatService.allUsersChannel(Number(idRoom))
+    }
+
+    @Get('allChannel')
+    async AllChannel() {
+        return await this.chatService.allChannel()
+    }
+
+
+
+
+    /******************************************************* Direct Message ****************************************************************/
 
     @Post('directMessage/:idSender/:idReceiver')
     async SendDirectMessage(@Body() body, @Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
