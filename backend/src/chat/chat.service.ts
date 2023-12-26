@@ -69,42 +69,62 @@ export class ChatService {
         return allRoom;
     }
 
-    async joinChannel(idUser: number, idRoom: number) {
-        await this.prisma.membership.create({
-            data: {
-                room: {
-                    connect: {
-                        id: idRoom,
-                    }
-                },
-                user: {
-                    connect: {
-                        id: idUser,
-                    }
-                },
-                isOwner: false,
-                isAdmin: false,
-                isBanned: false,
-            }
-        });
-        let Conversation = await this.prisma.conversation.findUnique({
+    async joinChannel(idUser: number, idRoom: number, password: string) {
+        const room = await this.prisma.room.findFirst({
             where: {
-                type: 'channel',
-                roomId: idRoom
+                id: idRoom
             }
-        });
-        Conversation = await this.prisma.conversation.update({
-            where: {
-                id: Conversation.id
-            },
-            data: {
-                participants: {
-                    connect: {
-                        id: idUser
-                    }
+
+        })
+        if (!room)
+            throw new NotFoundException('group not found')
+
+
+
+        if (room.type == "public" || (room.type == "protected" && room.password == password)) {
+
+            await this.prisma.membership.create({
+                data: {
+                    room: {
+                        connect: {
+                            id: idRoom,
+                        }
+                    },
+                    user: {
+                        connect: {
+                            id: idUser,
+                        }
+                    },
+                    isOwner: false,
+                    isAdmin: false,
+                    isBanned: false,
+                }
+            });
+            let Conversation = await this.prisma.conversation.findUnique({
+                where: {
+                    type: 'channel',
+                    roomId: idRoom
+                }
+            });
+            Conversation = await this.prisma.conversation.update({
+                where: {
+                    id: Conversation.id
                 },
-            }
-        });
+                data: {
+                    participants: {
+                        connect: {
+                            id: idUser
+                        }
+                    },
+                }
+            });
+            return (room);
+        }
+        else {
+            throw new NotFoundException('dont join channel')
+
+        }
+
         // await this.prisma.message.create({
         //     data: {
         //         content: null,
@@ -160,7 +180,7 @@ export class ChatService {
     }
 
     async getallMessagesChannel(idUser: number, idRoom: number) {
-        console.log("dakhlt hana")
+
         const user = await this.prisma.user.findUnique({
             where: {
                 id: idUser,
