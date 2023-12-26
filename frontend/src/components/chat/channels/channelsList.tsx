@@ -60,7 +60,7 @@ export default function ChannelsConversationList({ currentUser, setConv }: { cur
           </div>
         </button>}
 
-      <div className='overflow-y-scroll scrollbar-hide bfg-blue-500 h-[65vh] w-full'>
+      <div className='overflow-y-scroll scrollbar-hide bfg-blue-500 h-[600PX] w-full'>
         {
           click == 'create' &&
           <div className=" bg-sky-300 w-full h-full flex  flex-col items-center justify-center shadow-xl drop-shadow-xl   rounded-2xl">

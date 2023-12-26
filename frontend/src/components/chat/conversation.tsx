@@ -195,19 +195,19 @@ export default function Conversation({ chatSocket, Receiver, button, idRoom, cur
 
 
     return (
-        <div className="w-[45%] h-[820px] mt-12 relative bg-gray-100  border  border-sky-500 rounded-[30px] ">
+        <div className="w-[45%] h-[820px] mt-12 relative bg-gray-100 dark:bg-slate-800 border  border-sky-500 rounded-[30px] ">
             {
 
-                Receiver.id != 0 ||  idRoom != 0 ? (
+                Receiver.id != 0 || idRoom != 0 ? (
                     <>
-                        <div className=' flex w-[97%] bg-white h-16 rounded-[30px] border justify-start items-center  border-sky-500 ml-3 mt-2 '>
+                        <div className=' flex w-[97%] bg-white dark:bg-black h-16 rounded-[30px] border justify-start items-center  border-sky-500 ml-3 mt-2 '>
                             {button == false && <button className="ml-4 flex hover:scale-105 p-1 space-x-2 duration-300 justify-center items-center" >
                                 <img className="w-14 h-14 rounded-full" src={Receiver.foto_user} />
                                 <div className="flex flex-col justify-start items-start">
-                                    <p className="text-black  text-lg">{Receiver.username}</p>
+                                    <p className="text-black dark:text-cyan-50  text-lg">{Receiver.username}</p>
                                     <div className="justify-start  -mt-1 space-x-1 items-center flex">
                                         <div className="w-3 h-3  bg-green-600 rounded-[20px] " />
-                                        <div className="text-neutral-800 text-md font-normal">Active Now</div>
+                                        <div className="text-neutral-800 dark:text-cyan-50 text-md font-normal">Active Now</div>
                                     </div>
                                 </div>
                             </button>}
@@ -258,7 +258,7 @@ export default function Conversation({ chatSocket, Receiver, button, idRoom, cur
                         <div className="w-full h-12 z-h10 mt-2  flex flex-row px-3 bg-bblack">
                             <input
                                 onChange={(e) => setContent(e.target.value)}
-                                className=" bg-white rounded-[30px]  w-full items-center  justify-center placeholder:italic bloc  border border-sky-500 px-4 shadow-sm focus:outline-none    sm:text-sm"
+                                className=" bg-white rounded-[30px] dark:bg-black w-full items-center  dark:text-CusColor_light justify-center placeholder:italic bloc  border border-sky-500 px-4 shadow-sm focus:outline-none    sm:text-sm"
                                 type="text"
                                 name='Type here'
                                 value={content}

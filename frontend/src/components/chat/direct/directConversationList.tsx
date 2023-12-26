@@ -49,7 +49,7 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
                 ) : null
             }
 
-            <div className='overflow-y-scroll scrollbar-hide bfg-blue-500 h-[70vh] w-full'>
+            <div className='overflow-y-scroll scrollbar-hide bfg-blue-500 h-[640PX] w-full'>
                 {
                     click ? (
 
@@ -76,17 +76,17 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
 
                         <div className="  borhder bogjrder-sky-500  flex  flex-col items-center justify-center">
                             {conversationList.map((item: any) => (
-                                <button onClick={() => setReceiver(item)} className="h-20 mt-6 w-96 p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
+                                <button onClick={() => setReceiver(item)} className="h-20 mt-6 w-96 p-2 bg-white  dark:bg-black justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
                                     <div className="h-auto  justify-start items-center gap-2.5 flex">
                                         <img className="w-16 h-16 rounded-full" src={item.foto_user} />
                                         <div className="   flex flex-col justify-center items-start space-y-1 ">
-                                            <h4 className=" text-lg">{item.username}</h4>
-                                            <p className="self-stretch h text-neutral-600 text-sm ">Good point. Typography is another ?</p>
+                                            <h4 className=" text-lg dark:text-CusColor_light">{item.username}</h4>
+                                            <p className="self-stretch h dark:text-blue-200 text-neutral-600 text-sm ">Good point. Typography is another ?</p>
                                         </div>
                                     </div>
                                     <div className="flex flex-col self-stretch justify-center space-y-2">
-                                        <div className="">15h</div>
-                                        <div className=" text-CusColor_light bg-sky-500  rounded-[100px]">2</div>
+                                        <div className=" dark:text-cyan-50">15h</div>
+                                        <div className=" text-CusColor_light bg-sky-500  rounded-[100px]">{item.id}</div>
                                     </div>
                                 </button>
                             ))}

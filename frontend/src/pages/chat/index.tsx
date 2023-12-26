@@ -50,7 +50,7 @@ export default function index({ users, amis }: AppProps) {
   }, [button]);
 
   return (
-    <div className=' bg-bldack flex-uwrap min-w-full min-h-screen flex flex-row justify-center items-center dark:bg-black space-x-6'>
+    <div className=' bg-bldack flex-uwrap min-w-full min-h-screen flex mt-6j flex-row justify-center items-center dark:bg-slate-800 space-x-6'>
       <ConversationList amis={amis} setReceiver={setReceiver} setButton={setButton} currentUser={currentUser} users={users} setConv={setIdRoom} />
       <Conversation chatSocket={chatSocket} Receiver={Receiver} button={button} idRoom={idRoom} currentUser={currentUser} />
       {button == false && Receiver.id != 0  && <Edit currentUser={currentUser} Receiver={Receiver} />}

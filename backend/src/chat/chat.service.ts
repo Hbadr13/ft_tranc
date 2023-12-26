@@ -208,7 +208,7 @@ export class ChatService {
     }
 
     async allUsersChannel(roomId: number) {
-        return await this.prisma.room.findFirst({
+        let membership = await this.prisma.room.findFirst({
             where: {
                 id: roomId,
             },
@@ -223,12 +223,23 @@ export class ChatService {
                         user: {
                             select: {
                                 username: true,
+                                foto_user: true,
+                                id: true,
                             }
                         }
                     }
                 }
             }
         })
+        const participant = membership.Memberships.map((m) => ({
+            id: m.user.id,
+            username: m.user.username,
+            isAdmin: m.isAdmin,
+            isOwner: m.isOwner,
+            isBanned: m.isBanned,
+            foto_user: m.user.foto_user
+        }));
+        return participant;
     }
 
 
