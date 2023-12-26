@@ -39,11 +39,10 @@ export class ChatController {
         return await this.chatService.allUsersChannel(Number(idRoom))
     }
 
-    @Get('allChannel')
-    async AllChannel() {
-        return await this.chatService.allChannel()
+    @Get('allChannel/:userId')
+    async AllChannel(@Param('userId') userId: number) {
+        return await this.chatService.allChannel(Number(userId))
     }
-
 
 
 

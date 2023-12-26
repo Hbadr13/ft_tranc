@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { userProps, messageProps } from '@/interface/data'
+import { userProps, messageProps, channelProps } from '@/interface/data'
 import { Socket } from 'socket.io-client';
 
-export default function Conversation({ chatSocket, Receiver, button, idRoom, currentUser }: { chatSocket: Socket, Receiver: userProps, button: boolean, idRoom: number, currentUser: userProps }) {
+export default function Conversation({ chatSocket, Receiver, button, Room, currentUser }: { chatSocket: Socket, Receiver: userProps, button: boolean, Room: channelProps, currentUser: userProps }) {
     const [messages, setMessages] = useState<messageProps[]>([]);
     const [content, setContent] = useState('');
     const [isend, setIsend] = useState(false);
@@ -31,7 +31,7 @@ export default function Conversation({ chatSocket, Receiver, button, idRoom, cur
             (
                 async () => {
                     try {
-                        const response = await fetch(`http://localhost:3333/chat/allMessagesChannel/${currentUser.id}/${idRoom}`, {
+                        const response = await fetch(`http://localhost:3333/chat/allMessagesChannel/${currentUser.id}/${Room.id}`, {
                             credentials: 'include',
                         });
                         const content = await response.json();
@@ -43,7 +43,7 @@ export default function Conversation({ chatSocket, Receiver, button, idRoom, cur
                 }
             )();
             setContent('')
-        }, [currentUser.id, idRoom, button, isend, msg]);
+        }, [currentUser.id, Room, button, isend, msg]);
     }
 
     useEffect(() => {
@@ -63,7 +63,7 @@ export default function Conversation({ chatSocket, Receiver, button, idRoom, cur
                     });
                 }
                 else {
-                    fetch(`http://localhost:3333/chat/sendMessageToChannel/${idRoom}/${currentUser.id}`, {
+                    fetch(`http://localhost:3333/chat/sendMessageToChannel/${Room.id}/${currentUser.id}`, {
                         method: 'POST',
 
                         headers: {
@@ -99,7 +99,7 @@ export default function Conversation({ chatSocket, Receiver, button, idRoom, cur
             else {
                 console.log("sssssssssssssssssss")
 
-                await fetch(`http://localhost:3333/chat/sendMessageToChannel/${idRoom}/${currentUser.id}`, {
+                await fetch(`http://localhost:3333/chat/sendMessageToChannel/${Room.id}/${currentUser.id}`, {
                     method: 'POST',
 
                     headers: {
@@ -110,7 +110,7 @@ export default function Conversation({ chatSocket, Receiver, button, idRoom, cur
                     }),
                     credentials: 'include',
                 });
-                chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: idRoom, content: content });
+                chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Room.id, content: content });
             }
         }
         // const currentDate = new Date();
@@ -153,7 +153,7 @@ export default function Conversation({ chatSocket, Receiver, button, idRoom, cur
                 else {
 
 
-                    await fetch(`http://localhost:3333/chat/sendMessageToChannel/${idRoom}/${currentUser.id}`, {
+                    await fetch(`http://localhost:3333/chat/sendMessageToChannel/${Room.id}/${currentUser.id}`, {
                         method: 'POST',
 
                         headers: {
@@ -164,7 +164,7 @@ export default function Conversation({ chatSocket, Receiver, button, idRoom, cur
                         }),
                         credentials: 'include',
                     });
-                    chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: idRoom, content: content });
+                    chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Room.id, content: content });
                 }
             }
             if (isend == false)
@@ -195,26 +195,26 @@ export default function Conversation({ chatSocket, Receiver, button, idRoom, cur
 
 
     return (
-        <div className="w-[45%] h-[820px] mt-12 relative bg-gray-100 dark:bg-slate-800 border  border-sky-500 rounded-[30px] ">
+        <div className="w-[45%] h-[820px] mt-12 relative bg-gray-100  border  border-sky-500 rounded-[30px] ">
             {
 
-                Receiver.id != 0 || idRoom != 0 ? (
+                Receiver.id != 0 ||  Room.id != 0 ? (
                     <>
-                        <div className=' flex w-[97%] bg-white dark:bg-black h-16 rounded-[30px] border justify-start items-center  border-sky-500 ml-3 mt-2 '>
+                        <div className=' flex w-[97%] bg-white h-16 rounded-[30px] border justify-start items-center  border-sky-500 ml-3 mt-2 '>
                             {button == false && <button className="ml-4 flex hover:scale-105 p-1 space-x-2 duration-300 justify-center items-center" >
                                 <img className="w-14 h-14 rounded-full" src={Receiver.foto_user} />
                                 <div className="flex flex-col justify-start items-start">
-                                    <p className="text-black dark:text-cyan-50  text-lg">{Receiver.username}</p>
+                                    <p className="text-black  text-lg">{Receiver.username}</p>
                                     <div className="justify-start  -mt-1 space-x-1 items-center flex">
                                         <div className="w-3 h-3  bg-green-600 rounded-[20px] " />
-                                        <div className="text-neutral-800 dark:text-cyan-50 text-md font-normal">Active Now</div>
+                                        <div className="text-neutral-800 text-md font-normal">Active Now</div>
                                     </div>
                                 </div>
                             </button>}
                             {button == true && <div className="ml-4 flex hover:scale-105 p-1 space-x-2 duration-300 justify-center items-center" >
                                 <img className="w-14 h-14 rounded-full" src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
                                 <div className="">
-                                    <p className="text-black  text-xl">{'channel name'}</p>
+                                    <p className="text-black  text-xl">{Room.name}</p>
                                 </div>
                             </div>}
 

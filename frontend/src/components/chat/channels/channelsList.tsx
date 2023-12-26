@@ -3,7 +3,7 @@ import Createchannels from './createChannels'
 import { userProps } from '@/interface/data'
 import { channelProps } from '@/interface/data'
 
-export default function ChannelsConversationList({ currentUser, setConv }: { currentUser: userProps, setConv: (value: number) => void }) {
+export default function ChannelsConversationList({ currentUser, setRoom , setjoinchannel }: { currentUser: userProps, setRoom: (value: channelProps) => void ,setjoinchannel: (value: boolean) => void}) {
 
   const [click, setClick] = useState('')
 
@@ -60,7 +60,7 @@ export default function ChannelsConversationList({ currentUser, setConv }: { cur
           </div>
         </button>}
 
-      <div className='overflow-y-scroll scrollbar-hide bfg-blue-500 h-[600PX] w-full'>
+      <div className='overflow-y-scrdoll scrolldbar-hide bfg-blue-500 h-[65vh] w-full'>
         {
           click == 'create' &&
           <div className=" bg-sky-300 w-full h-full flex  flex-col items-center justify-center shadow-xl drop-shadow-xl   rounded-2xl">
@@ -72,28 +72,31 @@ export default function ChannelsConversationList({ currentUser, setConv }: { cur
             <Createchannels currentUser={currentUser} />
           </div>}
 
-        {click == 'start' && <div className=" fbg-sky-300 w-full h-full flex  flex-col items-cfenter justify-cefnter shadow-xl drop-shadow-xl   rounded-2xl">
+        {click == 'start' && <div className=" fbg-sky-300 w-full h-full flex  flex-col items-cfenter justify-cefnter shadowf-xl drop-shadow-fxl   rounded-2xl">
           <div className=" bfg-slate-600 w-full  mt-2 ml-3 ">
-            <button onClick={() => setClick('')} className="w-6 h-6  rounded-full">
-              <img className=' ' src='https://cdn-icons-png.flaticon.com/512/66/66847.png'></img>
+            <button onClick={() => setClick('')} className="w-6 h-6 -mt-3 z-20  rounded-full">
+              <img className=' -mt-12 ' src='https://cdn-icons-png.flaticon.com/512/66/66847.png'></img>
             </button>
-            {
-              allChannel.map((item) => (
-                <button onClick={() => setConv(item.id)} className="h-[90px] mt-6 w-[480px] px-[15px] bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
-                  <div className="h-[70px] justify-start items-center gap-2.5 flex">
-                    <img className="w-[58px] h-[58px] rounded-full" src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
-                    <div className=" flex-col justify-start items-start gap-0.5 inline-flex my-[20px]">
-                      <h4 className="">{item.name} ({item.type})</h4>
-                      <p className="self-stretch h-[37px] text-neutral-600 text-sm leading-[18px]">Good point. Typography is another ?</p>
+            <div className=' bg-blgack rounded-2xl flex flex-col h-[670px]  -mt-6 overflow-y-scroll shadffow-xl drofp-shadow-xl scrollbar-hide'>
+
+              {
+                allChannel.map((item) => (
+                  <button onClick={() => setRoom(item)} className="h-20 mt-6 w-96 px-[15px] shadow-xl drop-shadow-xl  bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
+                    <div className="h-[70px] justify-start items-center gap-2.5 flex">
+                      <img className="w-[58px] h-[58px] rounded-full" src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
+                      <div className=" flex-col justify-start items-start gap-0.5 inline-flex my-[20px]">
+                        <h4 className="">{item.name} ({item.type})</h4>
+                        <p className="self-stretch h-[37px] text-neutral-600 text-sm leading-[18px]">Good point. Typography is another ?</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex flex-col self-stretch my-[7px]">
-                    <div className=" p-1 mb-1">15h</div>
-                    <div className=" text-CusColor_light bg-sky-500 p-1 mb-1 rounded-[100px]">{item.id}</div>
-                  </div>
-                </button>
-              ))
-            }
+                    <div className="flex flex-col self-stretch my-[7px]">
+                      <div className=" p-1 mb-1">15h</div>
+                      <div className=" text-CusColor_light bg-sky-500 p-1 mb-1 rounded-[100px]">{item.id}</div>
+                    </div>
+                  </button>
+                ))
+              }
+            </div>
           </div>
         </div>}
 
@@ -102,7 +105,7 @@ export default function ChannelsConversationList({ currentUser, setConv }: { cur
           <div className="  bg-sdlate-600 borhder bogjrder-sky-500  flex  flex-col items-center justify-center">
             {
               channel.map((item) => (
-                <button onClick={() => setConv(item.id)} className="h-20 mt-6 w-96 p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
+                <button onClick={() => setRoom(item)} className="h-20 mt-6 w-96 p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
                   <div className="h-auto  justify-start items-center gap-2.5 flex">
                     <img className="w-16 h-16 rounded-full" src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
                     <div className="   flex flex-col justify-center items-start space-y-1 ">

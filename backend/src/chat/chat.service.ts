@@ -243,15 +243,24 @@ export class ChatService {
     }
 
 
-    async allChannel() {
-        return await this.prisma.room.findMany({
+    async allChannel(userId) {
+
+        let room = await this.prisma.user.findFirst({
+            where: {
+                id: userId
+            },
             select: {
-                id: true,
-                name: true,
-                type: true,
-                description: true,
+                
             }
         })
+        // return await this.prisma.room.findMany({
+        //     select: {
+        //         id: true,
+        //         name: true,
+        //         type: true,
+        //         description: true,
+        //     }
+        // })
     }
     /******************************************************* Direct Message ****************************************************************/
 
