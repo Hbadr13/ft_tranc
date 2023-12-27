@@ -65,10 +65,11 @@ export default function EditChannel({ currentUser, Room }: { currentUser: userPr
             })
             const content = await response.json();
         } catch (error) {
-
-
+            
+            
         }
-
+        
+        setClick(0);
     };
 
 

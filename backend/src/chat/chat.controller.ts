@@ -33,9 +33,9 @@ export class ChatController {
     async GetallMessagesChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number) {
         return await this.chatService.getallMessagesChannel(Number(idUser), Number(idRoom))
     }
-    @Get('upadteChannel/:idUser/:idRoom')
-    async upadteChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number) {
-        return await this.chatService.getallMessagesChannel(Number(idUser), Number(idRoom))
+    @Get('upadteChannel/:idUser/:idRoom/:type/:password')
+    async upadteChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number, @Param('type') type: string, @Param('password') password: string) {
+        return await this.chatService.upadteChannel(Number(idUser), Number(idRoom), type, password)
     }
 
     @Get('allUsersChannel/:idRoom')
@@ -47,7 +47,10 @@ export class ChatController {
     async AllChannel() {
         return await this.chatService.allChannel()
     }
-
+    @Post('setAdmin/:roomId/:participantId')
+    async SetAdmin(@Param('roomId') roomId: number, @Param('participantId') participantId: number) {
+        await this.chatService.setAdmin(Number(roomId), Number(participantId))
+    }
 
     /******************************************************* Direct Message ****************************************************************/
 

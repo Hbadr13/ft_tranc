@@ -63,6 +63,7 @@ export class FriendsController {
       // Handle other potential errors
     }
   }
+  
   @Get('accepted-friends/:userId')
   async getAcceptedFriends(
     @Param('userId', ParseIntPipe) userId: number,

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -59,6 +59,7 @@ export class ChatService {
                                 id: true,
                                 name: true,
                                 type: true,
+                                password: true,
                             }
                         }
                     }
@@ -274,6 +275,53 @@ export class ChatService {
                 name: true,
                 type: true,
                 description: true,
+            }
+        })
+    }
+    async upadteChannel(id: number, roomId: number, type: string, password: string) {
+
+        const room = await this.prisma.membership.findFirst({
+
+            where: {
+                roomId: roomId
+            },
+        });
+        if (room.userId != id) {
+            throw new UnauthorizedException()
+        }
+        else {
+                await this.prisma.room.update({
+
+                    where: {
+                        id: roomId
+                    },
+                    data: {
+                        type: type,
+                        password: password
+                    }
+                });
+        }
+    }
+    async setAdmin(roomId: number, participantId: number) {
+        let room = await this.prisma.room.findUnique({
+            where: {
+                id: roomId,
+            },
+            select: {
+                Memberships: {
+                    where: {
+                        userId: participantId
+                    },
+                }
+            }
+        })
+        const id = room.Memberships[0]?.id
+        let membership = await this.prisma.membership.update({
+            where: {
+                id: id
+            },
+            data: {
+                isAdmin: true
             }
         })
     }
