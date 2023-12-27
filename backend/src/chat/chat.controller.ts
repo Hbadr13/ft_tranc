@@ -15,8 +15,8 @@ export class ChatController {
     }
 
     @Post('joinChannel/:idUser/:idRoom/:password')
-    async JoinChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number, @Param('password') password : string) {
-        await this.chatService.joinChannel(Number(idUser), Number(idRoom),password)
+    async JoinChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number, @Param('password') password: string) {
+        await this.chatService.joinChannel(Number(idUser), Number(idRoom), password)
     }
 
     @Get('allChannelByUserId/:idUser')
@@ -39,11 +39,10 @@ export class ChatController {
         return await this.chatService.allUsersChannel(Number(idRoom))
     }
 
-    @Get('allChannel/:userId')
-    async AllChannel(@Param('userId') userId: number) {
-        return await this.chatService.allChannel(Number(userId))
+    @Get('allChannel')
+    async AllChannel() {
+        return await this.chatService.allChannel()
     }
-
 
 
     /******************************************************* Direct Message ****************************************************************/

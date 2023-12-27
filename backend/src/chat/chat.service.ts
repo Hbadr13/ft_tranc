@@ -74,15 +74,10 @@ export class ChatService {
             where: {
                 id: idRoom
             }
-
         })
         if (!room)
             throw new NotFoundException('group not found')
-
-
-
         if (room.type == "public" || (room.type == "protected" && room.password == password)) {
-
             await this.prisma.membership.create({
                 data: {
                     room: {
@@ -263,24 +258,24 @@ export class ChatService {
     }
 
 
-    async allChannel(userId) {
+    async allChannel() {
 
-        let room = await this.prisma.user.findFirst({
-            where: {
-                id: userId
-            },
-            select: {
-                
-            }
-        })
-        // return await this.prisma.room.findMany({
+        // let room = await this.prisma.user.findFirst({
+        //     where: {
+        //         id: userId
+        //     },
         //     select: {
-        //         id: true,
-        //         name: true,
-        //         type: true,
-        //         description: true,
+
         //     }
         // })
+        return await this.prisma.room.findMany({
+            select: {
+                id: true,
+                name: true,
+                type: true,
+                description: true,
+            }
+        })
     }
     /******************************************************* Direct Message ****************************************************************/
 

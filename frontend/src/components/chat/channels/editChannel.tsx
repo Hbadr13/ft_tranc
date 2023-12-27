@@ -41,6 +41,7 @@ export default function EditChannel({ Room }: { Room: channelProps }) {
                                     <img className="w-8 h-8 rounded-full" src={item.foto_user} />
                                     <div className="   flex flex-col justify-center items-start space-y-1 ">
                                         <h4 className=" text-lg">{item.username}(admin)</h4>
+                                    
                                     </div>
                                 </div>
                             </div>
@@ -54,11 +55,12 @@ export default function EditChannel({ Room }: { Room: channelProps }) {
                                 </div>
                                 <div className='flex justify-end items-end w-full h-8'>
                                     <button className='w-6 h-6 rounded-full'>
-                                        <img src='https://cdn2.iconfinder.com/data/icons/clean-minimal-set/16/open-menu-01-512.png'/>
+                                        <img src='https://cdn2.iconfinder.com/data/icons/clean-minimal-set/16/open-menu-01-512.png' />
                                     </button>
                                 </div>
                             </div>
                         )
+                        
                     ))}
                 </div>
             </div>
