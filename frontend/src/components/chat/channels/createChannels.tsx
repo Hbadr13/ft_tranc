@@ -11,6 +11,8 @@ export default function Channels({ currentUser }: { currentUser: userProps }) {
 
 
   const handleClick = async () => {
+
+
     await fetch(`http://localhost:3333/chat/createChannel/${currentUser.id}`, {
       method: 'POST',
       headers: {

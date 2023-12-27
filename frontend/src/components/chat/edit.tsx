@@ -13,12 +13,12 @@ export default function Edit({ currentUser, Receiver }: { currentUser: userProps
     }
 
     return (
-        <div className="md:hidden sm:hidden  bg-gray-100 dark:bg-CusColor_dark   p-6 mt-12  w-[20%] h-[820px]      lg:flex justify-start items-start gap-5  rounded-[30px] border  border-sky-500">
+        <div className="md:hidden sm:hidden  bg-gray-100 dark:bg-slate-800   p-6 mt-12  w-[20%] h-[820px]      lg:flex justify-start items-start gap-5  rounded-[30px] border  border-sky-500">
             <div className="w-full h-[547.06px] flex-col justify-center items-center gap-[26px] inline-flex">
                 <Link className="flex-col justify-start items-center gap-3.5 flex " href={`/users/${Receiver.username}.${Receiver.id}`}>
                     <img className="w-[136px] h-[136px] rounded-full border-4 border-green-600" src={Receiver.foto_user} />
                     <div className="flex-col justify-start items-center gap-1 flex">
-                        <div className="text-zinc-900 text-[32px] font-bold font-['Satoshi']">{Receiver.username}</div>
+                        <div className="text-zinc-900 dark:text-CusColor_light text-[32px] font-bold font-['Satoshi']">{Receiver.username}</div>
                         <div className="text-neutral-600 text-base font-normal font-['Satoshi'] leading-[18px]">{Receiver.email}</div>
                     </div>
                 </Link>

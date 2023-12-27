@@ -88,7 +88,7 @@ export default function index({ users, amis }: AppProps) {
         <ConversationList amis={amis} setReceiver={setReceiver} setButton={setButton} currentUser={currentUser} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} />
         <Conversation chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} />
         {button == false && Receiver.id != 0 && <Edit currentUser={currentUser} Receiver={Receiver} />}
-        {button == true && Room.id != 0 && <EditChannel Receiver={Receiver} />}
+        {button == true && Room.id != 0 && <EditChannel Room={Room} />}
       </div>
       <div>
         {

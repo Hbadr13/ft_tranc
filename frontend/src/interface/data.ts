@@ -3,10 +3,18 @@ export interface messageProps {
     id: number,
     content: string,
     createdAt: string,
-    foto_user : string
+    foto_user: string
     senderId: number
 }
-export  interface channelProps {
+export interface participantsProps {
+    id: number,
+    username: string,
+    isAdmin: boolean,
+    isOwner: boolean,
+    isBanned: boolean,
+    foto_user: string
+}
+export interface channelProps {
     type: string;
     name: string,
     id: number
