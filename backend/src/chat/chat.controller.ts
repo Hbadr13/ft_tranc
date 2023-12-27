@@ -33,6 +33,10 @@ export class ChatController {
     async GetallMessagesChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number) {
         return await this.chatService.getallMessagesChannel(Number(idUser), Number(idRoom))
     }
+    @Get('upadteChannel/:idUser/:idRoom')
+    async upadteChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number) {
+        return await this.chatService.getallMessagesChannel(Number(idUser), Number(idRoom))
+    }
 
     @Get('allUsersChannel/:idRoom')
     async AllUsersChannel(@Param('idRoom') idRoom: number) {
@@ -42,6 +46,11 @@ export class ChatController {
     @Get('allChannel')
     async AllChannel() {
         return await this.chatService.allChannel()
+    }
+
+    @Post('setAdmin/:roomId/:participantId')
+    async SetAdmin(@Param('roomId') roomId: number, @Param('participantId') participantId: number) {
+        await this.chatService.setAdmin(Number(roomId), Number(participantId))
     }
 
 

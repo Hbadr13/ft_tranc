@@ -277,8 +277,32 @@ export class ChatService {
             }
         })
     }
-    /******************************************************* Direct Message ****************************************************************/
 
+    async setAdmin(roomId: number, participantId: number) {
+        let room = await this.prisma.room.findUnique({
+            where: {
+                id: roomId,
+            },
+            select: {
+                Memberships: {
+                    where: {
+                        userId: participantId
+                    },
+                }
+            }
+        })
+        const id = room.Memberships[0]?.id
+        let membership = await this.prisma.membership.update({
+            where: {
+                id: id
+            },
+            data: {
+                isAdmin: true
+            }
+        })
+    }
+
+    /******************************************************* Direct Message ****************************************************************/
 
     async sendDirectMessage(body, idSender: number, idReceiver: number) {
         let conversation = await this.prisma.conversation.findFirst({
