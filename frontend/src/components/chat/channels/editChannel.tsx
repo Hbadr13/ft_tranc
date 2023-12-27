@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
 export default function EditChannel({ Room }: { Room: channelProps }) {
-    const [click, setClick] = useState(true)
+    const [click, setClick] = useState(false)
     const [participants, setParticipants] = useState<participantsProps[]>([])
 
 
@@ -25,6 +25,10 @@ export default function EditChannel({ Room }: { Room: channelProps }) {
     }, [Room]);
 
 
+    const handlParticipants = () => {
+        setClick(true)
+    }
+
     return (
         <div className="  bg-gray-100 dark:bg-CusColor_dark   p-6 mt-12  w-[20%] h-[820px]     flex justify-start items-start rounded-[30px] border  border-sky-500">
             <div className="w-full bg-blafck flex-col justify-center items-center">
@@ -41,7 +45,7 @@ export default function EditChannel({ Room }: { Room: channelProps }) {
                                     <img className="w-8 h-8 rounded-full" src={item.foto_user} />
                                     <div className="   flex flex-col justify-center items-start space-y-1 ">
                                         <h4 className=" text-lg">{item.username}(admin)</h4>
-                                    
+                                        <div className=''>{item.isOwner && <p>isOwner</p>}</div>
                                     </div>
                                 </div>
                             </div>
@@ -54,13 +58,13 @@ export default function EditChannel({ Room }: { Room: channelProps }) {
                                     </div>
                                 </div>
                                 <div className='flex justify-end items-end w-full h-8'>
-                                    <button className='w-6 h-6 rounded-full'>
+                                    <button onClick={handlParticipants} className='w-6 h-6 rounded-full'>
                                         <img src='https://cdn2.iconfinder.com/data/icons/clean-minimal-set/16/open-menu-01-512.png' />
                                     </button>
                                 </div>
                             </div>
                         )
-                        
+
                     ))}
                 </div>
             </div>
