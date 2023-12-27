@@ -10,7 +10,7 @@ import { io } from "socket.io-client";
 
 export default function index({ users, amis }: AppProps) {
   const userData = { id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false, room: '', won: 0, lost: 0, level: 0 }
-  const channelData = { id: 0, type: "", name: "" }
+  const channelData = { id: 0, type: "", name: "", password : ""}
   const [currentUser, setCurrentUser] = useState<userProps>(userData);
   const [Room, setRoom] = useState<channelProps>(channelData);
   const [Receiver, setReceiver] = useState<userProps>(userData);
@@ -88,7 +88,7 @@ export default function index({ users, amis }: AppProps) {
         <ConversationList amis={amis} setReceiver={setReceiver} setButton={setButton} currentUser={currentUser} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} />
         <Conversation chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} />
         {button == false && Receiver.id != 0 && <Edit currentUser={currentUser} Receiver={Receiver} />}
-        {button == true && Room.id != 0 && <EditChannel Room={Room} />}
+        {button == true && Room.id != 0 && <EditChannel currentUser={currentUser} Room={Room}  />}
       </div>
       <div>
         {

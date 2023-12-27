@@ -17,7 +17,8 @@ export interface participantsProps {
 export interface channelProps {
     type: string;
     name: string,
-    id: number
+    id: number,
+    password : string;
 }
 export interface userProps {
 
