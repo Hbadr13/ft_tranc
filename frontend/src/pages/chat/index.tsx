@@ -83,7 +83,7 @@ export default function index({ users, amis }: AppProps) {
   }, [Room]);
 
   return (
-    <div className=" flex  flex-col">
+    <div className="  flex  flex-col">
       <div className={` bg-bldack flex-uwrap  ${joinchannel == true ? 'blur-sm' : null} min-w-full mt-6 min-h-screen flex flex-row justify-center items-center dark:bg-black space-x-6`}>
         <ConversationList amis={amis} setReceiver={setReceiver} setButton={setButton} currentUser={currentUser} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} />
         <Conversation chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} />
