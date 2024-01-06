@@ -155,26 +155,26 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
 
     return (
 
-        <div className='flex  flex-wrap  justify-center  min-h-screen  min-w-screen ml-10 items-center  p-6 '>
-            <div className='  flex-none   z-20   w-[408px] mt-[120px] mb-10  h-[100%] drop-shadow-2xl   items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
-                <div className="text-center">
+        <div className='flex  flex-wrap  justify-center  min-h-screen  bg-blfack w-full items-center   '>
+        <div className='   flex-none smr-6 sm:mr-0  z-20  sm:w-[408px]   w-auto mt-[120px] mb-10  h-[100%] drop-shadow-2xl   items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
+                <div className=" w-full flex-col justify-center items-center text-center">
                     <span>My Profile</span>
-                    <div className="mt-6">
+                    <div className="mt-6 w-full justify-center flex bg-dblack items-center">
                         {foto_user && (
                             <img
                                 src={foto_user}
                                 alt="Your Image Alt Text"
-                                className=" w-52 h-52   border-2 border-[#E3E8EC]  drop-shadow shadow-md shadow-black rounded-[40px] inline-block" // Adjust the width as needed
+                                className=" w-52 h-52   border-2 border-[#E3E8EC]  drop-shadow shadow-md shadow-black rounded-[40px] " // Adjust the width as needed
                             />
                         )}
                     </div>
-                    <div className='mt-6 ml-2'>
+                    <div className='mt-6 w-full flex justify-center items-center flex-col'>
                         <h1 className="text-xl font-bold">{(username)}</h1>
                         <span className="text-sm  font-serif italic flex justify-center mt-3">{email}</span>
                     </div>
-                    <div className="mt-8 ml-6">
+                    <div className="mt-8 bg-bflack justify-center flex items-center flex-col w-full  mdl-6">
                         <LevelBar value={60} />
-                        <p className=' mt-4 text-white shadow-sm shadow-black  ml-28  w-28 font-serif italic uppercase'>level 8-86%</p>
+                        <p className=' mt-4 text-white shadow-sm shadow-black  mfl-28  w-28 font-serif italic uppercase'>level 8-86%</p>
 
                     </div>
                     <div className=" hidden md:flex ">
@@ -189,36 +189,26 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                                 alt="Your"
                                 className="w-80 mt-6 h-60  ml-6 rounded-[32px] inline-block"
                             />
-                            {/* <button className="flex justify-center  items-center mt-6  bg-[#f4f5f8] transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-12 hover:scale-105 ">Login</button> */}
                         </div>
                     </div>
-                    <div className=" md:hidden flex flex-col ml-6 ">
-                        <Link className="text-base font-bold flex justify-center mt-6 mr-8 items-center ml-4 text-blue-600" href={"/profile"}><span className=" py-2 px-32 bg-white  shadow-sm shadow-black   border rounded-xl hover:scale-110 duration-300">Profile</span>
+                    <div className=" md:hidden flex  justify-center w-full items-center flex-col mdl-6 ">
+                        <Link className="text-base font-bold flex justify-center mt-6 mdr-8 items-center  bg-bslack w-80 h-12 msl-4 text-blue-600" href={"/profile"}><span className=" w-full flex  justify-center items-center  h-full sm:py-2 sm:px-32 bg-white  shadow-sm shadow-black   border rounded-xl hover:scale-110 duration-300">Profile</span>
                         </Link>
 
-                        <div className='mt-6 mr-6'>
-                            <p className="     text-2xl  mr-52">Settings</p>
-                            <Link className=" mt-10   py-2  rounded-xl  h-10  flex justify-center  items-center bg-white hover:scale-110 drop-shadow shadow-md shadow-black  duration-300 text-blue-600 text-sm  font-bold" href={"/EditProfile"}> <span className=" flex flex-row  " >Profile_Settings</span></Link>
+                        <div className='mt-6 w-full justify-center   flex-col flex bg-blarck items-center'>
+                            <p className="     text-2xl  dmr-52">Settings</p>
+                            <Link className=" mt-6   w-80   rounded-xl  h-12  flex justify-center  items-center bg-white hover:scale-110 drop-shadow shadow-md shadow-black  duration-300 text-blue-600 text-sm font-bold" href={"/EditProfile"}> <span className=" flex flex-row  " >Profile_Settings</span></Link>
 
-
-
-
-
-                            <Link className="text-base font-bold flex justify-center items-center text-blue-600" href={"/Listblocked"}><span className=" py-2 px-[120px] mt-10    border-white rounded-xl bg-white  drop-shadow shadow-md shadow-black border  hover:scale-110 duration-300">Blocked</span>
+                            <Link className="text-base w-80  h-12 font-bold flex justify-center items-center text-blue-600" href={"/Listblocked"}><span className=" flex justify-center items-center  mt-10    w-full h-full  border-white  rounded-xl bg-white drop-shadow shadow-md shadow-black border  hover:scale-110 duration-300">Blocked</span>
                             </Link>
 
-                            <Link className="text-base font-bold flex justify-center items-center text-white" href={"/Code_QR"}><span className=" py-2  px-[120px] mt-10 bg-blue-600     border-white rounded-xl border drop-shadow shadow-md shadow-black hover:scale-110 duration-300">Code_OR</span>
+                            <Link className="text-base font-bold w-80 mt-5  h-12  flex justify-center items-center text-blue-600" href={"/Code_QR"}><span className="  mt-10 bg-blue-600 flex justify-center text-white items-center w-full h-full      border-white rounded-xl border drop-shadow shadow-md shadow-black hover:scale-110 duration-300">Code_OR</span>
                             </Link>
-
-
-
-
-
 
                         </div>
                     </div>
-                    <div className="mt-8">
-                        <button className="bg-white  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600 py-2  px-32 hover:bg:white hover:texts-white hover:scale-105 duration-300 ">Logout</button>
+                    <div className="mt-10 w-full ">
+                        <button className="bg-white   w-80  h-12  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600  hover:bg:white hover:texts-white hover:scale-105 duration-300 ">Logout</button>
                     </div>
                 </div>
             </div>
@@ -240,8 +230,8 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                 </div>
 
             </div>
-            <div className=" flex  flex-col justify-center items-center md:opacity-150 bg mt-[80px] min-h-[845px]  bg-blue-50  w-[700px] h-16 rounded-r-2xl rounded-s-[1px] p-6" >
-                <div className="flex shrink  flex-col overflow-y-scroll  scrollbar-hide drop-shadow shadow-md shadow-black rounded-lg  border-e border-black items-center bg-white   w-[500px] h-[800px]">
+            <div className=" flex  flex-col justify-center items-center md:opacity-150 bg xl:mt-[80px] min-h-[845px]  xl:bg-blue-50 w-full  sm:w-[700px] h-16 rounded-r-2xl rounded-s-[1px] p-2 sm:p-6" >
+                <div className="flex shrink  flex-col overflow-y-scroll  scrollbar-hide drop-shadow shadow-md shadow-black rounded-lg  border-e border-black items-center bg-white   w-full sm:w-[500px] h-[800px]">
                     <div className=' flex justify-center flex-col items-center w-[500px] h-[500px]'>
                         <div className="  flex items-center justify-center flex-col  mt-32 w-96">
                             <div>
@@ -262,7 +252,6 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
 
                                 {twoFactorSecret && <QRCode className="" value={twoFactorSecret} />}
 
-                                {/* <button onClick={handleEnable2FA}>Enable Two-Factor Authentication</button> */}
                             </div>
                         </div>
                         <input onChange={(e) => setTwoFactor(e.target.value)} type="text" id="error" className="bg-red-50 border border-black   drop-shadow shadow-md   placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-white focus:border-blue-600 block w-20 p-2.5 mt-5 dark:text-black dark:placeholder-blue-600 dark:border-blue-600 dark:w-20" placeholder="code" />

@@ -33,6 +33,10 @@ export class ChatController {
     async GetallMessagesChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number) {
         return await this.chatService.getallMessagesChannel(Number(idUser), Number(idRoom))
     }
+    @Get('listUserBlockedInChat/:idUser')
+    async listUserBlockedInChat(@Param('idUser') idUser: number) {
+        return await this.chatService.list_user_blocked_in_chat(Number(idUser))
+    }
     @Get('upadteChannel/:idUser/:idRoom/:type/:password')
     async upadteChannel(@Param('idUser') idUser: number, @Param('idRoom') idRoom: number, @Param('type') type: string, @Param('password') password: string) {
         return await this.chatService.upadteChannel(Number(idUser), Number(idRoom), type, password)
@@ -41,6 +45,10 @@ export class ChatController {
     @Get('allUsersChannel/:idRoom')
     async AllUsersChannel(@Param('idRoom') idRoom: number) {
         return await this.chatService.allUsersChannel(Number(idRoom))
+    }
+    @Get('OneChannel/:idRoom')
+    async oneChannel(@Param('idRoom') idRoom: number) {
+        return await this.chatService.oneChannel(Number(idRoom))
     }
 
     @Get('allChannel')
@@ -64,6 +72,21 @@ export class ChatController {
     async GetConversationDirect(@Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
         console.log("hana hana");
         return await this.chatService.getConversationDirect(Number(idSender), Number(idReceiver))
+    }
+    @Get('statusChatTwoUser/:idSender/:idReceiver')
+    async StatusChatTwoUser(@Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
+        
+        return await this.chatService.statusChatTwoUser(Number(idSender), Number(idReceiver))
+    }
+    @Post('blockChatTwoUser/:idSender/:idReceiver')
+    async BlockChatTwoUser(@Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
+        
+        return await this.chatService.blockChatTwoUser(Number(idSender), Number(idReceiver))
+    }
+    @Post('UnblockChatTwoUser/:idSender/:idReceiver')
+    async UnblockChatTwoUser(@Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
+        
+        return await this.chatService.unblockChatTwoUser(Number(idSender), Number(idReceiver))
     }
 
     @Delete('deleteConversationDirect/:idSender/:idReceiver')

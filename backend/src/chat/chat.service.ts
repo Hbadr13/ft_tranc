@@ -257,6 +257,23 @@ export class ChatService {
         }));
         return participant;
     }
+    async oneChannel(roomId: number) {
+        let membership = await this.prisma.room.findFirst({
+            where: {
+                id: roomId,
+            },
+            select: {
+                name: true,
+                id: true,
+                type: true,
+                password: true,
+
+            }
+
+        })
+
+        return membership;
+    }
 
 
     async allChannel() {
@@ -279,17 +296,19 @@ export class ChatService {
         })
     }
     async upadteChannel(id: number, roomId: number, type: string, password: string) {
-
         const room = await this.prisma.membership.findFirst({
 
             where: {
                 roomId: roomId
             },
         });
+        console.log(type, password)
         if (room.userId != id) {
             throw new UnauthorizedException()
         }
         else {
+            if (type == "protected" && password) {
+                console.log(1);
                 await this.prisma.room.update({
 
                     where: {
@@ -300,7 +319,25 @@ export class ChatService {
                         password: password
                     }
                 });
+            }
+            else if (type == "protected" && !password) {
+                console.log(2);
+                throw new NotFoundException('You must password.');
+            }
+            else {
+                await this.prisma.room.update({
+
+                    where: {
+                        id: roomId
+                    },
+                    data: {
+                        type: type,
+                        password: null
+                    }
+                });
+            }
         }
+        return room
     }
     async setAdmin(roomId: number, participantId: number) {
         let room = await this.prisma.room.findUnique({
@@ -342,6 +379,13 @@ export class ChatService {
             },
         });
         if (!conversation) {
+            await this.prisma.friendship.create({
+                data: {
+                    userAId: idSender,
+                    userBId: idReceiver,
+                    status: 'accepted', // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
+                },
+            });
             conversation = await this.prisma.conversation.create({
                 data: {
                     type: 'direct',
@@ -358,29 +402,53 @@ export class ChatService {
                 }
             })
         }
-        const msg = await this.prisma.message.create({
-            data: {
-                content: body.content,
-                sender: {
-                    connect: {
-                        id: idSender
-                    }
-                },
-                chat: {
-                    connect: {
-                        id: conversation.id
+        let status = await this.prisma.friendship.findFirst({
+            where: {
+                userAId: idSender,
+                userBId: idReceiver,
+
+            }
+        })
+        if (!status) {
+
+            status = await this.prisma.friendship.findFirst({
+                where: {
+                    userAId: idReceiver,
+                    userBId: idSender,
+
+                }
+            })
+
+        }
+
+        if ((status.status == "accepted")) {
+
+
+            const msg = await this.prisma.message.create({
+                data: {
+                    content: body.content,
+                    sender: {
+                        connect: {
+                            id: idSender
+                        }
+                    },
+                    chat: {
+                        connect: {
+                            id: conversation.id
+                        }
                     }
                 }
-            }
-        })
-        await this.prisma.conversation.update({
-            where: {
-                id: conversation.id
-            },
-            data: {
-                updatedAt: msg.createdAt
-            }
-        })
+            })
+            await this.prisma.conversation.update({
+                where: {
+                    id: conversation.id
+                },
+                data: {
+                    updatedAt: msg.createdAt
+                }
+            })
+        }
+
     }
 
     async getConversationDirect(idSender: number, idReceiver: number) {
@@ -430,6 +498,157 @@ export class ChatService {
             }
         })
     }
+    async statusChatTwoUser(idSender: number, idReceiver: number) {
+        const existingFriendship = await this.prisma.friendship.findFirst({
+            where: {
+                userAId: idSender,
+
+                userBId: idReceiver,
+            },
+        });
+        const existingFriendship1 = await this.prisma.friendship.findFirst({
+            where: {
+                userAId: idReceiver,
+
+                userBId: idSender,
+            },
+        });
+        if (existingFriendship)
+            return (existingFriendship)
+        else if (existingFriendship1)
+            return (existingFriendship1)
+
+        else return 0;
+    }
+
+    async list_user_blocked_in_chat(userId: number) {
+        // Find all friend requests with the specified status where the user is either the sender or the receiver
+        const status = "blocked"
+        const friendRequests = await this.prisma.friendship.findMany({
+            where: {
+                status,
+                OR: [
+                    {
+                        userAId: userId,
+                    },
+                    {
+                        userBId: userId,
+                    },
+                ],
+            },
+        });
+
+        // Extract user IDs from the friend request records
+        const friendUserIds = friendRequests.flatMap((request) => [
+            request.userAId === userId ? request.userBId : request.userAId,
+        ]);
+        console.log(friendUserIds)
+        if (!friendUserIds)
+            return 0;
+        return (friendUserIds)
+    }
+    async unblockChatTwoUser(idSender: number, idReceiver: number) {
+        const friendRequest = await this.prisma.friendship.findFirst({
+            where: {
+                userAId: idSender,
+
+                userBId: idReceiver,
+            },
+            include: {
+                userA: true, // Include the sender of the request
+                userB: true, // Include the receiver of the request
+            }
+        });
+        if (friendRequest) {
+
+            await this.prisma.friendship.update({
+                where: {
+                    id: friendRequest.id,
+                },
+                data: {
+                    status: 'accepted',
+                },
+            });
+        }
+    }
+    async blockChatTwoUser(idSender: number, idReceiver: number) {
+        const existingFriendship = await this.prisma.friendship.findFirst({
+            where: {
+                userAId: idSender,
+
+                userBId: idReceiver,
+            },
+        });
+        const existingFriendship1 = await this.prisma.friendship.findFirst({
+            where: {
+                userAId: idReceiver,
+
+                userBId: idSender,
+            },
+        });
+        if (!existingFriendship && !existingFriendship1) {
+            // Create a friend request in the database
+            await this.prisma.friendship.create({
+                data: {
+                    userAId: idSender,
+
+                    userBId: idReceiver,
+                    status: 'blocked', // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
+                },
+            });
+        }
+        else {
+            const friendRequest = await this.prisma.friendship.findFirst({
+                where: {
+                    userAId: idSender,
+
+                    userBId: idReceiver,
+                },
+                include: {
+                    userA: true, // Include the sender of the request
+                    userB: true, // Include the receiver of the request
+                }
+            });
+            const friendRequest1 = await this.prisma.friendship.findFirst({
+                where: {
+                    userAId: idReceiver,
+
+                    userBId: idSender,
+                },
+                include: {
+                    userA: true, // Include the sender of the request
+                    userB: true, // Include the receiver of the request
+                },
+            });
+            if (friendRequest) {
+
+                await this.prisma.friendship.update({
+                    where: {
+                        id: friendRequest.id,
+                    },
+                    data: {
+                        status: 'blocked',
+                    },
+                });
+            }
+            else if (friendRequest1) {
+
+                await this.prisma.friendship.delete({
+                    where: {
+                        id: friendRequest1.id,
+                    }
+                });
+                await this.prisma.friendship.create({
+                    data: {
+                        userAId: idSender,
+
+                        userBId: idReceiver,
+                        status: 'blocked', // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
+                    },
+                });
+            }
+        }
+    }
 
     async getConversationListDirect(idUser: number, type: string) {
         let conversation = await this.prisma.conversation.findMany({
@@ -448,11 +667,34 @@ export class ChatService {
                         id: true,
                         foto_user: true,
                         username: true,
+                        level:true,
+                        won:true,
                     }
                 },
                 updatedAt: true,
             }
         });
+        const status = "blocked"
+        const friendRequests = await this.prisma.friendship.findMany({
+            where: {
+                status,
+                OR: [
+                    {
+                        userAId: idUser,
+                    },
+                    {
+                        userBId: idUser,
+                    },
+                ],
+            },
+        });
+
+        // Extract user IDs from the friend request records
+        const friendUserIds = friendRequests.flatMap((request) => [
+            request.userAId === idUser ? request.userBId : request.userAId,
+        ]);
+
+
 
         const result = conversation.map((item) => {
             const updatedParticipants = item.participants.filter((participant) => participant.id !== idUser);
@@ -464,7 +706,17 @@ export class ChatService {
                 foto_user: updatedParticipants.length > 0 ? updatedParticipants[0].foto_user : null,
             };
         });
-        result.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-        return await result
+        const result1 = result
+            .filter((item) => !friendUserIds.includes(item.id))
+            .map((item) => ({
+                updatedAt: item.updatedAt,
+                id: item.id,
+                username: item.username,
+                foto_user:item.foto_user,
+                // Add other properties you want to include in the modified object
+            }));
+        console.log(result1)
+        result1.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+        return await result1
     }
 }

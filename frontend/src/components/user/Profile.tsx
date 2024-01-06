@@ -9,10 +9,10 @@ import { userProps } from "@/interface/data";
 import Image from 'next/image'
 
 interface LevelBarpros {
-  value: number
+  value: string
 }
 function LevelBar({ value }: LevelBarpros) {
-  const progressWidth = `${value}%`;
+  const progressWidth = `${value}0%`;
 
 
 
@@ -30,6 +30,9 @@ function LevelBar({ value }: LevelBarpros) {
 const UseProfile = () => {
   const [amis, setAmis] = useState<any>([])
   const [query, sequery] = useState("")
+  const [level, setlevel] = useState();
+  const [level1, setlevel1] = useState("");
+  const [level2, setlevel2] = useState("");
 
   const [isOpen, setIsOpen] = useState(false)
 
@@ -68,6 +71,14 @@ const UseProfile = () => {
           setid(content.id);
           setEmail(content.email);
           setUsername(content.username)
+          setlevel(content.level)
+          const stringValue2: string = String(level);
+          const level3 = stringValue2.split('.');
+          if (level3[1])
+            setlevel1(level3[1]);
+          else
+            setlevel1("0");
+          setlevel2(level3[0]);
         } catch (error) {
 
         }
@@ -146,12 +157,15 @@ const UseProfile = () => {
     )();
   }, [query, id]);
 
+
+
+
   return (
 
     <div className=" flex flex-col">
 
-      <div className={`flex flex-wrap  ${logout == 1 ? 'blur-sm' : null}  justify-center min-h-screen  min-w-screen    items-center p-6 `}>
-        <div className='  flex-none   z-20  w-[408px] mt-[120px] mb-10  h-[100%]  shadow-xl  shadow-[#728edb] justify-center items-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
+      <div className={`flex flex-wrap gl-5  sm:ml-0 ${logout == 1 ? 'blur-sm' : null}  justify-center min-h-screen  w-full   items-center  `}>
+        <div className='  flex-none   z-20 w-auto bg-slate-400  sm:w-[408px] mt-[120px] mb-10  h-[100%]  shadow-xl  shadow-[#728edb] justify-center items-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
           <div className="text-center">
             <span className="text-white">My Profile</span>
             <div className="mt-6">
@@ -166,9 +180,9 @@ const UseProfile = () => {
               <span className="text-sm  font-serif italic flex justify-center mt-3">{email}</span>
             </div>
             <div className="mt-8  flex justify-center flex-col items-center bgs-black mal-6">
-              <LevelBar value={80} />
+              <LevelBar value={level1} />
               <div className="  flex  justify-center items-center">
-                <p className=' mt-4 text-white shadow-sm shadow-black   w-28 font-serif  uppercase'>level 8-86%</p>
+                <p className=' mt-4 text-white shadow-sm shadow-black   w-28 font-serif  uppercase'>level {level2}-{level1}%</p>
               </div>
             </div>
             <div className=" hidden md:flex justify-center items-center  ">
@@ -183,7 +197,7 @@ const UseProfile = () => {
                   alt="Your"
                   className="w-80 mt-6 h-60  rounded-[32px] inline-block"
                 />
-                {/* <button className="flex justify-center  items-center mt-6  bg-[#f4f5f8] transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-12 hover:scale-105 ">Login</button> */}
+
               </div>
             </div>
             <div className=" md:hidden flex justify-center items-center flex-col ml-3 mt-6 ">
@@ -196,19 +210,19 @@ const UseProfile = () => {
                   <button onClick={() => freind_ranck1(2)} className=" mt-6 px-[133px]  py-2 text-base font-bold   bg-white  border hover:text-white  drop-shadow shadow-md shadow-black hover:bg-[#3b82f6] rounded-xl  hover:scale-110 duration-300 text-blue-600">Rank</button>
                 </div>) : null}
                 {(check == 2) ? (<div>
-                  <button onClick={() => freind_ranck1(2)} className=" mt-6 px-[135px] py-2 text-base font-bold  bg-[#3b82f6]  hover:text-white hover:bg-blue-600 drop-shadow shadow-md shadow-black rounded-xl hover:scale-110 duration-300 text-white">Rank</button>
+                  <button onClick={() => freind_ranck1(2)} className=" mt-6 px-[135px] py-2 text-base font-bold  border border-white bg-[#3b82f6]  hover:text-white hover:bg-blue-600 drop-shadow shadow-md shadow-black rounded-xl hover:scale-110 duration-300 text-white">Rank</button>
                 </div>) : null}
                 {(check != 1) ? (<div>
                   <button onClick={() => freind_ranck(1)} className=" mt-8 px-[125px] py-2 text-base font-bold   bg-white border  hover:text-white  hover:bg-[#3b82f6] drop-shadow shadow-md shadow-black rounded-xl hover:scale-110 duration-300 text-blue-600">Friends</button>
                 </div>) : null}
                 {(check == 1) ? (<div>
-                  <button onClick={() => freind_ranck(1)} className=" mt-8 px-[125px] py-2  text-base font-bold   bordher-2 borsder-black bg-[#3b82f6] hover:text-blue-600 drop-shadow shadow-md shadow-black rounded-xl hover:bg-black hover:scale-110 duration-300 text-white">Friends</button>
+                  <button onClick={() => freind_ranck(1)} className=" mt-8 px-[125px] py-2  text-base font-bold  border border-white  bordher-2 borsder-black bg-[#3b82f6] hover:text-blue-600 drop-shadow shadow-md shadow-black rounded-xl hover:bg-black hover:scale-110 duration-300 text-white">Friends</button>
                 </div>) : null}
 
               </div>
             </div>
-            <div className="mt-8 flex justify-center ml-2 items-center">
-              <button  onClick={() => setLogout(1)} className="bg-white  shadow-sm shadow-black  transition-all active:scale-100 rounded-xl border text-blue-600 py-2  px-32 hover:bg:white hovxer:text-white hover:scale-105 duration-300 ">Logout</button>
+            <div className="mt-8 flex justify-center ml-3 items-center">
+              <button onClick={() => setLogout(1)} className="bg-white  shadow-sm shadow-black  transition-all active:scale-100 rounded-xl border text-blue-600 py-2  px-32 hover:bg:white hovxer:text-white hover:scale-105 duration-300 ">Logout</button>
             </div>
           </div>
         </div>
@@ -234,9 +248,11 @@ const UseProfile = () => {
           </div>
 
         </div>
-        {(<div className=" flex   flex-col justify-center items-center md:opacity-150 bg xl:mt-[80px] sm:mt-6   rounded-md min-h-[845px] dark:bg-slate-500  sm:bg-blue-50  w-[550px] xl:w-[700px] h-16 xl:rounded-2xl xl:rounded-s-[1px] p-6" >
+        {(<div className=" flex   flex-col justify-center items-center md:opacity-150 bg xl:mt-[80px] sm:mt-6  bg-wshite rounded-md min-h-[845px] dark:bg-slate-500  sm:bg-blue-50  w-[550px] xl:w-[700px] h-16 xl:rounded-2xl xl:rounded-s-[1px] p-2" >
           {
             check === 2 && <Rank amis_id={amis} amis={amis} id={id} />
+
+
           }
           {
             check === 1 && <Friends amis_id={amis} amis={amis} currentUser={id} />
@@ -259,7 +275,7 @@ const UseProfile = () => {
                 <button onClick={() => setLogout(0)} className=' bg-white w-20  border-2 border-blue-600 h-10 rounded-lg'>
                   <div>Cansle</div>
                 </button>
-                <Link  href="/auth/login"   onClick={handelLogOutUser} className=' bg-blue-500 text-white w-20 flex justify-center items-center  h-10  border-2 border-blue-600 rounded-lg'>
+                <Link href="/auth/login" onClick={handelLogOutUser} className=' bg-blue-500 text-white w-20 flex justify-center items-center  h-10  border-2 border-blue-600 rounded-lg'>
                   OK
                 </Link>
 

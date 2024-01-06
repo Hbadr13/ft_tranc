@@ -5,9 +5,11 @@ import React, { useEffect, useState } from 'react'
 export default function EditChannel({ currentUser, Room }: { currentUser: userProps, Room: channelProps }) {
     const [click, setClick] = useState(0)
     const [type, setType] = useState(Room.type)
+    const [Room1, setRoom1] = useState<channelProps>(Room);
     const [password, setPassword] = useState(Room.password);
     const [participants, setParticipants] = useState<participantsProps[]>([])
     const [participant, setParticipant] = useState<participantsProps>()
+    const [error, seterror] = useState(false);
 
 
     useEffect(() => {
@@ -19,7 +21,7 @@ export default function EditChannel({ currentUser, Room }: { currentUser: userPr
                     })
                     const content = await response.json();
                     setParticipants(Array.from(content))
-                    console.log(content)
+                   
                     // setClick(0);
                 } catch (error) {
 
@@ -27,16 +29,36 @@ export default function EditChannel({ currentUser, Room }: { currentUser: userPr
             }
         )();
     }, [Room, click]);
+
+    useEffect(() => {
+        (
+            async () => {
+                try {
+                    const response = await fetch(`http://localhost:3333/chat/OneChannel/${Room.id}`, {
+                        credentials: 'include',
+                    })
+                    const content = await response.json();
+                    setRoom1(content)
+                  
+                    // console.log(content)
+                    // setClick(0);
+                } catch (error) {
+
+                }
+            }
+        )();
+    }, [click,Room]);
     useEffect(() => {
 
-       setClick(0);
+        setClick(0);
 
 
     }, [Room]);
     useEffect(() => {
 
-        setType(Room.type);
-        setPassword(Room.password);
+        setType(Room1.type);
+        setPassword(Room1.password);
+        seterror(false)
 
 
     }, [Room, click]);
@@ -59,17 +81,32 @@ export default function EditChannel({ currentUser, Room }: { currentUser: userPr
     }
     const upadategroup = async () => {
 
+
         try {
-            const response = await fetch(`http://localhost:3333/chat/upadteChannel/${currentUser.id}/${Room.id}/${type}/${password}`, {
-                credentials: 'include',
-            })
-            const content = await response.json();
+            if (type == "protected" && Room1.type == "public" && !password) {
+
+                seterror(true)
+            }
+            else {
+
+                const response = await fetch(`http://localhost:3333/chat/upadteChannel/${currentUser.id}/${Room.id}/${type}/${password}`, {
+                    credentials: 'include',
+                })
+                const content = await response.json();
+                console.log(password)
+                if (response.status == 200) {
+
+                    setClick(0);
+                }
+                else {
+                    seterror(true)
+                }
+            }
         } catch (error) {
-            
-            
+
+
         }
-        
-        setClick(0);
+
     };
 
 
@@ -138,94 +175,103 @@ export default function EditChannel({ currentUser, Room }: { currentUser: userPr
             {
 
                 click != 0 && <div className=' bg-white  dark:bg-gray-700 h-80 w-[87%]  flex-col  rounded-lg flex justify-start items-start  shadow-md sdhadow -mt-[630px] z-30'>
-                    { 
-                    click == 1  && <>
+                    {
+                        click == 1 && <>
 
-                        <div className=' w-full mr-2 mte-1 h-10 flex justify-end items-center'>
+                            <div className=' w-full mr-2 mte-1 h-10 flex justify-end items-center'>
 
-                            <button onClick={() => setClick(0)} >
-                                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="22" height="22" viewBox="0 0 30 30">
-                                    <path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"></path>
-                                </svg>
+                                <button onClick={() => setClick(0)} >
+                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="22" height="22" viewBox="0 0 30 30">
+                                        <path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"></path>
+                                    </svg>
 
-                            </button>
-                        </div>
-                        <div className=' w-full h-full flex justify-center bg-bwlack'>
+                                </button>
+                            </div>
+                            <div className=' w-full h-full flex justify-center bg-bwlack'>
 
-                            {
-                                Room.type == "public" && <div className=' flex flex-col bg-whiwte fledx justify-center items-center'>
-                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Choose Type group</label>
-                                    <select onChange={(e) => setType(e.target.value)} id="small" className="block  w-28 p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                        {/* <option selected>Choose Type group</option> */}
-                                        <option value="public">Public</option>
-                                        <option value="protected">Protected</option>
-                                    </select>
-                                    {/* <div> */}
+                                {
+                                    Room1.type == "public" && <div className=' flex flex-col bg-whiwte fledx justify-center items-center'>
+                                        <label className="block mb-2 text-sm font-black text-gray-900 dark:text-white">Choose Type group</label>
+                                        <select onChange={(e) => setType(e.target.value)} id="small" className="block  w-28 p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            {/* <option selected>Choose Type group</option> */}
+                                            <option value="public">Public</option>
+                                            <option value="protected">Protected</option>
+                                        </select>
+                                        {/* <div> */}
 
-                                    {
-                                        type == 'protected' &&
-                                        <div className='-mt-6'>
+                                        {
+                                            type == 'protected' &&
+                                            <div className='-mt-6'>
 
-                                            <div className="mbw-6 flex flex-row w-full h-16 justify-center items-center space-x-2">
-                                                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                                <input onChange={(e) => setPassword(e.target.value)} type="password" id="password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="•••••••••" required />
-                                            </div>
-                                            {/* <div className="mb-6 flex flex-row w-full h-16 justify-center items-center space-x-">
+                                                <div className="mbw-6 flex flex-col w-full h-16 justify-center items-center space-sy-2">
+                                                  {
+
+                                                    !error  && <label htmlFor="password" className=" text-sm  font-black mt-6 text-gray-900 dark:text-white">Password</label>
+                                                  }
+                                                  {
+
+                                                    error  && <label htmlFor="password" className=" text-sm  font-black mt-6 text-red-500 dadrk:text-white">Password</label>
+                                                  }
+                                                  
+                                                    {/* <label htmlFor="password" className=" text-sm  font-black mt-6 text-gray-900 dark:text-white">Password</label> */}
+                                                    <input onChange={(e) => setPassword(e.target.value)} type="password" id="password" className={`bg-gray-50 border ml-1 mt-1 {${error ? 'text-red-600 border-red-500' : 'text-gray-900 border-gray-300'} text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  w-28 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`} placeholder={`${error ? "You must password" : "•••••••••"} `} required />
+                                                </div>
+                                                {/* <div className="mb-6 flex flex-row w-full h-16 justify-center items-center space-x-">
                                             <label htmlFor="confirm_password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
                                             <input type="password" id="confirm_password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="•••••••••" required />
                                         </div> */}
-                                        </div>
-                                        // <label className='mt-2 '>
-                                        //     Password:
-                                        //     <input required type="password" className=' bg-blue-500' value={password} onChange={(e) => setPassword(e.target.value)} />
-                                        // </label>
-                                    }
-                                    <div className=' w-full mt-2 flex justify-center '>
-
-                                        <button type="submit" onClick={() => upadategroup()} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-30  px-5 py-2.5 text-center dark:bg-blue-600 justify-center items-center flex dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
-                                    </div>
-                                    {/* </div> */}
-
-
-                                </div>
-
-                            }
-                            {
-                                Room.type == "protected" && <div className=' flex flex-col bg-whiwte fledx justify-center items-center'>
-                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Choose Type group</label>
-                                    <select onChange={(e) => setType(e.target.value)} id="small" className="block  w-28 p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                        {/* <option selected>Choose Type group</option> */}
-                                        <option value="protected">Protected</option>
-                                        <option value="public">Public</option>
-                                    </select>
-                                    {/* <div> */}
-
-                                    {
-                                        Room.type == 'protected' && type != "public" &&
-                                        <div className='-mt-6'>
-
-                                            <div className="mbw-6 flex flex-row w-full h-16 justify-center items-center space-x-2">
-                                                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                                <input type="password" id="password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="•••••••••" required />
                                             </div>
-                                            {/* <div className="mb-6 flex flex-row w-full h-16 justify-center items-center space-x-">
+                                            // <label className='mt-2 '>
+                                            //     Password:
+                                            //     <input required type="password" className=' bg-blue-500' value={password} onChange={(e) => setPassword(e.target.value)} />
+                                            // </label>
+                                        }
+                                        <div className=' w-full mt-6  ml-2 items-center flex justify-center '>
+
+                                            <button type="submit" onClick={() => upadategroup()} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-30  px-5 py-2.5 text-center dark:bg-blue-600 justify-center items-center flex dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                                        </div>
+                                        {/* </div> */}
+
+
+                                    </div>
+
+                                }
+                                {
+                                    Room1.type == "protected" && <div className=' flex flex-col bg-whiwte fledx justify-center items-center'>
+                                        <label className="block mb-2 text-sm font-black text-gray-900 dark:text-white">Choose Type group</label>
+                                        <select onChange={(e) => setType(e.target.value)} id="small" className="block  w-28 p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            {/* <option selected>Choose Type group</option> */}
+                                            <option value="protected">Protected</option>
+                                            <option value="public">Public</option>
+                                        </select>
+                                        {/* <div> */}
+
+                                        {
+                                            Room1.type == 'protected' && type != "public" &&
+                                            <div className='-mt-6'>
+
+                                                <div className="mbw-6 flex flex-col w-full h-16 justify-center items-center space-sy-2">
+                                                    <label htmlFor="password" className=" text-sm  font-black mt-6 text-gray-900 dark:text-white">Password</label>
+                                                    <input onChange={(e) => setPassword(e.target.value)} type="password" id="password" className={`bg-gray-50 border ml-1 mt-1  {${error ? 'text-red-600 border-red-500' : 'text-gray-900 border-gray-300'} text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  w-28 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`} placeholder={`${error ? "You must password" : "•••••••••"} `} required />
+                                                </div>
+                                                {/* <div className="mb-6 flex flex-row w-full h-16 justify-center items-center space-x-">
                                             <label htmlFor="confirm_password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
                                             <input type="password" id="confirm_password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="•••••••••" required />
                                         </div> */}
+                                            </div>
+                                        }
+                                        <div className=' w-full mt-6 items-center ml-2 flex justify-center '>
+
+                                            <button type="submit" onClick={() => upadategroup()} className="text-white bg-blue-700 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-30  px-5 py-2.5 text-center dark:bg-blue-600 justify-center items-center flex dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                                         </div>
-                                    }
-                                    <div className=' w-full mt-2 flex justify-center '>
+                                        {/* </div> */}
 
-                                        <button type="submit" onClick={() => upadategroup()} className="text-white bg-blue-700 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-30  px-5 py-2.5 text-center dark:bg-blue-600 justify-center items-center flex dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+
                                     </div>
-                                    {/* </div> */}
 
-
-                                </div>
-
-                            }
-                        </div>
-                    </>
+                                }
+                            </div>
+                        </>
                     }
 
 

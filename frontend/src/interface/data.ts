@@ -6,6 +6,16 @@ export interface messageProps {
     foto_user: string
     senderId: number
 }
+export interface listConversationDirect {
+    flag?: boolean
+    updateAt: string,
+    id: number,
+    username: string,
+    foto_user: string,
+    won: number,
+    level: number,
+}
+
 export interface participantsProps {
     id: number,
     username: string,
