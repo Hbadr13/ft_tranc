@@ -10,13 +10,17 @@ import { io } from "socket.io-client";
 
 export default function index({ users, amis }: AppProps) {
   const userData = { id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false, room: '', won: 0, lost: 0, level: 0 }
-  const channelData = { id: 0, type: "", name: "", password: "" }
   const [currentUser, setCurrentUser] = useState<userProps>(userData);
+  const channelData = { id: 0, type: "", name: "", password: "" }
   const [Room, setRoom] = useState<channelProps>(channelData);
+
   const [Receiver, setReceiver] = useState<userProps>(userData);
   const [button, setButton] = useState(false);
+
   const [joinchannel, setjoinchannel] = useState(false);
+  const [status_tow_user, setStatus_Tow_User] = useState(false);
   const [chatSocket, setChatSocket] = useState<any>();
+  const [status, setstatus] = useState<any>('');
   const [password, setPassword] = useState(null)
   const [correct, setcorrcet] = useState(0)
   const [myStatusInRoom, setMyStatusInRoom] = useState<participantsProps>()
@@ -45,7 +49,6 @@ export default function index({ users, amis }: AppProps) {
 
       })
       // const content = await response.json();
-      console.log(response)
       if (response.status == 201) {
         setjoinchannel(false)
         setcorrcet(0)
@@ -58,6 +61,28 @@ export default function index({ users, amis }: AppProps) {
 
     }
   }
+  useEffect(() => {
+    (
+      async () => {
+        try {
+          const response = await fetch(`http://localhost:3333/chat/statusChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+            credentials: 'include',
+          });
+          const content = await response.json();
+          // setstatus(content)
+          if (content.status == "accepted" || !content)
+            setStatus_Tow_User(false)
+          else
+            setStatus_Tow_User(true);
+
+
+        } catch (error) {
+
+        }
+      }
+    )();
+
+  }, [currentUser.id, Receiver, status_tow_user]);
 
   useEffect(() => {
     const socket = io('http://localhost:3333/ChatGateway', {
@@ -81,13 +106,25 @@ export default function index({ users, amis }: AppProps) {
     // setReceiver(userData)
     setcorrcet(0)
   }, [Room]);
+  // useEffect(() => {
+  //   // setRoom(channelData);
+  //   // setReceiver(userData)
+
+  // setStatus_Tow_User(false)
+  // }, [Receiver]);
+  // useEffect(() => {
+  //   // setRoom(channelData);
+  //   // setReceiver(userData)
+  //   setStatus_Tow_User(false)
+  //   // setcorrcet(0)
+  // }, [currentUser.id, Receiver]);
 
   return (
     <div className="  flex  flex-col">
-      <div className={` bg-bldack flex-uwrap  ${joinchannel == true ? 'blur-sm' : null} min-w-full mt-6 min-h-screen flex flex-row justify-center items-center dark:bg-black space-x-6`}>
-        <ConversationList amis={amis} setReceiver={setReceiver} setButton={setButton} currentUser={currentUser} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} />
-        <Conversation myStatusInRoom={myStatusInRoom} chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} />
-        {button == false && Receiver.id != 0 && <Edit currentUser={currentUser} Receiver={Receiver} />}
+      <div className={` bg-bldack flex-uwrap  ${joinchannel == true ? 'blur-sm' : null} min-w-full mt-6 min-h-screen flex flex-row justify-centder items-csenter dark:bg-black space-x-2 sm:space-x-6`}>
+        <ConversationList amis={amis} setReceiver={setReceiver} Receiver={Receiver} setButton={setButton} currentUser={currentUser} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
+        <Conversation  chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
+        {button == false && Receiver.id != 0 && <Edit currentUser={currentUser} Receiver={Receiver} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />}
         {button == true && Room.id != 0 && <EditChannel setMyStatusInRoom={setMyStatusInRoom} currentUser={currentUser} Room={Room} />}
       </div>
       <div>
@@ -101,13 +138,14 @@ export default function index({ users, amis }: AppProps) {
 
                     <div className=" bg-white md:w-[400px]   flex flex-col  justify-strt items-center  sm:w-[400px]   h-80 w-96  drop-shadow shadow-lg shaddow-black  rounded-xl -mst-[1000px] md:-mst-[700px] z-20 text-blue-600 ml-10 md:mdl-[600px]">
                       {/* <div className='text-blue-500 text-xl mt-8  mr-44  font-black' >Confirm logout </div> */}
+                      <div className="w-full flex bg-bdlack justify-end items-end ">
 
-                      <button onClick={() => setjoinchannel(false)} className="w-full bg-white flex mt-2 mr-4 justify-end items-end h-6 -dmt-3 z-2d0  rounded-full">
-                        {/* <img className=' -mst-12  w-6 h-6' src='https://cdn-icons-png.flaticon.com/512/66/66847.png'></img> */}
-                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 30 30">
-                          <path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"></path>
-                        </svg>
-                      </button>
+                        <button onClick={() => setjoinchannel(false)} className="w-8  mr-2   justify-center items-center bg-white flex shadow-sm  mt-2 mer-4 h-8 shadow-black  bg-bklack  rounded-full">
+                          <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 30 30">
+                            <path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"></path>
+                          </svg>
+                        </button>
+                      </div>
                       <div className=" flex justify-center items-center w-16 h-16 rounded-full bg-white  mt-1 drop-shadow shadow-lg shaddow-black ">
 
                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0,0,256,256">

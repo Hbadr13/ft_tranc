@@ -37,7 +37,7 @@ const Index = ({ onlineUsersss, socket }: AppProps) => {
 
     const [gameStart, setGameStart] = useState(true);
     return (
-        <div className="Gamebackground w-full h-screen  flex  justify-center">
+        <div className="Gamebackground w-full min-h-screen  flex  justify-center">
             {/* <div className="  w-full sm:w-[90%]  md:w-[80%] lg:w-[70%] xl:w-[50] h-[600px] mt-[140px  rounded-2xl "> */}
             <div className="relative bg-whie z-10 overflow-hidden w-full sm:w-[90%]  md:w-[80%] lg:w-[70%] xl:w-[50]  h-[450px] md:h-[500px] lg:h-[550px] xl:h-[650px] mt-[140px] max-w-[1200px] rounded-2xl bg-slate-40   p-2 md:p-4">
 

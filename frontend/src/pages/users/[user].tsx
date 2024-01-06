@@ -11,13 +11,14 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { usefetchDataContext } from '@/hooks/usefetchDataContext';
 import { NullLiteral } from 'typescript';
+import { any, string } from 'zod';
 
 interface LevelBarpros {
-    value: number
+    value: string
 }
 function LevelBar({ value }: LevelBarpros) {
 
-    const progressWidth = `${value}%`;
+    const progressWidth = `${value}0%`;
 
     return (
         <div className="bg-white h-5  drop-shadow shadow-md shadow-black    w-80  rounded-lg" >
@@ -36,6 +37,9 @@ const YourComponent = ({ currentFileName }: any) => {
     const [flag2, setFlag2] = useState(true)
     const [check_user, setCheck_user] = useState(true)
     const [username, setUsername] = useState("");
+    const [level, setlevel] = useState();
+    const [level1, setlevel1] = useState("");
+    const [level2, setlevel2] = useState("");
     const [Email, setEmail] = useState("");
     const [foto_user, setFoto_user] = useState("");
     const [check, setCheck] = useState(2);
@@ -61,6 +65,7 @@ const YourComponent = ({ currentFileName }: any) => {
     const parts = currentFileName.split('.');
     const numberPart: number = Number(parts[1]);
     const usernamePart: string = parts[0];
+
     const [number, setNumber] = useState(0);
     const { refreshData, setRefreshData } = usefetchDataContext()
     const [id, setid] = useState(0);
@@ -157,10 +162,6 @@ const YourComponent = ({ currentFileName }: any) => {
             setCheck2(0);
 
         }
-        // else if (fd == 2 && check1 == 1)
-        //     setCheck1(2);
-        // else if (fd == 2 && check1 == 2)
-        //     setCheck1(0);
         else if (check1 == 1) {
 
             setCheck2(0);
@@ -196,7 +197,17 @@ const YourComponent = ({ currentFileName }: any) => {
                         setUsername(content.username)
                         setEmail(content.email)
                         setFoto_user(content.foto_user)
-                        // setrequestt(cont)
+                        setlevel(content.level)
+                        const stringValue2: string = String(level);
+                        const level3 = stringValue2.split('.');
+                        if (level3[1])
+                            setlevel1(level3[1]);
+                        else
+                            setlevel1("0");
+                        setlevel2(level3[0]);
+
+                        console.log("====================================>level1", level1, level2);
+
                         return;
                     }
                     else
@@ -205,8 +216,10 @@ const YourComponent = ({ currentFileName }: any) => {
 
                 }
             }
+
         )();
     });
+
     useEffect(() => {
         (
             async () => {
@@ -482,8 +495,8 @@ const YourComponent = ({ currentFileName }: any) => {
     console.log(check)
 
     return (
-        <div className='flex flex-col'>
-            <div className=''>
+        <div className='flex  flex-col'>
+            <div className=' '>
 
                 {
                     (!check_blocked1 || !check_blocked2) ?
@@ -518,9 +531,9 @@ const YourComponent = ({ currentFileName }: any) => {
                             )
                         ) :
                         (check_user) ?
-                            (<div className={`flex    ${blocked == 1 ? 'blur-sm' : null}  flex-wrap  justify-center min-h-screen   ml-12 min-w-screen    items-center   p-6 `}>
-                                <div className='  flex-none   z-20  w-[408px] mt-[120px] mb-10  h-[100%]  shadow-xl  shadow-[#728edb] justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
-                                    <div className="text-center">
+                            (<div className={`flex    ${blocked == 1 ? 'blur-sm' : null}  flex-wrap  justify-center min-h-screen   bg-dblack items-cdenter  min-w-screen    items-center   `}>
+                                <div className='  flex-none   z-20 w-auto  sm:w-[408px] mt-[120px] mb-10  h-[100%]  shadow-xl  shadow-[#728edb] justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-4 sm:p-6  text-white'>
+                                    <div className="text-center w-full flex justify-center items-center flex-col ">
                                         <span>Profile {username}</span>
                                         <div className="mt-6">
                                             <img
@@ -529,27 +542,27 @@ const YourComponent = ({ currentFileName }: any) => {
                                                 className=" w-52 h-52   border-2 border-[#E3E8EC]  drop-shadow shadow-md shadow-black rounded-[40px] inline-block" // Adjust the width as needed
                                             />
                                         </div>
-                                        <div className='mt-6'>
+                                        <div className='mt-6 w-full flex justify-center items-center flex-col'>
                                             <h1 className="text-xl font-bold uppercase">{username}</h1>
                                             <span className="text-sm  font-serif italic flex justify-center mt-3">{Email}</span>
                                         </div>
-                                        <div className="mt-8 ml-6">
-                                            <LevelBar value={60} />
-                                            <p className=' mt-4 text-white shadow-sm shadow-black  ml-28  w-28 font-serif italic uppercase'>level 8-86%</p>
+                                        <div className="mt-8 w-full flex justify-center items-center flex-col ">
+                                            <LevelBar value={level1} />
+                                            <p className=' mt-4 text-white shadow-sm shadow-black   w-28 font-serif italic uppercase'>level {level2}-{level1}%</p>
                                         </div>
                                         <div className='mt-6'>
-                                            <div className="text-base font-bold flex justify-around items-center text-[#2c4d82]">
+                                            <div className="text-base  w-full font-bold flex  justify-center  items-center text-[#2c4d82]">
                                                 {
 
                                                     (!flag) ?
                                                         (
-                                                            <div className="text-base font-bold flex items-center  space-x-2  text-[#2c4d82]">
-                                                                <div className=" py-2 px-5 bg-[#dbeafe]  flex  items-center  space-x-1  border rounded-full hover:scale-110 duration-300">
+                                                            <div className="text-base font-bold flex items-center w-full justify-center bgw-black  space-x-3  text-[#2c4d82]">
+                                                                <div className="   w-28  h-10  bg-[#dbeafe]  flex  items-center justify-center  space-x-1  border rounded-2xl p-1 hover:scale-110 duration-300">
                                                                     <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                                                                     <span className='normal-case'>Friends</span>
                                                                 </div>
-                                                                <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
-                                                                <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</Link>
+                                                                <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center bg-[#dbeafe] border rounded-2xl p-1 hover:scale-110 duration-300" >Message</Link>
+                                                                <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center  bg-[#dbeafe]  border rounded-2xl p-1 hover:scale-110 duration-300" >play</Link>
 
 
                                                             </div>
@@ -558,21 +571,23 @@ const YourComponent = ({ currentFileName }: any) => {
                                                             (
                                                                 (!isfriend) ?
                                                                     (
-                                                                        <div className="text-base font-bold flex items-center  space-x-2  text-[#2c4d82]">
-                                                                            <div className=" py-2 px-4 bg-[#dbeafe]  flex  items-center  border rounded-full hover:scale-110 duration-300">
+                                                                        <div className="text-base font-bold flex items-cente w-full justify-center  space-x-10  text-[#2c4d82]">
+                                                                            <div className=" w-32 space-x-1 h-10 p-1 justify-center bg-[#dbeafe]  flex  items-center  border rounded-2xl hover:scale-110 duration-300">
                                                                                 <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
-                                                                                <button className="py-0 px-4 bg-[#dbeafe] border rounded-full " onClick={sendRequestForaccpet} >Confrim</button>
+                                                                                <button className=" bg-[#dbeafe] border  " onClick={sendRequestForaccpet} >Confrim</button>
                                                                             </div>
-                                                                            <button className="py-2 px-7 bg-[#dbeafe] border rounded-full  hover:scale-110 duration-300 " onClick={sendRequestForaccpet}>Delete request</button>
+                                                                            <button className="w-32 h-10 flex justify-center items-center p-1 bg-[#dbeafe] border rounded-2xl  hover:scale-110 duration-300 " onClick={sendRequestForaccpet}>Delete</button>
 
                                                                         </div>) :
-                                                                    (<div className="text-base font-bold flex items-center  space-x-2  text-[#2c4d82]">
-                                                                        <div className=" py-2 px-5 bg-[#dbeafe]  flex  items-center  space-x-1  border rounded-full hover:scale-110 duration-300">
+                                                                    (<div className="text-base font-bold flex items-center w-full justify-center bgw-black  space-x-3  text-[#2c4d82]">
+                                                                        <div className="   w-28  h-10  bg-[#dbeafe]  flex  items-center justify-center  space-x-1  border rounded-full hover:scale-110 duration-300">
                                                                             <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                                                                             <span className='normal-case'>Friends</span>
                                                                         </div>
-                                                                        <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
-                                                                        <Link href='/game' content='play' className="py-2 px-7 bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</Link>
+                                                                        <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
+                                                                        <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center  bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</Link>
+
+
                                                                     </div>)
                                                             ) :
 
@@ -581,16 +596,16 @@ const YourComponent = ({ currentFileName }: any) => {
                                                                 (
                                                                     (!isOpen) ?
                                                                         (
-                                                                            <div className=' bg-blacdk w-96 space-x-10  flex-row '>
-                                                                                <button className="py-[8px] px-6 bg-white border rounded-full " onClick={sendRequest} >Add friend</button>
-                                                                                <Link href='/game' content='play' className="py-[9px] px-7 bg-white border rounded-full hover:scale-110 duration-300" >Message</Link>
+                                                                            <div className=' w-full space-x-10 flex justify-center items-center  flex-row'>
+                                                                                <button className="w-32 h-10  flex justify-center items-center bg-white border rounded-2xl p-1 " onClick={sendRequest} >Add Friend</button>
+                                                                                <Link href='/game' content='play' className="w-32 h-10  flex justify-center items-center bg-white border rounded-2xl p-1 hover:scale-110 duration-300" >Message</Link>
                                                                             </div>
                                                                         ) :
                                                                         (
-                                                                            <div className=' bg-blacdk w-96 space-x-10  flex-row '>
+                                                                            <div className=' bg-blacdk w-full space-x-10  flex justify-center items-center  flex-row '>
 
-                                                                                <button className="py-[10px] px-2 bg-white border rounded-full text-sm " onClick={cancelRequest} >Canacel requset</button>
-                                                                                <Link href='/game' content='play' className="py-[9px] px-7 bg-white border rounded-full hover:scale-110 duration-300" >Message</Link>
+                                                                                <button className=" w-32 h-10  flex justify-center items-center  bg-white border rounded-2xl p-1 text-sm " onClick={cancelRequest} >Canacel requset</button>
+                                                                                <Link href='/game' content='play' className=" w-32 h-10  flex justify-center items-center  bg-white border rounded-2xl p-1 hover:scale-110 duration-300" >Message</Link>
                                                                             </div>
                                                                         )
                                                                 )
@@ -599,9 +614,7 @@ const YourComponent = ({ currentFileName }: any) => {
                                                 }
 
                                             </div>
-                                            {/* <div className=' flex-1 ml-[600px]   bg-white w-48 h-48 text-black '>dd
 
-                                    </div> */}
                                             <div className=" hidden md:flex justify-center items-center  ">
 
                                                 <div className='mt-6np'>
@@ -637,8 +650,8 @@ const YourComponent = ({ currentFileName }: any) => {
                                         </div>
                                         {/* onClick={blockedfriend} */}
 
-                                        <div className="mt-8" onClick={() => setblocked(1)} >
-                                            <button className="bg-[#dbeafe]   transition-all active:scale-100 rounded-xl  text-[#2c4d82] py-2 px-32 hover:scale-105 ">Blocked</button>
+                                        <div className="mt-8 w-full justify-center items-center" onClick={() => setblocked(1)} >
+                                            <button className="bg-[#dbeafe]   w-80 h-11  ml-3 sm:ml-0 transition-all active:scale-100 rounded-xl  text-[#2c4d82]  hover:scale-105 ">Blocked</button>
                                         </div>
 
                                     </div>
@@ -679,7 +692,26 @@ const YourComponent = ({ currentFileName }: any) => {
                                 }
 
                             </div>
-                            ) : (<div className=' bg-white min-h-screen  min-w-screen flex justify-center items-center '> makinx dffffffffffffffffffffffffff </div>)
+                            ) : (<footer className='w-full   min-h-screen  rounded-2xl  flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-8 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find this user </h2>
+                                </div>
+
+                            </footer>)
                 }
             </div >
             <div>

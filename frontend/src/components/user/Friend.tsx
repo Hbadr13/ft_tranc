@@ -43,7 +43,7 @@ function LevelBar(userid: any) {
 
   return (
 
-    <p className=" indent-0  text-blue-200">{flag1} matual friends
+    <p className=" indent-0  text-sm sm:tesxt-md text-blue-200">{flag1} matual friends
     </p>
   );
 
@@ -155,35 +155,30 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   };
 
   return (
-    <div className="flex  flex-none     -m-6  mb-8    mt-  rounded-r-[40px]  ml-4  w-[450px] h-[700px] ">
+    <div className="flex  flex-none      justify-center items-censter    rounded-r-[40px]  bg-sblue-600  w-full sm:w-[415px] h-[700px] ">
 
 
-      <div className=" overflow-y-scroll  scrollbar-hide bg-white  w-[430px] drop-shadow shadow-md shadow-black rounded-2xl max-h-[980px] mt-2">
+      <div className=" overflow-y-scroll  scrollbar-hide bg-white  -mt-10 sm:mt-0 w-[96%]  sm:w-[430px] drop-shadow shadow-md shadow-black rounded-2xl max-h-[980px] mst-2">
         {
           (allfriends.length) ? allfriends.map((user: any) => (
 
-            <div className=' bg-white  border-b-[2px] mt-0  w-[420px] h-16 rounded-l rounded-r items-center      space-x-6 p-2  flex  justify-between'>
+            <div className='   border-b-[2px] mt-0  bg-white w-auto sm:w-[420px] h-16 rounded-l rounded-r items-center      space-x-6 p-2  flex  justify-between'>
               <div className="flex   space-x-2  ">
                 <img
                   src={user.foto_user}
                   alt="Your Image Alt Text"
-                  className="  w-14 h-14  rounded-full " // Adjust the width as needed
+                  className="  sm:w-14 sm:h-14  h-12 w-12 rounded-full " // Adjust the width as needed
                 />
-                {/* <div> */}
                 <div className=' rounded-xl  mt-2 flex  justify-start items-start flex-col  '>
-                  {/* <div className="bg-black  h-8  w-32 flex flex-row  items-start">  */}
                   <button className="  flex  capitalize " onClick={() => profailamis(user.username, user.id)}> {`${user.username}`} </button>
-                  {/* </div> */}
 
                   {
                     (user.id == currentUser) ?
                       (<div></div>) :
-                      // <div className="mt-8 ">
                       <div>
 
                         <LevelBar userid={user.id} amis={amis} />
                       </div>
-                    // </div>
                   }
                 </div>
               </div>
@@ -194,12 +189,12 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
 
 
                   (!user.flag) ?
-                    (<div className="flex">
+                    (<div className="flex w-wfull justify-end items-center ">
 
-                      <div className=" py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300   flex  items-center  space-x-1  border rounded-full hover:bg-[white] hover:scale-110 duration-300">
+                      <div className=" w-14 h-10  sm:w-16 sm:h-10 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300   flex  items-center  space-x-1  border rounded-full hover:bg-[white] hover:scale-110 duration-300">
                         <svg width="20" height="20" fill="black" enableBackground="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clipRule="evenodd" fill="none" fillRule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" strokeMiterlimit="10" strokeWidth="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                       </div>
-                      <div className=" py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300   flex  items-center  space-x-1  border rounded-full hover:bg-[#eeecec] hover:scale-110 duration-300">
+                      <div className=" mwr-5 sm:mr-0  w-14 h-10    sm:w-16 sm:h-10 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300   flex  items-center  space-x-1  border rounded-full hover:bg-[#eeecec] hover:scale-110 duration-300">
 
                         <Link href='/game' content='play' className="" >
                           <svg fill="#000000" width="20" height="20" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
