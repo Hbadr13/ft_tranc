@@ -2,7 +2,7 @@ import EditChannel from "@/components/chat/channels/editChannel";
 import Conversation from "@/components/chat/conversation";
 import ConversationList from "@/components/chat/conversationList";
 import Edit from "@/components/chat/edit";
-import { AppProps, channelProps, messageProps, userProps } from '@/interface/data';
+import { AppProps, channelProps, messageProps, participantsProps, userProps } from '@/interface/data';
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Socket } from "socket.io";
@@ -10,7 +10,7 @@ import { io } from "socket.io-client";
 
 export default function index({ users, amis }: AppProps) {
   const userData = { id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false, room: '', won: 0, lost: 0, level: 0 }
-  const channelData = { id: 0, type: "", name: "" }
+  const channelData = { id: 0, type: "", name: "", password: "" }
   const [currentUser, setCurrentUser] = useState<userProps>(userData);
   const [Room, setRoom] = useState<channelProps>(channelData);
   const [Receiver, setReceiver] = useState<userProps>(userData);
@@ -19,7 +19,7 @@ export default function index({ users, amis }: AppProps) {
   const [chatSocket, setChatSocket] = useState<any>();
   const [password, setPassword] = useState(null)
   const [correct, setcorrcet] = useState(0)
-
+  const [myStatusInRoom, setMyStatusInRoom] = useState<participantsProps>()
   useEffect(() => {
     (
       async () => {
@@ -36,7 +36,7 @@ export default function index({ users, amis }: AppProps) {
     )();
   }, []);
   const joinchanle = async () => {
-    console.log("_________________________________")
+    console.log("__________________________")
     try {
       const response = await fetch(`http://localhost:3333/chat/joinChannel/${currentUser.id}/${Room.id}/${password}`, {
         method: 'POST',
@@ -86,9 +86,9 @@ export default function index({ users, amis }: AppProps) {
     <div className="  flex  flex-col">
       <div className={` bg-bldack flex-uwrap  ${joinchannel == true ? 'blur-sm' : null} min-w-full mt-6 min-h-screen flex flex-row justify-center items-center dark:bg-black space-x-6`}>
         <ConversationList amis={amis} setReceiver={setReceiver} setButton={setButton} currentUser={currentUser} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} />
-        <Conversation chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} />
+        <Conversation myStatusInRoom={myStatusInRoom} chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} />
         {button == false && Receiver.id != 0 && <Edit currentUser={currentUser} Receiver={Receiver} />}
-        {button == true && Room.id != 0 && <EditChannel Room={Room} />}
+        {button == true && Room.id != 0 && <EditChannel setMyStatusInRoom={setMyStatusInRoom} currentUser={currentUser} Room={Room} />}
       </div>
       <div>
         {

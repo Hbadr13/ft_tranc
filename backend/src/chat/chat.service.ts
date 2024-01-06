@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -33,6 +33,10 @@ export class ChatService {
                 isAdmin: true,
             }
         });
+        if (body.type == 'private') {
+
+        }
+
         await this.prisma.conversation.create({
             data: {
                 type: 'channel',
@@ -259,15 +263,6 @@ export class ChatService {
 
 
     async allChannel() {
-
-        // let room = await this.prisma.user.findFirst({
-        //     where: {
-        //         id: userId
-        //     },
-        //     select: {
-
-        //     }
-        // })
         return await this.prisma.room.findMany({
             select: {
                 id: true,
@@ -278,7 +273,7 @@ export class ChatService {
         })
     }
 
-    async setAdmin(roomId: number, participantId: number) {
+    async setAdmin(roomId: number, participantId: number, item: string) {
         let room = await this.prisma.room.findUnique({
             where: {
                 id: roomId,
@@ -292,14 +287,78 @@ export class ChatService {
             }
         })
         const id = room.Memberships[0]?.id
-        let membership = await this.prisma.membership.update({
+        console.log('item: ', item)
+        if (item == 'admin') {
+            let membership = await this.prisma.membership.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    isAdmin: true
+                }
+            })
+        }
+        else if (item == 'kick') {
+            let membership = await this.prisma.membership.delete({
+                where: {
+                    id: id
+                },
+            })
+        }
+        else if (item == 'mute') {
+            let membership = await this.prisma.membership.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    isBanned: true
+                }
+            })
+        }
+        else if (item == 'inAdmin') {
+            let membership = await this.prisma.membership.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    isAdmin: false
+                }
+            })
+        }
+        else if (item == 'no mute') {
+            let membership = await this.prisma.membership.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    isBanned: false
+                }
+            })
+        }
+
+    }
+    async upadteChannel(id: number, roomId: number, type: string, password: string) {
+
+        const room = await this.prisma.membership.findFirst({
             where: {
-                id: id
+                roomId: roomId,
             },
-            data: {
-                isAdmin: true
-            }
-        })
+        });
+        if (room.userId != id) {
+            throw new UnauthorizedException()
+        }
+        else {
+            await this.prisma.room.update({
+
+                where: {
+                    id: roomId
+                },
+                data: {
+                    type: type,
+                    password: password
+                }
+            });
+        }
     }
 
     /******************************************************* Direct Message ****************************************************************/

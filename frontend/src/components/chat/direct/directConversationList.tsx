@@ -41,7 +41,7 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
         <div className=' w-full h-full bgf-black flex justify-center items-center flex-col'>
             {
                 !click ? (
-                    <button onClick={() => setClick(true)} className=" text-white  bg-blue-400 rounded-[52px] justify-center w-96 h-12 items-center  duration-300 hover:scale-105">
+                    <button onClick={() => setClick(true)} className=" text-white  bg-blue-400 rounded-full justify-center w-96 h-10 items-center  duration-300 hover:scale-105">
                         <div className=" justify-center items-center flex">
                             <h1 className="">Start New Chat</h1>
                         </div>

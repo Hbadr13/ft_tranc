@@ -20,6 +20,12 @@ export interface participantsProps {
     isBanned: boolean,
     foto_user: string
 }
+export interface channelProps {
+    type: string;
+    name: string,
+    id: number,
+    password : string;
+}
 
 export interface userProps {
 
