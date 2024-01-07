@@ -123,7 +123,7 @@ export default function index({ users, amis }: AppProps) {
     <div className="  flex  flex-col">
       <div className={` bg-bldack flex-uwrap  ${joinchannel == true ? 'blur-sm' : null} min-w-full mt-6 min-h-screen flex flex-row justify-centder items-csenter dark:bg-black space-x-2 sm:space-x-6`}>
         <ConversationList amis={amis} setReceiver={setReceiver} Receiver={Receiver} setButton={setButton} currentUser={currentUser} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
-        <Conversation  chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
+        <Conversation setMyStatusInRoom={setMyStatusInRoom}  chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
         {button == false && Receiver.id != 0 && <Edit currentUser={currentUser} Receiver={Receiver} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />}
         {button == true && Room.id != 0 && <EditChannel setMyStatusInRoom={setMyStatusInRoom} currentUser={currentUser} Room={Room} />}
       </div>

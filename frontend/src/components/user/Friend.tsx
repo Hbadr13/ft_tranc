@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { any } from "zod";
+import Image from 'next/image';
 
 
 function LevelBar(userid: any) {
@@ -51,7 +52,7 @@ function LevelBar(userid: any) {
 
 
 
-const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, amis: Array<userProps>, currentUser: number}) => {
+const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, amis: Array<userProps>, currentUser: number }) => {
 
   // const [query, setQuery] = useState('')
   // const [id, setid] = useState(0)
@@ -251,10 +252,30 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
 
               }
             </div>
-          )) :  (
-            <div className=" flex mt-72 ml-6 bg-blue-600 text-white w-96 h-10 drop-shadow shadow-md shadow-black   items-center justify-center rounded-lg  rounded-white">This is an empty list</div>
+          )) : (
+            <footer className='  w-full  rounded-2xl h-full  -mt-20 flex flex-col justify-center items-center space-y-3'>
+              <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                <div className="">
+                  <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                </div>
+                <div className=" z-10">
+                  <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                </div>
+                <div className="">
+                  <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                </div>
+              </div>
+              <div className=" w-[50%] text-center  text-xl font-semibold">
+                <h1>No user found</h1>
+              </div>
+              <div className=' w-[50%]   text-center'>
+                <h2> Sorry, We couldn't find any user </h2>
+              </div>
 
-        )
+            </footer>
+         
+
+          )
         }
       </div>
     </div>

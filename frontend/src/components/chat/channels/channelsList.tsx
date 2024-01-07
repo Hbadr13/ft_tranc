@@ -101,7 +101,7 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
             <div className=' bg-blgack rounded-2xl flex flex-col h-[670px]  -mt-6 overflow-y-scroll shadffow-xl drofp-shadow-xl scrollbar-hide'>
               {
                 allChannel.map((item) => (
-                  <button onClick={() => joinchanle(item)} className="h-16 mt-3 w-96 p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
+                  <button onClick={() => joinchanle(item)} className="h-16 mt-3 w-full p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
                     <div className="h-auto  justify-start items-center gap-2.5 flex">
                       <img className="w-12 h-12 rounded-full" src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
                       <div className="   flex flex-col justify-center items-start space-y-1 ">
@@ -124,7 +124,7 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
             {/* <div className=''> */}
             {
               channel.map((item) => (
-                <button onClick={() => setRoom(item)} className="h-16 mt-3 w-96 p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
+                <button onClick={() => setRoom(item)} className="h-16 mt-3 w-full p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
                   <div className="h-auto  justify-start items-center gap-2.5 flex">
                     <img className="w-12 h-12 rounded-full" src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
                     <div className="   flex flex-col justify-center items-start space-y-1 ">

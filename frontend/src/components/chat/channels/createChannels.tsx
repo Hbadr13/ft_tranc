@@ -66,8 +66,7 @@ export default function Channels({ users, setClick, currentUser }: { users: user
             <div className='flex flex-col justify-cenfter items-centefr'>
               <div className="flex flex-col justify-center items-center p-6 w-full bg-sjlate-400">
                 <h2 className='flex ml- w-full'> Channel Name</h2>
-                <input className='focus:outline-none  flex 
-                items-center justify-center mt-2 pl-4 w-full h-10 border border-sky-200 text-CuisColor_dark_grey' type="text" name='Enter channel name' value={name} onChange={(e) => setName(e.target.value)} />
+                <input className='focus:outline-none  flex items-center justify-center mt-2 pl-4 w-full h-10 border border-sky-200 text-CuisColor_dark_grey' type="text" name='Enter channel name' value={name} onChange={(e) => setName(e.target.value)} />
                 <h2 className='flex mt-4 w-full'> Description</h2>
                 <input className='focus:outline-none  flex items-center justify-center mt-2 pl-4 w-full h-24 border  border-sky-200 text-CuisColor_dark_grey' required type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
               </div>
