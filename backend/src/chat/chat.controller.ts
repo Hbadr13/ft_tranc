@@ -55,10 +55,12 @@ export class ChatController {
     async AllChannel() {
         return await this.chatService.allChannel()
     }
-    @Post('setAdmin/:roomId/:participantId')
-    async SetAdmin(@Param('roomId') roomId: number, @Param('participantId') participantId: number) {
-        await this.chatService.setAdmin(Number(roomId), Number(participantId))
+
+    @Post('setAdmin/:roomId/:participantId/:item')
+    async SetAdmin(@Param('roomId') roomId: number, @Param('participantId') participantId: number, @Param('item') item: string) {
+        await this.chatService.setAdmin(Number(roomId), Number(participantId),item)
     }
+
 
     /******************************************************* Direct Message ****************************************************************/
 

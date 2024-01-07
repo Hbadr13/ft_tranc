@@ -2,7 +2,7 @@ import EditChannel from "@/components/chat/channels/editChannel";
 import Conversation from "@/components/chat/conversation";
 import ConversationList from "@/components/chat/conversationList";
 import Edit from "@/components/chat/edit";
-import { AppProps, channelProps, messageProps, userProps } from '@/interface/data';
+import { AppProps, channelProps, messageProps, participantsProps, userProps } from '@/interface/data';
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Socket } from "socket.io";
@@ -23,7 +23,7 @@ export default function index({ users, amis }: AppProps) {
   const [status, setstatus] = useState<any>('');
   const [password, setPassword] = useState(null)
   const [correct, setcorrcet] = useState(0)
-
+  const [myStatusInRoom, setMyStatusInRoom] = useState<participantsProps>()
   useEffect(() => {
     (
       async () => {
@@ -40,7 +40,7 @@ export default function index({ users, amis }: AppProps) {
     )();
   }, []);
   const joinchanle = async () => {
-    console.log("_________________________________")
+    console.log("__________________________")
     try {
       const response = await fetch(`http://localhost:3333/chat/joinChannel/${currentUser.id}/${Room.id}/${password}`, {
         method: 'POST',
@@ -120,14 +120,12 @@ export default function index({ users, amis }: AppProps) {
   // }, [currentUser.id, Receiver]);
 
   return (
-    <div className=" flex  flex-col">
+    <div className="  flex  flex-col">
       <div className={` bg-bldack flex-uwrap  ${joinchannel == true ? 'blur-sm' : null} min-w-full mt-6 min-h-screen flex flex-row justify-centder items-csenter dark:bg-black space-x-2 sm:space-x-6`}>
         <ConversationList amis={amis} setReceiver={setReceiver} Receiver={Receiver} setButton={setButton} currentUser={currentUser} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
-        <Conversation chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
-
+        <Conversation setMyStatusInRoom={setMyStatusInRoom}  chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
         {button == false && Receiver.id != 0 && <Edit currentUser={currentUser} Receiver={Receiver} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />}
-        {button == true && Room.id != 0 && <EditChannel currentUser={currentUser} Room={Room} />}
-
+        {button == true && Room.id != 0 && <EditChannel setMyStatusInRoom={setMyStatusInRoom} currentUser={currentUser} Room={Room} />}
       </div>
       <div>
         {
