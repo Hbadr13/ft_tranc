@@ -1,45 +1,19 @@
-import { useEffect, useRef, useState, RefObject } from 'react'
-import PlayWithComputer from '../../components/game/computer'
+import { useState } from 'react'
 import { AppProps, userData, userProps } from '@/interface/data';
-import ListOfFriends from '@/components/game/listOfFriends';
-import { useRouter } from 'next/router';
-import PlayOnline from '@/components/game/online';
-import Link from 'next/link';
 import Image from 'next/image'
-import OnlineCard from '@/components/game/cards/onlineCard';
-import ComputerCard from '@/components/game/cards/computerCard';
-import MatchingCard from '@/components/game/cards/matchingCard';
 import { GameCards } from '@/components/game/gameCard';
-import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks';
+import { fetchCurrentUser } from '@/hooks/userHooks';
 
-const Index = ({ onlineUsersss, socket }: AppProps) => {
-    const router = useRouter()
-    const [room, setroom] = useState<any>('');
-    const [listOfFriends, setlistOfFriends] = useState<boolean>(false);
+const Index = ({ socket }: AppProps) => {
     const [selectPlayer, setselectPlayer] = useState('')
-    const [opponent, setOpponent] = useState('')
-
-    const [rejectRequest, setrejectRequest] = useState(false)
     const [cantPlayOnline, setCantPlayOnline] = useState(false)
-
-    const [amis, setAmis] = useState<any>([])
-    const [users, setUsers] = useState<Array<any>>([]);
     const [currentUser, setCurrentUser] = useState<userProps>(userData);
     fetchCurrentUser({ setCurrentUser })
-    fetchAllUsers({ setUsers, currentUser })
-    fetchAllAmis({ setAmis, currentUser })
-
-    const handelButtonRejectRequest = () => {
-        setrejectRequest(false)
-        router.push("/game")
-    }
-
 
     const [gameStart, setGameStart] = useState(true);
     return (
         <div className="Gamebackground w-full h-screen  flex  justify-center">
-            {/* <div className="  w-full sm:w-[90%]  md:w-[80%] lg:w-[70%] xl:w-[50] h-[600px] mt-[140px  rounded-2xl "> */}
-            <div className="relative bg-whie z-10 overflow-hidden w-full sm:w-[90%]  md:w-[80%] lg:w-[70%] xl:w-[50]  h-[450px] md:h-[500px] lg:h-[550px] xl:h-[650px] mt-[140px] max-w-[1200px] rounded-2xl bg-slate-40   p-2 md:p-4">
+            <div className="relative bg-whie z-10 overflow-hidden w-full sm:w-[99%]  md:w-[80%] lg:w-[70%] xl:w-[50]  h-[450px] md:h-[500px] lg:h-[550px] xl:h-[650px] mt-[140px] max-w-[1200px] rounded-2xl bg-slate-40   p-2 md:p-4">
 
                 {gameStart ? (
                     <div className={'relative w-full h-full -[600p]   rounded-2xl  '}>
@@ -50,8 +24,12 @@ const Index = ({ onlineUsersss, socket }: AppProps) => {
                             className='rounded-xl z-20  shadow-2xl  '
                             src="/game/click-to-start-3.gif"
                             alt="My Image"
-                            layout="fill"
-                            objectFit="cover"
+                            fill
+                            style={{ objectFit: "cover" }}
+                            // height={2000}
+                            // width={2000}
+                            sizes='[]'
+                            priority={true}
                         />
                         <div className="ClickToStartGame absolute text-3xl z-20  bottom-32 inset-x-0  flex justify-center items-center ">
                             <button
@@ -62,7 +40,7 @@ const Index = ({ onlineUsersss, socket }: AppProps) => {
                     </div>) : null
                 }
                 {
-                    !gameStart && selectPlayer == '' && !listOfFriends && (
+                    !gameStart && selectPlayer == '' && (
                         <GameCards currentUser={currentUser} socket={socket} setselectPlayer={setselectPlayer} />
                     )
                 }
@@ -86,13 +64,3 @@ const Index = ({ onlineUsersss, socket }: AppProps) => {
 }
 
 export default Index
-
-// import React from 'react'
-
-// const index = () => {
-//     return (
-//         <div>index</div>
-//     )
-// }
-
-// export default index

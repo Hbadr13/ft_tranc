@@ -11,7 +11,7 @@ import { AchievementController } from './achievement/achievement.controller';
 import { AchievementService } from './achievement/achievement.service';
 import { HistoryService } from './history/history.service';
 import { HistoryModule } from './history/history.module';
-import { HistoryController } from './history/history.controller';
+import { HistoryController } from './history/history.controller'; 
 
 @Module({
   controllers: [HistoryController, GameController, RoomController, AchievementController],

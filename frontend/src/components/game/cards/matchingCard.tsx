@@ -1,12 +1,13 @@
 import React from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { Constant } from '@/constants/constant';
 const MatchingCard = ({ setselectPlayer }: { setselectPlayer: (selectPlayer: string) => void }) => {
     const router = useRouter();
     const handelButtonPlayOnline = async () => {
         try {
 
-            const response = await fetch('http://localhost:3333/auth/user', {
+            const response = await fetch(`${Constant.API_URL}/auth/user`, {
                 credentials: 'include',
             });
             if (response.status == 200) {
@@ -17,8 +18,6 @@ const MatchingCard = ({ setselectPlayer }: { setselectPlayer: (selectPlayer: str
                     router.push('/game/online?search=true')
                 }
                 else {
-                    console.log('cant play')
-                    // setCantPlayOnline(true)
                 }
             }
 
@@ -29,7 +28,7 @@ const MatchingCard = ({ setselectPlayer }: { setselectPlayer: (selectPlayer: str
     }
     return (
         <div className="w-full h-full flex justify-center items-center">
-            <div className="MatchingCard  relative  overflow-hidden w-[80%] h-[90%] bg-CusColor_grey flex flex-col justify-center items-center rounded-xl">
+            <div className="MatchingCard  relative  overflow-hidden w-[100%] h-[90%] bg-CusColor_grey flex flex-col justify-center items-center rounded-xl">
                 <div id='Bottom' className={`w-[600px] h-[600px] -right-[400px] md:-right-[340px] xl:-right-[240px] absolute  rotate-[-45deg] `} />
                 <div className=" w-full h-[90%] flex justify-center  z-40">
                     <div className="w-[50%] h-full  ">

@@ -10,6 +10,7 @@ import { handelSendRequest } from '@/handeler/handelbutttons'
 import { fetchData } from '@/hooks/appContexts';
 import { usefetchDataContext } from '@/hooks/usefetchDataContext'
 import { handelChallenge } from '../game/listOfFriends'
+import { Constant } from '@/constants/constant'
 
 
 const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) => {
@@ -52,7 +53,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
             async () => {
                 try {
 
-                    const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${currentUser.id}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -68,7 +69,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
         setclickInInput((pr) => !pr)
         setclick(true)
         try {
-            const respons = await fetch(`http://localhost:3333/search/recent/${currentUser.id}`)
+            const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`)
             const content = await respons.json()
             setRecentSearches(Array.from(content))
         } catch (error) {
@@ -114,7 +115,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
 
     const handelClickProfile = async (id: Number) => {
         try {
-            const response = await fetch(`http://localhost:3333/search/recent/${currentUser.id}`, {
+            const response = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -129,11 +130,11 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
     }
     const handelClearOneFromSearch = async (id: Number) => {
         try {
-            const response = await fetch(`http://localhost:3333/search/recent/${currentUser.id}/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
-            const respons = await fetch(`http://localhost:3333/search/recent/${currentUser.id}`)
+            const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`)
             const content = await respons.json()
             setRecentSearches(Array.from(content))
 
@@ -155,7 +156,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
         (
             async () => {
                 try {
-                    const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/${currentUser.id}/send-requests`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -185,7 +186,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
             <div className={`navbar fixed top-0 z-40  bg-CusColor_light flex justify-between items-center py-1 pl-10`}>
                 <div className=" left-6 w-full sm:w-[45%] xl:w-[35%]">
                     <div className="relative ">
-                        <button onClick={handelButtonSearch} className="absolute  z-50 inset-y-0 -left-8  md:left-0 flex items-center pl-3 md:pointer-events-none">
+                        <button title='iconssearch' onClick={handelButtonSearch} className="absolute  z-50 inset-y-0 -left-8  md:left-0 flex items-center pl-3 md:pointer-events-none">
                             <svg className=" w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 20 20">
                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                             </svg>
@@ -290,10 +291,24 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
 
                                                                 )
                                                             ) : (
-                                                                <button onClick={() => onlineUsersss.includes(user.id) ? handelChallenge({ oppId: user.id, socket: socket, currentUser: currentUser, selectUser: selectUser, setselectUser: setselectUser, router: router, setclick: setclick }) : undefined}
-                                                                    className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
-                                                                    <Image src='/icons-ping-pong-black.png' className=' ' alt='search' width={20} height={20}></Image>
-                                                                </button>
+                                                                <div
+                                                                    className='relative ' hidden={router.pathname.startsWith('/game') && router.asPath != '/game' && router.asPath != '/game/online?listoffriends=true'}>
+                                                                    <button onClick={() => onlineUsersss.includes(user.id) ? handelChallenge({ oppId: user.id, socket: socket, currentUser: currentUser, selectUser: selectUser, setselectUser: setselectUser, router: router, setclick: setclick }) : undefined}
+                                                                        className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200 relative'>
+
+                                                                        <Image src='/icons-ping-pong-black.png' className=' ' alt='search' width={20} height={20}></Image>
+                                                                    </button>
+                                                                    <div className={` absolute top-0 right-[0px] bg-white text-blue-800  w-[200px] h-[150px] flex flex-col justify-between items-center  z-50 rounded-2xl p-4 shadow-xl ${!(user.id === selectUser) ? 'hidden' : ""}`}>
+                                                                        <div className="w-full flex justify-end">
+                                                                            <button onClick={() => setselectUser(-1)}>
+                                                                                <Image width={30} height={30} src={'/clean.png'} alt='x' />
+                                                                            </button>
+                                                                        </div>
+                                                                        <div className="text-center w-full text-xl relative -top-6">
+                                                                            This Player is not Available new.
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             )
                                                         }
 
@@ -302,6 +317,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
                                                         </Link>
                                                     </div>
                                                 </div>
+
                                             </div>
                                         ))
                                     }
@@ -332,7 +348,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
                         </div>
                     </button>
                     <div className="">
-                        <UserInfo />
+                        <UserInfo socket={socket} />
                     </div>
                 </div>
             </div >

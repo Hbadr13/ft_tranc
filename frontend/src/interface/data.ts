@@ -1,4 +1,5 @@
 import { Socket } from "socket.io-client";
+import { string } from "zod";
 
 export interface userProps {
 
@@ -12,7 +13,6 @@ export interface userProps {
     username: string,
     firstName: string,
     lastName: string,
-    level: number,
     foto_user: string,
     isOnline: boolean,
     userId: number
@@ -21,6 +21,8 @@ export interface userProps {
     won: number,
     lost: number,
     level: number,
+    opponentId: number
+    gameStatus: string
 }
 
 
@@ -52,4 +54,4 @@ export interface GameCardsProps {
 
 }
 
-export const userData = { id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false, room: '', won: 0, lost: 0, level: 0 }
+export const userData = { id: 0, opponentId: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, gameStatus: '', userId: 0, flag: false, flag1: false, room: '', won: 0, lost: 0, level: 0 }

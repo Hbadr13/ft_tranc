@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { userProps } from "@/interface/data";
+import { Constant } from "@/constants/constant";
 
 function Profiles(Leaderboard: any) {
     return (
@@ -549,16 +550,16 @@ function Item(data: any) {
 }
 const Rank = ({ amis_id, amis, id }: { amis_id: Array<userProps>, amis: Array<userProps>, id: number }) => {
 
-    const [users_id, setUsers_id] = useState(Array<userProps>);
+    const [users_id, setUsers_id] = useState<Array<userProps>>([]);
 
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/users/${0}`, {
+                const response = await fetch(`${Constant.API_URL}/users/${0}`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
-                setUsers_id(content);
+                setUsers_id(Array.from(content));
             }
         )();
     }, [id]);
@@ -583,12 +584,6 @@ const Rank = ({ amis_id, amis, id }: { amis_id: Array<userProps>, amis: Array<us
         if (user.flag == false)
             return user
     })
-
-
-    console.log(filterUser)
-
-
-
     return (
         <div className="board">
 

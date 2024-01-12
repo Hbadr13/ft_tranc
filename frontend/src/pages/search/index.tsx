@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { handelSendRequest } from '@/handeler/handelbutttons'
 import { usefetchDataContext } from '@/hooks/usefetchDataContext'
 import { handelChallenge } from '@/components/game/listOfFriends'
+import { Constant } from '@/constants/constant'
 const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) => {
     const router = useRouter()
     const oldpath = useContext(getBack)
@@ -39,7 +40,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
         (
             async () => {
                 try {
-                    const respons = await fetch(`http://localhost:3333/search/recent/${currentUser.id}`)
+                    const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`)
                     const content = await respons.json()
                     setRecentSearches(Array.from(content))
                 } catch (error) {
@@ -81,7 +82,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
         (
             async () => {
                 try {
-                    const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/${currentUser.id}/send-requests`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -107,7 +108,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     }, [router])
     const handelClickProfile = async (id: Number) => {
         try {
-            const response = await fetch(`http://localhost:3333/search/recent/${currentUser.id}`, {
+            const response = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -123,8 +124,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     }
     const handelClearSearch = async () => {
         try {
-            // const response = await fetch(`http://localhost:3333/search/recent/${currentUser.id}`, {
-            const response = await fetch(`http://localhost:3333/search/recent/${currentUser.id}`, {
+            const response = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -135,11 +135,11 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     }
     const handelClearOneFromSearch = async (id: Number) => {
         try {
-            const response = await fetch(`http://localhost:3333/search/recent/${currentUser.id}/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
-            const respons = await fetch(`http://localhost:3333/search/recent/${currentUser.id}`)
+            const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`)
             const content = await respons.json()
             setRecentSearches(Array.from(content))
 
@@ -158,7 +158,6 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                         <button onClick={handelClearSearch} hidden={currentPath != '/search'} className='w-[120px] border-2 border-slate-300 py-2  rounded-md  font-bold hover:bg-slate-300 duration-300 '>
                             Clear search
                         </button>
-
                     </div>
                 </div>
 
@@ -312,8 +311,8 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
 
 
             </menu>
-            <div className={`${filterUser.length == 0 ? ' flex ' : ' hidden '} w-full bg-red- 300   justify-center `}>
-                <footer className='w-[60%]  shadow-xl rounded-2xl mt-20 py-10 flex flex-col justify-center items-center space-y-3'>
+            <div className={`${filterUser.length == 0 ? ' flex ' : ' hidden '} w-full 300   justify-center `}>
+                <footer className='w-[60%] min-w-[400px] max-w-[760px]  shadow-xl rounded-2xl mt-20 py-10 flex flex-col justify-center items-center space-y-3'>
                     <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
                         <div className="">
                             <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />

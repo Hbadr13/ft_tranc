@@ -6,7 +6,9 @@ export default function Document() {
 
   return (
     <Html lang="en">
-      <Head />
+      <Head>
+        <title>ft_transcendence</title>
+      </Head>
       <body className={`bg-CusColor_grey`}>
         <Main />
         <NextScript />

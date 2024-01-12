@@ -11,27 +11,29 @@ export class GameService {
     }
     updateGame({ game, room, server }: { game: Game, room: string, server: Server }): void {
 
-
-        // game.player1.y = mous.x
-        // game.player2.y = mous.y
         this.setBallBorder({ game: game })
         this.setPlayerBorder({ game: game, })
         this.setPlayerBorder({ game: game })
 
+
         if (game.Ball.right < 0) {
+            const velocityX = Math.floor(Math.random() * 2) ? -1 : 1
+            const velocityY = Math.floor(Math.random() * 2) ? -1 : 1
             game.player1.score += 1
             game.Ball.ballX = game.canvas.width / 2;
-            game.Ball.ballY = game.canvas.height / 2;
-            game.Ball.velocityX = game.canvas.velocityX;
-            game.Ball.velocityY = game.canvas.velocityY;
+            game.Ball.ballY = Math.floor(Math.random() * 350) + 50;
+            game.Ball.velocityX = game.canvas.velocityX * velocityX;
+            game.Ball.velocityY = game.canvas.velocityY * velocityY;
             game.Ball.speeD = game.canvas.speeD
         }
         if (game.Ball.left > game.canvas.width) {
+            const velocityX = Math.floor(Math.random() * 2) ? -1 : 1
+            const velocityY = Math.floor(Math.random() * 2) ? -1 : 1
             game.player2.score += 1
             game.Ball.ballX = game.canvas.width / 2;
-            game.Ball.ballY = game.canvas.height / 2;
-            game.Ball.velocityX = game.canvas.velocityX;
-            game.Ball.velocityY = game.canvas.velocityY;
+            game.Ball.ballY = Math.floor(Math.random() * 350) + 50;
+            game.Ball.velocityX = game.canvas.velocityX * velocityX;
+            game.Ball.velocityY = game.canvas.velocityY * velocityY;
             game.Ball.speeD = game.canvas.speeD
         }
         if (game.Ball.bottom > game.canvas.height || game.Ball.top < 0)

@@ -17,9 +17,10 @@ model User {
   firstName              String?
   lastName               String?
   foto_user              String?
-  level                  Float?
+  level                  Decimal?
   won                    Int?
   lost                   Int?
+  gameStatus             String?
   twoFactorSecret        String?
   tempSecret             String?
   isTwoFactorEnabled     Boolean         @default(false)

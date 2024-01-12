@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { usefetchDataContext } from '@/hooks/usefetchDataContext';
 import { NullLiteral } from 'typescript';
+import { Constant } from '@/constants/constant';
 
 interface LevelBarpros {
     value: number
@@ -68,7 +69,7 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch('http://localhost:3333/auth/user', {
+                const response = await fetch(`${Constant.API_URL}/auth/user`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
@@ -103,7 +104,7 @@ const YourComponent = ({ currentFileName }: any) => {
             async () => {
                 try {
 
-                    const response = await fetch(`http://localhost:3333/friends/accepted-friends/${numberPart}`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${numberPart}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -121,7 +122,7 @@ const YourComponent = ({ currentFileName }: any) => {
         (
             async () => {
                 try {
-                    const response = await fetch(`http://localhost:3333/friends/accepted-friends/${id}`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${id}`, {
                         credentials: 'include',
                     });
                     if (response.ok) {
@@ -187,7 +188,7 @@ const YourComponent = ({ currentFileName }: any) => {
             async () => {
                 try {
 
-                    const response = await fetch(`http://localhost:3333/users/one/${usernamePart}/${numberPart}`, {
+                    const response = await fetch(`${Constant.API_URL}/users/one/${usernamePart}/${numberPart}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -210,7 +211,7 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${id}/received-blocked`, {
+                const response = await fetch(`${Constant.API_URL}/friends/${id}/received-blocked`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -225,7 +226,7 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${id}/received-requests`, {
+                const response = await fetch(`${Constant.API_URL}/friends/${id}/received-requests`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -241,7 +242,7 @@ const YourComponent = ({ currentFileName }: any) => {
             async () => {
                 try {
 
-                    const response = await fetch(`http://localhost:3333/friends/${numberPart}/send-requests`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/${numberPart}/send-requests`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -259,7 +260,7 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${numberPart}/send-requests`, {
+                const response = await fetch(`${Constant.API_URL}/friends/${numberPart}/send-requests`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -281,7 +282,7 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${id}/send-blocked`, {
+                const response = await fetch(`${Constant.API_URL}/friends/${id}/send-blocked`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -295,7 +296,7 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${id}/send-requests`, {
+                const response = await fetch(`${Constant.API_URL}/friends/${id}/send-requests`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -309,7 +310,7 @@ const YourComponent = ({ currentFileName }: any) => {
     const sendRequestForaccpet = async () => {
         try {
 
-            const response = await fetch(`http://localhost:3333/friends/accept-friend-request/${numberPart}/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/accept-friend-request/${numberPart}/${id}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -330,7 +331,7 @@ const YourComponent = ({ currentFileName }: any) => {
     const blockedfriend = async () => {
         try {
 
-            const response = await fetch(`http://localhost:3333/friends/blocked-friend-request/${id}/${numberPart}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/blocked-friend-request/${id}/${numberPart}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -348,7 +349,7 @@ const YourComponent = ({ currentFileName }: any) => {
     }
     const sendRequest = async () => {
         try {
-            const response = await fetch(`http://localhost:3333/friends/send-request/${numberPart}/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}/${id}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -367,7 +368,7 @@ const YourComponent = ({ currentFileName }: any) => {
     };
     const cancelRequest = async () => {
         try {
-            const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -387,7 +388,7 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${id}`, {
+                const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${id}`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
@@ -397,11 +398,11 @@ const YourComponent = ({ currentFileName }: any) => {
     }, [query, id, check, check1, check2, numberPart, currentFileName]);
     const Unblockedfriend = async () => {
         try {
-            const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
-            console.log(isOpen1);
+            // console.log(isOpen1);
 
             if (response.ok) {
                 router.push("/")
@@ -409,7 +410,7 @@ const YourComponent = ({ currentFileName }: any) => {
                 // setIsOpen(true);
                 console.log('Friend Unblocked sent successfully.');
             } else {
-                console.log(isOpen1);
+                // console.log(isOpen1);
 
 
                 console.error('Failed to Unblock friend request.');
@@ -479,7 +480,7 @@ const YourComponent = ({ currentFileName }: any) => {
         }
         // setFlag2(true)
     }, [sendr, numberPart, isfriend, received, currentFileName, sendr_blocked, received_blocked, amis, amis_id, setFlag1, flag2, delete_request])
-    console.log(check)
+    // console.log(check)
 
     return (
         <div className='flex flex-col'>

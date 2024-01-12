@@ -19,7 +19,7 @@ export class AchievementService {
     let newLevel: number = 0
     let ifWon = 0
     let ifLost = 0
-    console.log(userId, body)
+    // console.log(userId, body)
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
@@ -43,16 +43,17 @@ export class AchievementService {
 
     else if (user.level < 10)
       newLevel = body.points / 250
-    await this.prisma.user.update({
+    const userr = await this.prisma.user.update({
       where: {
         id: userId,
-      },
+      }, 
       data: {
         level: user.level + newLevel,
         won: user.won + ifWon,
         lost: user.lost + ifLost,
       },
     });
+    // console.log(userr)
     // return data;
   }
   // async deleteRoom(userId: number) {

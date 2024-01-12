@@ -7,6 +7,7 @@ import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
 import { userProps } from "@/interface/data";
 
 import Image from 'next/image'
+import { Constant } from "@/constants/constant";
 
 interface LevelBarpros {
   value: number
@@ -45,7 +46,7 @@ const UseProfile = () => {
   useEffect(() => {
     (
       async () => {
-        const response = await fetch('http://localhost:3333/auth/user', {
+        const response = await fetch(`${Constant.API_URL}/auth/user`, {
           credentials: 'include',
         });
         const content = await response.json();
@@ -59,7 +60,7 @@ const UseProfile = () => {
       async () => {
         try {
 
-          const response = await fetch('http://localhost:3333/auth/user', {
+          const response = await fetch(`${Constant.API_URL}/auth/user`, {
             credentials: 'include',
           });
           const content = await response.json();
@@ -120,7 +121,7 @@ const UseProfile = () => {
   };
   const handelLogOutUser = async () => {
     try {
-      const response = await fetch(`http://localhost:3333/auth/logout`, {
+      const response = await fetch(`${Constant.API_URL}/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -134,7 +135,7 @@ const UseProfile = () => {
       async () => {
         try {
 
-          const response = await fetch(`http://localhost:3333/friends/accepted-friends/${id}`, {
+          const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${id}`, {
             credentials: 'include',
           });
           const content = await response.json();
@@ -147,104 +148,104 @@ const UseProfile = () => {
 
   return (
 
- 
-      <div className='flex flex-wrap  ml-12 justify-center min-h-screen  min-w-screen    items-center p-6 '>
-        <div className='  flex-none   z-20  w-[408px] mt-[120px] mb-10  h-[100%]  shadow-xl  shadow-[#728edb] justify-center items-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
-          <div className="text-center">
-            <span className="text-white">My Profile</span>
-            <div className="mt-6">
-              <img
-                src={foto_user}
-                alt="Your Image Alt Text"
-                className=" w-52 h-52   border-2 border-[#E3E8EC]  drop-shadow shadow-md shadow-black rounded-[40px] inline-block" // Adjust the width as needed
-              />
+
+    <div className='flex flex-wrap  ml-12 justify-center min-h-screen  min-w-screen    items-center p-6 '>
+      <div className='  flex-none   z-20  w-[408px] mt-[120px] mb-10  h-[100%]  shadow-xl  shadow-[#728edb] justify-center items-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
+        <div className="text-center">
+          <span className="text-white">My Profile</span>
+          <div className="mt-6">
+            <img
+              src={foto_user}
+              alt="Your Image Alt Text"
+              className=" w-52 h-52   border-2 border-[#E3E8EC]  drop-shadow shadow-md shadow-black rounded-[40px] inline-block" // Adjust the width as needed
+            />
+          </div>
+          <div className='mt-6'>
+            <h1 className="text-xl font-bold">{username}</h1>
+            <span className="text-sm  font-serif italic flex justify-center mt-3">{email}</span>
+          </div>
+          <div className="mt-8  flex justify-center flex-col items-center bgs-black mal-6">
+            <LevelBar value={80} />
+            <div className="  flex  justify-center items-center">
+              <p className=' mt-4 text-white shadow-sm shadow-black   w-28 font-serif  uppercase'>level 8-86%</p>
             </div>
+          </div>
+          <div className=" hidden md:flex justify-center items-center  ">
+
             <div className='mt-6'>
-              <h1 className="text-xl font-bold">{username}</h1>
-              <span className="text-sm  font-serif italic flex justify-center mt-3">{email}</span>
-            </div>
-            <div className="mt-8  flex justify-center flex-col items-center bgs-black mal-6">
-              <LevelBar value={80} />
-              <div className="  flex  justify-center items-center">
-                <p className=' mt-4 text-white shadow-sm shadow-black   w-28 font-serif  uppercase'>level 8-86%</p>
-              </div>
-            </div>
-            <div className=" hidden md:flex justify-center items-center  ">
-
-              <div className='mt-6'>
-                <Link className="text-base font-bold flex justify-center  items-center ml- text-blue-600" href={"/EditProfile"}><span className=" py-2 px-28 bg-white border  drop-shadow shadow-md shadow-black  rounded-xl hover:scale-110 duration-300">EditProfile</span>
-                </Link>
-                <h1 className="flex  mt-[40px] ">Recent Activities</h1>
-
-                <img
-                  src="https://w0.peakpx.com/wallpaper/616/177/HD-wallpaper-table-tennis-neon-icon-blue-background-neon-symbols-table-tennis-neon-icons-table-tennis-sign-sports-signs-table-tennis-icon-sports-icons.jpg"
-                  alt="Your"
-                  className="w-80 mt-6 h-60  rounded-[32px] inline-block"
-                />
-                {/* <button className="flex justify-center  items-center mt-6  bg-[#f4f5f8] transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-12 hover:scale-105 ">Login</button> */}
-              </div>
-            </div>
-            <div className=" md:hidden flex justify-center items-center flex-col ml-3 mt-6 ">
-
               <Link className="text-base font-bold flex justify-center  items-center ml- text-blue-600" href={"/EditProfile"}><span className=" py-2 px-28 bg-white border  drop-shadow shadow-md shadow-black  rounded-xl hover:scale-110 duration-300">EditProfile</span>
               </Link>
+              <h1 className="flex  mt-[40px] ">Recent Activities</h1>
 
-              <div className='mt-2 msl-1'>
-                {(check != 2) ? (<div>
-                  <button onClick={() => freind_ranck1(2)} className=" mt-6 px-[133px]  py-2 text-base font-bold   bg-white  border hover:text-white  drop-shadow shadow-md shadow-black hover:bg-[#3b82f6] rounded-xl  hover:scale-110 duration-300 text-blue-600">Rank</button>
-                </div>) : null}
-                {(check == 2) ? (<div>
-                  <button onClick={() => freind_ranck1(2)} className=" mt-6 px-[135px] py-2 text-base font-bold  bg-[#3b82f6]  hover:text-white hover:bg-blue-600 drop-shadow shadow-md shadow-black rounded-xl hover:scale-110 duration-300 text-white">Rank</button>
-                </div>) : null}
-                {(check != 1) ? (<div>
-                  <button onClick={() => freind_ranck(1)} className=" mt-8 px-[125px] py-2 text-base font-bold   bg-white border  hover:text-white  hover:bg-[#3b82f6] drop-shadow shadow-md shadow-black rounded-xl hover:scale-110 duration-300 text-blue-600">Friends</button>
-                </div>) : null}
-                {(check == 1) ? (<div>
-                  <button onClick={() => freind_ranck(1)} className=" mt-8 px-[125px] py-2  text-base font-bold   bordher-2 borsder-black bg-[#3b82f6] hover:text-blue-600 drop-shadow shadow-md shadow-black rounded-xl hover:bg-black hover:scale-110 duration-300 text-white">Friends</button>
-                </div>) : null}
-
-              </div>
-            </div>
-            <div className="mt-8 flex justify-center ml-2 items-center">
-              <Link  href="/auth/login" onClick={handelLogOutUser} className="bg-white  shadow-sm shadow-black  transition-all active:scale-100 rounded-xl border text-blue-600 py-2  px-32 hover:bg:white hovxer:text-white hover:scale-105 duration-300 ">Logout</Link>
+              <img
+                src="https://w0.peakpx.com/wallpaper/616/177/HD-wallpaper-table-tennis-neon-icon-blue-background-neon-symbols-table-tennis-neon-icons-table-tennis-sign-sports-signs-table-tennis-icon-sports-icons.jpg"
+                alt="Your"
+                className="w-80 mt-6 h-60  rounded-[32px] inline-block"
+              />
+              {/* <button className="flex justify-center  items-center mt-6  bg-[#f4f5f8] transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-12 hover:scale-105 ">Login</button> */}
             </div>
           </div>
-        </div>
-        <div className=" hidden md:flex">
+          <div className=" md:hidden flex justify-center items-center flex-col ml-3 mt-6 ">
 
-          <div className=" flex flex-col    h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[85px] min-h-[845px]   p-6">
-            {(check != 2) ? (<div>
-              <button onClick={() => freind_ranck1(2)} className=" mt-60 px-[108px] py-2 text-base font-bold   bg-white  border hover:text-white  hover:bg-[#3b82f6]  hover:scale-110 duration-300 text-blue-600">Rank</button>
-            </div>) : null}
-            {(check == 2) ? (<div>
-              <button onClick={() => freind_ranck1(2)} className=" mt-60 px-[110px] py-2 text-base font-bold  bg-[#3b82f6]  hover:text-white hover:bg-blue-600  hover:scale-110 duration-300 text-white">Rank</button>
-            </div>) : null}
-            {(check != 1) ? (<div>
-              <button onClick={() => freind_ranck(1)} className=" mt-40 px-[99px] py-2 text-base font-bold   bg-white border  hover:text-white  hover:bg-[#3b82f6] hover:scale-110 duration-300 text-blue-600">Friends</button>
-            </div>) : null}
-            {(check == 1) ? (<div>
-              <button onClick={() => freind_ranck(1)} className=" mt-40 px-[100px] py-2  text-base font-bold   bordher-2 borsder-black bg-[#3b82f6] hover:text-blue-600  hover:bg-black hover:scale-110 duration-300 text-white">Friends</button>
-            </div>) : null}
+            <Link className="text-base font-bold flex justify-center  items-center ml- text-blue-600" href={"/EditProfile"}><span className=" py-2 px-28 bg-white border  drop-shadow shadow-md shadow-black  rounded-xl hover:scale-110 duration-300">EditProfile</span>
+            </Link>
 
+            <div className='mt-2 msl-1'>
+              {(check != 2) ? (<div>
+                <button onClick={() => freind_ranck1(2)} className=" mt-6 px-[133px]  py-2 text-base font-bold   bg-white  border hover:text-white  drop-shadow shadow-md shadow-black hover:bg-[#3b82f6] rounded-xl  hover:scale-110 duration-300 text-blue-600">Rank</button>
+              </div>) : null}
+              {(check == 2) ? (<div>
+                <button onClick={() => freind_ranck1(2)} className=" mt-6 px-[135px] py-2 text-base font-bold  bg-[#3b82f6]  hover:text-white hover:bg-blue-600 drop-shadow shadow-md shadow-black rounded-xl hover:scale-110 duration-300 text-white">Rank</button>
+              </div>) : null}
+              {(check != 1) ? (<div>
+                <button onClick={() => freind_ranck(1)} className=" mt-8 px-[125px] py-2 text-base font-bold   bg-white border  hover:text-white  hover:bg-[#3b82f6] drop-shadow shadow-md shadow-black rounded-xl hover:scale-110 duration-300 text-blue-600">Friends</button>
+              </div>) : null}
+              {(check == 1) ? (<div>
+                <button onClick={() => freind_ranck(1)} className=" mt-8 px-[125px] py-2  text-base font-bold   bordher-2 borsder-black bg-[#3b82f6] hover:text-blue-600 drop-shadow shadow-md shadow-black rounded-xl hover:bg-black hover:scale-110 duration-300 text-white">Friends</button>
+              </div>) : null}
 
-
-
+            </div>
           </div>
-
+          <div className="mt-8 flex justify-center ml-2 items-center">
+            <Link href="/auth/login" onClick={handelLogOutUser} className="bg-white  shadow-sm shadow-black  transition-all active:scale-100 rounded-xl border text-blue-600 py-2  px-32 hover:bg:white hovxer:text-white hover:scale-105 duration-300 ">Logout</Link>
+          </div>
         </div>
-        {(<div className=" flex   flex-col justify-center items-center md:opacity-150 bg xl:mt-[80px] sm:mt-6   rounded-md min-h-[845px]  sm:bg-blue-50  w-[550px] xl:w-[700px] h-16 xl:rounded-2xl xl:rounded-s-[1px] p-6" >
-          {
-            check === 2 && <Rank amis_id={amis} amis={amis} id={id} />
-          }
-          {
-            check === 1 && <Friends amis_id={amis} amis={amis} currentUser={id} />
-          }
-
-
-        </div>)
-        }
       </div>
-    
+      <div className=" hidden md:flex">
+
+        <div className=" flex flex-col    h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[85px] min-h-[845px]   p-6">
+          {(check != 2) ? (<div>
+            <button onClick={() => freind_ranck1(2)} className=" mt-60 px-[108px] py-2 text-base font-bold   bg-white  border hover:text-white  hover:bg-[#3b82f6]  hover:scale-110 duration-300 text-blue-600">Rank</button>
+          </div>) : null}
+          {(check == 2) ? (<div>
+            <button onClick={() => freind_ranck1(2)} className=" mt-60 px-[110px] py-2 text-base font-bold  bg-[#3b82f6]  hover:text-white hover:bg-blue-600  hover:scale-110 duration-300 text-white">Rank</button>
+          </div>) : null}
+          {(check != 1) ? (<div>
+            <button onClick={() => freind_ranck(1)} className=" mt-40 px-[99px] py-2 text-base font-bold   bg-white border  hover:text-white  hover:bg-[#3b82f6] hover:scale-110 duration-300 text-blue-600">Friends</button>
+          </div>) : null}
+          {(check == 1) ? (<div>
+            <button onClick={() => freind_ranck(1)} className=" mt-40 px-[100px] py-2  text-base font-bold   bordher-2 borsder-black bg-[#3b82f6] hover:text-blue-600  hover:bg-black hover:scale-110 duration-300 text-white">Friends</button>
+          </div>) : null}
+
+
+
+
+        </div>
+
+      </div>
+      {(<div className=" flex   flex-col justify-center items-center md:opacity-150 bg xl:mt-[80px] sm:mt-6   rounded-md min-h-[845px]  sm:bg-blue-50  w-[550px] xl:w-[700px] h-16 xl:rounded-2xl xl:rounded-s-[1px] p-6" >
+        {
+          check === 2 && <Rank amis_id={amis} amis={amis} id={id} />
+        }
+        {
+          check === 1 && <Friends amis_id={amis} amis={amis} currentUser={id} />
+        }
+
+
+      </div>)
+      }
+    </div>
+
   );
 };
 

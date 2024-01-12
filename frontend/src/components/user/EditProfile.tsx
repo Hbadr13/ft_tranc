@@ -6,6 +6,7 @@ import Rank from "./Rank";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
 import { useRouter } from "next/navigation";
 import { AppProps, userProps } from "@/interface/data";
+import { Constant } from "@/constants/constant";
 
 
 
@@ -105,7 +106,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
         // console.log(update_gender);
 
         try {
-            const res = await fetch(`http://localhost:3333/users/update_info/${id}`, {
+            const res = await fetch(`${Constant.API_URL}/users/update_info/${id}`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -131,7 +132,6 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
         } catch (error) {
             router.push('/profile');
 
-            console.log("kin wahd error hna: ", error);
         }
     };
 
@@ -139,7 +139,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
         (
             async () => {
                 try {
-                    const response = await fetch('http://localhost:3333/auth/user', {
+                    const response = await fetch(`${Constant.API_URL}/auth/user`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -233,8 +233,8 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                     <div className=" hidden md:flex ">
 
                         <div className='mt-6'>
-                        <Link className="text-base font-bold flex justify-center items-center ml-4 text-blue-600" href={"/profile"}><span className=" py-2 px-32 bg-white  shadow-sm shadow-black   border rounded-xl hover:scale-110 duration-300">Profile</span>
-                        </Link>
+                            <Link className="text-base font-bold flex justify-center items-center ml-4 text-blue-600" href={"/profile"}><span className=" py-2 px-32 bg-white  shadow-sm shadow-black   border rounded-xl hover:scale-110 duration-300">Profile</span>
+                            </Link>
                             <h1 className="flex  mt-[50px] ">Recent Activities</h1>
 
                             <img
@@ -264,7 +264,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                             </Link>
 
 
-                            
+
 
 
 

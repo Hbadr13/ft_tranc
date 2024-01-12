@@ -31,6 +31,7 @@ export class Game {
     player1_Id: number
     player2_Id: number
     proteted: boolean
+    replay: boolean
     player1: Player
     player2: Player
     status: string

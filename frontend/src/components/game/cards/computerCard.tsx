@@ -4,7 +4,7 @@ import Image from 'next/image'
 const ComputerCard = ({ setselectPlayer }: { setselectPlayer: (selectPlayer: string) => void }) => {
   return (
     <div className="w-full h-full flex justify-center items-center">
-      <div className="ComputerCard  relative  overflow-hidden w-[80%] h-[90%]   bg-CusColor_grey flex flex-col justify-center items-center rounded-xl">
+      <div className="ComputerCard  relative  overflow-hidden w-[100%]  h-[90%]   bg-CusColor_grey flex flex-col justify-center items-center rounded-xl">
         <div id='Bottom' className={`w-[600px] h-[600px] -right-[400px] md:-right-[340px] xl:-right-[240px] absolute  rotate-[-45deg] `} />
         <div className=" w-full h-[90%] flex justify-center  z-40">
           <div className="w-[50%] h-full  ">

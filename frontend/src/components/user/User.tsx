@@ -1,3 +1,4 @@
+import { Constant } from '@/constants/constant';
 import { userData, userProps } from '@/interface/data';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -10,7 +11,7 @@ function Mutaulfriends({ user, amis }: { user: userProps, amis: Array<userProps>
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${user.id}`, {
+                const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${user.id}`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
@@ -77,7 +78,7 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/users/${currentUser1.id}`, {
+                const response = await fetch(`${Constant.API_URL}/users/${currentUser1.id}`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
@@ -88,11 +89,11 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/users/other/${currentUser1.id}`, {
+                const response = await fetch(`${Constant.API_URL}/users/other/${currentUser1.id}`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
-                console.log("cont=", content)
+                // console.log("cont=", content)
                 setallfriends(content);
             }
         )();
@@ -102,7 +103,7 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch('http://localhost:3333/auth/user', {
+                const response = await fetch(`${Constant.API_URL}/auth/user`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
@@ -112,7 +113,7 @@ const User = () => {
     }, []);
     const sendRequest = async (numberPart: number) => {
         try {
-            const response = await fetch(`http://localhost:3333/friends/send-request/${numberPart}/${currentUser1.id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}/${currentUser1.id}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -137,7 +138,7 @@ const User = () => {
 
     const CanacelRequest = async (numberPart: number) => {
         try {
-            const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${currentUser1.id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${currentUser1.id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -161,7 +162,7 @@ const User = () => {
     const sendRequestForaccpet = async (numberPart: number) => {
         try {
 
-            const response = await fetch(`http://localhost:3333/friends/accept-friend-request/${numberPart}/${currentUser1.id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/accept-friend-request/${numberPart}/${currentUser1.id}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -183,7 +184,7 @@ const User = () => {
     };
     const CanacelRequest1 = async (numberPart: number) => {
         try {
-            const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${currentUser1.id}/${numberPart}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${currentUser1.id}/${numberPart}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -207,7 +208,7 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser1.id}`, {
+                const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${currentUser1.id}`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
@@ -220,13 +221,13 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${currentUser1.id}/received-requests`, {
+                const response = await fetch(`${Constant.API_URL}/friends/${currentUser1.id}/received-requests`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
                 if (response.status == 200) {
 
-                    console.log("content======================", counte)
+                    // console.log("content======================", counte)
 
                     setfriend_reciver(counte)
                     return;
@@ -237,13 +238,12 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${currentUser1.id}/received-blocked`, {
+                const response = await fetch(`${Constant.API_URL}/friends/${currentUser1.id}/received-blocked`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
                 if (response.status == 200) {
                     setreceived_blocked(counte)
-                    console.log("counte", counte)
                     return;
                 }
             }
@@ -252,7 +252,7 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${currentUser1.id}/send-blocked`, {
+                const response = await fetch(`${Constant.API_URL}/friends/${currentUser1.id}/send-blocked`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -266,7 +266,7 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/friends/${currentUser1.id}/send-requests`, {
+                const response = await fetch(`${Constant.API_URL}/friends/${currentUser1.id}/send-requests`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
