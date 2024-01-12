@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { userProps, messageProps, channelProps, participantsProps } from '@/interface/data'
 import { Socket } from 'socket.io-client';
 import Link from 'next/link';
+import { Constant } from '@/constants/constant';
 interface LevelBarpros {
     value: string
 }
@@ -43,7 +44,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
         (
             async () => {
                 try {
-                    const response = await fetch(`http://localhost:3333/chat/allUsersChannel/${Room.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/chat/allUsersChannel/${Room.id}`, {
                         credentials: 'include',
                     })
                     const content = await response.json();
@@ -61,7 +62,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
         (
             async () => {
                 try {
-                    const response = await fetch(`http://localhost:3333/chat/OneChannel/${Room.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/chat/OneChannel/${Room.id}`, {
                         credentials: 'include',
                     })
                     const content = await response.json();
@@ -100,7 +101,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
 
     const handlParticipants = async (item: string) => {
         try {
-            await fetch(`http://localhost:3333/chat/setAdmin/${Room.id}/${participant?.id}/${item}`, {
+            await fetch(`${Constant.API_URL}/setAdmin/${Room.id}/${participant?.id}/${item}`, {
                 method: 'POST',
                 // credentials: 'include',
             })
@@ -124,7 +125,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
             }
             else {
 
-                const response = await fetch(`http://localhost:3333/chat/upadteChannel/${currentUser.id}/${Room.id}/${type}/${password}`, {
+                const response = await fetch(`${Constant.API_URL}/chat/upadteChannel/${currentUser.id}/${Room.id}/${type}/${password}`, {
                     credentials: 'include',
                 })
                 const content = await response.json();
@@ -147,7 +148,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
         (
             async () => {
                 try {
-                    const response = await fetch(`http://localhost:3333/chat/statusChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/chat/statusChatTwoUser/${currentUser.id}/${Receiver.id}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -167,7 +168,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
             (
                 async () => {
                     try {
-                        const response = await fetch(`http://localhost:3333/chat/getConversationDirect/${currentUser.id}/${Receiver.id}`, {
+                        const response = await fetch(`${Constant.API_URL}/chat/getConversationDirect/${currentUser.id}/${Receiver.id}`, {
                             credentials: 'include',
                         });
                         const content = await response.json();
@@ -185,7 +186,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
             (
                 async () => {
                     try {
-                        const response = await fetch(`http://localhost:3333/chat/allMessagesChannel/${currentUser.id}/${Room.id}`, {
+                        const response = await fetch(`${Constant.API_URL}/chat/allMessagesChannel/${currentUser.id}/${Room.id}`, {
                             credentials: 'include',
                         });
                         const content = await response.json();
@@ -205,7 +206,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
             if (message) {
                 setMsg(message);
                 if (button) {
-                    fetch(`http://localhost:3333/chat/directMessage/${currentUser.id}/${Receiver.id}`, {
+                    fetch(`${Constant.API_URL}/chat/directMessage/${currentUser.id}/${Receiver.id}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -217,7 +218,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
                     });
                 }
                 else {
-                    fetch(`http://localhost:3333/chat/sendMessageToChannel/${Room.id}/${currentUser.id}`, {
+                    fetch(`${Constant.API_URL}/chat/sendMessageToChannel/${Room.id}/${currentUser.id}`, {
                         method: 'POST',
 
                         headers: {
@@ -239,7 +240,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
 
 
 
-                await fetch(`http://localhost:3333/chat/directMessage/${currentUser.id}/${Receiver.id}`, {
+                await fetch(`${Constant.API_URL}/chat/directMessage/${currentUser.id}/${Receiver.id}`, {
                     method: 'POST',
 
                     headers: {
@@ -254,7 +255,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
             }
             else {
 
-                await fetch(`http://localhost:3333/chat/sendMessageToChannel/${Room.id}/${currentUser.id}`, {
+                await fetch(`${Constant.API_URL}/chat/sendMessageToChannel/${Room.id}/${currentUser.id}`, {
                     method: 'POST',
 
                     headers: {
@@ -292,7 +293,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
             if (content) {
                 if (!button) {
 
-                    await fetch(`http://localhost:3333/chat/directMessage/${currentUser.id}/${Receiver.id}`, {
+                    await fetch(`${Constant.API_URL}/chat/directMessage/${currentUser.id}/${Receiver.id}`, {
                         method: 'POST',
 
                         headers: {
@@ -308,7 +309,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
                 else {
 
 
-                    await fetch(`http://localhost:3333/chat/sendMessageToChannel/${Room.id}/${currentUser.id}`, {
+                    await fetch(`${Constant.API_URL}/chat/sendMessageToChannel/${Room.id}/${currentUser.id}`, {
                         method: 'POST',
 
                         headers: {
@@ -343,7 +344,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
     };
     const blockChatTwoUser = async () => {
 
-        const response = await fetch(`http://localhost:3333/chat/blockChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+        const response = await fetch(`${Constant.API_URL}/chat/blockChatTwoUser/${currentUser.id}/${Receiver.id}`, {
             method: 'POST',
 
             headers: {
@@ -359,7 +360,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
     }
     const unblockChatTwoUser = async () => {
 
-        const response = await fetch(`http://localhost:3333/chat/unblockChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+        const response = await fetch(`${Constant.API_URL}/chat/unblockChatTwoUser/${currentUser.id}/${Receiver.id}`, {
             method: 'POST',
 
             headers: {

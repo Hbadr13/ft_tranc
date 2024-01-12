@@ -1,3 +1,4 @@
+import { Constant } from '@/constants/constant'
 import { channelProps, participantsProps, userProps } from '@/interface/data'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
@@ -18,7 +19,7 @@ export default function EditChannel({ setMyStatusInRoom, currentUser, Room }: { 
         (
             async () => {
                 try {
-                    const response = await fetch(`http://localhost:3333/chat/allUsersChannel/${Room.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/chat/allUsersChannel/${Room.id}`, {
                         credentials: 'include',
                     })
                     const content = await response.json();
@@ -37,7 +38,7 @@ export default function EditChannel({ setMyStatusInRoom, currentUser, Room }: { 
         (
             async () => {
                 try {
-                    const response = await fetch(`http://localhost:3333/chat/OneChannel/${Room.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/chat/OneChannel/${Room.id}`, {
                         credentials: 'include',
                     })
                     const content = await response.json();
@@ -75,7 +76,7 @@ export default function EditChannel({ setMyStatusInRoom, currentUser, Room }: { 
 
     const handlParticipants = async (item: string) => {
         try {
-            await fetch(`http://localhost:3333/chat/setAdmin/${Room.id}/${participant?.id}/${item}`, {
+            await fetch(`${Constant.API_URL}/chat/setAdmin/${Room.id}/${participant?.id}/${item}`, {
                 method: 'POST',
                 // credentials: 'include',
             })
@@ -99,7 +100,7 @@ export default function EditChannel({ setMyStatusInRoom, currentUser, Room }: { 
             }
             else {
 
-                const response = await fetch(`http://localhost:3333/chat/upadteChannel/${currentUser.id}/${Room.id}/${type}/${password}`, {
+                const response = await fetch(`${Constant.API_URL}/chat/upadteChannel/${currentUser.id}/${Room.id}/${type}/${password}`, {
                     credentials: 'include',
                 })
                 const content = await response.json();
@@ -119,7 +120,7 @@ export default function EditChannel({ setMyStatusInRoom, currentUser, Room }: { 
 
     const handlLeaving = async (item: channelProps) => {
         try {
-            await fetch(`http://localhost:3333/chat/leavingRoom/${currentUser.id}/${item.id}`, {
+            await fetch(`${Constant.API_URL}/chat/leavingRoom/${currentUser.id}/${item.id}`, {
                 method: 'DELETE',
                 // credentials: 'include',
             })

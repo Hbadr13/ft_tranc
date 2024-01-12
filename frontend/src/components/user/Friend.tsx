@@ -1,3 +1,4 @@
+import { Constant } from "@/constants/constant";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
 import { userProps } from "@/interface/data";
 import Link from "next/link";
@@ -17,7 +18,7 @@ function LevelBar(userid: any) {
       async () => {
         try {
 
-          const response = await fetch(`http://localhost:3333/friends/accepted-friends/${userid.userid}`, {
+          const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${userid.userid}`, {
             credentials: 'include',
           });
           const content = await response.json();
@@ -75,7 +76,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   useEffect(() => {
     (
       async () => {
-        const response = await fetch(`http://localhost:3333/friends/${currentUser}/send-requests`, {
+        const response = await fetch(`${Constant.API_URL}/friends/${currentUser}/send-requests`, {
           credentials: 'include',
         });
         const counte = await response.json();
@@ -89,7 +90,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   }, [currentUser, isOpen]);
   const CanacelRequest = async (numberPart: number) => {
     try {
-      const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${currentUser}`, {
+      const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${currentUser}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -137,7 +138,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   // fetchCurrentUser(setid);
   const sendRequest = async (numberPart: number) => {
     try {
-      const response = await fetch(`http://localhost:3333/friends/send-request/${numberPart}/${currentUser}`, {
+      const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}/${currentUser}`, {
         method: 'POST',
         credentials: 'include',
       });

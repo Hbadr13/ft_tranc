@@ -44,7 +44,7 @@ export class UserController {
   async getByUserId(@Param('userId') userId: string) {
     // console.log('userId--->', userId);
     // console.log('userName--->', userName)
-    return this.userService.findByUserId(Number(userId));
+    return await this.userService.findByUserId(Number(userId));
   }
   @Post('enable-2fa/:userId')
   async enableTwoFactor(@Param('userId') userId: string) {

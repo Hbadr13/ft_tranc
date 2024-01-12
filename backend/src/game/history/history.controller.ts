@@ -13,7 +13,10 @@ export class HistoryController {
 
     @Get(':id')
     async getUsershistory(@Param('id') userid: string,) {
-        return this.updateService.getUsershistory(Number(userid))
+        // console.log('------------>history', userid)
+        const cont = await this.updateService.getUsershistory(Number(userid))
+        // console.log(cont)
+        return cont
     }
     @Get(':id/:customid')
     async getUsersCustomhistory(@Param('id') userid: string, @Param('customid') customid: string) {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { AppProps, userProps, listConversationDirect } from '@/interface/data';
+import { Constant } from '@/constants/constant';
 
 
 
@@ -19,7 +20,7 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
         (
             async () => {
                 try {
-                    const response = await fetch('http://localhost:3333/auth/user', {
+                    const response = await fetch(`${Constant.API_URL}/auth/user`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -38,7 +39,7 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
             async () => {
                 try {
 
-                    const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser1.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${currentUser1.id}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -53,7 +54,7 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
         (
             async () => {
                 try {
-                    const response = await fetch(`http://localhost:3333/chat/getConversationListDirect/${currentUser1.id}/direct`, {
+                    const response = await fetch(`${Constant.API_URL}/chat/getConversationListDirect/${currentUser1.id}/direct`, {
                         credentials: 'include',
                     });
                     if (response.ok) {
@@ -73,7 +74,7 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
         (
             async () => {
                 try {
-                    const response = await fetch(`http://localhost:3333/chat/listUserBlockedInChat/${currentUser1.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/chat/listUserBlockedInChat/${currentUser1.id}`, {
                         credentials: 'include',
                     });
                     if (response.ok) {

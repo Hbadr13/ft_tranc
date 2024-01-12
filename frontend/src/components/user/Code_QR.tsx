@@ -9,6 +9,7 @@ import { AppProps, userProps } from "@/interface/data";
 import QRCode from 'qrcode.react'; // Assuming you have qrcode.react installed
 
 import axios from 'axios';
+import { Constant } from "@/constants/constant";
 
 
 
@@ -54,11 +55,10 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch('http://localhost:3333/auth/user', {
+                const response = await fetch(`${Constant.API_URL}/auth/user`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
-                console.log(content)
                 setFoto_user(content.foto_user);
                 setid(content.id);
                 setEmail(content.email);
@@ -74,7 +74,7 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/users/enable-2fa/${id}`, {
+                const response = await fetch(`${Constant.API_URL}/users/enable-2fa/${id}`, {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -90,7 +90,7 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
 
     const handleEnable2FA = async () => {
         try {
-            const response = await fetch(`http://localhost:3333/users/enable-2fa/${currentUser.id}`, {
+            const response = await fetch(`${Constant.API_URL}/users/enable-2fa/${currentUser.id}`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -106,13 +106,14 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
     };
     const DeactivateTwoFactor = async () => {
         try {
-            const response = await fetch(`http://localhost:3333/users/DeactivateTwoFactor/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/users/DeactivateTwoFactor/${id}`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 }
             })
+<<<<<<< HEAD
             if (response.ok) {
 
                 const counte = await response.json();
@@ -120,6 +121,9 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                 setSuccess(2)
 
             }
+=======
+            const counte = await response.json();
+>>>>>>> hbadr
 
             // Provide the secret to the user for setup, such as displaying a QR code
         } catch (error) {
@@ -128,7 +132,7 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
     };
     const handleEnable2FA1 = async () => {
         try {
-            const response = await fetch(`http://localhost:3333/auth/set-2fa/${id}/${TwoFactor}`, {
+            const response = await fetch(`${Constant.API_URL}/auth/set-2fa/${id}/${TwoFactor}`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -137,7 +141,6 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
             })
             console.log("kin hana");
             const counte = await response.json();
-            console.log(response)
 
 
             if (response.ok) {

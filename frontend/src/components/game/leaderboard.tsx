@@ -6,6 +6,7 @@ import { io } from 'socket.io-client';
 import { AppProps, userProps } from '@/interface/data';
 import History from '@/components/game/history';
 import { useRouter } from 'next/navigation';
+import { Constant } from '@/constants/constant';
 let users_id1: string = "";
 
 const Leaderboard = ({ currentUser }: { currentUser: userProps }) => {
@@ -26,11 +27,10 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
 
         (
             async () => {
-                const response = await fetch('http://localhost:3333/auth/user', {
+                const response = await fetch(`${Constant.API_URL}/auth/user`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
-                console.log(content)
 
                 setid(content.id);
 
@@ -43,7 +43,6 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
 
         );
     }, [id]);
-    console.log(users_id)
 
     const router = useRouter();
 
@@ -190,16 +189,16 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
 }
 const Rank = ({ id, t }: { id: number, t: number }) => {
 
-    const [users_id, setUsers_id] = useState(Array<userProps>);
+    const [users_id, setUsers_id] = useState<Array<userProps>>([]);
 
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`http://localhost:3333/users/${0}`, {
+                const response = await fetch(`${Constant.API_URL}/users/${0}`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
-                setUsers_id(content);
+                setUsers_id(Array.from(content));
             }
         )();
     }, [id]);

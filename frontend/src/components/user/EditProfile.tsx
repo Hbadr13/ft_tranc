@@ -6,6 +6,7 @@ import Rank from "./Rank";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
 import { useRouter } from "next/navigation";
 import { AppProps, userProps } from "@/interface/data";
+import { Constant } from "@/constants/constant";
 
 
 
@@ -108,7 +109,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
         // console.log(update_gender);
 
         try {
-            const res = await fetch(`http://localhost:3333/users/update_info/${id}`, {
+            const res = await fetch(`${Constant.API_URL}/users/update_info/${id}`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -134,7 +135,6 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
         } catch (error) {
             router.push('/profile');
 
-            console.log("kin wahd error hna: ", error);
         }
     };
 
@@ -142,7 +142,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
         (
             async () => {
                 try {
-                    const response = await fetch('http://localhost:3333/auth/user', {
+                    const response = await fetch(`${Constant.API_URL}/auth/user`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -270,6 +270,14 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                             <Link className="text-base font-bold w-80 mt-5  h-12  flex justify-center items-center text-blue-600" href={"/Code_QR"}><span className="  mt-10 bg-white flex justify-center items-center w-full h-full     border-white rounded-xl border drop-shadow shadow-md shadow-black hover:scale-110 duration-300">Code_OR</span>
                             </Link>
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+>>>>>>> hbadr
                         </div>
                     </div>
                     <div className="mt-10 w-full ">

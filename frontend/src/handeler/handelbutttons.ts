@@ -1,3 +1,4 @@
+import { Constant } from "@/constants/constant";
 import { userProps } from "@/interface/data";
 
 export interface handelSendRequestProps {
@@ -8,7 +9,7 @@ export interface handelSendRequestProps {
 
 export const handelSendRequest = async ({ id, friendId, setSend }: handelSendRequestProps) => {
     try {
-        const response = await fetch(`http://localhost:3333/friends/send-request/${friendId}/${id}`, {
+        const response = await fetch(`${Constant.API_URL}/friends/send-request/${friendId}/${id}`, {
             method: 'POST',
             credentials: 'include',
         });

@@ -38,6 +38,17 @@ export class roomDto {
   @IsNotEmpty()
   opponentId: Number;
 }
+export class playDto {
+  @IsString()
+  gameStatus: string;
+ 
+}
+// export class settingsDto {
+//   @IsString()
+//   @IsNotEmpty()
+//   gameStatus: string;
+
+// } 
 
 export class AchievementDto {
   @IsInt()

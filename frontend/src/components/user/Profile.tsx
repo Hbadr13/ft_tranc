@@ -7,6 +7,7 @@ import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
 import { userProps } from "@/interface/data";
 
 import Image from 'next/image'
+import { Constant } from "@/constants/constant";
 
 interface LevelBarpros {
   value: string
@@ -49,7 +50,7 @@ const UseProfile = () => {
   useEffect(() => {
     (
       async () => {
-        const response = await fetch('http://localhost:3333/auth/user', {
+        const response = await fetch(`${Constant.API_URL}/auth/user`, {
           credentials: 'include',
         });
         const content = await response.json();
@@ -63,7 +64,7 @@ const UseProfile = () => {
       async () => {
         try {
 
-          const response = await fetch('http://localhost:3333/auth/user', {
+          const response = await fetch(`${Constant.API_URL}/auth/user`, {
             credentials: 'include',
           });
           const content = await response.json();
@@ -132,7 +133,7 @@ const UseProfile = () => {
   };
   const handelLogOutUser = async () => {
     try {
-      const response = await fetch(`http://localhost:3333/auth/logout`, {
+      const response = await fetch(`${Constant.API_URL}/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -146,7 +147,7 @@ const UseProfile = () => {
       async () => {
         try {
 
-          const response = await fetch(`http://localhost:3333/friends/accepted-friends/${id}`, {
+          const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${id}`, {
             credentials: 'include',
           });
           const content = await response.json();

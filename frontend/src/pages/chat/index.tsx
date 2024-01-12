@@ -2,14 +2,14 @@ import EditChannel from "@/components/chat/channels/editChannel";
 import Conversation from "@/components/chat/conversation";
 import ConversationList from "@/components/chat/conversationList";
 import Edit from "@/components/chat/edit";
-import { AppProps, channelProps, messageProps, participantsProps, userProps } from '@/interface/data';
+import { Constant } from "@/constants/constant";
+import { AppProps, channelProps, messageProps, participantsProps, userData, userProps } from '@/interface/data';
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Socket } from "socket.io";
 import { io } from "socket.io-client";
 
 export default function index({ users, amis }: AppProps) {
-  const userData = { id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false, room: '', won: 0, lost: 0, level: 0 }
   const [currentUser, setCurrentUser] = useState<userProps>(userData);
   const channelData = { id: 0, type: "", name: "", password: "" }
   const [Room, setRoom] = useState<channelProps>(channelData);
@@ -28,7 +28,7 @@ export default function index({ users, amis }: AppProps) {
     (
       async () => {
         try {
-          const response = await fetch('http://localhost:3333/auth/user', {
+          const response = await fetch(`${Constant.API_URL}/auth/user`, {
             credentials: 'include',
           });
           const content = await response.json();
@@ -42,7 +42,7 @@ export default function index({ users, amis }: AppProps) {
   const joinchanle = async () => {
     console.log("__________________________")
     try {
-      const response = await fetch(`http://localhost:3333/chat/joinChannel/${currentUser.id}/${Room.id}/${password}`, {
+      const response = await fetch(`${Constant.API_URL}/chat/joinChannel/${currentUser.id}/${Room.id}/${password}`, {
         method: 'POST',
 
         credentials: 'include',
@@ -65,7 +65,7 @@ export default function index({ users, amis }: AppProps) {
     (
       async () => {
         try {
-          const response = await fetch(`http://localhost:3333/chat/statusChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+          const response = await fetch(`${Constant.API_URL}/chat/statusChatTwoUser/${currentUser.id}/${Receiver.id}`, {
             credentials: 'include',
           });
           const content = await response.json();
@@ -85,7 +85,7 @@ export default function index({ users, amis }: AppProps) {
   }, [currentUser.id, Receiver, status_tow_user]);
 
   useEffect(() => {
-    const socket = io('http://localhost:3333/ChatGateway', {
+    const socket = io(`${Constant.API_URL}/ChatGateway`, {
       query: {
         userId: currentUser.id,
       }
@@ -163,7 +163,7 @@ export default function index({ users, amis }: AppProps) {
 
                       }
                       {/* <div className=""> */}
-                      <input required onChange={(e) => setPassword(e.target.value)} className="p-2 rounfded-xl text-base  text-blue-600 font-black disabled:opacity-75  mt-6 border-b-4 border-blue-600 w-80 h-10  w-fulgl" type="password" name="password" placeholder="Password" />
+                      <input required onChange={(e: any) => setPassword(e.target.value)} className="p-2 rounfded-xl text-base  text-blue-600 font-black disabled:opacity-75  mt-6 border-b-4 border-blue-600 w-80 h-10  w-fulgl" type="password" name="password" placeholder="Password" />
 
                       {/* </div> */}
                       <div className=' w-96 h-16 fbg-black mt-3 flex flex-row justify-center items-center space-x-6 '>

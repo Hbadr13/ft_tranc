@@ -4,7 +4,9 @@ import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image'
-export default function Home() {
+import { Socket } from 'socket.io-client';
+import { Constant } from '@/constants/constant';
+export default function Home({ socket }: { socket: Socket }) {
   const [foto_user, setfoto_user] = useState("");
   const [username, setUsername] = useState("");
   const [Email, setEmail] = useState("");
@@ -19,7 +21,7 @@ export default function Home() {
       async () => {
         try {
 
-          const response = await fetch('http://localhost:3333/auth/user', {
+          const response = await fetch(`${Constant.API_URL}/auth/user`, {
             credentials: 'include',
           });
           const content = await response.json();
@@ -36,10 +38,13 @@ export default function Home() {
   });
   const handelLogOutUser = async () => {
     try {
-      const response = await fetch(`http://localhost:3333/auth/logout`, {
+      const response = await fetch(`${Constant.API_URL}/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       });
+      if (response.ok) {
+        socket?.emit('Logout')
+      }
 
     } catch (error) {
       console.error('Error sending friend request:', error);
@@ -53,13 +58,7 @@ export default function Home() {
         <button className=" flex h-10 w-10 items-center  overflow-hidden rounded-lg bg-slate-700 text-slate-100 ring-slate-100  hover:shadow-md hover:ring-2">
           {/* <img className=" object-cover " src={foto_user} alt="Profile" /> */}
           <div className={'w-full h-full relative'}>
-            {/* <Image
-              className=''
-              src={foto_user}
-              alt="user profile"
-              fill
-              style={{ objectFit: "cover" }}
-            /> */}
+
             <Image
               className=''
               src={foto_user != '' ? foto_user : '/foto_user'}

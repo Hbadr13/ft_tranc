@@ -9,8 +9,6 @@ export class JwtMiddleware implements NestMiddleware {
     async use(req: Request, res: Response, next: NextFunction) {
         try {
             const { url, method } = req;
-            
-            // Exclude JWT verification for paths starting with '/api'
             if (!url.startsWith('/auth/')) {
                 const cookie = req.cookies['jwt'];
                 
@@ -25,9 +23,6 @@ export class JwtMiddleware implements NestMiddleware {
                     throw new UnauthorizedException('JWT token is invalid.');
                 }
             }
-            // If needed, you can attach the user to the request
-            // const user = await this.authService.findOne({ id: condition['id'] });
-            // req.user = user;
 
             next();
         } catch (e) {

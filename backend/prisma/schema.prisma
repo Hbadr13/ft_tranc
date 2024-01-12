@@ -20,6 +20,7 @@ model User {
   level                  Float?
   won                    Int?
   lost                   Int?
+  gameStatus             String?
   twoFactorSecret        String?
   tempSecret             String?
   isTwoFactorEnabled     Boolean         @default(false)

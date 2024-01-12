@@ -5,6 +5,7 @@ import * as z from 'zod';
 import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import { checkAuth, checklogin } from "@/hooks/userHooks";
+import { Constant } from "@/constants/constant";
 // import { useState } from "react";
 // import { signIn } from "next-auth/react";
 // import { useRouter } from "next/navigation";
@@ -27,7 +28,7 @@ export default function LoginForm() {
   //   useEffect(() => {
   //     try {
   //       async () => {
-  //         const response = await fetch('http://localhost:3333/auth/user', {
+  //         const response = await fetch(`${Constant.API_URL}/auth/user`, {
   //           credentials: 'include',
   //         });
   //         console.log("ssssss------------");
@@ -43,10 +44,10 @@ export default function LoginForm() {
   const handleGoogleLogin = () => {
     // const currentUrl = window.location.href;
     // Redirect to the desired URL
-    // window.open("http://localhost:3333/auth/42","_self");
+    // window.open("${Constant.API_URL}/auth/42","_self");
     // Redirect to Google authentication
 
-    const how = window.location.replace('http://localhost:3333/auth/42');
+    const how = window.location.replace(`${Constant.API_URL}/auth/42`);
   };
 
   const handleSubmit = async (e: any) => {
@@ -76,7 +77,7 @@ export default function LoginForm() {
     }
 
     try {
-      const res = await fetch('http://localhost:3333/auth/signin', {
+      const res = await fetch(`${Constant.API_URL}/auth/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

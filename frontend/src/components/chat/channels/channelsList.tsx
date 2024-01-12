@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Createchannels from './createChannels'
 import { userProps } from '@/interface/data'
 import { channelProps } from '@/interface/data'
+import { Constant } from '@/constants/constant'
 
 export default function ChannelsConversationList({ users, currentUser, setRoom, setjoinchannel }: { users: userProps[], currentUser: userProps, setRoom: (value: channelProps) => void, setjoinchannel: (value: boolean) => void }) {
 
@@ -14,7 +15,7 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
     (
       async () => {
         try {
-          const response = await fetch(`http://localhost:3333/chat/allChannelByUserId/${currentUser.id}`, {
+          const response = await fetch(`${Constant.API_URL}/chat/allChannelByUserId/${currentUser.id}`, {
             credentials: 'include',
           })
           const content = await response.json();
@@ -37,7 +38,7 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
     (
       async () => {
         try {
-          const response = await fetch(`http://localhost:3333/chat/allChannel`, {
+          const response = await fetch(`${Constant.API_URL}/chat/allChannel`, {
             credentials: 'include',
           })
           const content = await response.json();

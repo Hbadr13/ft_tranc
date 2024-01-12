@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { roomDto } from '../dto/game';
+import { playDto, roomDto } from '../dto/game';
 
 @Injectable()
 export class RoomService {
@@ -21,13 +21,35 @@ export class RoomService {
       },
       data: {
         room: body.room,
-        opponentId: Number(body.opponentId)
+        opponentId: Number(body.opponentId),
       },
     });
     return data;
   }
-  async  deleteRoom(userId: number) {
-    // console.log('clear room')
+  async choiseSettingGame(userId: number, body: playDto) {
+    // console.log(body)
+    const data = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        gameStatus: body.gameStatus
+      },
+    });
+    return data;
+  }
+  async startGame(userId: number, body: playDto) {
+    const data = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        gameStatus: body.gameStatus
+      },
+    });
+    return data;
+  }
+  async deleteRoom(userId: number) {
     const data = await this.prisma.user.update({
       where: {
         id: userId,
@@ -35,9 +57,11 @@ export class RoomService {
       data: {
         room: '',
         opponentId: 0,
-        isOnline: false
+        isOnline: false,
+        gameStatus: ''
       },
     });
     return data;
   }
 }
+ 

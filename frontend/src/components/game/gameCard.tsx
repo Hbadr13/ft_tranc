@@ -47,9 +47,13 @@ export const GameCards = ({ currentUser, socket, setselectPlayer }: GameCardsPro
             {/* <div className="relative z-10 bg-CusColor_light overflow-hidden w-full sm:w-[90%]  md:w-[80%] lg:w-[70%] xl:w-[50]  h-[450px] md:h-[500px] lg:h-[550px] xl:h-[650px] mt-[140px] max-w-[1200px] rounded-2xl bg-slate-40 flex   p-2 md:p-4"> */}
             {/* <div className=" relative w-full   md:w-[100%] lg:w-[100%] xl:w-[100]  h-[700px] lex justify-center items-center rounded-xl"> */}
             <Swiper
-                className='w-full h-full flex justify-center items-center'
+                className='w-full h-full max-w-[1000px] flex justify-center items-center'
                 modules={[Navigation, Pagination, A11y]}
                 slidesPerView={1}
+                spaceBetween={70}
+                pagination={{
+                    clickable: true,
+                }}
             >
                 <SwiperSlide >
                     <OnlineCard setselectPlayer={setselectPlayer} />

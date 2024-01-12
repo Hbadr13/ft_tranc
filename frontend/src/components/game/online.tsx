@@ -4,41 +4,25 @@ import { useRouter } from "next/router";
 import { userData, userProps } from "@/interface/data";
 import { Socket } from "socket.io-client";
 import { Ball, Canvas, Player } from "./class";
-
 import Image from "next/image";
-import { GameInfoProps, startGameProps } from "./computer";
+import { Constant } from "@/constants/constant";
+import { GameIsReady, PlayAgainComp } from "./computer";
+
+import { Open_Sans } from "next/font/google";
+import { fetchCurrentUser } from "@/hooks/userHooks";
+const openSans = Open_Sans({
+    subsets: ['latin']
+})
 interface InfoGameprops {
     selectPlayer: string;
     setselectPlayer: (selectPlayer: string) => void;
     ballTheme: string
     canvasTheme: string
     socketApp: Socket
+    gameIsOk: boolean
+    setgameIsOk: (gameIsOk: boolean) => void,
+    opponent: userProps
 }
-
-const updateGameLoop = (MyCanvas: Canvas, mousePosition: { x: number; y: number }, ball: Ball, player: Player, computer: Player, selectPlayer: string, HoAreYou: any, GameInfo: GameInfoProps) => {
-
-    GameInfo.CANVAS_WIDTH = MyCanvas.width;
-    GameInfo.CANVAS_HIEGHT = MyCanvas.height;
-
-    if (mousePosition.x > -10 && (mousePosition.x + computer.height < MyCanvas.height + 10))
-        computer.y = mousePosition.x;
-
-    if (mousePosition.y > -10 && (mousePosition.y + player.height < MyCanvas.height + 10))
-        player.y = mousePosition.y;
-
-
-    ball.x += ball.velocityX;
-    ball.y += ball.velocityY;
-    ball.setBorder();
-    player.setBorder();
-    computer.setBorder();
-    if (ball.bottom + 2 > MyCanvas.height || ball.top - 2 < 0)
-        ball.velocityY *= -1;
-    let selectPlayerCollision = ball.x < MyCanvas.width / 2 ? player : computer;
-    if (ball.checkCollision(selectPlayerCollision))
-        MyCanvas.moveBallWenCollision(ball, selectPlayerCollision);
-};
-
 
 const renderGameOverScreen = (MyCanvas: Canvas, ball: Ball, player: Player, computer: Player) => {
     MyCanvas.ClearCanvas();
@@ -46,36 +30,23 @@ const renderGameOverScreen = (MyCanvas: Canvas, ball: Ball, player: Player, comp
     MyCanvas.drawRect(computer);
     MyCanvas.drawMedianLine({ w: 2, h: 10, step: 20, color: MyCanvas.gameInfo.MEDIANLINE });
     MyCanvas.drawTheBall(ball);
-    // MyCanvas.drawText(String(player.score), 300, 60, "black");
-    // MyCanvas.drawText(String(computer.score), 700, 60, "black");
 };
 
-interface startGameOnlineProps extends startGameProps {
-    HoAreYou: any
-}
-
-function startGame({ myCanvasRef, mousePosition, ball, player, computer, selectPlayer, HoAreYou, GameInfo }: startGameOnlineProps) {
-    if (!myCanvasRef.current) return;
-    const MyCanvas = new Canvas(myCanvasRef.current, GameInfo);
-    computer.x = MyCanvas.width - 10
-    if (computer.status == 'Resume' || player.status == 'Resume')
+const PlayOnline = ({ opponent, ballTheme, canvasTheme, setgameIsOk, gameIsOk }: InfoGameprops) => {
+    const router = useRouter();
+    if (!gameIsOk)
         return
-    updateGameLoop(MyCanvas, mousePosition, ball, player, computer, selectPlayer, HoAreYou, GameInfo);
-    renderGameOverScreen(MyCanvas, ball, player, computer);
-}
-
-const PlayOnline = ({ selectPlayer, setselectPlayer, socketApp, ballTheme, canvasTheme }: InfoGameprops) => {
+    const [currentUser, setCurrentUser] = useState(userData)
 
     const GameInfo = {
         FPS: 1000 / 100,
         PLAYER_COLOR: "white",
         PLAYER_HEIGHT: 100,
-        PLAYER_WIDTH: 20,
-        PLAYER_X: 0,
+        PLAYER_WIDTH: 15,
+        PLAYER_X: 15,
         PLAYER_Y: 450 / 2 - 100 / 2,
-        COMPUTER_X: 900 - 20,
+        COMPUTER_X: 900 - 15 - 15,
         COMPUTER_Y: 450 / 2 - 100 / 2,
-
         THE_BALL: ballTheme,
         BALL_START_SPEED: 2,
         ANGLE: Math.PI / 4,
@@ -95,83 +66,73 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, socketApp, ballTheme, canva
     const player = new Player(GameInfo.PLAYER_X, GameInfo.PLAYER_Y, GameInfo.PLAYER_WIDTH, GameInfo.PLAYER_HEIGHT, GameInfo.LEFT_PADDEL);
     const computer = new Player(GameInfo.COMPUTER_X, GameInfo.PLAYER_Y, GameInfo.PLAYER_WIDTH, GameInfo.PLAYER_HEIGHT, GameInfo.RIGHT_PADDEL);
     const ball = new Ball(GameInfo.CANVAS_WIDTH / 2, GameInfo.CANVAS_HIEGHT / 2, GameInfo);
-    const HoAreYou = useRef(0);
     const myCanvasRef = useRef<HTMLCanvasElement>(null);
     const [socket, setsocket] = useState<any>();
     const [numberPlayer, setnumberPlayer] = useState(0);
     const playagain = useRef(0)
     const [roomAvailable, setroomAvailable] = useState(true);
     const YouWonOrLostPlayAgain = useRef("");
-    const [currentUser, setCurrentUser] = useState<userProps>(userData);
-    const [opponent, setopponent] = useState<userProps>(userData);
-    const router = useRouter();
     const playerLocation = useRef('left')
-
+    const [pause, setPause] = useState(false)
+    const [game, setGame] = useState(false)
     const [gameStatus, setgameStatus] = useState({ player1Score: 0, player2Score: 0, yourStatus: '', yourPoints: 0 })
+    const [gameStart, setGameStart] = useState(false)
+    const [matchEnding, setmatchEnding] = useState(false)
 
+    fetchCurrentUser({ setCurrentUser })
+    const windowWidth = useRef(window.innerWidth)
     useEffect(() => {
-        (
-            async () => {
-                try {
-
-                    const response = await fetch('http://localhost:3333/auth/user', {
-                        credentials: 'include',
-                    });
-                    if (response.ok) {
-                        const content = await response.json();
-                        if (content.room == '' || content.isOnline == true)
-                            router.push('/game')
-                        const response2 = await fetch(`http://localhost:3333/users/getbyuserid/${content.opponentId}`, {
-                            credentials: 'include',
-                        });
-                        const data = await response2.json()
-                        setopponent(data)
-                        setCurrentUser(content);
-                    }
-                } catch (error) {
-                }
+        if (window.innerWidth < 1500)
+            windowWidth.current = 15 + (15 - 15 * (window.innerWidth / 1500))
+        else
+            windowWidth.current = 17
+        const handleRisize = () => {
+            if (window.innerWidth < 1500) {
+                windowWidth.current = 15 + (15 - 15 * (window.innerWidth / 1500))
             }
-        )();
-    }, []);
-
+        }
+        window.addEventListener('resize', handleRisize);
+        return () => {
+            window.removeEventListener('resize', handleRisize);
+        };
+    }, [])
     const [pointCard, setPointCard] = useState(false)
     let MyCanvas = useRef<Canvas>();
     let x = useRef(0)
     useEffect(() => {
-        console.log("==========1")
         if (!myCanvasRef.current) return;
         MyCanvas.current = new Canvas(myCanvasRef.current, GameInfo)
         x.current++
-        // setMyCanvas(s);
-        console.log("==========2", x)
     }, [numberPlayer])
 
     useEffect(() => {
-        console.log('room->', currentUser.room)
-
-        const socketUrl = "http://localhost:3333/gameGateway";
+        if (currentUser.id) {
+            setGame(true)
+        }
+        const socketUrl = `${Constant.API_URL}/gameGateway`;
         const newSocket = io(socketUrl, {
             query: {
                 userId: currentUser.id,
             },
         });
-        newSocket.emit("joinRoom", { room: currentUser.room, userId: currentUser.id, opponentId: opponent.id });
+        newSocket.emit("joinRoom", { room: currentUser.room, userId: currentUser.id, opponentId: currentUser.opponentId });
         newSocket.on('initGame', (game_) => {
             setnumberPlayer(2);
             const message = JSON.parse(game_);
+            ball.radiusX = windowWidth.current
             playerLocation.current = message.game.player1_Id == currentUser.id ? 'left' : message.game.player2_Id == currentUser.id ? 'right' : ''
         })
 
-        newSocket.on('updateGame', (game_) => {
-            const message = JSON.parse(game_);
+        newSocket.on('updateGame', (game) => {
+            const message = JSON.parse(game);
+            setPause(false)
+            setGameStart(true)
+            ball.radiusY = 15
+            ball.radiusX = windowWidth.current
             ball.x = message.game.Ball.ballX
             ball.y = message.game.Ball.ballY
             player.y = message.game.player1.y
             computer.y = message.game.player2.y
-            // player.score = message.game.player1.score
-            // computer.score = message.game.player2.score
-            let status = ''
-            let points = 0
             playerLocation.current == 'right' ?
                 setgameStatus({
                     player1Score: message.game.player1.score,
@@ -191,16 +152,20 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, socketApp, ballTheme, canva
         });
         newSocket.on("playAgainIsDone", () => {
             setPointCard(false)
+            setGameStart(false)
+            setnumberPlayer(2);
         })
         newSocket.on("ResumePause", (value: string) => {
-            player.status = value
-            computer.status = value
+            setPause(true)
         })
         newSocket.on("leaveRoom", () => {
+            setnumberPlayer(-1)
             setroomAvailable(false)
         })
-
-
+        newSocket.on("matchEnding", () => {
+            setnumberPlayer(-1)
+            setmatchEnding(true)
+        })
         newSocket.on("documentHidden", (flag: boolean) => {
             const value = "Resume"
             player.status = value
@@ -208,18 +173,19 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, socketApp, ballTheme, canva
         })
         newSocket.on("playAgain", (flag: boolean) => {
             playagain.current = playagain.current - 1
-            console.log("you want playAgain")
         })
         setnumberPlayer(1);
         setsocket(newSocket);
         return () => {
             newSocket.disconnect();
-            // newSocket.emit('joinRoom');
-            // newSocket.off('joinRoom')
-            // newSocket.off("updateGame")
         };
-
     }, [currentUser]);
+
+    const handelButtonPlayAgain = () => {
+        setnumberPlayer(1);
+        setgameStatus({ player1Score: 0, player2Score: 0, yourStatus: '', yourPoints: 0 })
+        socket?.emit('playAgain', { room: currentUser.room, userId: currentUser.id })
+    }
     const handleMouseMove = (e: any) => {
         const rect = e.target.getBoundingClientRect();
         if (e.clientY - rect.top - GameInfo.PLAYER_HEIGHT / 2 > 0 && e.clientY - rect.top + GameInfo.PLAYER_HEIGHT / 2 < GameInfo.CANVAS_HIEGHT) {
@@ -228,8 +194,10 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, socketApp, ballTheme, canva
             socket.emit('MouseMove', { newPositionX: posX, newPositionY: posY, room: currentUser.room, userid: currentUser.id })
         }
     }
-
+    const [pauseGame, setPauseGame] = useState(false)
     const handelButtonGameStatus = () => {
+        if (!pause)
+            setPauseGame(true)
         socket?.emit('ResumePause', { room: currentUser.room, userId: currentUser.id })
     }
     const handelButtonLeave = () => {
@@ -241,159 +209,213 @@ const PlayOnline = ({ selectPlayer, setselectPlayer, socketApp, ballTheme, canva
     const handelButtonYouLost = () => {
         router.push("/game")
     }
-    const handelButtonPlayAgain = () => {
-        socket?.emit('playAgain', { room: currentUser.room, userId: currentUser.id })
-    }
 
+
+    if (game)
+        return (
+            <div className="Gamebackground  w-full  h-screen flex  justify-center   ">
+                <div className=" relative w-full  h-[800px] flex flex-col  justify-center items-center  mt-[70px]">
+                    {playerLocation.current == 'left' ?
+                        <ScoreBoard direction={'left'} opponent={opponent} currentUser={currentUser} gameStatus={gameStatus}
+                            pause={pause} handelButtonGameStatus={handelButtonGameStatus} handelButtonLeave={handelButtonLeave} />
+                        :
+                        <ScoreBoard direction={'right'} opponent={opponent} currentUser={currentUser} gameStatus={gameStatus}
+                            pause={pause} handelButtonGameStatus={handelButtonGameStatus} handelButtonLeave={handelButtonLeave} />
+                    }
+                    <div className=" relative w-full h-[600px] flex justify-center items-center ">
+                        {numberPlayer == 1 ? (
+                            <div className=" w-full h-[100%] flex items-center flex-col">
+
+                                <div
+                                    className={`OnlineCard rounded-b-md flex justify-center items-center space-x-6 absolute z-0    md:rounded-b-lg w-[99%] h-[70%]     md:w-[70%] 2xl:h-[100%] 2xl:w-[60%] `}
+
+                                >
+                                    <Image src={'/game/loading.gif'} alt={"reload"} width={60} height={60} className="" />
+                                    <div className=" text-xl md:text-2xl text-white">
+                                        Please Wait
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
+                        {numberPlayer == 2 ? (
+                            <div className={`${!roomAvailable ? " hidden " : ""} relative w-full h-[100%] flex justify-center`}>
+                                <canvas
+                                    className={` absolute z-0   border-2 rounded-b-sm md:rounded-b-lg w-[99%] h-[70%]     md:w-[70%] 2xl:h-[100%] 2xl:w-[60%] `}
+                                    ref={myCanvasRef}
+                                    width={900}
+                                    height={450}
+                                    onMouseMove={handleMouseMove}
+                                >
+                                </canvas>
+                                {!gameStart ? (
+                                    <GameIsReady username={currentUser.username} opponenetUsername="Ai" userImage={currentUser.foto_user} opponentImage='/game/ai.png' />
+                                ) : null
+                                }
+                                {
+                                    pause ? (
+                                        <div className=" absolute  w-full h-[100%] flex justify-center">
+                                            <div
+                                                className={` absolute z-0 OnlineCard   rounded-b-sm md:rounded-b-lg w-[99%] h-[70%]     md:w-[70%] 2xl:h-[100%] 2xl:w-[60%] flex justify-center items-center space-x-6 `}
+                                            >
+                                                <div className="w-[400px] h-[300px] md:w-[500px] md:h-[350px] bg-white rounded-xl shadow-2xl flex flex-col justify-around items-center -space-y-3">
+                                                    {/* <div className=" text-3xl font-bold">
+                                                You Won
+                                            </div> */}
+                                                    <div className=" capitalize text-2xl text-center">
+                                                        {/* your opponent conceded the match. */}
+                                                        {
+                                                            pauseGame ?
+                                                                '' :
+                                                                'Please Wait'
+                                                        }
+                                                    </div>
+                                                    <Image src={'/game/loading.gif'} alt={"reload"} width={60} height={60} className="" />
+                                                    <button className="w-[80%]  bg-blue-300 py-3 text-3xl font-bold text-blue-700 rounded-xl"
+                                                        onClick={pauseGame ? handelButtonGameStatus : handelButtonYouWon}
+                                                    >{pauseGame ? 'Resume' : 'Leave'}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : null
+                                }
+                            </div>
+                        ) : null}
+                        {
+                            !roomAvailable && gameStatus.yourStatus == '' ? (
+                                <div className="relative w-full h-[100%] flex justify-center">
+                                    <div
+                                        className={` absolute z-0 OnlineCard   rounded-b-sm md:rounded-b-lg w-[99%] h-[70%]     md:w-[70%] 2xl:h-[100%] 2xl:w-[60%] flex justify-center items-center space-x-6 `}
+                                    >
+                                        <div className="w-[400px] h-[300px] md:w-[500px] md:h-[350px] bg-white rounded-xl shadow-2xl flex flex-col justify-around items-center -space-y-3">
+                                            <div className=" text-3xl font-bold">
+                                                You Won
+                                            </div>
+                                            <div className=" capitalize text-2xl text-center">
+                                                your opponent conceded the match.
+                                            </div>
+                                            <button className="w-[80%]  bg-blue-300 py-3 text-3xl font-bold text-blue-700 rounded-xl"
+                                                onClick={handelButtonYouWon}
+                                            >OK</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : null
+                        }
+                        {
+                            matchEnding ? (
+                                <div className="relative w-full h-[100%] flex justify-center">
+                                    <div
+                                        className={` absolute z-0 OnlineCard   rounded-b-sm md:rounded-b-lg w-[99%] h-[70%]     md:w-[70%] 2xl:h-[100%] 2xl:w-[60%] flex justify-center items-center space-x-6 `}
+                                    >
+                                        <div className="w-[400px] h-[300px] md:w-[500px] md:h-[350px] bg-white rounded-xl shadow-2xl flex flex-col justify-around items-center -space-y-3">
+                                            <div className=" text-3xl font-bold">
+                                                The Match Ending
+                                            </div>
+                                            <div className=" capitalize text-2xl text-center">
+                                                The room has been closed.
+                                            </div>
+                                            <button className="w-[80%]  bg-blue-300 py-3 text-3xl font-bold text-blue-700 rounded-xl"
+                                                onClick={handelButtonYouWon}
+                                            >OK</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : null
+                        }
+                        {
+                            gameStatus.yourStatus != '' ? (
+                                <div className="absolute  w-full h-[100%] flex justify-center " >
+                                    <div className="OnlineCard  rounded-sm md:rounded-lg w-[99%] h-[70%]      md:w-[70%] 2xl:h-[100%] 2xl:w-[60%] flex justify-center items-center ">
+                                        {
+                                            !pointCard ? (
+                                                <div className="w-full h-full  flex justify-center items-center">
+                                                    <div className=" relative w-[100%] h-[100%] flex justify-center items-center ">
+                                                        <div className=" absolute w-[90%] max-w-[500px] h-[380px]">
+                                                            <Image className=" rounded-xl " fill style={{ objectFit: "cover" }} alt="points" src={gameStatus.yourStatus == 'won' ? '/game/youwon.svg' : '/game/youlost.svg'} />
+                                                            <div className=" absolute z-10 w-full h-full bg-red-20  flex flex-col justify-center items-center space-y-0">
+                                                                <div className=" relative text-2xl  top-[22px] text-[#f8ff34]  ">
+                                                                    {
+                                                                        gameStatus.yourStatus == 'won' ? 'You Won' : 'You Lost'
+                                                                    }
+                                                                </div>
+                                                                <div className=" relative text-yellow-400 text-base 2xl:text-xl  top-[50px] -right-1">
+                                                                    +{gameStatus.yourPoints}
+                                                                </div>
+                                                                <button onClick={() => setPointCard((pre) => !pre)} className=" relative NextButton text-yellow-400  2xl:text-3xl  text-xl top-[120px]" >
+                                                                    Next
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <PlayAgainComp roomAvailable={roomAvailable} handelReplay={!roomAvailable ? undefined : handelButtonPlayAgain} handelExit={handelButtonYouLost} />
+                                            )
+                                        }
+                                    </div>
+                                </div>
+                            ) : null
+                        }
+                    </div>
+                </div>
+            </div >
+        );
 
     return (
-        <div className="Gamebackground  w-full h-screen flex  justify-center   ">
-            <div className=" relative w-full h-[800px] flex flex-col  justify-center items-center  mt-[70px]">
-                {playerLocation.current == 'left' ?
-                    (
-                        <div className="w-[99%]  md:w-[70%] 2xl:w-[60%]  h-[100px] flex justify-between items-center ">
-                            <div className="w-1/2 flex items-center space-x-1 md:space-x-2 text-2xl h-full">
-                                <div className="relative  h-[60px] w-[60px] lg:h-[70px] lg:w-[70px]">
-                                    <Image className=" rounded-full" src={currentUser.foto_user} fill alt={'user foto'} />
-                                </div>
-                                <div className="text-base lg:text-xl text-start">{currentUser.username}</div>
-                                <div className="">
-                                    {gameStatus.player1Score}
-                                </div>
-                            </div>
-                            <button onClick={handelButtonGameStatus} className="relative w-[30px] h-[30px]">
-                                <Image src={'/arrow-up.svg'} alt="pause" fill></Image>
-                            </button>
-                            <button onClick={handelButtonLeave} className="w-[70px] bg-whte rounded-lg border-2 border-black text-center m-1 text-xl">Leave</button>
-                            <div className="w-1/2 flex items-center justify-end space-x-1 md:space-x-2 text-2xl h-full">
-                                <div className="">
-                                    {gameStatus.player2Score}
-                                </div>
-                                <div className="text-base lg:text-xl text-end">{opponent.username}</div>
-                                <div className="relative h-[60px] w-[60px] lg:h-[70px] lg:w-[70px]">
-                                    <Image className=" rounded-full" src={opponent.foto_user} fill alt={'user foto'} />
-                                </div>
-                            </div>
-                        </div>
-                    ) :
-                    (
-                        <div className="w-[99%]  md:w-[70%] 2xl:w-[60%]  h-[100px] flex justify-between items-center ">
-                            <div className="w-1/2 flex items-center space-x-1 md:space-x-2 text-2xl h-full">
-                                <div className="relative  h-[60px] w-[60px] lg:h-[70px] lg:w-[70px]">
-                                    <Image className=" rounded-full" src={opponent.foto_user} fill alt={'user foto'} />
-                                </div>
-                                <div className="text-base lg:text-xl text-start">{opponent.username}</div>
-                                <div className="">
-                                    {gameStatus.player1Score}
-                                </div>
-                            </div>
-                            <button onClick={handelButtonGameStatus} className="relative w-[30px] h-[30px]">
-                                <Image src={'/arrow-up.svg'} alt="pause" fill></Image>
-                            </button>
-                            <button onClick={handelButtonLeave} className="w-[70px] bg-whte rounded-lg border-2 border-black text-center m-1 text-xl">Leave</button>
-                            <div className="w-1/2 flex items-center justify-end space-x-1 md:space-x-2 text-2xl h-full">
-                                <div className="">
-                                    {gameStatus.player2Score}
-                                </div>
-                                <div className="text-base lg:text-xl text-end">{currentUser.username}</div>
-                                <div className="relative  h-[60px] w-[60px] lg:h-[70px] lg:w-[70px]">
-                                    <Image className=" rounded-full" src={currentUser.foto_user} fill alt={'user foto'} />
-                                </div>
-                            </div>
-                        </div>
-                    )
-                }
-                <div className=" relative w-full h-[600px] flex justify-center items-center ">
-
-                    {numberPlayer == 1 ? (
-                        <div className=" w-full h-[100%] flex items-center flex-col">
-                            <div className="bg-red-400  ComputerCard  relative  overflow-hidden w-[99%] h-[70%]   md:h-[70%]  md:w-[70%] 2xl:h-[100%] 2xl:w-[60%] rounded-md flex justify-center items-center">
-                                <div className="">
-                                    waiting for oponenet
-                                </div>
-                            </div>
-                        </div>
-                    ) : null}
-
-                    {numberPlayer == 2 ? (
-                        <div className={`${!roomAvailable ? " hidden " : ""} w-full h-[100%] flex justify-center`}>
-                            <canvas
-                                className={`  border-2 rounded-sm md:rounded-lg w-[99%] h-[70%]     md:w-[70%] 2xl:h-[100%] 2xl:w-[60%] `}
-                                ref={myCanvasRef}
-                                width={900}
-                                height={450}
-                                onMouseMove={handleMouseMove}
-                            >
-                            </canvas>
-                        </div>
-                    ) : null}
-                    {
-                        !roomAvailable && gameStatus.yourStatus == '' ? (<div className="w-[40%] h-[40%] bg-slate-200  rounded-3xl  absolute ">
-                            <div className="flex flex-col items-center justify-center space-y-6 h-[50%]">
-                                <h1 className="text-3xl ">You Won</h1>
-                            </div>
-                            <div className="flex flex-col items-center justify-center space-y-6 h-[50%]">
-                                <button className="ease-in-out duration-500 bg-[#77A6F7] px-6 py-2 rounded-xl  outline outline-offset-2 outline-black hover:text-xl hover:px-8 hover:py-3 text-white font-bold"
-                                    onClick={handelButtonYouWon}
-                                >OK</button>
-                            </div>
-                        </div>) : null
-                    }
-                    {
-                        gameStatus.yourStatus != '' ? (
-                            <div className="absolute  w-full h-[100%] flex justify-center " >
-                                <div className="border-2 rounded-sm md:rounded-lg w-[99%] h-[70%]     md:w-[70%] 2xl:h-[100%] 2xl:w-[60%] flex justify-center items-center ">
-                                    {
-                                        !pointCard ? (
-
-
-                                            <div className="w-full h-full  flex justify-center items-center">
-                                                <div className=" relative w-[100%] h-[100%] flex justify-center items-center ">
-                                                    <Image className=" rounded-2xl  bg-black" width={500} height={0} alt="points" src={gameStatus.yourStatus == 'won' ? '/game/youwon.svg' : '/game/youlost.svg'} />
-                                                    <div className=" absolute z-10 w-full h-full bg-red-20  flex flex-col justify-center items-center space-y-0">
-                                                        <div className=" relative text-2xl  top-[22px]">
-                                                            {
-                                                                gameStatus.yourStatus == 'won' ? 'Your Won' : 'Your Lost'
-                                                            }
-                                                        </div>
-                                                        <div className=" relative text-yellow-400 text-base 2xl:text-xl  top-[50px] -right-1">
-                                                            +{gameStatus.yourPoints}
-                                                        </div>
-                                                        <button onClick={() => setPointCard((pre) => !pre)} className=" relative text-yellow-400  2xl:text-3xl  text-xl top-[120px]" >
-                                                            Next
-                                                        </button>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="w-[70%] h-[70%] max-w-[500px] bg-slate-200  rounded-3xl  ">
-                                                <div className="w-full bg-green-500 p-2 rounded-lg">
-                                                    {!roomAvailable ? '1/2' : '2/2'}
-                                                </div>
-                                                <div className="flex flex-col items-center justify-center space-y-6 h-[50%]">
-                                                    <h3 className="text-xl ">Play Again</h3>
-                                                </div>
-                                                <div className="flex  items-center justify-center space-x-6 h-[50%]">
-                                                    <button className={`ease-in-out duration-500 ${!roomAvailable ? 'bg-green-300' : 'bg-green-400'} px-6 py-2 rounded-xl  outline outline-offset-2 outline-black hover:text-xl hover:px-8 hover:py-3 text-white font-bold`}
-                                                        onClick={!roomAvailable ? undefined : handelButtonPlayAgain}
-                                                    >OK</button>
-                                                    <button className="ease-in-out duration-500 bg-red-400 px-6 py-2 rounded-xl  outline outline-offset-2 outline-black hover:text-xl hover:px-8 hover:py-3 text-white font-bold"
-                                                        onClick={handelButtonYouLost}
-                                                    >NO</button>
-                                                </div>
-                                                {YouWonOrLostPlayAgain.current}
-                                            </div>
-                                        )
-                                    }
-                                </div>
-                            </div>
-                        ) : null
-                    }
-                </div>
-            </div>
-        </div >
-    );
+        <></>
+    )
 };
 
 export default PlayOnline;
+interface ScoreBoardProps {
+    gameStatus: { player1Score: number, player2Score: number, yourStatus: string, yourPoints: number }
+    currentUser: userProps
+    opponent?: userProps
+    direction: string
+    handelButtonGameStatus: () => void
+    pause: boolean
+    handelButtonLeave: () => void
+    Ai?: Boolean
+    AiProfile?: string
+}
+export const ScoreBoard = ({ currentUser, opponent, gameStatus, direction, handelButtonGameStatus, pause, handelButtonLeave, AiProfile }: ScoreBoardProps) => {
+    return (
+        <div className=" font-mono w-[99%]    md:w-[70%] 2xl:w-[60%] h-[65px] md:h-[90px] flex justify-between items-center text-lg md:text-2xl font-semibold  bg-[#38385F] text-[#FFF] rounded-t-3xl px-1 py-2 md:px-2 lg:p-3">
+            <div className="w-[40%] flex items-center space-x-1 md:space-x-2  h-full ">
+                <div className="h-full w-[80%] flex items-center space-x-1 md:space-x-2">
+                    <div className="h-full w-2/5 md:w-1/4   flex items-center">
+                        <div className="relative  h-[40px] w-[40px]  sm:h-[60px] sm:w-[60px] lg:h-[70px] lg:w-[70px] ">
+                            <Image className=" rounded-full " src={direction == 'right' ? currentUser.foto_user : `${opponent ? opponent.foto_user : AiProfile}`} fill style={{ objectFit: "cover" }} alt={'user foto'} />
+                        </div>
+                    </div>
+                    <div className="w-3/5 md:w-3/4 text-start overflow-hidden whitespace-nowrap overflow-ellipsis capitalize ">{direction == 'right' ? currentUser.username : `${opponent ? opponent.username : 'Ai'}`}</div>
+                </div>
+                <div className="h-full text-3xl w-[20%] flex items-center justify-center space-x-1 bg-[#555595] border-l-2 border-y-2 rounded-l-xl border-white">
+                    {gameStatus.player2Score}
+                </div>
+            </div>
+            <div className="w-[20%] h-full flex justify-center items-center space-x-2 bg-[#555595] border-y-2 border-white">
+                <button onClick={handelButtonGameStatus} className="relative w-[30px] h-[30px] md:w-[40px] md:h-[40px]  flex justify-center items-center   border-[#5041BC]">
+                    <Image src={pause ? '/game/play.png' : '/game/pause.png'} sizes="[]" alt="pause" fill></Image>
+                </button>
+                <button onClick={handelButtonLeave} className="relative w-[30px] h-[30px] md:w-[40px]  md:h-[40px]  flex justify-center items-center">
+                    <Image src={'/game/exit.svg'} alt="exit" fill />
+                </button>
+            </div>
+            <div className="w-[40%] flex items-center space-x-1 md:space-x-2  h-full ">
+                <div className="h-full text-3xl w-[20%] flex items-center justify-center space-x-1 bg-[#555595] border-r-2 border-y-2 border-white rounded-r-xl">
+                    {gameStatus.player1Score}
+                </div>
+                <div className="h-full w-[80%] flex items-center space-x-1 md:space-x-2">
+                    <div className="w-3/5 md:w-3/4 text-end overflow-hidden whitespace-nowrap overflow-ellipsis capitalize ">{direction == 'right' ? `${opponent ? opponent.username : 'Ai'}` : currentUser.username}</div>
+                    <div className="h-full w-2/5 md:w-1/4   flex items-center">
+                        <div className="relative  h-[40px] w-[40px]  sm:h-[60px] sm:w-[60px] lg:h-[70px] lg:w-[70px] ">
+                            <Image className=" rounded-full " src={direction == 'right' ? `${opponent ? opponent.foto_user : AiProfile}` : currentUser.foto_user} fill style={{ objectFit: "cover" }} alt={'user foto'} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}

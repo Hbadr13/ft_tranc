@@ -6,8 +6,10 @@ import {
   SubscribeMessage,
   MessageBody,
 } from '@nestjs/websockets';
+import { parse } from 'cookie';
 import { exit } from 'process';
 import { Server, Socket } from 'socket.io';
+import { Constant } from 'src/constants/constant';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 
@@ -29,7 +31,10 @@ export interface userProps {
 @WebSocketGateway(
   {
     cors: {
-      origin: '*'
+      // origin: '*'
+
+      origin: Constant.API_URL,
+      credentials: true,
     },
     namespace: 'OnlineGateway'
   }
@@ -37,19 +42,24 @@ export interface userProps {
 export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
-  private onlineUsers: Map<Socket, number> = new Map();
-  constructor(private prisma: PrismaService) { }
-  private searchForOpponent: Map<Socket, userProps> = new Map();
+
+  onlineUsers: Map<Socket, number> = new Map();
+  searchForOpponent: Map<Socket, userProps> = new Map();
   userInGame: Map<number, Socket> = new Map()
+
+  constructor(private prisma: PrismaService) { }
   async handleConnection(client: Socket) {
+    // const auth_cookie = parse(client.handshake.headers.cookie).jwt;
+    const auth_cookie = client.handshake.headers.cookie;
+    console.log('auth_cookie', auth_cookie)
     const userId = Number(client.handshake.query.userId);
+    console.log('------>connnnect', userId)
     if (userId < 1)
       return
     this.onlineUsers.set(client, userId);
     const myset: Set<number> = new Set();
     Array.from(this.onlineUsers).map((item) => myset.add(item[1]))
     this.server.emit('updateOnlineUsers', Array.from(myset));
-    // console.log(Array.from(myset))
   }
   async handleDisconnect(client: Socket) {
     try {
@@ -62,49 +72,66 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
       })
       this.searchForOpponent.delete(client)
-      const userid = this.onlineUsers.get(client)
+      const userid = Number(client.handshake.query.userId)
+      if (userid < 1)
+        return
+      // const userid = this.onlineUsers.get(client)
+
       this.onlineUsers.delete(client);
       const myset: Set<number> = new Set();
       Array.from(this.onlineUsers).map((item) => myset.add(item[1]))
       this.server.emit('updateOnlineUsers', Array.from(myset));
+      // console.log('-------->')
       if (this.userInGame.get(userid)) {
         if (this.userInGame.get(userid).id == client.id) {
-          // console.log('remove client from game', userid)
-
           await this.prisma.user.update({
             where: { id: userid },
             data: {
               room: '',
-              isOnline: false
+              isOnline: false,
+              gameStatus: '',
+              opponentId: 0
             }
           })
+          this.userInGame.delete(userid)
         }
-        this.userInGame.delete(userid)
-      } {
+      }
+      // console.log('------>', userid)
+      if (!this.userInGame.get(userid)) {
         await this.prisma.user.update({
           where: { id: userid },
           data: {
             room: '',
-            isOnline: false
+            isOnline: false,
+            gameStatus: '',
+            opponentId: 0
           }
         })
-
       }
     } catch (error) {
-
+      // console.log(error)
     }
+  }
+  @SubscribeMessage('Logout')
+  handleLogout(client: Socket) {
+    this.onlineUsers.delete(client);
+    const myset: Set<number> = new Set();
+    Array.from(this.onlineUsers).map((item) => myset.add(item[1]))
+    this.server.emit('updateOnlineUsers', Array.from(myset));
+
   }
   @SubscribeMessage('userjointToGame')
   handleuserjointToGame(client: Socket, { userId }) {
     if (userId < 1)
       return
+    // console.log('joint room', userId)
     if (!this.userInGame.get(userId)) {
-      // console.log('userjointToGame:', userId, client.id)
       this.userInGame.set(userId, client)
     }
   }
   @SubscribeMessage('DeleteuserFromGame')
   async handleDeleteUserFromGame(client: Socket, { userId }) {
+    console.log('remove client from game', userId)
     if (userId < 1)
       return
     if (this.userInGame.get(userId)) {
@@ -113,13 +140,16 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
           where: { id: userId },
           data: {
             room: '',
-            isOnline: false
+            isOnline: false,
+            gameStatus: '',
+            opponentId: 0
+
           }
         })
         this.userInGame.delete(userId)
-        // console.log('remove client from game', userId)
       }
     }
+    // if(this.userInGame.get())
   }
 
 
@@ -127,23 +157,27 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleAreYouReady(client: Socket, { OpponentId, currentPlayer, room }: { OpponentId: string, currentPlayer: userProps, room: string }): void {
     this.onlineUsers.forEach((value: any, key: any) => {
       if (value == OpponentId) {
-        key.emit("areYouReady", { OpponentId, currentPlayer, room })
+        const opponentSocket = client.id
+        key.emit("areYouReady", { opponentSocket, OpponentId, currentPlayer, room })
       }
     })
   }
   @SubscribeMessage('rejectRequest')
-  handlerejectRequest(client: Socket, { currentUser, opponent }: { currentUser: userProps, opponent: userProps }): void {
+  handlerejectRequest(client: Socket, { opponentSocket, currentUser, opponent, room }: { room: string, opponentSocket: any, currentUser: userProps, opponent: userProps }): void {
+    // console.log('reject', currentUser.username, opponent.username)
     this.onlineUsers.forEach((value: any, key: any) => {
-      if (value == opponent.id) {
-        key.emit("rejectRequest")
+      // if (value == opponent.id) {
+      if (key.id == opponentSocket) {
+        key.emit("rejectRequest", { _opponent: currentUser, _room: room })
       }
     })
   }
 
   @SubscribeMessage('rejectAcceptRequesthidden')
-  handlrejectAcceptRequesthidden(client: Socket, { currentUser }: { currentUser: userProps }): void {
+  handlrejectAcceptRequesthidden(client: Socket, { opponentSocket, currentUser }: { opponentSocket, currentUser: userProps }): void {
     this.onlineUsers.forEach((value: any, key: any) => {
       if (value == currentUser.id) {
+        // if (key.id == opponentSocket) {
         key.emit("rejectAcceptRequesthidden")
       }
     })
@@ -162,7 +196,10 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (currentUser.username != '' && client != undefined) {
         this.searchForOpponent.set(client, currentUser)
         this.searchForOpponent.forEach((user_value: any, sock_key: any) => {
-          if (currentUser.id != user_value.id) {
+          const find = this.matchingRoom.find((item) => {
+            return item.socketplayer1 == sock_key || item.socketplayer2 == sock_key
+          })
+          if (!find && currentUser.id != user_value.id) {
             sock_key.emit('searchForOpponent', currentUser)
             client.emit('searchForOpponent', user_value)
             this.matchingRoom.push({ socketplayer1: client, player1: user_value, p1IsStart: false, socketplayer2: sock_key, player2: currentUser, p2IsStart: false })
@@ -179,6 +216,7 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   @SubscribeMessage('withdrawalFromMatching')
   handelwithdrawalFromMatching(client: Socket): void {
+    this.searchForOpponent.delete(client)
     this.matchingRoom.forEach((value, index) => {
       if (value.socketplayer1 == client || value.socketplayer2 == client) {
         value.socketplayer1.emit('withdrawalFromMatching');

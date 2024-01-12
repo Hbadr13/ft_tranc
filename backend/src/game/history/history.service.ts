@@ -8,7 +8,7 @@ export class HistoryService {
   constructor(private readonly prisma: PrismaService) { }
 
   async updateUsershistory(userid: Number, body: historyDto) {
-    console.log(userid, body)
+    // console.log(userid, body)
     try {
       await this.prisma.history.create({
         data: {
@@ -24,7 +24,7 @@ export class HistoryService {
         },
       });
     } catch (error) {
-      console.log(error.code);
+      // console.log(error.code);  
     }
   }
 

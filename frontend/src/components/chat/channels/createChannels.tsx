@@ -21,7 +21,7 @@ export default function Channels({ users, setClick, currentUser }: { users: user
       item.flag = false
     })
 
-    await fetch(`http://localhost:3333/chat/createChannel/${currentUser.id}`, {
+    await fetch(`${Constant.API_URL}/chat/createChannel/${currentUser.id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

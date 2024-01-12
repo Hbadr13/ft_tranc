@@ -6,43 +6,80 @@ import { v4 as uuid } from 'uuid';
 import { AppProps, userData, userProps } from '@/interface/data'
 import { Socket } from 'socket.io-client';
 import { fetchCurrentUser } from '@/hooks/userHooks';
-const Matching = ({ socket, setroom }: { socket: Socket, setroom: (room: string) => void }) => {
+import { Constant } from '@/constants/constant';
+import { getLevel } from './listOfFriends';
+const Matching = ({ socket }: { socket: Socket }) => {
     const router = useRouter()
-    const [num, setNum] = useState<number>(1)
     const [opponent, setOpponent] = useState<userProps>()
     const [currentUser, setCurrentUser] = useState<userProps>(userData);
+    const [game, setGame] = useState(false)
     fetchCurrentUser({ setCurrentUser })
     useEffect(() => {
-
-        console.log('h')
+        if ((currentUser.gameStatus && currentUser.id) || currentUser.gameStatus == 'match') {
+            router.push('/game')
+            return
+        }
+        if (currentUser.id)
+            setGame(true)
+        socket?.emit('userjointToGame', { userId: currentUser.id })
         socket?.emit("searchForOpponent", { currentUser: currentUser })
         socket?.on('searchForOpponent', (opponentt: userProps) => {
             setOpponent(opponentt)
-            setNum((pr: number) => pr + 1)
-            console.log('connecttio nn.................')
         })
         socket?.on('withdrawalFromMatching', (opponentt: userProps) => {
             setOpponent(undefined)
-            console.log('--->m ochilads ')
-            // setNum((pr: number) => pr + 1)
         })
     }, [currentUser, socket])
+    useEffect(() => {
+        (
+            async () => {
+                try {
 
+                    if ((currentUser.gameStatus && currentUser.id) || currentUser.gameStatus == 'match') {
+                        router.push('/game')
+                        return
+                    }
+                    if (currentUser.id)
+                        setGame(true)
+                    if (currentUser.id) {
+                        const response_ = await fetch(`${Constant.API_URL}/game/room/play/${currentUser.id}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                'gameStatus': 'match'
+                            }),
+                            credentials: 'include',
+                        });
+                    }
+                } catch (error) {
+
+                }
+            }
+        )()
+    }, [currentUser])
     const handelChallenge = async () => {
         try {
-            const response = await fetch(`http://localhost:3333/users/getbyuserid/${opponent?.id}`, {
+            const response = await fetch(`${Constant.API_URL}/users/getbyuserid/${opponent?.id}`, {
                 credentials: 'include',
             });
             if (response.status == 200) {
                 const content = await response.json();
                 if (content.isOnline == false) {
-                    console.log('hi')
-
                     const room: string = uuid();
-                    setroom(room)
                     socket?.emit('userjointToGame', { userId: currentUser.id })
-
-                    const responsePost = await fetch(`http://localhost:3333/game/room/${currentUser.id}`, {
+                    const response_ = await fetch(`${Constant.API_URL}/game/room/play/${currentUser.id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            'gameStatus': 'toMatch'
+                        }),
+                        credentials: 'include',
+                    });
+                    const responsePost = await fetch(`${Constant.API_URL}/game/room/${currentUser.id}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -50,11 +87,10 @@ const Matching = ({ socket, setroom }: { socket: Socket, setroom: (room: string)
                         body: JSON.stringify({
                             'room': room,
                             'opponentId': Number(opponent?.id)
-                            // 'opponentId': Number(opponent?.id)
                         }),
                         credentials: 'include',
                     });
-                    const responsePost2 = await fetch(`http://localhost:3333/game/room/${opponent?.id}`, {
+                    const responsePost2 = await fetch(`${Constant.API_URL}/game/room/${opponent?.id}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -62,55 +98,79 @@ const Matching = ({ socket, setroom }: { socket: Socket, setroom: (room: string)
                         body: JSON.stringify({
                             'room': room,
                             'opponentId': Number(currentUser.id)
-
-                            // 'opponentId': currentUser.id
                         }),
                         credentials: 'include',
                     });
-
-                    // socket?.emit("areYouReady", {
-                    //     OpponentId: e.target.value, currentPlayer: currentUser, pathOfGame: `/game/online?settings=true`
-                    // })
-                    // setOpponent(e.target.value)
-                    router.push(`/game/online?settings=true`);
-
+                    if (responsePost.ok && responsePost2.ok && response_.ok)
+                        router.push(`/game/online?settings=true`);
                 }
-                // else {
-                //     if (selectUser === -1)
-                //         setselectUser(Number(e.target.value))
-                //     else
-                //         setselectUser(-1)
-                // }
             }
         } catch (error) {
         }
     }
+    if (game)
+        return (
 
-    return (
+            <div className="Gamebackground w-full  h-screen flex justify-center  ">
+                <div className="relative flexjustify-around items-center z-10 OnlineCard overflow-hidden------ w-full sm:w-[90%]  md:w-[80%] lg:w-[70%] xl:w-[50]  h-[450px] md:h-[500px] lg:h-[550px] xl:h-[650px] mt-[140px] max-w-[1200px] rounded-2xl bg-slate-40 p-2 md:p-4">
+                    <div className="w-full h-[90%] flex flex-col md:flex-row justify-around items-center">
+                        <UserOverview user={currentUser} name='my' />
+                        <div className="w-[20%] flex justify-center items-center">
+                            <Image src={'/icons-ping-pong-white.png'} alt={"reload"} width={30} height={30} className=" block md:hidden" />
+                            <Image src={'/icons-ping-pong-white.png'} alt={"reload"} width={60} height={60} className=" md:block hidden" />
+                        </div>
+                        {
+                            !opponent ? (
 
-        <div className="Gamebackground w-full  h-screen flex justify-center  ">
-            <div className="relative z-10 OnlineCard overflow-hidden w-full sm:w-[90%]  md:w-[80%] lg:w-[70%] xl:w-[50]  h-[450px] md:h-[500px] lg:h-[550px] xl:h-[650px] mt-[140px] max-w-[1200px] rounded-2xl bg-slate-40 p-2 md:p-4">
-
-                {/* <div className="OnlineCard  relative  overflow-hidde w-[90%] sm:w-[80%] h-[70%]  rounded-xl"> */}
-                <div className="   w-full h-[80%] flex  justify-center items-center space-x-20">
-                    <div className="w-[100px] h-[100px]  relative ">
-                        <Image className='rounded-md' src={currentUser.foto_user} alt='image user' fill sizes='()' />
+                                <div className="w-[70%] md:w-[40%] h-2/3 bg-[#1F2025] rounded-xl flex justify-center items-center">
+                                    <Image src={'/game/loading.gif'} alt={"reload"} width={60} height={60} className="" />
+                                </div>
+                            ) : (
+                                <UserOverview user={opponent} name='your' />
+                            )
+                        }
                     </div>
-                    <div className="w-[50px] h-[50px]  relative ">
-                        <Image className='rounded-md' src={'/game/vs.png'} alt='image user' property='' fill sizes='()' />
-                    </div>   <div className="w-[100px] h-[100px]  relative ">
-                        <Image className='rounded-md' src={opponent ? opponent.foto_user : '/recent.png'} property='' alt='image user' fill sizes='()' />
+                    <div className="w-full h-[20]   p-1 flex justify-between  font-semibold">
+                        <button onClick={!opponent ? () => router.push('/game') : undefined}
+                            className={`py-2 px-9 rounded-md ${!opponent ? ' bg-white ' : ' bg-slate-500'}`}>
+                            Leave
+                        </button>
+                        <button onClick={opponent ? handelChallenge : undefined}
+                            className={`py-2 px-6 rounded-md ${opponent ? ' bg-white ' : ' bg-slate-500'}`}>
+                            To Match
+                        </button>
                     </div>
-                </div>
-                <div className="w-full text-end  p-10 flex justify-end">
-                    <button onClick={opponent ? handelChallenge : undefined}
-                        className={`py-2 px-6 rounded-md ${opponent ? ' bg-white ' : ' bg-slate-500'}`}>
-                        To Match
-                    </button>
                 </div>
             </div>
-        </div>
+        )
+    return (
+        <></>
     )
 }
 
 export default Matching
+
+const UserOverview = ({ user, name }: { user: userProps, name: string }) => {
+    return (
+        <div className=" overflow-hidden font-sans w-[70%] md:w-[40%] h-2/3 bg-[#1F2025] rounded-2xl flexitems-centerjustify-around  relative">
+            <div className=" relative h-1/3 w-full bg-[#205BF1] rounded-t-2xl flex justify-end items-center">
+                <div className="text-xl sm:text-2xl text-[#EEF0F6] p-10 relative top-1 md:top-4">
+                    LEVEL:{getLevel(user.level)}
+                </div>
+                <div className=" absolute w-[80px] h-[80px] md:w-[100px] md:h-[100px] bg-[#EEF0F6] rounded-full top-[30%] md:top-[50%] left-5 border-4 border-[#1F2025]">
+                    <Image className='rounded-full' src={user.foto_user} fill style={{ objectFit: "cover" }} alt='user'></Image>
+                </div>
+            </div>
+            <div className="h-2/3 w-full flex flex-row md:flex-col pt-5  md:pt-10">
+                <div className="w-full flex items-center px-5 md:p-5 space-x-5  ">
+                    <div className="text-[#EEF0F6] text-xl sm:text-2xl md:text-3xl   capitalize  font-bold overflow-hidden whitespace-nowrap overflow-ellipsis w-[120px] sm:w-max">{user.username}1234455612</div>
+                    <Image className='w-[40px] h-[40px] lg:w-[60px] lg:h-[60px]' src={'/game/grad/grad-1.svg'} width={60} height={60} alt='grad'></Image>
+                </div>
+                <div className="w-full text-[#a0a0a0] md:px-5  bottom-2 relative text-base md:text-lg ">Won: {user.won ? user.won : 0}</div>
+                <div className="w-full text-[#a0a0a0] md:px-5 bottom-2 relative text-base md:text-lg">Lost: {user.lost ? user.lost : 0}</div>
+                {/* <button hidden={name == 'my'} className='py-2 px-4  md:px-5 md:py-3 rounded-xl bg-[#205BF1] text-[#EEF0F6] font-semibold  absolute  bottom-3 right-3 md:bottom-4 md:right-4'>Friend</button> */}
+                {/* <button hidden={name == 'my'} className='p-2 md:p-3 rounded-xl bg-[#205BF1] text-[#EEF0F6] font-semibold  absolute  bottom-3 right-3 md:bottom-4 md:right-4'>Add Friend</button> */}
+            </div>
+        </div>
+    )
+}

@@ -7,6 +7,7 @@ import * as qrcode from 'qrcode';
 import { authenticator } from 'otplib';
 import { hash } from 'argon2';
 import { TwoFactorAuthService } from './TwoFactorAuthService';
+import { use } from 'passport';
 
 
 @Injectable()
@@ -21,6 +22,7 @@ export class UserService {
         id: id,
       },
     });
+    // console.log(user)
     return user;
   }
   async makeUserInGame(id: number) {

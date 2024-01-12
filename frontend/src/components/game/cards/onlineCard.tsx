@@ -1,13 +1,14 @@
 import { useRouter } from 'next/router';
 import React, { LegacyRef, MutableRefObject, useRef, useState } from 'react'
 import Image from 'next/image';
+import { Constant } from '@/constants/constant';
 const OnlineCard = ({ setselectPlayer }: { setselectPlayer: (selectPlayer: string) => void }) => {
     const [cantPlayOnline, setCantPlayOnline] = useState(false)
 
     const router = useRouter()
     const handelButtonPlayOnline = async () => {
 
-        const response = await fetch('http://localhost:3333/auth/user', {
+        const response = await fetch(`${Constant.API_URL}/auth/user`, {
             credentials: 'include',
         });
         if (response.status == 200) {
@@ -16,7 +17,6 @@ const OnlineCard = ({ setselectPlayer }: { setselectPlayer: (selectPlayer: strin
             if (content.room == '' || content.room == null)
                 router.push('/game/online?listoffriends=true')
             else {
-                console.log('cant play')
                 setCantPlayOnline(true)
             }
         }
@@ -29,7 +29,7 @@ const OnlineCard = ({ setselectPlayer }: { setselectPlayer: (selectPlayer: strin
     }
     return (
         <div className="w-full h-full flex  justify-center items-center ">
-            <div className="OnlineCard  relative  overflow-hidden w-[80%] h-[90%]  flex flex-col justify-center items-center rounded-xl">
+            <div className="OnlineCard  relative  overflow-hidden w-[100%] h-[90%]  flex flex-col justify-center items-center rounded-xl">
                 <div id='Bottom' className={`w-[600px] h-[600px] -right-[400px] md:-right-[340px] xl:-right-[240px] absolute  rotate-[-45deg] `} />
                 <div className=" w-full h-[90%] flex justify-center  z-40">
                     <div className="w-[50%] h-full  ">

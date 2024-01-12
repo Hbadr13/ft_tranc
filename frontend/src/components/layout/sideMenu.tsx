@@ -82,8 +82,8 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                 </button>
             </div>
             <div className={`text-md sidebar  hidden  md:block  fixed top-0 z-40  pt-20 h-screen  ${light}  space-y-3`}>
-                <span id='' hidden={isDivHidden} className="z-50 -top-1  right-9 absolute  duration-300" >
-                    <Image src='/ping-pong-2.png' className={` z-50 xl:block w-auth-auto  `} alt='home' width={65} height={30} priority={true}></Image>
+                <span id='' hidden={isDivHidden} className="z-50 -top-4  right- absolute  duration-300 right-1" >
+                    <Image src='/ping-pong-2.png' className={` z-50 xl:block   w-auto`} alt='home' width={65} height={20} priority={true}></Image>
                 </span>
 
                 <div className='relative p-2 md:p-0 md:py-2 md:pl-2  w-full bg-red-300s '>

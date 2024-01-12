@@ -1,3 +1,4 @@
+import { Constant } from '@/constants/constant';
 import { userProps } from '@/interface/data'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
@@ -32,7 +33,7 @@ export default function Edit({ currentUser, Receiver, setStatus_Tow_User, status
         (
             async () => {
                 try {
-                    const response = await fetch(`http://localhost:3333/chat/statusChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/chat/statusChatTwoUser/${currentUser.id}/${Receiver.id}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -48,7 +49,7 @@ export default function Edit({ currentUser, Receiver, setStatus_Tow_User, status
     }, [currentUser.id, Receiver, status_tow_user]);
     const blockChatTwoUser = async () => {
 
-        const response = await fetch(`http://localhost:3333/chat/blockChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+        const response = await fetch(`${Constant.API_URL}/chat/blockChatTwoUser/${currentUser.id}/${Receiver.id}`, {
             method: 'POST',
 
             headers: {
@@ -64,7 +65,7 @@ export default function Edit({ currentUser, Receiver, setStatus_Tow_User, status
     }
     const unblockChatTwoUser = async () => {
 
-        const response = await fetch(`http://localhost:3333/chat/unblockChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+        const response = await fetch(`${Constant.API_URL}/chat/unblockChatTwoUser/${currentUser.id}/${Receiver.id}`, {
             method: 'POST',
 
             headers: {
@@ -136,7 +137,7 @@ export default function Edit({ currentUser, Receiver, setStatus_Tow_User, status
                     </>
 
                 </div>}
-               
+
             </div>
         </div>
     )
