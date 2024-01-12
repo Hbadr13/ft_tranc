@@ -41,7 +41,7 @@ model User {
 model Conversation {
   id           Int       @id @default(autoincrement())
   createdAt    DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt    DateTime? @updatedAt @db.Timestamp(6)  
+  updatedAt    DateTime? @updatedAt @db.Timestamp(6)
   type         String
   participants User[]
   room         Room?     @relation(fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -72,14 +72,14 @@ model Room {
 }
 
 model Membership {
-  id       Int       @id @default(autoincrement())
-  isOwner  Boolean   @default(false)
-  isAdmin  Boolean   @default(false)
-  isBanned Boolean   @default(false)
-  timeMute DateTime?
-  room     Room      @relation("membership", fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id       Int     @id @default(autoincrement())
+  isOwner  Boolean @default(false)
+  isAdmin  Boolean @default(false)
+  isBanned Boolean @default(false)
+  timeMute Int     @default(0)
+  room     Room    @relation("membership", fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   roomId   Int
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId   Int
 }
 

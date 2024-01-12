@@ -170,8 +170,6 @@ export default function index({ users, amis }: AppProps) {
                         <button onClick={() => joinchanle()} className=' text-white  bg-blue-600 w-80  flex justify-center items-center  bordfer-2 bofrder-blue-600 h-10 rounded-full'>
                           <div className=" text-white text-xl font-black">Submit</div>
                         </button>
-
-
                       </div>
                     </div>
                   </div>

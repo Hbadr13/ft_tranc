@@ -10,7 +10,7 @@ export class ChatController {
     /******************************************************* Channel Message ****************************************************************/
 
     @Post('createChannel/:idUser')
-    async CreateChannel(@Body() body, @Param('idUser') idUser: number) {
+    async CreateChannel(@Body() body: { people: number[] }, @Param('idUser') idUser: number, @Param('people') people: number[]) {
         await this.chatService.createChannel(body, Number(idUser))
     }
 
@@ -50,6 +50,7 @@ export class ChatController {
     async oneChannel(@Param('idRoom') idRoom: number) {
         return await this.chatService.oneChannel(Number(idRoom))
     }
+    
 
     @Get('allChannel')
     async AllChannel() {
@@ -58,7 +59,12 @@ export class ChatController {
 
     @Post('setAdmin/:roomId/:participantId/:item')
     async SetAdmin(@Param('roomId') roomId: number, @Param('participantId') participantId: number, @Param('item') item: string) {
-        await this.chatService.setAdmin(Number(roomId), Number(participantId),item)
+        await this.chatService.setAdmin(Number(roomId), Number(participantId), item)
+    }
+
+    @Delete('leavingRoom/:userId/:roomId')
+    async   LeavingRoom(@Param('userId') userId: number, @Param('roomId') roomId: number){
+        await   this.chatService.LeavingRoom(Number(userId), Number(roomId))
     }
 
 
@@ -77,17 +83,17 @@ export class ChatController {
     }
     @Get('statusChatTwoUser/:idSender/:idReceiver')
     async StatusChatTwoUser(@Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
-        
+
         return await this.chatService.statusChatTwoUser(Number(idSender), Number(idReceiver))
     }
     @Post('blockChatTwoUser/:idSender/:idReceiver')
     async BlockChatTwoUser(@Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
-        
+
         return await this.chatService.blockChatTwoUser(Number(idSender), Number(idReceiver))
     }
     @Post('UnblockChatTwoUser/:idSender/:idReceiver')
     async UnblockChatTwoUser(@Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
-        
+
         return await this.chatService.unblockChatTwoUser(Number(idSender), Number(idReceiver))
     }
 

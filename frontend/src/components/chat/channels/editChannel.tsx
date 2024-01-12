@@ -11,6 +11,7 @@ export default function EditChannel({ setMyStatusInRoom, currentUser, Room }: { 
     const [participant, setParticipant] = useState<participantsProps>()
     const [userStatusRoom, setUserStatusRoom] = useState<participantsProps>()
     const [error, seterror] = useState(false);
+    const [leavingRoom, setLeavingRoom] = useState(false);
 
 
     useEffect(() => {
@@ -27,9 +28,10 @@ export default function EditChannel({ setMyStatusInRoom, currentUser, Room }: { 
                 } catch (error) {
 
                 }
+                setLeavingRoom(false)
             }
         )();
-    }, [Room, click]);
+    }, [Room, click, leavingRoom]);
 
     useEffect(() => {
         (
@@ -52,7 +54,6 @@ export default function EditChannel({ setMyStatusInRoom, currentUser, Room }: { 
     useEffect(() => {
 
         setClick(0);
-
 
     }, [Room]);
 
@@ -116,17 +117,34 @@ export default function EditChannel({ setMyStatusInRoom, currentUser, Room }: { 
         }
     };
 
+    const handlLeaving = async (item: channelProps) => {
+        try {
+            await fetch(`http://localhost:3333/chat/leavingRoom/${currentUser.id}/${item.id}`, {
+                method: 'DELETE',
+                // credentials: 'include',
+            })
+            setLeavingRoom(true)
+            console.log(leavingRoom);
+        } catch (error) {
+
+        }
+    }
+
 
     return (
-        <div className='lg:flex  hidden flex-col  w-[20%] h-[820px] border  items-center  mt-12 border-sky-500 rounded-[30px]  '>
+        <div className=' lg:flex  hidden flex-col  w-[20%] h-[820px] border  items-center  mt-12 border-sky-500 rounded-[30px]  '>
 
-            <div className={`  bg-gray-100 dark:bg-CusColor_dark  ${click != 0 ? 'blur-sm' : null}   w-full h-full  rounded-[30px] p-3   flex justify-start items-start `}>
+            <div className={`  bg-gray-100 dark:bg-CusColor_dark  ${click != 0 ? 'blur-f[0.7px] brightness-[80%] ' : null}   w-full h-full  rounded-[30px] p-3   flex justify-start items-start `}>
 
 
                 <div className="w-full h-full bg-blsack flex-col justify-center items-center">
                     <div className="flex-col justify-start items-center flex ">
-                        <img className="w-28 h-28 rounded-full " src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
-                        <div className="text-zinc-900 text-[32px] font-bold font-['Satoshi']">{Room.name}</div>
+                        <div className={`flex justify-center items-center w-12 h-12 rounded-full ${Room.type == 'public' && ' bg-amber-300'}  ${Room.type == 'private' && 'bg-sky-500'}  ${Room.type == 'protected' && ' bg-red-500'}`} >
+                            <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{Room.name[0].toUpperCase()}</h1>
+                        </div>                        <div className="text-zinc-900 text-[32px] font-bold font-['Satoshi']">{Room.name}</div>
+                        <div className="text-zinc-900 text-[15px] font-bold">{Room.type}</div>
+                        <div className=" p-2 w-auto h-auto bg-red-500 rounded-md "><button onClick={() => handlLeaving(Room)}>khroj</button></div>
+
                     </div>
                     <div className="flex flex-col">
                         {participants.map((item) => (
@@ -276,12 +294,16 @@ export default function EditChannel({ setMyStatusInRoom, currentUser, Room }: { 
                         </>
                     }
 
-
-
-
                     {
                         click == 2 && <div className='w-full flex flex-col bg-fslate-400'>
-                            <h1 className='-mt-8  flex justify-center text-CusColor_primary w-[90%]'>{participant?.username}</h1>
+                            <div className=''>
+                                <button onClick={() => setClick(0)} >
+                                    <h1>{participant?.username}</h1>
+                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="22" height="22" viewBox="0 0 30 30">
+                                        <path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"></path>
+                                    </svg>
+                                </button>
+                            </div>
                             {userStatusRoom?.isOwner && <button className='border p-2' onClick={() => handlParticipants('admin')}>set this user is admin</button>}
                             <button className='border p-2' onClick={() => handlParticipants('kick')}>kick this user</button>
                             {userStatusRoom?.isOwner && <button className='border p-2' onClick={() => handlParticipants('inAdmin')}>inAdmin this user</button>}
@@ -289,7 +311,6 @@ export default function EditChannel({ setMyStatusInRoom, currentUser, Room }: { 
                             <button className='border p-2' onClick={() => handlParticipants('no mute')}>no mute this user</button>
                         </div>
                     }
-
                 </div >
 
             }

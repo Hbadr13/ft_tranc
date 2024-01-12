@@ -6,7 +6,7 @@ export default function Channels({ users, setClick, currentUser }: { users: user
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [password, setPassword] = useState('');
-  const [Type, setType] = useState('public');
+  const [Type, setType] = useState<string>('public');
   const [message, setMessage] = useState('');
   const [add, setAdd] = useState(false)
   const [people, setPeople] = useState<number[]>([])
@@ -30,10 +30,12 @@ export default function Channels({ users, setClick, currentUser }: { users: user
         "name": name,
         "type": Type,
         "description": description,
-        "password": password
+        "password": password,
+        "people": people
       }),
       credentials: 'include',
     });
+    setPeople([])
   };
 
   useEffect(() => {
@@ -84,11 +86,11 @@ export default function Channels({ users, setClick, currentUser }: { users: user
               </div>
               {Type == 'protected' && <div className='flex flex-col justify-center items-center h-24 w-full bg-sjlate-400'>
                 <h2 className='flex ml-12 w-full'>Password</h2>
-                <input className='focus:outline-none  flex items-center justify-center mt-2 pl-4 w-80 h-10 border  text-CuisColor_dark_grey' required type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input className='focus:outline-none  flex items-center justify-center mt-2 pl-4 w-[80%] h-10 border  text-CuisColor_dark_grey' required type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>}
               {Type == 'private' && <div className=" bg-stofne-600 flex flex-col justify-center items-center">
                 <h2 className="w-full ml-20">Add People</h2>
-                <div className='overflow-y-scroll bg-blfack scrollbar-hide flex bg-gdray-600 flex-row justify-start items-center flex-wrap gridx grid-cols-2x grid-flolw-colx  h-28   w-80 bg-slatef-400 mt-2  space-fx-0 spacfe-y-0 gap-1 bg-slatfe-700'>
+                <div className='overflow-y-scroll bg-blfack scrollbar-hide flex bg-gdray-600 flex-row justify-start items-center flex-wrap gridx grid-cols-2x grid-flolw-colx  h-28  w-80 bg-slatef-400 mt-2  space-fx-0 spacfe-y-0 gap-1 bg-slatfe-700'>
                   {lastUsers.map((item, index) => (
                     <div className=' bg-ambder-500 bord,fer border-sfky-900 rounded-md  w-auto b-black'>
                       {

@@ -27,12 +27,7 @@ export default function Edit({ currentUser, Receiver, setStatus_Tow_User, status
     const [status, setstatus] = useState<any>('');
 
 
-    const handlDelete = () => {
-        fetch(`http://localhost:3333/chat/deleteConversationDirect/${currentUser.id}/${Receiver.id}`, {
-            method: 'DELETE',
-            credentials: 'include',
-        });
-    }
+
     useEffect(() => {
         (
             async () => {
@@ -141,11 +136,7 @@ export default function Edit({ currentUser, Receiver, setStatus_Tow_User, status
                     </>
 
                 </div>}
-                <div className="w-full  mt-20 flex-col justify-center items-center inline-flex">
-                    <button onClick={handlDelete} className=" bg -black justify-center items-center">
-                        <div className="text-neutral-500 text-xl font-normal font-['Satoshi']">delete conversation</div>
-                    </button>
-                </div>
+               
             </div>
         </div>
     )

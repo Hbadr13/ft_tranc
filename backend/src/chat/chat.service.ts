@@ -33,8 +33,26 @@ export class ChatService {
                 isAdmin: true,
             }
         });
-        if (body.type == 'private') {
 
+        if (body.type == 'private') {
+            body.people.map(async (id) => {
+                await this.prisma.membership.create({
+                    data: {
+                        room: {
+                            connect: {
+                                id: room.id
+                            }
+                        },
+                        user: {
+                            connect: {
+                                id: id
+                            }
+                        },
+                        isOwner: false,
+                        isAdmin: false,
+                    }
+                });
+            })
         }
 
         await this.prisma.conversation.create({
@@ -334,7 +352,7 @@ export class ChatService {
         }
         return room
     }
-   
+
 
     async setAdmin(roomId: number, participantId: number, item: string) {
         let room = await this.prisma.room.findUnique({
@@ -400,7 +418,24 @@ export class ChatService {
         }
 
     }
- 
+
+
+    async LeavingRoom(userId: number, roomId: number) {
+        let membership = await this.prisma.membership.findFirst({
+            where: {
+                roomId: roomId,
+                userId: userId
+            }
+
+        })
+        await this.prisma.membership.delete({
+            where: {
+                id: membership.id
+            }
+        })
+        console.log('hana tani jit', userId, roomId)
+    }
+
 
     /******************************************************* Direct Message ****************************************************************/
 
@@ -706,8 +741,8 @@ export class ChatService {
                         id: true,
                         foto_user: true,
                         username: true,
-                        level:true,
-                        won:true,
+                        level: true,
+                        won: true,
                     }
                 },
                 updatedAt: true,
@@ -751,7 +786,7 @@ export class ChatService {
                 updatedAt: item.updatedAt,
                 id: item.id,
                 username: item.username,
-                foto_user:item.foto_user,
+                foto_user: item.foto_user,
                 // Add other properties you want to include in the modified object
             }));
         console.log(result1)
