@@ -273,7 +273,7 @@ const UseProfile = () => {
               <div className='text-blue-500 text-sm mt-8  ml-16  w-full fonts-black' >Are you sure you want to logout ?</div>
               <div className=' w-96 h-16 fbg-black mt-16 flex flex-row justify-center items-center space-x-6 '>
                 <button onClick={() => setLogout(0)} className=' bg-white w-20  border-2 border-blue-600 h-10 rounded-lg'>
-                  <div>Cansle</div>
+                  <div>Cancel</div>
                 </button>
                 <Link href="/auth/login" onClick={handelLogOutUser} className=' bg-blue-500 text-white w-20 flex justify-center items-center  h-10  border-2 border-blue-600 rounded-lg'>
                   OK

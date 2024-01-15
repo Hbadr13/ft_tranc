@@ -4,7 +4,7 @@ import ChannelsList from './channels/channelsList'
 import { AppProps, channelProps, userProps } from '@/interface/data';
 
 
-export default function ConversationList({ amis, setReceiver, setButton, currentUser,Receiver, users, setRoom, setjoinchannel, setStatus_Tow_User, status_tow_user }: { amis: userProps[], setReceiver: (value: any) => void, setButton: (value: boolean) => void, currentUser: userProps, Receiver: userProps, users: userProps[], setRoom: (value: channelProps) => void, setjoinchannel: (value: boolean) => void, setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean }) {
+export default function ConversationList({ amis, setReceiver, setButton, currentUser,Receiver, users, setRoom, setjoinchannel, setStatus_Tow_User, status_tow_user, Room,setJoinRoom }: { amis: userProps[], setReceiver: (value: any) => void, setButton: (value: boolean) => void, currentUser: userProps, Receiver: userProps, users: userProps[], setRoom: (value: channelProps) => void, setjoinchannel: (value: boolean) => void, setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean, Room :channelProps ,setJoinRoom: (value: channelProps) => void, }) {
 
     const [click, setClick] = useState(true)
 
@@ -30,7 +30,7 @@ export default function ConversationList({ amis, setReceiver, setButton, current
                     <DirectConversationList setReceiver={setReceiver} users={users} Receiver={Receiver} amis={amis} currentUser={currentUser} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
                 ) : (
                     setButton(true),
-                    <ChannelsList  users={users} currentUser={currentUser} setRoom={setRoom} setjoinchannel={setjoinchannel} />
+                    <ChannelsList  users={users} currentUser={currentUser} setRoom={setRoom} setjoinchannel={setjoinchannel} Room={Room} setJoinRoom={setJoinRoom} />
                 )}
             </div>
         </div>

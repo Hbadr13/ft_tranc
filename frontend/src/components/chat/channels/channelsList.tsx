@@ -3,12 +3,13 @@ import Createchannels from './createChannels'
 import { userProps } from '@/interface/data'
 import { channelProps } from '@/interface/data'
 
-export default function ChannelsConversationList({ users, currentUser, setRoom, setjoinchannel }: { users: userProps[], currentUser: userProps, setRoom: (value: channelProps) => void, setjoinchannel: (value: boolean) => void }) {
+export default function ChannelsConversationList({ users, currentUser, setRoom, setjoinchannel, Room,setJoinRoom }: { users: userProps[], currentUser: userProps, setRoom: (value: channelProps) => void, setjoinchannel: (value: boolean) => void, Room: channelProps,setJoinRoom: (value: channelProps) => void, }) {
 
   const [click, setClick] = useState('')
 
   const [channel, setChannel] = useState<channelProps[]>([]);
   const [allChannel, setAllchannel] = useState<channelProps[]>([]);
+  const channelData = { id: 0, type: "", name: "", password: "" }
 
   useEffect(() => {
     (
@@ -19,7 +20,7 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
           })
           const content = await response.json();
           setChannel(Array.from(content))
-          console.log(content)
+
         } catch (error) {
 
         }
@@ -27,12 +28,12 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
     )();
   }, [currentUser.id, click]);
   const joinchanle = async (item: any) => {
-    setRoom(item);
+    setJoinRoom(item);
     setjoinchannel(true)
 
   }
   // 'joinChannel/:idUser/:idRoom/:password'
-  
+
   useEffect(() => {
     (
       async () => {
@@ -42,13 +43,19 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
           })
           const content = await response.json();
           setAllchannel(Array.from(content))
-          console.log(content)
+
         } catch (error) {
 
         }
       }
     )();
   }, [currentUser.id]);
+  useEffect(() => {
+
+    setRoom(channelData)
+
+  }, [click])
+
 
   return (
     <div className=' w-full h-full bgf-black flex justify-center items-center flex-col'>
@@ -105,7 +112,7 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
                     <div className="h-auto  justify-start items-center gap-2.5 flex">
                       <img className="w-12 h-12 rounded-full" src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
                       <div className="   flex flex-col justify-center items-start space-y-1 ">
-                        <h4 className=" text-xl">{item.name}</h4>
+                        <h4 className="  hidden md:flex text-lg md:text-md">{item.name}</h4>
                       </div>
                     </div>
                     <div className="flex justify-end items-center">
@@ -124,16 +131,22 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
             {/* <div className=''> */}
             {
               channel.map((item) => (
-                <button onClick={() => setRoom(item)} className="h-16 mt-3 w-full p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
-                  <div className="h-auto  justify-start items-center gap-2.5 flex">
-                    <img className="w-12 h-12 rounded-full" src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
-                    <div className="   flex flex-col justify-center items-start space-y-1 ">
-                      <h4 className=" text-xl">{item.name}</h4>
-                    </div>
-                  </div>
-                  <div className="flex justify-end items-center">
-                    {item.type == 'protected' && <img className='w-6 h-6' src="https://cdn3.iconfinder.com/data/icons/security-187/64/privacy-512.png" alt="" />}
+                <button onClick={() => setRoom(item)} className={`h-20 mt-3 w-full md:p-2 ${item.id == Room.id ? 'md:bg-blue-300 md:shadow-lg md:shadowf-black ' : 'md:bg-white md:hover:shadow-lg md:hover:bg-sky-100 '}  justify-between items-center inline-flex    md:border border-sky-500   duration-1000  transition shahydow-md rounded-xl`}>
 
+                  <div className={`  ${item.type == 'protected' ? '-space-x-7 md:space-x-2'  : null} flex flex-row`}>
+
+                    <div className="h-auto w-full  justify-start items-center gap-2.5 flex">
+                      <img className={`w-20 h-20   sm:h-20   sm:w-20  ${item.id == Room.id ? ' md:border-0 border-4 border-sky-500  ' : ' md:border-0 border-4 border-white '} shadow-md shadodw-black md:w-16 md:h-16 rounded-full`} src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
+                      <div className="   flex flex-col justify-center items-start space-y-1 ">
+
+                        <h4 className="  hidden md:flex text-lg md:text-md">{item.name}</h4>
+                      </div>
+                    </div>
+                    <div className="flex justify-end bg-lack   mt-12 md:mt-0    z-10 items-center">
+                      {item.type == 'protected' && <img className='w-6     z-10 h-6' src="https://cdn3.iconfinder.com/data/icons/security-187/64/privacy-512.png" alt="" />}
+
+
+                    </div>
                   </div>
                 </button>
               ))

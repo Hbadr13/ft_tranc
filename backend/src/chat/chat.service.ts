@@ -143,40 +143,59 @@ export class ChatService {
     }
 
     async sendMessageToChannel(body, idRoom: number, idUser: number) {
-        let Conversation = await this.prisma.conversation.findUnique({
+        const user = await this.prisma.user.findUnique({
             where: {
-                type: 'channel',
-                roomId: idRoom
-            }
-        });
-        // console.log("Conversation:" ,Conversation)
-        Conversation = await this.prisma.conversation.update({
-            where: {
-                id: Conversation.id
+                id: idUser,
             },
-            data: {
-                participants: {
-                    connect: {
-                        id: idUser
-                    }
+            include: {
+
+                conversations: {
+                    where: {
+                        roomId: idRoom
+                    },
                 },
             }
-        });
-        await this.prisma.message.create({
-            data: {
-                content: body.content,
-                sender: {
-                    connect: {
-                        id: idUser
-                    }
+        })
+        
+    
+        if (user.conversations[0]) {
+
+
+            let Conversation = await this.prisma.conversation.findUnique({
+                where: {
+                    type: 'channel',
+                    roomId: idRoom
+                }
+            });
+            // console.log("Conversation:" ,Conversation)
+            Conversation = await this.prisma.conversation.update({
+                where: {
+                    id: Conversation.id
                 },
-                chat: {
-                    connect: {
-                        id: Conversation.id
+                data: {
+                    participants: {
+                        connect: {
+                            id: idUser
+                        }
+                    },
+                }
+            });
+            await this.prisma.message.create({
+                data: {
+                    content: body.content,
+                    sender: {
+                        connect: {
+                            id: idUser
+                        }
+                    },
+                    chat: {
+                        connect: {
+                            id: Conversation.id
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     async getallMessagesChannel(idUser: number, idRoom: number) {
@@ -297,13 +316,13 @@ export class ChatService {
                 roomId: roomId
             },
         });
-        console.log(type, password)
+
         if (room.userId != id) {
             throw new UnauthorizedException()
         }
         else {
             if (type == "protected" && password) {
-                console.log(1);
+
                 await this.prisma.room.update({
 
                     where: {
@@ -316,7 +335,7 @@ export class ChatService {
                 });
             }
             else if (type == "protected" && !password) {
-                console.log(2);
+
                 throw new NotFoundException('You must password.');
             }
             else {
@@ -334,7 +353,7 @@ export class ChatService {
         }
         return room
     }
-   
+
 
     async setAdmin(roomId: number, participantId: number, item: string) {
         let room = await this.prisma.room.findUnique({
@@ -350,7 +369,7 @@ export class ChatService {
             }
         })
         const id = room.Memberships[0]?.id
-        console.log('item: ', item)
+
         if (item == 'admin') {
             let membership = await this.prisma.membership.update({
                 where: {
@@ -400,7 +419,7 @@ export class ChatService {
         }
 
     }
- 
+
 
     /******************************************************* Direct Message ****************************************************************/
 
@@ -659,7 +678,7 @@ export class ChatService {
                     userB: true, // Include the receiver of the request
                 },
             });
-            if (friendRequest) {
+            if (friendRequest && friendRequest.status !== 'blocked') {
 
                 await this.prisma.friendship.update({
                     where: {
@@ -670,7 +689,7 @@ export class ChatService {
                     },
                 });
             }
-            else if (friendRequest1) {
+            else if (friendRequest1  &&  friendRequest1.status !== 'blocked') {
 
                 await this.prisma.friendship.delete({
                     where: {
@@ -706,8 +725,8 @@ export class ChatService {
                         id: true,
                         foto_user: true,
                         username: true,
-                        level:true,
-                        won:true,
+                        level: true,
+                        won: true,
                     }
                 },
                 updatedAt: true,
@@ -751,10 +770,10 @@ export class ChatService {
                 updatedAt: item.updatedAt,
                 id: item.id,
                 username: item.username,
-                foto_user:item.foto_user,
+                foto_user: item.foto_user,
                 // Add other properties you want to include in the modified object
             }));
-        console.log(result1)
+       
         result1.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
         return await result1
     }
