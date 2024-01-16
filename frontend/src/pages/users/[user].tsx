@@ -726,7 +726,7 @@ const YourComponent = ({ currentFileName }: any) => {
                             <div className='text-blue-500 text-sm mt-8  ml-16  w-full fonts-black' >Are you sure you  want to blocked this user ?</div>
                             <div className=' w-96 h-16 fbg-black mt-16 flex flex-row justify-center items-center space-x-6 '>
                                 <button onClick={() => setblocked(0)} className=' bg-white w-20  border-2 border-blue-600 h-10 rounded-lg'>
-                                    <div>Cansle</div>
+                                    <div>Cancel</div>
                                 </button>
                                 <button onClick={blockedfriend} className=' bg-blue-500 text-white w-20  h-10  border-2 border-blue-600 rounded-lg'>
                                     <div>Ok</div>

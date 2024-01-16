@@ -382,7 +382,7 @@ const User = () => {
 
 
 
-                            <div className='   w-[95%] h-24     rounded-xl border-2 border-[#005AB5] drop-shadow shadow-md shadow-black  mt-4 flex flex-row '>
+                            <div className='   w-[368px] h-24     rounded-xl border-2 border-[#005AB5] drop-shadow shadow-md shadow-black  mt-4 flex flex-row '>
 
                                 <div className='bg-white rounded-l-xl border-r-[2px] border-blue-600  w-full h-24  flex flex-row'>
                                     <button onClick={() => profailamis(user.sender.username, user.sender.id)} >
@@ -545,7 +545,7 @@ const User = () => {
 
 
 
-                            <div className=' w-[95%] h-24     -m-3  drop-shadow shadow-md shadow-black  rounded-xl border-[1px] border-blue-600  mt-4 flex flex-row '>
+                            <div className=' w-[368px] h-24     -sm-3  drop-shadow shadow-md shadow-black  rounded-xl border-[1px] border-blue-600  mt-4 flex flex-row '>
 
 
                                 <div className='bg-white rounded-l-xl border-r-[2px] border-blue-600 w-full h-24  flex flex-row '>
@@ -710,7 +710,7 @@ const User = () => {
 
 
 
-                            <div className='        w-[95%] max-w-96  h-24  -m-3   drop-shadow shadow-md shadow-black  rounded-xl border-[1px] border-blue-600  mt-4 flex flex-row '>
+                            <div className='       w-[368px] max-w-96  h-24  -mxs-3   drop-shadow shadow-md shadow-black  rounded-xl border-[1px] border-blue-600  mt-4 flex flex-row '>
                                 <div className='bg-white rounded-l-xl border-r-[2px] border-r-blue-600 w-full  h-24  flex flex-row'>
                                     <div className='flex justify-start items-center m-4'>
                                         <img
