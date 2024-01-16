@@ -11,11 +11,8 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { usefetchDataContext } from '@/hooks/usefetchDataContext';
 import { NullLiteral } from 'typescript';
-<<<<<<< HEAD
 import { any, string } from 'zod';
-=======
 import { Constant } from '@/constants/constant';
->>>>>>> hbadr
 
 interface LevelBarpros {
     value: string

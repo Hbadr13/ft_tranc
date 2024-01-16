@@ -52,9 +52,9 @@ export class ChatController {
     }
     
 
-    @Get('allChannel')
-    async AllChannel() {
-        return await this.chatService.allChannel()
+    @Get('allChannel/:userId')
+    async AllChannel(@Param('userId') userId: number) {
+        return await this.chatService.allChannel(Number(userId))
     }
 
     @Post('setAdmin/:roomId/:participantId/:item')

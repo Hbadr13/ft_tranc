@@ -38,7 +38,8 @@ export interface channelProps {
 
 export interface userProps {
 
-    flag1: boolean;    // 
+    flag1: boolean;
+    dakhal: boolean;    // 
     id: number,
     createdAt: string,
     updatedAt: string,

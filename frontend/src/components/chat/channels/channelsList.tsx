@@ -38,7 +38,7 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
     (
       async () => {
         try {
-          const response = await fetch(`${Constant.API_URL}/chat/allChannel`, {
+          const response = await fetch(`${Constant.API_URL}/chat/allChannel/${currentUser.id}`, {
             credentials: 'include',
           })
           const content = await response.json();
@@ -49,7 +49,7 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
         }
       }
     )();
-  }, [currentUser.id]);
+  }, [currentUser.id, click]);
 
   return (
     <div className=' w-full h-full bgf-black flex justify-center items-center flex-col'>

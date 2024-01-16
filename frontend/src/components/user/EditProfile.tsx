@@ -270,14 +270,6 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                             <Link className="text-base font-bold w-80 mt-5  h-12  flex justify-center items-center text-blue-600" href={"/Code_QR"}><span className="  mt-10 bg-white flex justify-center items-center w-full h-full     border-white rounded-xl border drop-shadow shadow-md shadow-black hover:scale-110 duration-300">Code_OR</span>
                             </Link>
 
-<<<<<<< HEAD
-=======
-
-
-
-
-
->>>>>>> hbadr
                         </div>
                     </div>
                     <div className="mt-10 w-full ">

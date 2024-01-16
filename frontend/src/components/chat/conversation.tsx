@@ -407,9 +407,11 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
                                     </div>
                                 </button>}
                                 {button == true && <div className="ml-4 flex hover:scale-105 p-1 space-x-2 duration-300 justify-center items-center" >
-                                    <img className="w-14 h-14 rounded-full" src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
+                                    <div className={`flex justify-center items-center w-12 h-12 rounded-full ${Room.type == 'public' && ' bg-amber-300'}  ${Room.type == 'private' && 'bg-sky-500'}  ${Room.type == 'protected' && ' bg-red-500'}`} >
+                                        <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{Room.name[0].toUpperCase()}</h1>
+                                    </div>
                                     <div className="">
-                                        <p className="text-black  text-xl">{'channel name'}</p>
+                                        <p className="text-black  text-xl">{Room.name}</p>
                                     </div>
                                 </div>}
                                 <div className='w-full bg-bdlack      flex  lg:hidden justify-end items-center  mr-2'>

@@ -88,7 +88,20 @@ export class ChatService {
                 }
             }
         })
-        const allRoom = room.memberships.map(membership => membership.room);
+
+        let banned = await this.prisma.user.findUnique({
+            where: { id: idUser },
+            include: {
+                memberships: {
+                    where: { isBanned: true },
+                    select: { roomId: true }
+                }
+
+            }
+        })
+        let allRoom = room.memberships.map(membership => membership.room);
+        allRoom = allRoom.filter(item => !banned.memberships.some(item2 => item2.roomId === item.id));
+
         return allRoom;
     }
 
@@ -298,8 +311,8 @@ export class ChatService {
     }
 
 
-    async allChannel() {
-        return await this.prisma.room.findMany({
+    async allChannel(userId: number) {
+        let room = await this.prisma.room.findMany({
             select: {
                 id: true,
                 name: true,
@@ -307,6 +320,50 @@ export class ChatService {
                 description: true,
             }
         })
+
+        let roomUser = await this.prisma.user.findUnique({
+            where: {
+                id: userId
+            },
+            include: {
+                memberships: {
+                    select: {
+                        room: {
+                            select: {
+                                id: true,
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+
+
+        let roomPrivate = await this.prisma.room.findMany({
+            where: { type: 'private' },
+        })
+
+        let banned = await this.prisma.user.findUnique({
+            where: { id: userId },
+            include: {
+                memberships: {
+                    where: { isBanned: true },
+                    select: { roomId: true }
+                }
+
+            }
+        })
+
+
+
+        const r = roomUser.memberships.map(membership => membership.room);
+        let filteredRoom = room.filter(item => !r.some(item2 => item2.id === item.id));
+        filteredRoom = filteredRoom.filter(item => !roomPrivate.some(item2 => item2.id === item.id));
+        filteredRoom = filteredRoom.filter(item => !banned.memberships.some(item2 => item2.roomId === item.id));
+
+        return filteredRoom;
+        // return banned.memberships;
     }
     async upadteChannel(id: number, roomId: number, type: string, password: string) {
         const room = await this.prisma.membership.findFirst({
@@ -386,13 +443,23 @@ export class ChatService {
                 },
             })
         }
-        else if (item == 'mute') {
+        else if (item == 'banned') {
             let membership = await this.prisma.membership.update({
                 where: {
                     id: id
                 },
                 data: {
                     isBanned: true
+                }
+            })
+        }
+        else if (item == 'no banned') {
+            let membership = await this.prisma.membership.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    isBanned: false
                 }
             })
         }
@@ -406,16 +473,7 @@ export class ChatService {
                 }
             })
         }
-        else if (item == 'no mute') {
-            let membership = await this.prisma.membership.update({
-                where: {
-                    id: id
-                },
-                data: {
-                    isBanned: false
-                }
-            })
-        }
+
 
     }
 
