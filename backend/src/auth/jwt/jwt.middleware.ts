@@ -22,8 +22,11 @@ export class JwtMiddleware implements NestMiddleware {
                 if (!condition) {
                     throw new UnauthorizedException('JWT token is invalid.');
                 }
+                req["id"]= condition['id']
             }
-
+            // If needed, you can attach the user to the request
+            // const user = await this.authService.findOne({ id: condition['id'] });
+            // req.user = user;
             next();
         } catch (e) {
             throw new UnauthorizedException();
