@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { RoomModule } from 'src/game/room/room.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -187,8 +188,8 @@ export class ChatService {
                 },
             }
         })
-        
-    
+
+
         if (user.conversations[0]) {
 
 
@@ -496,7 +497,6 @@ export class ChatService {
 
     }
 
-<<<<<<< HEAD
 
     async LeavingRoom(userId: number, roomId: number) {
         let membership = await this.prisma.membership.findFirst({
@@ -514,8 +514,31 @@ export class ChatService {
         console.log('hana tani jit', userId, roomId)
     }
 
-=======
->>>>>>> mbenaoui
+
+    async addParticipants(roomId, body) {
+        let room = await this.prisma.room.findFirst({
+            where: { id: roomId }
+        })
+        body.people.map(async (id) => {
+            await this.prisma.membership.create({
+                data: {
+                    room: {
+                        connect: {
+                            id: room.id
+                        }
+                    },
+                    user: {
+                        connect: {
+                            id: id
+                        }
+                    },
+                    isOwner: false,
+                    isAdmin: false,
+                }
+            });
+        })
+
+    }
 
     /******************************************************* Direct Message ****************************************************************/
 
@@ -785,7 +808,7 @@ export class ChatService {
                     },
                 });
             }
-            else if (friendRequest1  &&  friendRequest1.status !== 'blocked') {
+            else if (friendRequest1 && friendRequest1.status !== 'blocked') {
 
                 await this.prisma.friendship.delete({
                     where: {
@@ -869,7 +892,7 @@ export class ChatService {
                 foto_user: item.foto_user,
                 // Add other properties you want to include in the modified object
             }));
-       
+
         result1.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
         return await result1
     }

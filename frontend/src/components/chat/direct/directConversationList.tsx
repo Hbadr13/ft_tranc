@@ -60,8 +60,8 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
                     if (response.ok) {
                         const content = await response.json();
 
-                        console.log("currentUser1=", currentUser1.id)
-                        console.log("conversationList=", content)
+                        // console.log("currentUser1=", currentUser1.id)
+                        // console.log("conversationList=", content)
                         setConversationList(Array.from(content))
                     }
                 } catch (error) {
@@ -133,8 +133,8 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
         })
         if (filterUser1)
             setConversationList(filterUser1);
-        console.log("currentUser1===", currentUser1.id)
-        console.log("filterstustamis===", conversationList)
+        // console.log("currentUser1===", currentUser1.id)
+        // console.log("filterstustamis===", conversationList)
 
     }, [click, currentUser1, liststatus])
 

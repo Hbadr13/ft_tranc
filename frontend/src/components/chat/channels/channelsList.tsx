@@ -4,13 +4,12 @@ import { userProps } from '@/interface/data'
 import { channelProps } from '@/interface/data'
 import { Constant } from '@/constants/constant'
 
-export default function ChannelsConversationList({ users, currentUser, setRoom, setjoinchannel, Room,setJoinRoom }: { users: userProps[], currentUser: userProps, setRoom: (value: channelProps) => void, setjoinchannel: (value: boolean) => void, Room: channelProps,setJoinRoom: (value: channelProps) => void, }) {
+export default function ChannelsConversationList({ users, currentUser, setRoom, setjoinchannel }: { users: userProps[], currentUser: userProps, setRoom: (value: channelProps) => void, setjoinchannel: (value: boolean) => void }) {
 
   const [click, setClick] = useState('')
 
   const [channel, setChannel] = useState<channelProps[]>([]);
   const [allChannel, setAllchannel] = useState<channelProps[]>([]);
-  const channelData = { id: 0, type: "", name: "", password: "" }
 
   useEffect(() => {
     (
@@ -21,7 +20,7 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
           })
           const content = await response.json();
           setChannel(Array.from(content))
-
+          // console.log(content)
         } catch (error) {
 
         }
@@ -29,7 +28,7 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
     )();
   }, [currentUser.id, click]);
   const joinchanle = async (item: any) => {
-    setJoinRoom(item);
+    setRoom(item);
     setjoinchannel(true)
 
   }
@@ -44,19 +43,13 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
           })
           const content = await response.json();
           setAllchannel(Array.from(content))
-
+          // console.log(content)
         } catch (error) {
 
         }
       }
     )();
-  }, [currentUser.id]);
-  useEffect(() => {
-
-    setRoom(channelData)
-
-  }, [click])
-
+  }, [currentUser.id, click]);
 
   return (
     <div className=' w-full h-full bgf-black flex justify-center items-center flex-col'>
@@ -115,7 +108,7 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
                         <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{item.name[0].toUpperCase()}</h1>
                       </div>
                       <div className="   flex flex-col justify-center items-start space-y-1 ">
-                        <h4 className="  hidden md:flex text-lg md:text-md">{item.name}</h4>
+                        <h4 className=" text-xl">{item.name}</h4>
                       </div>
                     </div>
                     <div className="flex justify-end items-center">
@@ -142,22 +135,25 @@ export default function ChannelsConversationList({ users, currentUser, setRoom, 
             {/* <div className=''> */}
             {
               channel.map((item) => (
-                <button onClick={() => setRoom(item)} className={`h-20 mt-3 w-full md:p-2 ${item.id == Room.id ? 'md:bg-blue-300 md:shadow-lg md:shadowf-black ' : 'md:bg-white md:hover:shadow-lg md:hover:bg-sky-100 '}  justify-between items-center inline-flex    md:border border-sky-500   duration-1000  transition shahydow-md rounded-xl`}>
-
-                  <div className={`  ${item.type == 'protected' ? '-space-x-7 md:space-x-2'  : null} flex flex-row`}>
-
-                    <div className="h-auto w-full  justify-start items-center gap-2.5 flex">
-                      <img className={`w-20 h-20   sm:h-20   sm:w-20  ${item.id == Room.id ? ' md:border-0 border-4 border-sky-500  ' : ' md:border-0 border-4 border-white '} shadow-md shadodw-black md:w-16 md:h-16 rounded-full`} src={'https://cdn.pixabay.com/photo/2016/11/14/17/39/group-1824145_640.png'} />
-                      <div className="   flex flex-col justify-center items-start space-y-1 ">
-
-                        <h4 className="  hidden md:flex text-lg md:text-md">{item.name}</h4>
-                      </div>
+                <button onClick={() => setRoom(item)} className="h-16 mt-3 w-full p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
+                  <div className="h-auto  justify-start items-center gap-2.5 flex">
+                    <div className={`flex justify-center items-center w-12 h-12 rounded-full ${item.type == 'public' && ' bg-amber-300'}  ${item.type == 'private' && 'bg-sky-500'}  ${item.type == 'protected' && ' bg-red-500'}`} >
+                      <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{item.name[0].toUpperCase()}</h1>
                     </div>
-                    <div className="flex justify-end bg-lack   mt-12 md:mt-0    z-10 items-center">
-                      {item.type == 'protected' && <img className='w-6     z-10 h-6' src="https://cdn3.iconfinder.com/data/icons/security-187/64/privacy-512.png" alt="" />}
-
-
+                    <div className="   flex flex-col justify-center items-start space-y-1 ">
+                      <h4 className=" text-xl">{item.name}</h4>
                     </div>
+                  </div>
+                  <div className="flex justify-end items-center">
+                    {item.type == 'protected' && <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 16 20" fill="none">
+                      <path d="M8 11C7.69555 10.9964 7.39732 11.0862 7.14544 11.2573C6.89357 11.4284 6.70015 11.6725 6.59121 11.9568C6.48228 12.2411 6.46306 12.552 6.53615 12.8476C6.60923 13.1431 6.77111 13.4092 7 13.61V15C7 15.2652 7.10536 15.5196 7.29289 15.7071C7.48043 15.8946 7.73478 16 8 16C8.26522 16 8.51957 15.8946 8.70711 15.7071C8.89464 15.5196 9 15.2652 9 15V13.61C9.22889 13.4092 9.39077 13.1431 9.46385 12.8476C9.53694 12.552 9.51772 12.2411 9.40879 11.9568C9.29985 11.6725 9.10643 11.4284 8.85456 11.2573C8.60268 11.0862 8.30445 10.9964 8 11ZM13 7V5C13 3.67392 12.4732 2.40215 11.5355 1.46447C10.5979 0.526784 9.32608 0 8 0C6.67392 0 5.40215 0.526784 4.46447 1.46447C3.52678 2.40215 3 3.67392 3 5V7C2.20435 7 1.44129 7.31607 0.87868 7.87868C0.316071 8.44129 0 9.20435 0 10V17C0 17.7956 0.316071 18.5587 0.87868 19.1213C1.44129 19.6839 2.20435 20 3 20H13C13.7956 20 14.5587 19.6839 15.1213 19.1213C15.6839 18.5587 16 17.7956 16 17V10C16 9.20435 15.6839 8.44129 15.1213 7.87868C14.5587 7.31607 13.7956 7 13 7ZM5 5C5 4.20435 5.31607 3.44129 5.87868 2.87868C6.44129 2.31607 7.20435 2 8 2C8.79565 2 9.55871 2.31607 10.1213 2.87868C10.6839 3.44129 11 4.20435 11 5V7H5V5ZM14 17C14 17.2652 13.8946 17.5196 13.7071 17.7071C13.5196 17.8946 13.2652 18 13 18H3C2.73478 18 2.48043 17.8946 2.29289 17.7071C2.10536 17.5196 2 17.2652 2 17V10C2 9.73478 2.10536 9.48043 2.29289 9.29289C2.48043 9.10536 2.73478 9 3 9H13C13.2652 9 13.5196 9.10536 13.7071 9.29289C13.8946 9.48043 14 9.73478 14 10V17Z" fill="black" />
+                    </svg>}
+                    {item.type == 'private' && <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none">
+                      <path d="M17 9V7C17 5.67392 16.4732 4.40215 15.5355 3.46447C14.5979 2.52678 13.3261 2 12 2C10.6739 2 9.40215 2.52678 8.46447 3.46447C7.52678 4.40215 7 5.67392 7 7V9C6.20435 9 5.44129 9.31607 4.87868 9.87868C4.31607 10.4413 4 11.2044 4 12V19C4 19.7956 4.31607 20.5587 4.87868 21.1213C5.44129 21.6839 6.20435 22 7 22H17C17.7956 22 18.5587 21.6839 19.1213 21.1213C19.6839 20.5587 20 19.7956 20 19V12C20 11.2044 19.6839 10.4413 19.1213 9.87868C18.5587 9.31607 17.7956 9 17 9ZM9 7C9 6.20435 9.31607 5.44129 9.87868 4.87868C10.4413 4.31607 11.2044 4 12 4C12.7956 4 13.5587 4.31607 14.1213 4.87868C14.6839 5.44129 15 6.20435 15 7V9H9V7ZM18 19C18 19.2652 17.8946 19.5196 17.7071 19.7071C17.5196 19.8946 17.2652 20 17 20H7C6.73478 20 6.48043 19.8946 6.29289 19.7071C6.10536 19.5196 6 19.2652 6 19V12C6 11.7348 6.10536 11.4804 6.29289 11.2929C6.48043 11.1054 6.73478 11 7 11H17C17.2652 11 17.5196 11.1054 17.7071 11.2929C17.8946 11.4804 18 11.7348 18 12V19Z" fill="black" />
+                    </svg>}
+                    {item.type == 'public' && <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none">
+                      <path d="M17 8.99992H9V6.99992C8.99854 6.40611 9.17334 5.82522 9.50226 5.33082C9.83118 4.83643 10.2994 4.45077 10.8477 4.22268C11.3959 3.99459 11.9996 3.93435 12.5821 4.04957C13.1646 4.16479 13.6999 4.45029 14.12 4.86992C14.4959 5.25399 14.7649 5.72975 14.9 6.24992C14.9328 6.3773 14.9904 6.49697 15.0695 6.60209C15.1486 6.70721 15.2476 6.79573 15.3609 6.86259C15.4742 6.92945 15.5995 6.97334 15.7298 6.99175C15.86 7.01017 15.9926 7.00275 16.12 6.96992C16.2474 6.93709 16.3671 6.87949 16.4722 6.80041C16.5773 6.72133 16.6658 6.62232 16.7327 6.50904C16.7995 6.39575 16.8434 6.2704 16.8618 6.14015C16.8802 6.0099 16.8728 5.8773 16.84 5.74992C16.6122 4.88472 16.1603 4.09486 15.53 3.45992C14.8302 2.76229 13.9393 2.28766 12.97 2.09596C12.0006 1.90427 10.9961 2.00411 10.0835 2.38288C9.17078 2.76164 8.3908 3.40235 7.84201 4.22409C7.29321 5.04584 7.00021 6.01177 7 6.99992V8.99992C6.20435 8.99992 5.44129 9.31599 4.87868 9.8786C4.31607 10.4412 4 11.2043 4 11.9999V18.9999C4 19.7956 4.31607 20.5586 4.87868 21.1212C5.44129 21.6838 6.20435 21.9999 7 21.9999H17C17.7956 21.9999 18.5587 21.6838 19.1213 21.1212C19.6839 20.5586 20 19.7956 20 18.9999V11.9999C20 11.2043 19.6839 10.4412 19.1213 9.8786C18.5587 9.31599 17.7956 8.99992 17 8.99992ZM18 18.9999C18 19.2651 17.8946 19.5195 17.7071 19.707C17.5196 19.8946 17.2652 19.9999 17 19.9999H7C6.73478 19.9999 6.48043 19.8946 6.29289 19.707C6.10536 19.5195 6 19.2651 6 18.9999V11.9999C6 11.7347 6.10536 11.4803 6.29289 11.2928C6.48043 11.1053 6.73478 10.9999 7 10.9999H17C17.2652 10.9999 17.5196 11.1053 17.7071 11.2928C17.8946 11.4803 18 11.7347 18 11.9999V18.9999Z" fill="black" />
+                    </svg>}
                   </div>
                 </button>
               ))

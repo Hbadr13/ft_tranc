@@ -17,7 +17,7 @@ export default function Channels({ users, setClick, currentUser }: { users: user
 
   const handleClick = async () => {
 
-    console.log('->>>>>>>>>>>', people)
+    // console.log('->>>>>>>>>>>', people)
     users.map((item: userProps) => {
       item.flag = false
     })
@@ -55,7 +55,7 @@ export default function Channels({ users, setClick, currentUser }: { users: user
       setSelect(true)
     // console.log(item
     // console.log('-???', item[index].flag)
-    console.log(users)
+    // console.log(users)
   }
 
   return (
@@ -128,7 +128,7 @@ export default function Channels({ users, setClick, currentUser }: { users: user
               {message && <p>{message}</p>}
             </div>
           </div>
-        ) : (<AddPeople  setAdd={setAdd} users={users}/>)
+        ) : (<AddPeople setCancel={setAdd}  users={users}/>)
       }
     </div>
   );

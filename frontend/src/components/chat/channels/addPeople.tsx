@@ -1,7 +1,7 @@
 import { participantsProps, userProps } from '@/interface/data'
 import React, { useEffect, useState } from 'react'
 
-export default function AddPeople({ setClick, users }: { setClick: (value: number) => void, users: userProps[] }) {
+export default function AddPeople({ participants, setCancel, users }: { participants?: participantsProps[], setCancel: (value: any) => void, users: userProps[] }) {
 
     const [select, setSelect] = useState(false)
 
@@ -15,11 +15,30 @@ export default function AddPeople({ setClick, users }: { setClick: (value: numbe
         // console.log(item
         // console.log('-???', item[index].flag)
         users.map((item) => {
-            console.log(item.username, item.dakhal)
+            // console.log(item.username, item.dakhal)
         })
-        console.log(users)
+        // console.log(users)
     }
 
+    useEffect(() => {
+        users.map((item: userProps) => {
+            item.flag = false
+            item.dakhal = false
+        })
+
+        users.map((item: userProps) => {
+            participants?.map((item2) => {
+                console.log('haaaaaaaaaaa',item.username, item2.username)
+                if (item.username == item2.username)
+                    item.dakhal = true
+            })
+        })
+
+    }, [users])
+
+    const   handleClick = () =>{
+        
+    }
     return (
 
         <div className='flex flex-col bg-blac shadow-xl w-[100%] '>
@@ -27,7 +46,7 @@ export default function AddPeople({ setClick, users }: { setClick: (value: numbe
                 <div className='flex justify-start w-full items-center ml-8  text-black'>
                     <h1 className=' text-shadow-sm'>Add People</h1></div>
                 <div className='w-full justify-end items-center bg-blhack flex'>
-                    <button onClick={() => setClick(0)} className=" mr-6">
+                    <button onClick={() => setCancel(0)} className=" mr-6">
                         <svg width="10" height="10" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path id="Vector" d="M117.5 100L196.25 21.25C201.25 16.25 201.25 8.75 196.25 3.75C191.25 -1.25 183.75 -1.25 178.75 3.75L100 82.5L21.25 3.75C16.25 -1.25 8.75 -1.25 3.75 3.75C-1.25 8.75 -1.25 16.25 3.75 21.25L82.5 100L3.75 178.75C1.25 181.25 0 183.75 0 187.5C0 195 5 200 12.5 200C16.25 200 18.75 198.75 21.25 196.25L100 117.5L178.75 196.25C181.25 198.75 183.75 200 187.5 200C191.25 200 193.75 198.75 196.25 196.25C201.25 191.25 201.25 183.75 196.25 178.75L117.5 100Z" fill="#376EFA" fill-opacity="0.85" />
                         </svg>

@@ -16,7 +16,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
     const [leavingRoom, setLeavingRoom] = useState(false);
     const [add, setAdd] = useState(false)
     const [select, setSelect] = useState(false)
-
+    const [people, setPeople] = useState<number[]>([])
 
     useEffect(() => {
         (
@@ -35,23 +35,9 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                 setLeavingRoom(false)
             }
         )();
-    }, [Room, click, leavingRoom]);
+    }, [Room, click, leavingRoom, people]);
 
-    useEffect(() => {
-        users.map((item: userProps) => {
-            item.flag = false
-            item.dakhal = false
-        })
-        
-        users.map((item: userProps) => {
-            participants.map((item2) => {
-                console.log(item.username, item2.username)
-                if (item.username == item2.username)
-                    item.dakhal = true
-            })
-        })
 
-    }, [Room])
 
     useEffect(() => {
         (
@@ -72,7 +58,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
         )();
     }, [click, Room]);
     useEffect(() => {
-        console.log('**********************', participants)
+        // console.log('**********************', participants)
         setClick(0);
 
     }, [Room]);
@@ -89,7 +75,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                     setMyStatusInRoom(item)
                 }
             })
-            console.log('wana bagha nghawt', userStatusRoom)
+            // console.log('wana bagha nghawt', userStatusRoom)
         }
     }, [Room, click, participants]);
 
@@ -123,7 +109,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                     credentials: 'include',
                 })
                 const content = await response.json();
-                console.log(password)
+                // console.log(password)
                 if (response.status == 200) {
 
                     setClick(0);
@@ -144,7 +130,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                 // credentials: 'include',
             })
             setLeavingRoom(true)
-            console.log(leavingRoom);
+            // console.log(leavingRoom);
         } catch (error) {
 
         }
@@ -159,6 +145,36 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
         // console.log(item
         // console.log('-???', item[index].flag)
         console.log(users)
+    }
+
+    useEffect(() => {
+        setPeople([])
+        users.map((item: userProps) => {
+            if (item.flag)
+                setPeople(prevPeople => [...prevPeople, item.id]);
+        })
+        users.map((item: userProps) => {
+            item.flag = false
+        })
+    }, [click, select])
+
+    const addUserToRoom = async () => {
+
+        await fetch(`${Constant.API_URL}/chat/addParticipants/${Room.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "people": people
+            }),
+            credentials: 'include',
+        });
+        console.log('ana hena hh : ', people)
+        setPeople([])
+        users.map((item: userProps) => {
+            item.flag = false
+        })
     }
 
 
@@ -178,7 +194,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                             <div className="flex bgf-black">
                                 <h2 className="w-auto ml-20">Add People</h2>
                                 <div className="w-full">
-                                    <button className='flex justify-end'>add</button>
+                                    <button onClick={addUserToRoom} className='flex justify-end'>add</button>
                                 </div>
                             </div>
                             <div className='overflow-y-scroll bg-blfack scrollbar-hide flex bg-gdray-600 flex-row justify-start items-center flex-wrap gridx grid-cols-2x grid-flolw-colx  h-28  w-[90%] bg-slatef-400 mt-2  space-fx-0 spacfe-y-0 gap-1 bg-slatfe-700'>
@@ -214,7 +230,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                             </div>
                         </div>}
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col overflow-y-scroll scrollbar-hide h-[400px]">
                         {participants.map((item) => (
                             (item.isAdmin) ? (
                                 <div className=" bg-white   space-x-3 h-14 w-full items-center inline-flex border rounded-lg space-y-2">
@@ -382,7 +398,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                         </div>
                     }
                     {
-                        (click == 3) && <AddPeople setClick={setClick} users={users} />
+                        (click == 3) && <AddPeople participants={participants} setCancel={setClick} users={users} />
                     }
                 </div >
 

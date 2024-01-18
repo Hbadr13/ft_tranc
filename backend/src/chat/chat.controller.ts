@@ -62,11 +62,15 @@ export class ChatController {
         await this.chatService.setAdmin(Number(roomId), Number(participantId), item)
     }
 
+    @Post('addParticipants/:roomId')
+    async AddParticipants(@Body() body: { people: number[] },@Param('roomId') roomId: number) {
+        await this.chatService.addParticipants(Number(roomId), body)
+    }
+
     @Delete('leavingRoom/:userId/:roomId')
     async   LeavingRoom(@Param('userId') userId: number, @Param('roomId') roomId: number){
         await   this.chatService.LeavingRoom(Number(userId), Number(roomId))
     }
-
 
     /******************************************************* Direct Message ****************************************************************/
 

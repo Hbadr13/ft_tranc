@@ -95,7 +95,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
                     setMyStatusInRoom(item)
                 }
             })
-            console.log('wana bagha nghawt', userStatusRoom)
+            // console.log('wana bagha nghawt', userStatusRoom)
         }
     }, [Room, click, participants]);
 
@@ -129,7 +129,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
                     credentials: 'include',
                 })
                 const content = await response.json();
-                console.log(password)
+                // console.log(password)
                 if (response.status == 200) {
 
                     setClick(0);
@@ -191,7 +191,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
                         });
                         const content = await response.json();
                         setMessages(Array.from(content))
-                        console.log("content :", content)
+                        // console.log("content :", content)
                     } catch (error) {
 
                     }
@@ -269,6 +269,17 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
                 chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Room.id, content: content });
             }
         }
+        // const currentDate = new Date();
+
+        // // Extract hours and minutes
+        // const hours = String(currentDate.getHours()).padStart(2, '0');
+        // const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+
+        // // Format the time as "00:00"
+        // const currentTime = `${hours}:${minutes}`;
+
+        // // Print the result
+        // console.log('Current time in the local time zone (24-hour clock):', currentTime);
         if (isend == false)
             setIsend(true)
         else if (isend == true)
@@ -318,6 +329,18 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
                 setIsend(false)
             setContent('')
         }
+        // const currentDate = new Date();
+
+        // // Extract hours and minutes
+        // const hours = String(currentDate.getHours()).padStart(2, '0');
+        // const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+
+        // // Format the time as "00:00"
+        // const currentTime = `${hours}:${minutes}`;
+
+        // // Print the result
+        // console.log('Current time in the local time zone (24-hour clock):', currentTime);
+
     };
     const blockChatTwoUser = async () => {
 
@@ -403,7 +426,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
                                                     <path d="M16.9999 13.4098L12.7099 9.16982C12.617 9.07609 12.5064 9.0017 12.3845 8.95093C12.2627 8.90016 12.132 8.87402 11.9999 8.87402C11.8679 8.87402 11.7372 8.90016 11.6154 8.95093C11.4935 9.0017 11.3829 9.07609 11.2899 9.16982L7.04995 13.4098C6.95622 13.5028 6.88183 13.6134 6.83106 13.7352C6.78029 13.8571 6.75415 13.9878 6.75415 14.1198C6.75415 14.2518 6.78029 14.3825 6.83106 14.5044C6.88183 14.6263 6.95622 14.7369 7.04995 14.8298C7.23731 15.0161 7.49076 15.1206 7.75495 15.1206C8.01913 15.1206 8.27259 15.0161 8.45995 14.8298L11.9999 11.2898L15.5399 14.8298C15.7262 15.0146 15.9776 15.1187 16.2399 15.1198C16.3716 15.1206 16.502 15.0954 16.6239 15.0456C16.7457 14.9958 16.8565 14.9225 16.9499 14.8298C17.047 14.7402 17.1254 14.6322 17.1805 14.5122C17.2356 14.3921 17.2664 14.2623 17.271 14.1302C17.2757 13.9982 17.2541 13.8666 17.2076 13.7429C17.161 13.6193 17.0905 13.506 16.9999 13.4098Z" fill="#2D8EE8" />
                                                 </svg>
                                             </button>
-                                            <div  className=" w-72  absolute z-20 h-[650px]  mr-64 mt-[685px] bg-[#e4e4e7]  shadow-md shadow-black rounded-2xl p-4">
+                                            <div onMouseOut={() => setfalg(false)} onMouseOver={() => setfalg(true)} className=" w-72  absolute z-20 h-[650px]  mr-64 mt-[685px] bg-[#e4e4e7]  shadow-md shadow-black rounded-2xl p-4">
 
                                                 {button == false &&
 
@@ -650,7 +673,7 @@ export default function Conversation({ setMyStatusInRoom, chatSocket, Receiver, 
                                         </div>
                                     }
                                     {
-                                        !flag && <button  onClick={() => setfalg(true)} className='w-auto h-auto shadow-md rounded-3xl'>
+                                        !flag && <button onMouseOver={() => setfalg(true)} onClick={() => setfalg(true)} className='w-auto h-auto shadow-md rounded-3xl'>
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24" fill="none">
                                                 <path d="M16.9999 9.17019C16.8126 8.98394 16.5591 8.87939 16.2949 8.87939C16.0308 8.87939 15.7773 8.98394 15.5899 9.17019L11.9999 12.7102L8.45995 9.17019C8.27259 8.98394 8.01913 8.87939 7.75495 8.87939C7.49076 8.87939 7.23731 8.98394 7.04995 9.17019C6.95622 9.26315 6.88183 9.37375 6.83106 9.49561C6.78029 9.61747 6.75415 9.74818 6.75415 9.88019C6.75415 10.0122 6.78029 10.1429 6.83106 10.2648C6.88183 10.3866 6.95622 10.4972 7.04995 10.5902L11.2899 14.8302C11.3829 14.9239 11.4935 14.9983 11.6154 15.0491C11.7372 15.0998 11.8679 15.126 11.9999 15.126C12.132 15.126 12.2627 15.0998 12.3845 15.0491C12.5064 14.9983 12.617 14.9239 12.7099 14.8302L16.9999 10.5902C17.0937 10.4972 17.1681 10.3866 17.2188 10.2648C17.2696 10.1429 17.2957 10.0122 17.2957 9.88019C17.2957 9.74818 17.2696 9.61747 17.2188 9.49561C17.1681 9.37375 17.0937 9.26315 16.9999 9.17019Z" fill="#2D8EE8" />
