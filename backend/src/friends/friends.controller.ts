@@ -82,7 +82,8 @@ export class FriendsController {
       return {}
   }
   @Get(':userId/send-requests')
-  async getSendFriendRequests(@Param('userId') userId: number) {
+  async getSendFriendRequests(@Param('userId') userId: number, @Request() req:any) {
+ 
     if (Number(userId) > 0)
       return this.friendsService.getSendFriendRequests(Number(userId));
     else
