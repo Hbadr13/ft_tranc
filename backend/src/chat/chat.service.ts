@@ -83,6 +83,7 @@ export class ChatService {
                                 name: true,
                                 type: true,
                                 password: true,
+                                updatedAt: true
                             }
                         }
                     }
@@ -97,11 +98,11 @@ export class ChatService {
                     where: { isBanned: true },
                     select: { roomId: true }
                 }
-
             }
         })
         let allRoom = room.memberships.map(membership => membership.room);
         allRoom = allRoom.filter(item => !banned.memberships.some(item2 => item2.roomId === item.id));
+        allRoom.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
         return allRoom;
     }
@@ -175,12 +176,13 @@ export class ChatService {
     }
 
     async sendMessageToChannel(body, idRoom: number, idUser: number) {
+        console.log("+++++++++++++++++++++++>")
+
         const user = await this.prisma.user.findUnique({
             where: {
                 id: idUser,
             },
             include: {
-
                 conversations: {
                     where: {
                         roomId: idRoom
@@ -189,8 +191,9 @@ export class ChatService {
             }
         })
 
+        // console.log(',,,,,',idUser, body.content,user.conversations[0])
 
-        if (user.conversations[0]) {
+        if (user) {
 
 
             let Conversation = await this.prisma.conversation.findUnique({
@@ -212,7 +215,7 @@ export class ChatService {
                     },
                 }
             });
-            await this.prisma.message.create({
+            let msg = await this.prisma.message.create({
                 data: {
                     content: body.content,
                     sender: {
@@ -227,7 +230,12 @@ export class ChatService {
                     }
                 }
             });
+            let r = await this.prisma.room.update({
+                where: { id: idRoom },
+                data: { updatedAt: msg.createdAt }
+            })
         }
+
     }
 
     async getallMessagesChannel(idUser: number, idRoom: number) {
@@ -387,11 +395,15 @@ export class ChatService {
     }
     async upadteChannel(id: number, roomId: number, type: string, password: string) {
         const room = await this.prisma.membership.findFirst({
-
             where: {
                 roomId: roomId
             },
         });
+
+        const time = await this.prisma.room.findFirst({
+            where: { id: roomId },
+            select: { updatedAt: true }
+        })
 
         if (room.userId != id) {
             throw new UnauthorizedException()
@@ -427,11 +439,16 @@ export class ChatService {
                 });
             }
         }
+        await this.prisma.room.update({
+            where: { id: roomId },
+            data: { updatedAt: time.updatedAt }
+        })
         return room
     }
 
 
     async setAdmin(roomId: number, participantId: number, item: string) {
+        console.log('ana hna asat =>', roomId, participantId, item)
         let room = await this.prisma.room.findUnique({
             where: {
                 id: roomId,

@@ -14,27 +14,26 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
     const [userStatusRoom, setUserStatusRoom] = useState<participantsProps>()
     const [error, seterror] = useState(false);
     const [leavingRoom, setLeavingRoom] = useState(false);
-    const [add, setAdd] = useState(false)
     const [select, setSelect] = useState(false)
     const [people, setPeople] = useState<number[]>([])
 
     useEffect(() => {
-        (
-            async () => {
-                try {
-                    const response = await fetch(`${Constant.API_URL}/chat/allUsersChannel/${Room.id}`, {
-                        credentials: 'include',
-                    })
-                    const content = await response.json();
-                    setParticipants(Array.from(content))
+        if (Room.id) {
+            (
+                async () => {
+                    try {
+                        const response = await fetch(`${Constant.API_URL}/chat/allUsersChannel/${Room.id}`, {
+                            credentials: 'include',
+                        })
+                        const content = await response.json();
+                        setParticipants(Array.from(content))
+                    } catch (error) {
 
-                    // setClick(0);
-                } catch (error) {
-
+                    }
+                    setLeavingRoom(false)
                 }
-                setLeavingRoom(false)
-            }
-        )();
+            )();
+        }
     }, [Room, click, leavingRoom, people]);
 
 
@@ -83,7 +82,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
         try {
             await fetch(`${Constant.API_URL}/chat/setAdmin/${Room.id}/${participant?.id}/${item}`, {
                 method: 'POST',
-                // credentials: 'include',
+                credentials: 'include',
             })
         } catch (error) {
 
@@ -148,15 +147,14 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
     }
 
     useEffect(() => {
+        console.log('ana chkandir hna,,', click)
         setPeople([])
         users.map((item: userProps) => {
             if (item.flag)
                 setPeople(prevPeople => [...prevPeople, item.id]);
         })
-        users.map((item: userProps) => {
-            item.flag = false
-        })
-    }, [click, select])
+
+    }, [click])
 
     const addUserToRoom = async () => {
 
@@ -179,18 +177,15 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
 
 
     return (
-        <div className=' lg:flex  hidden flex-col  w-[20%] h-[820px] border  items-center  mt-12 border-sky-500 rounded-[30px]  '>
-
-            <div className={`  bg-gray-100 dark:bg-CusColor_dark  ${click != 0 ? 'blur-f[0.7px] brightness-[80%] ' : null}   w-full h-full  rounded-[30px] p-3   flex justify-start items-start `}>
-
-
+        <>
+            <div className={`  bg-gray-100  ${click != 0 ? 'blur-f[0.7px] brighgtness-[80%]' : null}   w-full h-full  rounded-xl p-3  flex justify-start items-start  z-1g0`}>
                 <div className="w-full h-full bg-blsack flex-col justify-center items-center">
                     <div className="flex-col justify-start items-center flex ">
-                        <div className={`flex justify-center items-center w-12 h-12 rounded-full ${Room.type == 'public' && ' bg-amber-300'}  ${Room.type == 'private' && 'bg-sky-500'}  ${Room.type == 'protected' && ' bg-red-500'}`} >
-                            <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{Room.name[0].toUpperCase()}</h1>
-                        </div>                        <div className="text-zinc-900 text-[32px] font-bold font-['Satoshi']">{Room.name}</div>
-                        <div className="text-zinc-900 text-[15px] font-bold">{Room.type}</div>
-                        {Room.type == 'private' && <div className=" border w-full bg-stofne-600 flex flex-col justify-center items-center">
+                        <div className={`flex justify-center items-center w-12 h-12 rounded-full ${Room.type == 'public' && ' bg-amber-300'}  ${Room?.type == 'private' && 'bg-sky-500'}  ${Room?.type == 'protected' && ' bg-red-500'}`} >
+                            <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{Room?.name[0].toUpperCase()}</h1>
+                        </div>                        <div className="text-zinc-900 text-[32px] font-bold font-['Satoshi']">{Room?.name}</div>
+                        <div className="text-zinc-900 text-[15px] font-bold">{Room?.type}</div>
+                        {Room?.type == 'private' && <div className=" border w-full bg-stofne-600 flex flex-col justify-center items-center">
                             <div className="flex bgf-black">
                                 <h2 className="w-auto ml-20">Add People</h2>
                                 <div className="w-full">
@@ -208,7 +203,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                                                 </div>
                                                 <h1 className='h-6 w-auto text-sm'>{item.username}</h1>
                                                 <div className=''>
-                                                    <button className='rounded-full' onClick={() => handlSelect(users, false, index)}  >
+                                                    <button className=' bg-black rounded-full' onClick={() => handlSelect(users, false, index)}  >
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 180 180" fill="none">
                                                             <path d="M100.575 90.0004L132.825 57.8254C134.237 56.4131 135.031 54.4977 135.031 52.5004C135.031 50.5032 134.237 48.5877 132.825 47.1754C131.413 45.7631 129.497 44.9697 127.5 44.9697C125.503 44.9697 123.587 45.7631 122.175 47.1754L90 79.4254L57.825 47.1754C56.4128 45.7631 54.4973 44.9697 52.5 44.9697C50.5028 44.9697 48.5873 45.7631 47.175 47.1754C45.7628 48.5877 44.9693 50.5032 44.9693 52.5004C44.9693 54.4977 45.7628 56.4131 47.175 57.8254L79.425 90.0004L47.175 122.175C46.4721 122.873 45.9141 123.702 45.5333 124.616C45.1526 125.53 44.9565 126.51 44.9565 127.5C44.9565 128.491 45.1526 129.471 45.5333 130.385C45.9141 131.299 46.4721 132.128 47.175 132.825C47.8723 133.528 48.7018 134.086 49.6157 134.467C50.5296 134.848 51.5099 135.044 52.5 135.044C53.4901 135.044 54.4704 134.848 55.3844 134.467C56.2983 134.086 57.1278 133.528 57.825 132.825L90 100.575L122.175 132.825C122.872 133.528 123.702 134.086 124.616 134.467C125.53 134.848 126.51 135.044 127.5 135.044C128.49 135.044 129.47 134.848 130.384 134.467C131.298 134.086 132.128 133.528 132.825 132.825C133.528 132.128 134.086 131.299 134.467 130.385C134.847 129.471 135.044 128.491 135.044 127.5C135.044 126.51 134.847 125.53 134.467 124.616C134.086 123.702 133.528 122.873 132.825 122.175L100.575 90.0004Z" fill="#B3AEAE" />
                                                         </svg>
@@ -281,7 +276,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
             </div>
             {
 
-                click != 0 && <div className=' bg-white  dark:bg-gray-700 h-auto w-[87%]  flex-col  rounded-lg flex justify-start items-start  shadow-md sdhadow -mt-[630px] z-30 bg-ofrange-500'>
+                click != 0 && <div className=' bg-white  bg-blgdack dark:bg-gray-700 h-auto w-[87%]  flex-col  rounded-lg flex justify-start items-start  shadow-md sdhadow -mt-[630px]  z-40 '>
                     {
                         click == 1 && <>
 
@@ -403,6 +398,6 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                 </div >
 
             }
-        </div >
+        </>
     )
 }

@@ -1,8 +1,7 @@
 import EditChannel from "@/components/chat/channels/editChannel";
 import Conversation from "@/components/chat/conversation";
 import ConversationList from "@/components/chat/conversationList";
-import Edit from "@/components/chat/edit";
-import { Constant } from "@/constants/constant";
+import Edit from "@/components/chat/direct/edit";
 import { AppProps, channelProps, messageProps, participantsProps, userData, userProps } from '@/interface/data';
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -13,6 +12,7 @@ export default function index({ users, amis }: AppProps) {
   const [currentUser, setCurrentUser] = useState<userProps>(userData);
   const channelData = { id: 0, type: "", name: "", password: "" }
   const [Room, setRoom] = useState<channelProps>(channelData);
+  const [joinRoom, setJoinRoom] = useState<channelProps>(channelData);
 
   const [Receiver, setReceiver] = useState<userProps>(userData);
   const [button, setButton] = useState(false);
@@ -24,11 +24,12 @@ export default function index({ users, amis }: AppProps) {
   const [password, setPassword] = useState(null)
   const [correct, setcorrcet] = useState(0)
   const [myStatusInRoom, setMyStatusInRoom] = useState<participantsProps>()
+  const [msg2, setMsg2] = useState('')
   useEffect(() => {
     (
       async () => {
         try {
-          const response = await fetch(`${Constant.API_URL}/auth/user`, {
+          const response = await fetch('http://localhost:3333/auth/user', {
             credentials: 'include',
           });
           const content = await response.json();
@@ -42,7 +43,7 @@ export default function index({ users, amis }: AppProps) {
   const joinchanle = async () => {
     console.log("__________________________")
     try {
-      const response = await fetch(`${Constant.API_URL}/chat/joinChannel/${currentUser.id}/${Room.id}/${password}`, {
+      const response = await fetch(`http://localhost:3333/chat/joinChannel/${currentUser.id}/${joinRoom.id}/${password}`, {
         method: 'POST',
 
         credentials: 'include',
@@ -65,7 +66,7 @@ export default function index({ users, amis }: AppProps) {
     (
       async () => {
         try {
-          const response = await fetch(`${Constant.API_URL}/chat/statusChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+          const response = await fetch(`http://localhost:3333/chat/statusChatTwoUser/${currentUser.id}/${Receiver.id}`, {
             credentials: 'include',
           });
           const content = await response.json();
@@ -85,7 +86,7 @@ export default function index({ users, amis }: AppProps) {
   }, [currentUser.id, Receiver, status_tow_user]);
 
   useEffect(() => {
-    const socket = io(`${Constant.API_URL}/ChatGateway`, {
+    const socket = io('http://localhost:3333/ChatGateway', {
       query: {
         userId: currentUser.id,
       }
@@ -119,13 +120,24 @@ export default function index({ users, amis }: AppProps) {
   //   // setcorrcet(0)
   // }, [currentUser.id, Receiver]);
 
+
+  
+
   return (
     <div className="  flex  flex-col">
       <div className={` bg-bldack flex-uwrap  ${joinchannel == true ? 'blur-sm' : null} min-w-full mt-6 min-h-screen flex flex-row justify-centder items-csenter dark:bg-black space-x-2 sm:space-x-6`}>
-        <ConversationList amis={amis} setReceiver={setReceiver} Receiver={Receiver} setButton={setButton} currentUser={currentUser} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
-        <Conversation setMyStatusInRoom={setMyStatusInRoom} chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
-        {button == false && Receiver.id != 0 && <Edit currentUser={currentUser} Receiver={Receiver} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />}
-        {button == true && Room.id != 0 && <EditChannel users={users} setMyStatusInRoom={setMyStatusInRoom} currentUser={currentUser} Room={Room} />}
+        <ConversationList msg2={msg2} amis={amis} setReceiver={setReceiver} Receiver={Receiver} setButton={setButton} currentUser={currentUser} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} Room={Room} setJoinRoom={setJoinRoom} />
+        <Conversation setMsg2={setMsg2} users={users} setMyStatusInRoom={setMyStatusInRoom} chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
+        {button == false && Receiver.id != 0 &&
+          <div className="md:hidaden sm:hidsden hidden  bg-gray-100 dark:bg-slate-800 p-2  mt-12  w-[20%] h-[820px]      lg:flex justify-start items-start   border-2  border-sky-400 rounded-xl">
+            <div className="w-full h-[547.06px] flex-col justify-start items-center  bg-blwack  gasp-[26px] flex">
+              <Edit currentUser={currentUser} Receiver={Receiver} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
+            </div>
+          </div>}
+        {button == true && Room.id != 0 &&
+          <div className=' lg:flex bg-gray-100  hidden flex-col  w-[20%] h-[820px]  items-center  mt-12 border-2  border-sky-400 rounded-xl  '>
+            <EditChannel users={users} setMyStatusInRoom={setMyStatusInRoom} currentUser={currentUser} Room={Room} />
+          </div>}
       </div>
       <div>
         {
@@ -134,7 +146,7 @@ export default function index({ users, amis }: AppProps) {
             (
               <>
                 {
-                  Room.type === "protected" && < div className="flex   items-center -mt-[900px] ssm:-mt-[900px] xl:-mt-[900px] mdl-12 justify-center min-h-screen sm:bg-bldack  md:bg-gdray-700 md:-mt-[800px]  xl:bg-dblue-600 min-w-screen  z-20  bg-sslate-400">
+                  joinRoom.type === "protected" && < div className="flex   items-center -mt-[900px] ssm:-mt-[900px] xl:-mt-[900px] mdl-12 justify-center min-h-screen sm:bg-bldack  md:bg-gdray-700 md:-mt-[800px]  xl:bg-dblue-600 min-w-screen  z-20  bg-sslate-400">
 
                     <div className=" bg-white md:w-[400px]   flex flex-col  justify-strt items-center  sm:w-[400px]   h-80 w-96  drop-shadow shadow-lg shaddow-black  rounded-xl -mst-[1000px] md:-mst-[700px] z-20 text-blue-600 ml-10 md:mdl-[600px]">
                       {/* <div className='text-blue-500 text-xl mt-8  mr-44  font-black' >Confirm logout </div> */}
@@ -170,12 +182,14 @@ export default function index({ users, amis }: AppProps) {
                         <button onClick={() => joinchanle()} className=' text-white  bg-blue-600 w-80  flex justify-center items-center  bordfer-2 bofrder-blue-600 h-10 rounded-full'>
                           <div className=" text-white text-xl font-black">Submit</div>
                         </button>
+
+
                       </div>
                     </div>
                   </div>
                 }
                 {
-                  Room.type === "public" && < div className="flex   items-center -mt-[900px] ssm:-mt-[900px] xl:-mt-[900px] mdl-12 justify-center min-h-screen sm:bg-bldack  md:bg-gdray-700 md:-mt-[800px]  xl:bg-dblue-600 min-w-screen  z-20  bg-sslate-400">
+                  joinRoom.type === "public" && < div className="flex   items-center -mt-[900px] ssm:-mt-[900px] xl:-mt-[900px] mdl-12 justify-center min-h-screen sm:bg-bldack  md:bg-gdray-700 md:-mt-[800px]  xl:bg-dblue-600 min-w-screen  z-20  bg-sslate-400">
 
                     <div className=" bg-white md:w-[400px]   flex flex-col  justify-strt items-center  sm:w-[400px]   h-80 w-96  drop-shadow shadow-lg shaddow-black  rounded-xl -mst-[1000px] md:-mst-[700px] z-20 text-blue-600 ml-10 md:mdl-[600px]">
                       {/* <div className='text-blue-500 text-xl mt-8  mr-44  font-black' >Confirm logout </div> */}

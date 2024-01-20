@@ -312,9 +312,9 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
                                                             )
                                                         }
 
-                                                        <Link href={'/chat'} className=' bg-blue-300 p-2 rounded-md  hover:ring-offset-2 hover:ring-2 duration-300'>
+                                                        <button onClick={()=>router.push(`/chat?user=${user.id}`)} className=' bg-blue-300 p-2 rounded-md  hover:ring-offset-2 hover:ring-2 duration-300'>
                                                             <Image src='/icons-chat-black.png' className='' alt='search' width={20} height={20}></Image>
-                                                        </Link>
+                                                        </button>
                                                     </div>
                                                 </div>
 

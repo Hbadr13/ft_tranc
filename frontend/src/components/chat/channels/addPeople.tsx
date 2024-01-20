@@ -28,7 +28,7 @@ export default function AddPeople({ participants, setCancel, users }: { particip
 
         users.map((item: userProps) => {
             participants?.map((item2) => {
-                console.log('haaaaaaaaaaa',item.username, item2.username)
+                // console.log('haaaaaaaaaaa',item.username, item2.username)
                 if (item.username == item2.username)
                     item.dakhal = true
             })
@@ -56,7 +56,7 @@ export default function AddPeople({ participants, setCancel, users }: { particip
             <div className=' w-full h-[1px] bg-sky-200' />
             <div className='flex-row-revferse overflow-x-scroll scrollbar-hide flex w-full p-4'>
                 {users.map((item, index) => (
-                    <div className=' bg-blfack bggf-blue-600  w-32 h-14 p-2 flex justify-center items-center'>
+                    <div key={index} className=' bg-blfack bggf-blue-600  w-32 h-14 p-2 flex justify-center items-center'>
                         {
                             item.flag &&
                             <div className='h-full  bg-bljack w-16 flex justify-center items-center' key={index}>

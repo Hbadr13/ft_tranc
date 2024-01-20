@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req } from '@nestjs/common';
 import { ChatService } from './chat.service';
 
 @Controller('chat')
@@ -10,7 +10,7 @@ export class ChatController {
     /******************************************************* Channel Message ****************************************************************/
 
     @Post('createChannel/:idUser')
-    async CreateChannel(@Body() body: { people: number[] }, @Param('idUser') idUser: number, @Param('people') people: number[]) {
+    async CreateChannel(@Req() req: Request,@Body() body: { people: number[] }, @Param('idUser') idUser: number, @Param('people') people: number[]) {
         await this.chatService.createChannel(body, Number(idUser))
     }
 

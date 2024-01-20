@@ -1,20 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import { AppProps, userProps, listConversationDirect } from '@/interface/data';
 import { Constant } from '@/constants/constant';
+import { useRouter } from 'next/router';
 
-
-
-export default function DirectConversationList({ setReceiver, users, amis, currentUser, Receiver, setStatus_Tow_User, status_tow_user }: { setReceiver: (value: any) => void, users: userProps[], amis: userProps[], currentUser: userProps, Receiver: userProps, setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean }) {
-
+export default function DirectConversationList({msg2, setReceiver, users, amis, currentUser, Receiver, setStatus_Tow_User, status_tow_user }: {msg2:string, setReceiver: (value: any) => void, users: userProps[], amis: userProps[], currentUser: userProps, Receiver: userProps, setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean }) {
 
     const [click, setClick] = useState(false)
     const [liststatus, setliststatus] = useState<number[]>([]);
     const [last_amis, setLastAmis] = useState<Array<userProps>>([])
 
+    const router = useRouter()
+
     // const userData = { id: , createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false, room: '', won: 0, lost: 0, level: 0 }
     const [currentUser1, setCurrentUser1] = useState<userProps>(currentUser);
+    const [khadmi, setKhadmi] = useState<userProps>()
+    const [conversationList, setConversationList] = useState<Array<listConversationDirect>>([])
 
-
+    useEffect(() => {
+        users.map((item) => {
+            if (Number(router.query.user) == item.id)
+                setKhadmi(item)
+        })
+        // console.log('->>>>>>>>>>>>>', khadmi?.id)
+    }, [router])
 
     useEffect(() => {
         (
@@ -32,8 +40,6 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
         )();
     }, []);
 
-
-    const [conversationList, setConversationList] = useState<Array<listConversationDirect>>([])
     useEffect(() => {
         (
             async () => {
@@ -50,6 +56,7 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
             }
         )();
     }, [currentUser1]);
+
     useEffect(() => {
         (
             async () => {
@@ -69,7 +76,7 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
                 }
             }
         )();
-    }, [currentUser1, click]);
+    }, [currentUser1, click, msg2]);
     useEffect(() => {
         (
             async () => {
@@ -139,6 +146,7 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
     }, [click, currentUser1, liststatus])
 
 
+
     return (
         <div className=' w-full h-full bgf-black flex justify-center items-center flex-col'>
             {
@@ -165,7 +173,7 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
                             </button>
                             {
                                 (last_amis.length != 0) ? last_amis.map((item: userProps) => (
-                                    <button onClick={() => setReceiver(item)} className={`h-20 mt-3 w-full md:p-2 ${item.id == Receiver.id ? 'md:bg-blue-300 md:shadow-lg md:shadowf-black ' : 'md:bg-white md:hover:shadow-lg md:hover:bg-sky-100 '}  justify-between items-center inline-flex    md:border border-sky-500   duration-1000  transition shahydow-md rounded-xl`}>
+                                    <button onClick={() => { setReceiver(item); router.replace(`/chat?user=${item.id}`) }} className={`h-20 mt-3 w-full md:p-2 ${item.id == Receiver.id ? 'md:bg-blue-300 md:shadow-lg md:shadowf-black ' : 'md:bg-white md:hover:shadow-lg md:hover:bg-sky-100 '}  justify-between items-center inline-flex    md:border border-sky-500   duration-1000  transition shahydow-md rounded-xl`}>
                                         <div className="h-auto  justify-start items-center gap-2.5 flex">
                                             {item.flag && <img className={`w-20 h-20   sm:h-20   sm:w-20  ${item.id == Receiver.id ? ' md:border-0 border-4 border-sky-500  ' : ' md:border-0 border-4 border-white '} shadow-md shadodw-black md:w-16 md:h-16 rounded-full`} src={item.foto_user} />}
                                             {!item.flag && <img className="w-16 h-16 rounded-full" src="https://cdn3.iconfinder.com/data/icons/shape-icons/128/icon48pt_different_account-512.png" />}
@@ -180,9 +188,9 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
                         </div>
                     ) : (
 
-                        <div className="  borhder bogjrder-sky-500  flex  flex-col items-center justify-center">
+                        <div className="  flex  flex-col items-center justify-center">
                             {(conversationList.length != 0) ? conversationList.map((item: listConversationDirect) => (
-                                <button onClick={() => setReceiver(item)} className={`h-20 mt-3 w-full md:p-2 ${item.id == Receiver.id ? 'md:bg-blue-300 md:shadow-lg md:shadowf-black ' : 'md:bg-white md:hover:shadow-lg md:hover:bg-sky-100 '}  justify-between items-center inline-flex    md:border border-sky-500   duration-1000  transition shahydow-md rounded-xl`}>
+                                <button onClick={() => { setReceiver(item); router.replace(`/chat?user=${item.id}`) }} className={`h-20 mt-3 w-full md:p-2 ${item.id == Receiver.id ? 'md:bg-blue-300 md:shadow-lg md:shadowf-black ' : 'md:bg-white md:hover:shadow-lg md:hover:bg-sky-100 '}  justify-between items-center inline-flex    md:border border-sky-500   duration-1000  transition shahydow-md rounded-xl`}>
                                     <div className="h-auto  w-full bg-blsack justify-center space-x-2 md:justify-start items-center gasp-2.5 flex">
                                         {/* {item.flag && <img className="w-16 h-16 rounded-full" src={item.foto_user} />} */}
                                         {/* {!item.flag && <img className="w-16 h-16 rounded-full" src="https://cdn3.iconfinder.com/data/icons/shape-icons/128/icon48pt_different_account-512.png" />} */}
@@ -190,7 +198,6 @@ export default function DirectConversationList({ setReceiver, users, amis, curre
                                         {item.flag && <img className="w-16 h-16 rounded-full" src="https://cdn3.iconfinder.com/data/icons/shape-icons/128/icon48pt_different_account-512.png" />}
                                         <div className="   flex flex-col justify-center items-start space-y-1 ">
                                             <h4 className="  hidden md:flex text-lg md:text-md">{item.username}</h4>
-                                            <p className=" md:flex  hidden   self-stretch h text-neutral-600 text-sm ">Good point. Typ...</p>
                                         </div>
                                     </div>
                                     {/* <div className="flex flex-col self-stretch justify-center space-y-2">
