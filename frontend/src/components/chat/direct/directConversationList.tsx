@@ -172,7 +172,7 @@ export default function DirectConversationList({msg2, setReceiver, users, amis, 
                                 <img className='w-6 h-6' src='https://cdn-icons-png.flaticon.com/512/66/66847.png'></img>
                             </button>
                             {
-                                (last_amis.length != 0) ? last_amis.map((item: userProps) => (
+                                (last_amis.length != 0) ? last_amis?.map((item: userProps) => (
                                     <button onClick={() => { setReceiver(item); router.replace(`/chat?user=${item.id}`) }} className={`h-20 mt-3 w-full md:p-2 ${item.id == Receiver.id ? 'md:bg-blue-300 md:shadow-lg md:shadowf-black ' : 'md:bg-white md:hover:shadow-lg md:hover:bg-sky-100 '}  justify-between items-center inline-flex    md:border border-sky-500   duration-1000  transition shahydow-md rounded-xl`}>
                                         <div className="h-auto  justify-start items-center gap-2.5 flex">
                                             {item.flag && <img className={`w-20 h-20   sm:h-20   sm:w-20  ${item.id == Receiver.id ? ' md:border-0 border-4 border-sky-500  ' : ' md:border-0 border-4 border-white '} shadow-md shadodw-black md:w-16 md:h-16 rounded-full`} src={item.foto_user} />}

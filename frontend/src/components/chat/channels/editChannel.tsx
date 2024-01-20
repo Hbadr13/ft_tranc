@@ -59,6 +59,9 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
     useEffect(() => {
         // console.log('**********************', participants)
         setClick(0);
+        users.map((item: userProps) => {
+            item.flag = false
+        })
 
     }, [Room]);
 
