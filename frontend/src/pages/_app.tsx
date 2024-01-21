@@ -34,7 +34,6 @@ const RejectRequestComp = ({ router, opponent, rejectRequest, setrejectRequest }
             <div className=" shadow-xl overflow-hidden font-sans w-[80%]  md:w-[30%] md:min-w-[400px]  max-w-[500px] h-[330px] md:h-[420px] bg-[#EEF0F6] rounded-2xl flexitems-centerjustify-around  relative">
               <div className=" relative h-1/4 w-full bg-[#205BF1] rounded-t-2xl flex justify-end items-center">
                 <div className=" absolute w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-full top-[55%] md:top-[50%] left-5 border-4 border-[#EEF0F6]">
-                  {/* <div className=" absolute w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-full top-[55%] md:top-[50%] left-5 border-4 border-[#1F2025]"> */}
                   <Image className='rounded-full bg-[#EEF0F6]' src={opponent.foto_user} fill style={{ objectFit: "cover" }} alt='user'></Image>
                 </div>
               </div>

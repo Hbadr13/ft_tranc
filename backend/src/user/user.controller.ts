@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Body,
+  Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 
@@ -41,9 +42,7 @@ export class UserController {
     );
   }
   @Get('getbyuserid/:userId')
-  async getByUserId(@Param('userId') userId: string) {
-    // console.log('userId--->', userId);
-    // console.log('userName--->', userName)
+  async getByUserId(@Request() req: any, @Param('userId') userId: string) {
     return await this.userService.findByUserId(Number(userId));
   }
   @Post('enable-2fa/:userId')

@@ -2,13 +2,19 @@ import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { RecentService } from "./recent.service";
 import { recentDto } from "./dto/recent";
 
-@Controller('/search')
+@Controller('search/')
 export class RecentController {
     constructor(private readonly recentservice: RecentService) { }
+    @Get()
+    async gettt() {
+        return {
+            hello: 1234
+        }
+    }
     @Get('/recent/:userid')
     async getRecentSearch(@Param('userid') userid: string) {
         try {
-
+            console.log('======>>>>')
             return await this.recentservice.getRecentSearch(userid)
         } catch (error) {
         }

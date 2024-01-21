@@ -57,6 +57,7 @@ import { OnlineModule } from './online/online.module';
 import { RoomService } from './game/room/room.service';
 import { JwtAuthGuard } from './auth/jwt/jwt-auth.guard';
 import { JwtMiddleware } from './auth/jwt/jwt.middleware';
+import { RecentModule } from './search/recent.module';
 
 
 
@@ -68,18 +69,18 @@ import { JwtMiddleware } from './auth/jwt/jwt.middleware';
         }),
         ConfigModule.forRoot({
             isGlobal: true
-        }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule, GameModule, OnlineModule],
+        }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule, GameModule, OnlineModule, RecentModule],
     providers: [],
 
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(json({ limit: '10mb' })).forRoutes('*');
-        consumer
-            .apply(JwtMiddleware)
+        // consumer
+        //     .apply(JwtMiddleware)
 
-            .forRoutes(
-                { path: '*', method: RequestMethod.ALL }, // Apply the middleware to specific routes
-            );
+        //     .forRoutes(
+        //         { path: '*', method: RequestMethod.ALL }, // Apply the middleware to specific routes
+        //     );
     }
 }
