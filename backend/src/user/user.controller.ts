@@ -10,12 +10,17 @@ import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Get('/:userId')
   async getAllUsers(@Param('userId') userId: string) {
     // console.log(userId)
     return this.userService.findAllUsers(Number(userId));
+  }
+  @Get('other/:userId')
+  async findAautherUsers(@Param('userId') userId: string) {
+    // console.log(userId)
+    return this.userService.findAautherUsers(Number(userId));
   }
   @Get('one/:userName/:userId')
   async getOneUsers(
@@ -35,10 +40,30 @@ export class UserController {
       bd.email,
     );
   }
-  @Get('d/:userId')
+  @Get('getbyuserid/:userId')
   async getByUserId(@Param('userId') userId: string) {
     // console.log('userId--->', userId);
     // console.log('userName--->', userName)
-    return this.userService.findByUserId(Number(userId));
+    return await this.userService.findByUserId(Number(userId));
+  }
+  @Post('enable-2fa/:userId')
+  async enableTwoFactor(@Param('userId') userId: string) {
+    // Assuming user is authenticated
+    const secret = await this.userService.enableTwoFactor(Number(userId));
+
+    return {
+      message: 'Two-Factor Authentication enabled',
+      secret,
+    };
+  }
+  @Post('DeactivateTwoFactor/:userId')
+  async DeactivateTwoFactor(@Param('userId') userId: string) {
+    // Assuming user is authenticated
+    const secret = await this.userService.DeactivateTwoFactor(Number(userId));
+
+    return {
+      message: 'Two-Factor Authentication enabled',
+      secret,
+    };
   }
 }

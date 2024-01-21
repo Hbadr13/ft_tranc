@@ -1,3 +1,4 @@
+import { Constant } from "@/constants/constant";
 import { userProps } from "@/interface/data";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -10,10 +11,10 @@ export const checkAuth = () => {
     useEffect(() => {
         try {
             async () => {
-                const response = await fetch('http://localhost:3333/auth/user', {
+                const response = await fetch(`${Constant.API_URL}/auth/user`, {
                     credentials: 'include',
                 });
-                if (response.status != 200) {
+                if (response.status != 200 && response.status != 201) {
                     router.push('/auth/login');
                     return;
                 }
@@ -29,7 +30,7 @@ export const checklogin = () => {
             async () => {
                 try {
 
-                    const response = await fetch('http://localhost:3333/auth/user', {
+                    const response = await fetch(`${Constant.API_URL}/auth/user`, {
                         credentials: 'include',
                     });
 
@@ -44,14 +45,14 @@ export const checklogin = () => {
         )();
     });
 }
-export const fetchAllUsers = ({ setUsers, query, currentUser }:
-    { setUsers: (users: any) => void, query: string, currentUser: userProps }) => {
+export const fetchAllUsers = ({ setUsers, currentUser }:
+    { setUsers: (users: any) => void, currentUser: userProps }) => {
     useEffect(() => {
         (
             async () => {
                 try {
 
-                    const response = await fetch(`http://localhost:3333/users/${currentUser.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/users/${currentUser.id}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -61,22 +62,21 @@ export const fetchAllUsers = ({ setUsers, query, currentUser }:
                 }
             }
         )();
-    }, [query, currentUser]);
+    }, [currentUser]);
 }
 
 interface fetchAllAmisprops {
     setAmis: (amis: any) => void;
-    query: string;
     currentUser: userProps
 }
 
-export const fetchAllAmis = ({ setAmis, query, currentUser }: fetchAllAmisprops) => {
+export const fetchAllAmis = ({ setAmis, currentUser }: fetchAllAmisprops) => {
     useEffect(() => {
         (
             async () => {
                 try {
 
-                    const response = await fetch(`http://localhost:3333/friends/accepted-friends/${currentUser.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${currentUser.id}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -87,7 +87,7 @@ export const fetchAllAmis = ({ setAmis, query, currentUser }: fetchAllAmisprops)
 
             }
         )();
-    }, [query, currentUser]);
+    }, [currentUser]);
 }
 export const fetchCurrentUser = ({ setCurrentUser }: { setCurrentUser: (currentUser: any) => void }) => {
 
@@ -96,7 +96,7 @@ export const fetchCurrentUser = ({ setCurrentUser }: { setCurrentUser: (currentU
             async () => {
                 try {
 
-                    const response = await fetch('http://localhost:3333/auth/user', {
+                    const response = await fetch(`${Constant.API_URL}/auth/user`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -107,4 +107,15 @@ export const fetchCurrentUser = ({ setCurrentUser }: { setCurrentUser: (currentU
             }
         )();
     }, []);
+}
+export const getCurrentUser = async () => {
+    try {
+        const response = await fetch(`${Constant.API_URL}/auth/user`, {
+            credentials: 'include',
+        });
+        const content = await response.json();
+        return content
+    } catch (error) {
+
+    }
 }

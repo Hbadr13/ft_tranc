@@ -19,7 +19,6 @@ export class FriendsController {
   ): Promise<void> {
 
     const userId = id;
-    console.log("+++++++++++++++++++++++++++++")
     // console.log(userId) // Assuming you have stored user information in the request object during authentication
     if (Number(userId) != Number(friendId)) {
       console.log("________________________________________________________")
@@ -30,6 +29,19 @@ export class FriendsController {
   async acceptFriendRequest(@Param('requestId') requestId: number, @Param('id') id: number) {
     try {
       await this.friendsService.acceptFriendRequest(Number(requestId), Number(id));
+
+      return { message: 'Friend request accepted successfully' };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(error.message);
+      }
+      // Handle other potential errors
+    }
+  }
+  @Post('blocked-friend-request/:requestId/:id')
+  async blockedfriends(@Param('requestId') requestId: number, @Param('id') id: number) {
+    try {
+      await this.friendsService.blockedfriends(Number(requestId), Number(id));
 
       return { message: 'Friend request accepted successfully' };
     } catch (error) {
@@ -51,6 +63,7 @@ export class FriendsController {
       // Handle other potential errors
     }
   }
+  
   @Get('accepted-friends/:userId')
   async getAcceptedFriends(
     @Param('userId', ParseIntPipe) userId: number,
@@ -69,9 +82,24 @@ export class FriendsController {
       return {}
   }
   @Get(':userId/send-requests')
-  async getSendFriendRequests(@Param('userId') userId: number) {
+  async getSendFriendRequests(@Param('userId') userId: number, @Request() req:any) {
+ 
     if (Number(userId) > 0)
       return this.friendsService.getSendFriendRequests(Number(userId));
+    else
+      return {}
+  }
+  @Get(':userId/received-blocked')
+  async getReceivedFriendBlocked(@Param('userId') userId: number) {
+    if (Number(userId) > 0)
+      return this.friendsService.getReceivedFriendBlocked(Number(userId));
+    else
+      return {}
+  }
+  @Get(':userId/send-blocked')
+  async getSendFriendBlocked(@Param('userId') userId: number) {
+    if (Number(userId) > 0)
+      return this.friendsService.getSendFriendblocked(Number(userId));
     else
       return {}
   }

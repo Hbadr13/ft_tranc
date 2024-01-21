@@ -1,9 +1,11 @@
+import { Constant } from "@/constants/constant";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
 import { userProps } from "@/interface/data";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { any } from "zod";
+import Image from 'next/image';
 
 
 function LevelBar(userid: any) {
@@ -16,7 +18,7 @@ function LevelBar(userid: any) {
       async () => {
         try {
 
-          const response = await fetch(`http://localhost:3333/friends/accepted-friends/${userid.userid}`, {
+          const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${userid.userid}`, {
             credentials: 'include',
           });
           const content = await response.json();
@@ -43,7 +45,7 @@ function LevelBar(userid: any) {
 
   return (
 
-    <p className=" indent-0  text-blue-200">{flag1} matual friends
+    <p className=" indent-0  text-sm sm:tesxt-md text-blue-200">{flag1} matual friends
     </p>
   );
 
@@ -51,7 +53,7 @@ function LevelBar(userid: any) {
 
 
 
-const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, amis: Array<userProps>, currentUser: userProps }) => {
+const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, amis: Array<userProps>, currentUser: number }) => {
 
   // const [query, setQuery] = useState('')
   // const [id, setid] = useState(0)
@@ -74,26 +76,21 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   useEffect(() => {
     (
       async () => {
-        try {
-
-          const response = await fetch(`http://localhost:3333/friends/${currentUser.id}/send-requests`, {
-            credentials: 'include',
-          });
-          const counte = await response.json();
-          if (response.status == 200) {
-            setsend(Array.from(counte))
-            // setrequestt(cont)
-            return;
-          }
-        } catch (error) {
-
+        const response = await fetch(`${Constant.API_URL}/friends/${currentUser}/send-requests`, {
+          credentials: 'include',
+        });
+        const counte = await response.json();
+        if (response.status == 200) {
+          setsend(Array.from(counte))
+          // setrequestt(cont)
+          return;
         }
       }
     )();
-  }, [currentUser.id, isOpen]);
-  const cancelRequest = async (numberPart: number) => {
+  }, [currentUser, isOpen]);
+  const CanacelRequest = async (numberPart: number) => {
     try {
-      const response = await fetch(`http://localhost:3333/friends/delete-friend-request/${numberPart}/${currentUser.id}`, {
+      const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${currentUser}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -137,11 +134,11 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
     setallfriends(filterUser)
     setIsOpen(false);
     setcansle_request(false);
-  }, [isOpen, amis_id, amis, currentUser.id, send])
+  }, [isOpen, amis_id, amis, currentUser, send])
   // fetchCurrentUser(setid);
   const sendRequest = async (numberPart: number) => {
     try {
-      const response = await fetch(`http://localhost:3333/friends/send-request/${numberPart}/${currentUser.id}`, {
+      const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}/${currentUser}`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -160,51 +157,46 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   };
 
   return (
-    <div className="flex  flex-none    shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-500 -m-6  mb-8    mt-10  rounded-r-[40px]   w-[450px] h-[700px] ">
+    <div className="flex  flex-none      justify-center items-censter    rounded-r-[40px]  bg-sblue-600  w-full sm:w-[415px] h-[700px] ">
 
 
-      <div className=" overflow-y-auto  bg-white rounded-2xl max-h-[680px] mt-2">
+      <div className=" overflow-y-scroll  scrollbar-hide bg-white  -mt-10 sm:mt-0 w-[96%]  sm:w-[430px] drop-shadow shadow-md shadow-black rounded-2xl max-h-[980px] mst-2">
         {
           (allfriends.length) ? allfriends.map((user: any) => (
 
-            <div className=' bg-white  border-b-[2px] mt-0  w-[420px] h-16 rounded-l rounded-r items-center      space-x-6 p-2  flex  justify-between'>
+            <div className='   border-b-[2px] mt-0  bg-white w-auto sm:w-[420px] h-16 rounded-l rounded-r items-center      space-x-6 p-2  flex  justify-between'>
               <div className="flex   space-x-2  ">
                 <img
                   src={user.foto_user}
                   alt="Your Image Alt Text"
-                  className="  w-14 h-auto  rounded-full " // Adjust the width as needed
+                  className="  sm:w-14 sm:h-14  h-12 w-12 rounded-full " // Adjust the width as needed
                 />
-                {/* <div> */}
                 <div className=' rounded-xl  mt-2 flex  justify-start items-start flex-col  '>
-                  {/* <div className="bg-black  h-8  w-32 flex flex-row  items-start">  */}
                   <button className="  flex  capitalize " onClick={() => profailamis(user.username, user.id)}> {`${user.username}`} </button>
-                  {/* </div> */}
 
                   {
-                    (user.id == currentUser.id) ?
+                    (user.id == currentUser) ?
                       (<div></div>) :
-                      // <div className="mt-8 ">
                       <div>
 
                         <LevelBar userid={user.id} amis={amis} />
                       </div>
-                    // </div>
                   }
                 </div>
               </div>
               {
-                (user.id == currentUser.id) ?
+                (user.id == currentUser) ?
                   (<div></div>) :
 
 
 
                   (!user.flag) ?
-                    (<div className="flex">
+                    (<div className="flex w-wfull justify-end items-center ">
 
-                      <div className=" py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300   flex  items-center  space-x-1  border rounded-full hover:bg-[white] hover:scale-110 duration-300">
+                      <div className=" w-14 h-10  sm:w-16 sm:h-10 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300   flex  items-center  space-x-1  border rounded-full hover:bg-[white] hover:scale-110 duration-300">
                         <svg width="20" height="20" fill="black" enableBackground="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clipRule="evenodd" fill="none" fillRule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" strokeMiterlimit="10" strokeWidth="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                       </div>
-                      <div className=" py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300   flex  items-center  space-x-1  border rounded-full hover:bg-[#eeecec] hover:scale-110 duration-300">
+                      <div className=" mwr-5 sm:mr-0  w-14 h-10    sm:w-16 sm:h-10 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300   flex  items-center  space-x-1  border rounded-full hover:bg-[#eeecec] hover:scale-110 duration-300">
 
                         <Link href='/game' content='play' className="" >
                           <svg fill="#000000" width="20" height="20" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
@@ -248,7 +240,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                           (
 
                             <div className="">
-                              <button onClick={() => cancelRequest(user.id)} className="flex float-none   py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300  hover:bg-[white] hover:scale-110 items-center      border rounded-full duration-300"><svg width="20" height="20" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M496 224c-79.6 0-144 64.4-144 144s64.4 144 144 144 144-64.4 144-144-64.4-144-144-144zm64 150.3c0 5.3-4.4 9.7-9.7 9.7h-60.6c-5.3 0-9.7-4.4-9.7-9.7v-76.6c0-5.3 4.4-9.7 9.7-9.7h12.6c5.3 0 9.7 4.4 9.7 9.7V352h38.3c5.3 0 9.7 4.4 9.7 9.7v12.6zM320 368c0-27.8 6.7-54.1 18.2-77.5-8-1.5-16.2-2.5-24.6-2.5h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h347.1c-45.3-31.9-75.1-84.5-75.1-144zm-96-112c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128z" /></svg>
+                              <button onClick={() => CanacelRequest(user.id)} className="flex float-none   py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300  hover:bg-[white] hover:scale-110 items-center      border rounded-full duration-300"><svg width="20" height="20" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M496 224c-79.6 0-144 64.4-144 144s64.4 144 144 144 144-64.4 144-144-64.4-144-144-144zm64 150.3c0 5.3-4.4 9.7-9.7 9.7h-60.6c-5.3 0-9.7-4.4-9.7-9.7v-76.6c0-5.3 4.4-9.7 9.7-9.7h12.6c5.3 0 9.7 4.4 9.7 9.7V352h38.3c5.3 0 9.7 4.4 9.7 9.7v12.6zM320 368c0-27.8 6.7-54.1 18.2-77.5-8-1.5-16.2-2.5-24.6-2.5h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h347.1c-45.3-31.9-75.1-84.5-75.1-144zm-96-112c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128z" /></svg>
                               </button>
                             </div>
 
@@ -261,7 +253,29 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
 
               }
             </div>
-          )) : (<div>makin tah7d</div>
+          )) : (
+            <footer className='  w-full  rounded-2xl h-full  -mt-20 flex flex-col justify-center items-center space-y-3'>
+              <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                <div className="">
+                  <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                </div>
+                <div className=" z-10">
+                  <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                </div>
+                <div className="">
+                  <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                </div>
+              </div>
+              <div className=" w-[50%] text-center  text-xl font-semibold">
+                <h1>No user found</h1>
+              </div>
+              <div className=' w-[50%]   text-center'>
+                <h2> Sorry, We couldn't find any user </h2>
+              </div>
+
+            </footer>
+         
+
           )
         }
       </div>

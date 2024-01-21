@@ -8,3 +8,4 @@ import { OnlineGateway } from './online.gateway';
   providers: [OnlineService, OnlineGateway],
 })
 export class OnlineModule { }
+  

@@ -4,6 +4,7 @@ import * as z from 'zod';
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import { checklogin } from "@/hooks/userHooks";
+import { Constant } from "@/constants/constant";
 // import LoginFrom from './LoginForm'
 
 // import { Provider } from 'next-auth/client';
@@ -34,7 +35,7 @@ export default function RegisterForm() {
   //   useEffect(() => {
   //     try {
   //       async () => {
-  //         const response = await fetch('http://localhost:3333/auth/user', {
+  //         const response = await fetch(`${Constant.API_URL}/auth/user`, {
   //           credentials: 'include',
   //         });
   //         console.log("ssssss------------");
@@ -82,7 +83,7 @@ export default function RegisterForm() {
       return;
     }
     try {
-      const res = await fetch('http://localhost:3333/auth/signup', {
+      const res = await fetch(`${Constant.API_URL}/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,14 +93,16 @@ export default function RegisterForm() {
           "username": name,
           "lastName": name,
           "password": password,
-          "foto_user": gender
+          "foto_user": gender,
+          "twoFactorSecret": "",
+
         }),
       });
 
       if (res.status == 201) {
         const form = e.target;
         form.reset();
-        router.push('/');
+        router.push('/auth/login');
       } else {
         const form = e.target;
         form.reset();
@@ -111,7 +114,7 @@ export default function RegisterForm() {
       const form = e.target;
       form.reset();
 
-      console.log("kin wahd error hna: ", error);
+      // console.log("kin wahd error hna: ", error);
     }
   };
   return (

@@ -17,15 +17,23 @@ model User {
   firstName              String?
   lastName               String?
   foto_user              String?
+  level                  Float?
+  won                    Int?
+  lost                   Int?
+  gameStatus             String?
+  twoFactorSecret        String?
+  tempSecret             String?
+  isTwoFactorEnabled     Boolean         @default(false)
   isOnline               Boolean
   history                History[]
   room                   String?
+  opponentId             Int?
   Recent                 Int[]
-  userId                 Int?
   friends                Friendship[]    @relation("UserFriends")
   friendOf               Friendship[]    @relation("UserFriendOf")
   sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
   receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
+  userId                 Int?
   conversations          Conversation[]
   Messages               Message[]
   memberships            Membership[]
@@ -65,24 +73,26 @@ model Room {
 }
 
 model Membership {
-  id       Int       @id @default(autoincrement())
-  isOwner  Boolean   @default(false)
-  isAdmin  Boolean   @default(false)
-  isBanned Boolean   @default(false)
-  timeMute DateTime?
-  room     Room      @relation("membership", fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id       Int     @id @default(autoincrement())
+  isOwner  Boolean @default(false)
+  isAdmin  Boolean @default(false)
+  isBanned Boolean @default(false)
+  timeMute Int     @default(0)
+  room     Room    @relation("membership", fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   roomId   Int
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId   Int
 }
 
 model FriendRequest {
-  id         Int    @id @default(autoincrement())
-  status     String
-  senderId   Int
-  sender     User   @relation("SentFriendRequests", fields: [senderId], references: [id])
+  id     Int    @id @default(autoincrement())
+  status String
+
+  senderId Int
+  sender   User @relation("SentFriendRequests", fields: [senderId], references: [id])
+
   receiverId Int
-  receiver   User   @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
+  receiver   User @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
 }
 
 model History {
