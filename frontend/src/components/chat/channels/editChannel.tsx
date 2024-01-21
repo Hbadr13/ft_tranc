@@ -62,7 +62,6 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
         users.map((item: userProps) => {
             item.flag = false
         })
-
     }, [Room]);
 
     useEffect(() => {
@@ -75,6 +74,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                 if (item.id == currentUser.id) {
                     setUserStatusRoom(item)
                     setMyStatusInRoom(item)
+                    
                 }
             })
             // console.log('wana bagha nghawt', userStatusRoom)
@@ -188,7 +188,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                             <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{Room?.name[0].toUpperCase()}</h1>
                         </div>                        <div className="text-zinc-900 text-[32px] font-bold font-['Satoshi']">{Room?.name}</div>
                         <div className="text-zinc-900 text-[15px] font-bold">{Room?.type}</div>
-                        {Room?.type == 'private' && <div className=" border w-full bg-stofne-600 flex flex-col justify-center items-center">
+                        {(Room?.type == 'private' && (userStatusRoom?.isOwner || userStatusRoom?.isAdmin)) && <div className=" border w-full bg-stofne-600 flex flex-col justify-center items-center">
                             <div className="flex bgf-black">
                                 <h2 className="w-auto ml-20">Add People</h2>
                                 <div className="w-full">

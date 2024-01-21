@@ -204,7 +204,7 @@ export default function ChannelsConversationList({ msg2, users, currentUser, set
                         <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{item.name[0].toUpperCase()}</h1>
                       </div>                      <div className="   flex flex-col justify-center items-start space-y-1 ">
 
-                        <h4 className="  hidden md:flex text-lg md:text-md">{item.name}</h4>
+                        <h4 className={`${Room.id ? 'hidden md:flex' : null} text-lg md:text-md`}>{item.name}</h4>
                       </div>
                     </div>
                     <div className="flex justify-end bg-lack   mt-12 md:mt-0    z-10 items-center">

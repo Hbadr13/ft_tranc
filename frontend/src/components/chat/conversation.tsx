@@ -56,74 +56,6 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
         console.log('->>>>>>>>>000000000>>>>', khadmi?.id)
     }, [router])
 
-    useEffect(() => {
-        if (Room.id) {
-
-            (
-                async () => {
-                    try {
-                        const response = await fetch(`${Constant.API_URL}/chat/allUsersChannel/${Room.id}`, {
-                            credentials: 'include',
-                        })
-                        const content = await response.json();
-                        setParticipants(Array.from(content))
-
-                        // setClick(0);
-                    } catch (error) {
-
-                    }
-                }
-            )();
-        }
-    }, [Room, click]);
-
-    useEffect(() => {
-        (
-            async () => {
-                try {
-                    const response = await fetch(`${Constant.API_URL}/chat/OneChannel/${Room.id}`, {
-                        credentials: 'include',
-                    })
-                    const content = await response.json();
-                    setRoom1(content)
-
-                    // console.log(content)
-                    // setClick(0);
-                } catch (error) {
-
-                }
-            }
-        )();
-    }, [click, Room]);
-    useEffect(() => {
-
-        setClick(0);
-
-
-    }, [Room]);
-
-    useEffect(() => {
-
-        setType(Room1.type);
-        setPassword(Room1.password);
-        seterror(false)
-        if (Room && participants) {
-            participants?.map((item: participantsProps) => {
-                if (item.id == currentUser.id) {
-                    setUserStatusRoom(item)
-                    setMyStatusInRoom(item)
-                }
-            })
-            // console.log('wana bagha nghawt', userStatusRoom)
-        }
-    }, [Room, click, participants]);
-
-
-    const handl1 = (item: any) => {
-        setClick(2)
-        setParticipant(item)
-    }
-
     const [status, setstatus] = useState<any>('');
     useEffect(() => {
         (
@@ -333,7 +265,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
     return (
         <div className="w-[45%] flex-auto fledx h-[820px] mt-12 relative bg-gray-100  border-2  border-sky-400 rounded-xl ">
             {
-                Receiver.id != 0 || Room.id != 0 ? (
+                ((Receiver.id != 0 || Room.id != 0)) ? (
                     <>
                         <div className=' w-full flex justify-center items-center'>
 
