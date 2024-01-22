@@ -16,7 +16,7 @@ export class ChatGateway {
       return
     console.log(client.handshake.query.userId, 'connect')
     this.listId.set(client, Number(client.handshake.query.userId))
-    let a = this.listId.get(client);
+    let a = this.listId.get(client)
   }
 
   handleDisconnect(client: Socket) {
