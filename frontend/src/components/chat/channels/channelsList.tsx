@@ -28,7 +28,7 @@ export default function ChannelsConversationList({ msg2, users, currentUser, set
         }
       }
     )();
-    console.log('->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', msg2)
+    // console.log('->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', msg2)
   }, [currentUser.id, click, msg2]);
   const joinchanle = async (item: any) => {
     setJoinRoom(item)
@@ -137,8 +137,8 @@ export default function ChannelsConversationList({ msg2, users, currentUser, set
               } */}
 
               {
-                allChannel.map((item) => (
-                  <button onClick={() => joinchanle(item)} className="h-16 mt-3 w-full p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
+                allChannel.map((item, index) => (
+                  <button key={index} onClick={() => joinchanle(item)} className="h-16 mt-3 w-full p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
                     <div className="h-auto  justify-start items-center gap-2.5 flex">
                       <div className={`flex justify-center items-center w-12 h-12 rounded-full border-2 border-sky-500 ${item.type == 'public' && ' bg-amber-300'}  ${item.type == 'private' && 'bg-sky-500'}  ${item.type == 'protected' && ' bg-red-500'}`} >
                         <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{item.name[0].toUpperCase()}</h1>
@@ -194,8 +194,8 @@ export default function ChannelsConversationList({ msg2, users, currentUser, set
             } */}
 
             {
-              channel.map((item) => (
-                <button onClick={() => setRoom(item)} className={`h-20 mt-3 w-full md:p-2 ${item.id == Room.id ? 'md:bg-blue-300 md:shadow-lg md:shadowf-black ' : 'md:bg-white md:hover:shadow-lg md:hover:bg-sky-100 '}  justify-between items-center inline-flex    md:border border-sky-500   duration-1000  transition shahydow-md rounded-xl`}>
+              channel.map((item, index) => (
+                <button key={index} onClick={() => setRoom(item)} className={`h-20 mt-3 w-full md:p-2 ${item.id == Room.id ? 'md:bg-blue-300 md:shadow-lg md:shadowf-black ' : 'md:bg-white md:hover:shadow-lg md:hover:bg-sky-100 '}  justify-between items-center inline-flex    md:border border-sky-500   duration-1000  transition shahydow-md rounded-xl`}>
 
                   <div className={`  ${item.type == 'protected' ? '-space-x-7 md:space-x-2' : null} flex flex-row`}>
 

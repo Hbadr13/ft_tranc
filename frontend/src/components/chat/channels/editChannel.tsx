@@ -74,7 +74,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                 if (item.id == currentUser.id) {
                     setUserStatusRoom(item)
                     setMyStatusInRoom(item)
-                    
+
                 }
             })
             // console.log('wana bagha nghawt', userStatusRoom)
@@ -146,11 +146,11 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
             setSelect(true)
         // console.log(item
         // console.log('-???', item[index].flag)
-        console.log(users)
+        // console.log(users)
     }
 
     useEffect(() => {
-        console.log('ana chkandir hna,,', click)
+        // console.log('ana chkandir hna,,', click)
         setPeople([])
         users.map((item: userProps) => {
             if (item.flag)
@@ -171,7 +171,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
             }),
             credentials: 'include',
         });
-        console.log('ana hena hh : ', people)
+        // console.log('ana hena hh : ', people)
         setPeople([])
         users.map((item: userProps) => {
             item.flag = false
@@ -181,12 +181,13 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
 
     return (
         <>
-            <div className={`  bg-gray-100  ${click != 0 ? 'blur-f[0.7px] brighgtness-[80%]' : null}   w-full h-full  rounded-xl p-3  flex justify-start items-start  z-1g0`}>
+            {Room.id && <div className={`  bg-gray-100  ${click != 0 ? 'blur-f[0.7px] brighgtness-[80%]' : null}   w-full h-full  rounded-xl p-3  flex justify-start items-start  z-1g0`}>
                 <div className="w-full h-full bg-blsack flex-col justify-center items-center">
                     <div className="flex-col justify-start items-center flex ">
                         <div className={`flex justify-center items-center w-12 h-12 rounded-full ${Room.type == 'public' && ' bg-amber-300'}  ${Room?.type == 'private' && 'bg-sky-500'}  ${Room?.type == 'protected' && ' bg-red-500'}`} >
                             <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{Room?.name[0].toUpperCase()}</h1>
-                        </div>                        <div className="text-zinc-900 text-[32px] font-bold font-['Satoshi']">{Room?.name}</div>
+                        </div>
+                        <div className="text-zinc-900 text-[32px] font-bold font-['Satoshi']">{Room?.name}</div>
                         <div className="text-zinc-900 text-[15px] font-bold">{Room?.type}</div>
                         {(Room?.type == 'private' && (userStatusRoom?.isOwner || userStatusRoom?.isAdmin)) && <div className=" border w-full bg-stofne-600 flex flex-col justify-center items-center">
                             <div className="flex bgf-black">
@@ -229,9 +230,9 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                         </div>}
                     </div>
                     <div className="flex flex-col overflow-y-scroll scrollbar-hide h-[400px]">
-                        {participants.map((item) => (
+                        {participants.map((item, index) => (
                             (item.isAdmin) ? (
-                                <div className=" bg-white   space-x-3 h-14 w-full items-center inline-flex border rounded-lg space-y-2">
+                                <div key={index} className=" bg-white   space-x-3 h-14 w-full items-center inline-flex border rounded-lg space-y-2">
                                     <div className=" w-full  h-full justify-start items-center gap-2.5 flex">
                                         <img className="w-10 h-10  rounded-full" src={item.foto_user} />
                                         <div className="   flex  h-full  flex-row space-x-2 w-full bg-bldue-600 rounded-lg justify-cente items-center space-y-1 ">
@@ -276,7 +277,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                         ))}
                     </div>
                 </div>
-            </div>
+            </div>}
             {
 
                 click != 0 && <div className=' bg-white  bg-blgdack dark:bg-gray-700 h-auto w-[87%]  flex-col  rounded-lg flex justify-start items-start  shadow-md sdhadow -mt-[630px]  z-40 '>

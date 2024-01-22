@@ -60,7 +60,7 @@ export default function Channels({ users, setClick, currentUser }: { users: user
     // console.log(item
     // console.log('-???', item[index].flag)
     setLastUsers(item)
-    console.log(lastUsers)
+    // console.log(lastUsers)
   }
 
   return (

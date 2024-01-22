@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { userProps, messageProps, channelProps, participantsProps } from '@/interface/data'
+import { userProps, messageProps, channelProps, participantsProps, userData } from '@/interface/data'
 import { Socket } from 'socket.io-client';
 import Link from 'next/link';
 import { Constant } from '@/constants/constant';
@@ -27,6 +27,8 @@ function LevelBar({ value }: LevelBarpros) {
     );
 }
 
+
+
 export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSocket, Receiver, button, Room, currentUser, setStatus_Tow_User, status_tow_user }: { setMsg2: (value: string) => void, users: userProps[], setMyStatusInRoom: (value: participantsProps) => void, chatSocket: Socket, Receiver: userProps, button: boolean, Room: channelProps, currentUser: userProps, setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean }) {
     const [messages, setMessages] = useState<messageProps[]>([]);
     const [content, setContent] = useState('');
@@ -41,19 +43,17 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
     const [participant, setParticipant] = useState<participantsProps>()
     const [userStatusRoom, setUserStatusRoom] = useState<participantsProps>()
     const [error, seterror] = useState(false);
-    const [khadmi, setKhadmi] = useState<userProps>()
-    const router = useRouter()
+    const [resevo, setResevo] = useState<userProps>(userData)
+    let router = useRouter()
+
 
     useEffect(() => {
 
         let id = Number(router.query.user)
         users.map((item) => {
             if (id == item.id)
-                setKhadmi(item)
-            console.log('id = ', item.id)
-            console.log('idrouter = ', id)
+                setResevo(item)
         })
-        console.log('->>>>>>>>>000000000>>>>', khadmi?.id)
     }, [router])
 
     const [status, setstatus] = useState<any>('');
@@ -61,7 +61,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
         (
             async () => {
                 try {
-                    const response = await fetch(`${Constant.API_URL}/chat/statusChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/chat/statusChatTwoUser/${currentUser.id}/${resevo.id}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -79,21 +79,24 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
     if (!button) {
 
         useEffect(() => {
-            (
-                async () => {
-                    try {
-                        const response = await fetch(`${Constant.API_URL}/chat/getConversationDirect/${currentUser.id}/${Receiver.id}`, {
-                            credentials: 'include',
-                        });
-                        const content = await response.json();
-                        setMessages(Array.from(content))
-                    } catch (error) {
+            if (resevo.id) {
 
+                (
+                    async () => {
+                        try {
+                            const response = await fetch(`${Constant.API_URL}/chat/getConversationDirect/${currentUser.id}/${resevo.id}`, {
+                                credentials: 'include',
+                            });
+                            const content = await response.json();
+                            setMessages(Array.from(content))
+                        } catch (error) {
+
+                        }
                     }
-                }
-            )();
+                )();
+            }
             setContent('')
-        }, [currentUser.id, Receiver, isend, msg]);
+        }, [currentUser.id, Receiver, isend, msg, resevo]);
     }
     else {
         useEffect(() => {
@@ -112,6 +115,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                 }
             )();
             setContent('')
+            setResevo(userData)
         }, [currentUser.id, Room, button, isend, msg]);
     }
 
@@ -120,7 +124,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
             if (message) {
                 setMsg(message);
                 if (button) {
-                    fetch(`${Constant.API_URL}/chat/directMessage/${currentUser.id}/${Receiver.id}`, {
+                    fetch(`${Constant.API_URL}/chat/directMessage/${currentUser.id}/${resevo.id}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -154,7 +158,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
 
 
 
-                await fetch(`${Constant.API_URL}/chat/directMessage/${currentUser.id}/${Receiver.id}`, {
+                await fetch(`${Constant.API_URL}/chat/directMessage/${currentUser.id}/${resevo.id}`, {
                     method: 'POST',
 
                     headers: {
@@ -207,7 +211,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
             if (content) {
                 if (!button) {
 
-                    await fetch(`${Constant.API_URL}/chat/directMessage/${currentUser.id}/${Receiver.id}`, {
+                    await fetch(`${Constant.API_URL}/chat/directMessage/${currentUser.id}/${resevo.id}`, {
                         method: 'POST',
 
                         headers: {
@@ -218,7 +222,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                         }),
                         credentials: 'include',
                     });
-                    chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Receiver.id, content: content });
+                    chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: resevo.id, content: content });
                 }
                 else {
 
@@ -265,7 +269,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
     return (
         <div className="w-[45%] flex-auto fledx h-[820px] mt-12 relative bg-gray-100  border-2  border-sky-400 rounded-xl ">
             {
-                ((Receiver.id != 0 || Room.id != 0)) ? (
+                ((resevo?.id != 0 || Room.id != 0)) ? (
                     <>
                         <div className=' w-full flex justify-center items-center'>
 
@@ -273,13 +277,13 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                                 {button == false && <button className="sm:ml-4 w-full flex hover:scale-105 ps-1 space-x-2 h-full  duration-300 justify-center items-center" >
                                     {!status_tow_user && <div className=' mt-1  sm:mt-0 flex h-full flex-col  w-auto  bg-blacsk justify-center items-end  sm:items-center  -space-y-4 sm:space-y-0'>
                                         <div className="w-3 h-3 z-10 flex sm:hidden   bg-green-600 rounded-[20px] " />
-                                        <img className="w-14 h-14 rounded-full" src={Receiver.foto_user} />
+                                        <img className="w-14 h-14 rounded-full" src={resevo?.foto_user} />
                                     </div>
                                     }
                                     {status_tow_user && <img className="w-14 h-14 rounded-full" src="https://cdn3.iconfinder.com/data/icons/shape-icons/128/icon48pt_different_account-512.png" />}
 
                                     <div className="flex flex-col w-full justify-start items-start">
-                                        <p className="text-black  text-lg">{Receiver.username}</p>
+                                        <p className="text-black  text-lg">{resevo?.username}</p>
                                         <div className="justify-start  -mt-1 space-x-1 items-center flex">
                                             <div className=' hidden sm:flex'>
                                                 <div className="w-3 h-3  bg-green-600 rounded-[20px] " />
@@ -344,7 +348,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                         <div className={` overflow-y-scroll scrollbar-hide ${flag == true ? 'blur-sm lg:blur-0' : null}  bg-fblue-100 flex  flex-col-reverse mt-1  p-4 w-full  min-h-80 h-[83%] bg-bdlack `}>
 
                             {messages.map((item, index) => (
-                                <>
+                                <div key={index}>
                                     {
                                         (currentUser.id == item.senderId) ? (<div className='flex-col'>
                                             <div className="w-full h-auto flex flex-col space-x-4 items-end ">
@@ -380,7 +384,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                                                 </div>
                                             )
                                     }
-                                </>
+                                </div>
                             ))}
                         </div>
 
