@@ -121,7 +121,7 @@ export default function index({ users, amis }: AppProps) {
   // }, [currentUser.id, Receiver]);
 
 
-
+  
 
   return (
     <div className="  flex  flex-col">
