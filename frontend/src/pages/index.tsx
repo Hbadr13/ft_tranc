@@ -67,29 +67,31 @@ function Index({ onlineUsersss }: AppProps) {
   fetchAllAmis({ setAmis, currentUser })
 
   return (
-    <menu className="w-full    Dashboard   mt-14 flex  flex-col md:flex-row gap-5md: gap-5 p-5  ">
-      <div className=" w-full md:w-[50%]  h-full rounded-xl flex flex-col gap-5 ">
-        <div className="w-full h-[100px] md:h-[20%] bg-slate-300 rounded-xl p-2">
-          <OnlineUserss onlineUsersss={onlineUsersss} amis={amis} />
-        </div>
-        <div className="w-full  h-[500px] md:h-[80%]  bg-[#f7f7f7   shadow-md rounded-xl flex p-5  overflow-hidden" >
-          <Leaderboard currentUser={currentUser} />
-        </div>
-      </div>
-      <div className=" w-full md:w-[50%]  h-[800px] md:h-full rounded-xl flex flex-col gap-5   mb-10">
-        <div className="h-[50%] w-full flex gap-5">
-          <div className="w-[40%] h-full  rounded-xl space-y-3 mt-2 text-[#FFFEFE]">
-            <StatusCard currentUser={currentUser} />
+    <div className='w-full h-screen flex justify-center'>
+      <menu className="w-full max-w-[1500px]    Dashboard   mt-14 flex  flex-col md:flex-row gap-5md: gap-5 p-5  ">
+        <div className=" w-full md:w-[50%]  h-full rounded-xl flex flex-col gap-5 ">
+          <div className="w-full h-[100px] md:h-[20%] bg-slate-300 rounded-xl p-2">
+            <OnlineUserss onlineUsersss={onlineUsersss} amis={amis} />
           </div>
-          <div className="w-[60%] h-full ">
-            <UserProgress currentUser={currentUser} />
+          <div className="w-full  h-[500px] md:h-[80%]  bg-[#f7f7f7   shadow-md rounded-xl flex p-5  overflow-hidden" >
+            <Leaderboard currentUser={currentUser} />
           </div>
         </div>
-        <div className="hideScroll overflow-auto h-[50%] w-full bg-blue-400 rounded-xl ">
-          <History currentUser={currentUser} users={users} />
+        <div className=" w-full md:w-[50%]  h-[800px] md:h-full rounded-xl flex flex-col gap-5   mb-10">
+          <div className="h-[50%] w-full flex gap-5">
+            <div className="w-[40%] h-full  rounded-xl space-y-3 mt-2 text-[#FFFEFE]">
+              <StatusCard currentUser={currentUser} />
+            </div>
+            <div className="w-[60%] h-full ">
+              <UserProgress currentUser={currentUser} />
+            </div>
+          </div>
+          <div className="hideScroll overflow-auto h-[50%] w-full bg-blue-400 rounded-xl ">
+            <History currentUser={currentUser} users={users} />
+          </div>
         </div>
-      </div>
-    </menu>
+      </menu>
+    </div>
   )
 }
 
