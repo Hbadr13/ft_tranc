@@ -23,6 +23,7 @@ COPY package*.json ./
 
 # Install app dependencies
 RUN npm install
+# RUN npm install @prisma/cli@latest --save-dev
 
 # Copy the rest of the application code
 COPY . .

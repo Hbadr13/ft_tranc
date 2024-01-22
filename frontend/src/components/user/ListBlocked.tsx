@@ -6,7 +6,11 @@ import Rank from "./Rank";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
 import { useRouter } from "next/navigation";
 import { AppProps, userProps } from "@/interface/data";
+<<<<<<< HEAD
+import Image from 'next/image';
+=======
 import { Constant } from "@/constants/constant";
+>>>>>>> hbadr
 
 
 
@@ -19,7 +23,7 @@ function LevelBar({ value }: LevelBarpros) {
 
 
     return (
-        <div className="bg-white h-5  drop-shadow-lg  shadow-indigo-500/40    w-80 rounded-2xl">
+        <div className="bg-white h-5  drop-shadow-lg  shadow-indigo-500/40    w-[96%]  sm:w-80 rounded-2xl">
             <div className="bg-[#0ea5e9] h-5 rounded-full " style={{ width: progressWidth }}>
                 {/* <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
               {`${value}%`} */}
@@ -149,26 +153,26 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
     };
     fetchAllAmis({ setAmis, currentUser });
     return (
-        <div className='flex  flex-wrap  justify-center  min-h-screen  ml-10 min-w-screen  items-center  p-6 '>
-            <div className='  flex-none   z-20   w-[408px] mt-[120px] mb-10  h-[100%] drop-shadow-2xl   items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
-                <div className="text-center">
+        <div className='flex  flex-wrap  justify-center  min-h-screen  bg-blfack w-full items-center   '>
+        <div className='   flex-none smr-6 sm:mr-0  z-20  sm:w-[408px]   w-auto mt-[120px] mb-10  h-[100%] drop-shadow-2xl   items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
+                <div className=" w-full flex-col justify-center items-center text-center">
                     <span>My Profile</span>
-                    <div className="mt-6">
+                    <div className="mt-6 w-full justify-center flex bg-dblack items-center">
                         {foto_user && (
                             <img
                                 src={foto_user}
                                 alt="Your Image Alt Text"
-                                className=" w-52 h-52   border-2 border-[#E3E8EC]  drop-shadow shadow-md shadow-black rounded-[40px] inline-block" // Adjust the width as needed
+                                className=" w-52 h-52   border-2 border-[#E3E8EC]  drop-shadow shadow-md shadow-black rounded-[40px] " // Adjust the width as needed
                             />
                         )}
                     </div>
-                    <div className='mt-6 ml-2'>
+                    <div className='mt-6 w-full flex justify-center items-center flex-col'>
                         <h1 className="text-xl font-bold">{(username)}</h1>
                         <span className="text-sm  font-serif italic flex justify-center mt-3">{email}</span>
                     </div>
-                    <div className="mt-8 ml-6">
+                    <div className="mt-8 bg-bflack justify-center flex items-center flex-col w-full  mdl-6">
                         <LevelBar value={60} />
-                        <p className=' mt-4 text-white shadow-sm shadow-black  ml-28  w-28 font-serif italic uppercase'>level 8-86%</p>
+                        <p className=' mt-4 text-white shadow-sm shadow-black  mfl-28  w-28 font-serif italic uppercase'>level 8-86%</p>
 
                     </div>
                     <div className=" hidden md:flex ">
@@ -183,36 +187,26 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
                                 alt="Your"
                                 className="w-80 mt-6 h-60  ml-6 rounded-[32px] inline-block"
                             />
-                            {/* <button className="flex justify-center  items-center mt-6  bg-[#f4f5f8] transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-12 hover:scale-105 ">Login</button> */}
                         </div>
                     </div>
-                    <div className=" md:hidden flex flex-col ml-6 ">
-                        <Link className="text-base font-bold flex justify-center mt-6 mr-8 items-center ml-4 text-blue-600" href={"/profile"}><span className=" py-2 px-32 bg-white  shadow-sm shadow-black   border rounded-xl hover:scale-110 duration-300">Profile</span>
+                    <div className=" md:hidden flex  justify-center w-full items-center flex-col mdl-6 ">
+                        <Link className="text-base font-bold flex justify-center mt-6 mdr-8 items-center  bg-bslack w-80 h-12 msl-4 text-blue-600" href={"/profile"}><span className=" w-full flex  justify-center items-center  h-full sm:py-2 sm:px-32 bg-white  shadow-sm shadow-black   border rounded-xl hover:scale-110 duration-300">Profile</span>
                         </Link>
 
-                        <div className='mt-6 mr-6'>
-                            <p className="     text-2xl  mr-52">Settings</p>
-                            <Link className=" mt-10   py-2  rounded-xl  h-10  flex justify-center  items-center bg-white hover:scale-110 drop-shadow shadow-md shadow-black  duration-300 text-blue-600 text-sm font-bold" href={"/EditProfile"}> <span className=" flex flex-row  " >Profile_Settings</span></Link>
+                        <div className='mt-6 w-full justify-center   flex-col flex bg-blarck items-center'>
+                            <p className="     text-2xl  dmr-52">Settings</p>
+                            <Link className=" mt-6   w-80   rounded-xl  h-12  flex justify-center  items-center bg-white hover:scale-110 drop-shadow shadow-md shadow-black  duration-300 text-blue-600 text-sm font-bold" href={"/EditProfile"}> <span className=" flex flex-row  " >Profile_Settings</span></Link>
 
-
-
-
-
-                            <Link className="text-base font-bold flex justify-center items-center text-white" href={"/Listblocked"}><span className=" py-2 px-[120px] mt-10     border-white  rounded-xl bg-blue-600  drop-shadow shadow-md shadow-black border  hover:scale-110 duration-300">Blocked</span>
+                            <Link className="text-base w-80  h-12 font-bold flex justify-center items-center text-white" href={"/Listblocked"}><span className=" flex justify-center items-center  mt-10    w-full h-full  border-white  rounded-xl bg-blue-600  drop-shadow shadow-md shadow-black border  hover:scale-110 duration-300">Blocked</span>
                             </Link>
 
-                            <Link className="text-base font-bold flex justify-center items-center text-blue-600" href={"/Code_QR"}><span className=" py-2  px-[120px] mt-10 bg-white     border-white rounded-xl border drop-shadow shadow-md shadow-black hover:scale-110 duration-300">Code_OR</span>
+                            <Link className="text-base font-bold w-80 mt-5  h-12  flex justify-center items-center text-blue-600" href={"/Code_QR"}><span className="  mt-10 bg-white flex justify-center items-center w-full h-full     border-white rounded-xl border drop-shadow shadow-md shadow-black hover:scale-110 duration-300">Code_OR</span>
                             </Link>
-
-
-
-
-
 
                         </div>
                     </div>
-                    <div className="mt-8">
-                        <button className="bg-white  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600 py-2  px-32 hover:bg:white hover:texts-white hover:scale-105 duration-300 ">Logout</button>
+                    <div className="mt-10 w-full ">
+                        <button className="bg-white   w-80  h-12  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600  hover:bg:white hover:texts-white hover:scale-105 duration-300 ">Logout</button>
                     </div>
                 </div>
             </div>
@@ -269,7 +263,6 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
 
                                     </div>
 
-                                    {/* </div> */}
 
 
                                 </div>
@@ -289,7 +282,26 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
 
                         )) :
                             (
-                                <div className=" flex mt-72 bg-blue-600 text-white w-96 h-10 drop-shadow shadow-md shadow-black   items-center justify-center rounded-lg  rounded-white">This is an empty list</div>
+                                <footer className='  w-full  rounded-2xl h-full -mt-28  flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                </div>
+
+                            </footer>
 
                             )
 
@@ -297,13 +309,13 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
 
                 </div>
             </div>
-            <div className="  xl:hidden  flex shrink  flex-col overflow-y-scroll   scrollbar-hide  items-center  md:opacity-150 bg mt-[5px] min-h-[845px]  bg-blue-50  w-[700px] h-16 rounded-2xl  p-6" >
-                <div className="flex shrink  flex-col overflow-y-scroll  scrollbar-hide drop-shadow shadow-md shadow-black rounded-lg  border-e border-black items-center bg-white   w-[500px] h-[800px]">
+            <div className="  xl:hidden     flex  flex-col overflow-y-scroll   scrollbar-hide  items-center  md:opacity-150 bg mt-[5px] min-h-[845px]   w-full  sm:w-[700px]  h-16 rounded-2xl  " >
+                <div className="flex shrink  flex-col overflow-y-scroll  scrollbar-hide drop-shadow shadow-md shadow-black rounded-lg  border-e border-black items-center bg-white  w-96 sm:w-[500px] h-[800px]">
 
                     {
 
                         (sendr_blocked.length) ? sendr_blocked.map((user: any) => (
-                            <div className=' w-96  h-16  bg-blue-600  drop-shadow-2xl  -m-3 mt-8 rounded-xl border- border-blue-600  flex flex-row '>
+                            <div className=' w-80 sm:w-96  h-16  bg-blue-600  drop-shadow-2xl  -m-3 mt-8 rounded-xl border- border-blue-600  flex flex-row '>
 
 
                                 <div className='bg-white rounded-l-xl border-2   border-blue-600  w-96 h-20  flex flex-row '>
@@ -328,7 +340,7 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
 
                                     </div>
 
-                                    {/* </div> */}
+                                 
 
 
                                 </div>
@@ -348,8 +360,26 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
 
                         )) :
                             (
-                                <div className=" flex mt-72 bg-blue-600 text-white w-96 h-10 drop-shadow shadow-md shadow-black   items-center justify-center rounded-lg  rounded-white">This is an empty list</div>
+                                <footer className='  w-full  rounded-2xl h-full  -mt-20 flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                </div>
 
+                            </footer>
                             )
 
                     }

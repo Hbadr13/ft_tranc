@@ -1,6 +1,7 @@
 import { Constant } from '@/constants/constant';
 import { userData, userProps } from '@/interface/data';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { any, number, set } from 'zod';
 function Mutaulfriends({ user, amis }: { user: userProps, amis: Array<userProps> }) {
@@ -285,99 +286,26 @@ const User = () => {
         setIsOpen1("can");
 
     }, [currentUser1]);
-    // useEffect(() => {
-
-    // useEffect(() => {
-    //     let freid = 0;
-    //     let filterUser: Array<userProps> = users.filter((user: userProps) => {
-    //         user.flag = true;
-    //         user.flag1 = true;
-
-    //         if (Array.isArray(amis)) {
-
-    //             amis.map((usr: any) => {
-    //                 if (usr.id == user.id) {
-    //                     user.flag = false;
-    //                 }
-
-    //             });
-    //         } else {
-
-    //         }
-    //         if (Array.isArray(received_blocked)) {
-    //             received_blocked.map((userr: any) => {
-    //                 // Your mapping logic here
-    //                 if (userr.sender.id == user.id)
-    //                     user.flag = false;
-
-
-    //             });
-
-    //         } else { }
-    //         if (Array.isArray(sendr_blocked)) {
-    //             sendr_blocked.map((userr: any) => {
-
-
-    //                 if (userr.receiver.id == user.id)
-    //                     user.flag = false;
-
-    //             });
-
-    //         } else {
-    //             // Handle the case when 'received' is not an array (e.g., show an error message)
-    //         }
-    //         if (Array.isArray(friend_reciver)) {
-
-    //             friend_reciver.map((use: any) => {
-    //                 if (use.sender.id == user.id)
-    //                     user.flag = false;
-
-    //             });
-
-    //         } else {
-
-    //         }
-    //         if (Array.isArray(friend_request)) {
-    //             friend_request.map((use: any) => {
-    //                 if (use.receiver.id == user.id) {
-    //                     user.flag = false;
-    //                 }
-    //             });
-    //         } else {
-    //         }
-
-    //         // if (user.flag == true)
-    //         return user
-    //     })
-    //     if(amis && friend_request && friend_reciver  && sendr_blocked)
-    //         setallfriends(filterUser);
-    //     setIsOpen(0)
-
-    // }, [amis, currentUser1, isOpen, friend_reciver, friend_request])
-
-    // console.log("friend_reciver", setfriend_add)
 
     return (
-        <div className='    flex justify-center   items-center     flex-col'>
+        <div className='    flex justify-center bdg-white w-full   items-center     flex-col'>
 
-            <div className='  flex-auto justify-start items-start    ml-10   flex-col  w-auto h-auto mt-10  rounded-xl drop-shadow-2xl  bg-clip-border p-6 border-2 bg-white  border-solid'>
-                <div className='flex flex-auto bxg-red-600 flex-row mt-7  justify-start  items-start'>
+            <div className='  flex-auto justify-start items-start     w-full   min-h-screen   flex-col  sm:w-auto md:auto   mt-16  rounded-xl drop-shadow-2xl  bg-clip-border  border-2 bg-white   dark:bg-CusColor_dark  border-solid'>
+                <div className='flex flex-auto bxg-red-600 flex-row mt-7  sm:justify-start  sm:items-start justify-center items-center'>
 
 
                     <div className="border-4    text-black  text-base  w-96 flex justify-center items-center drop-shadow shadow-md shadow-black   rounded-lg bg-white borsder-blue-600  ...">Friend requests</div>
 
                     <div className="sm:flex flex-auto  roundesd-2xl border-t-4  mt-3  hidden w-64 h-1 drop-shadow shadow-md shadow-black   border-[#eee] ..."></div>
                 </div>
-                <div className=' mt-7  lg:ml-3 hidden   sm:grid  md:grid 
-         lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0    lg:gap-x-4 lg:gap-y-4  mr-10 sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4  md:flex-row justify-center   '>
 
+                <div className={`  hidden  ${friend_reciver.length != 0 ? ' sm:grid  md:grid  m-3  mt-7  lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0     lg:gap-x-4 lg:gap-y-4    sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4' : ' sm:flex w-full bg-bdlack  '}  md:flex-row justify-center  `}>
                     {
 
 
                         (friend_reciver.length) ? friend_reciver.map((user: any) => (
                             <div className='flex    rounded-xl items-start  '>
 
-                                {/* <LevelBar user={user} amis={amis} id={currentUser1.id} flag={1} /> */}
                                 <div className=' bg-white border-4  bordder-blue-400 w-48 h-[300px] drop-shadow shadow-md shadow-black  rounded-xl  flex  flex-col  '>
                                     <button onClick={() => profailamis(user.sender.username, user.sender.id)}>
 
@@ -392,7 +320,6 @@ const User = () => {
                                     </button>
 
                                     <div className=" indent-0  mt-3 bg-b flex justify-center  items-center flex-col text-back">
-                                        {/* <button onClick={() => profailamis(user.sender.username, user.sender.id)} className='normal-case no-underline font-semibold font-serif' >{user.sender.username}</button> */}
                                         <button onClick={() => profailamis(user.sender.username, user.sender.id)} className='normal-case    flex justify-start items-start no-underline   font-semibold font-serif' >
                                             <p className='text-black text-sm'>
                                                 {user.sender.username}
@@ -410,7 +337,6 @@ const User = () => {
                                             <button>
 
                                                 <div onClick={() => CanacelRequest1(user.sender.id)} className=' flex justify-center items-center mt-1 text-sm font-bol bg-[#E3E8EC] rounded-md w-36 h-8 hover:bg-slate-100 hover:scale-110 duration-300'>
-                                                    {/* <svg fill="#000000" width="20" height="20" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M624 208h-64v-64c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v64h-64c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h64v64c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-64h64c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm-400 48c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z" /></svg> */}
                                                     <div className=' text-black ml-1 text-base'>Delete</div>
                                                 </div>
                                             </button>
@@ -425,45 +351,40 @@ const User = () => {
 
 
                         )) : (
-                            <div className=''>
-                                {/* <footer className='w-[60%]  shadow-xl rounded-2xl mt-20 py-10 flex flex-col justify-center items-center space-y-3'>
-                                    <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
-                                        <div className="">
-                                            <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
-                                        </div>
-                                        <div className=" z-10">
-                                            <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
-                                        </div>
-                                        <div className="">
-                                            <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
-                                        </div>
+
+                            <footer className='  w-full  rounded-2xl   flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
                                     </div>
-                                    <div className=" w-[50%] text-center  text-xl font-semibold">
-                                        <h1>No user found</h1>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
                                     </div>
-                                    <div className=' w-[50%]   text-center'>
-                                        <h2> Sorry, We couldn't find any user </h2>
-                                        <h2 className={`${currentPath == '/search' ? 'hidden' : 'block'}`}>with the name "{query}" .Please try again.</h2>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
                                     </div>
-                                    <div className="space-x-3">
-                                        <button onClick={handelClearSearch} className='w-[120px] border-2 border-slate-300 py-2  rounded-md  font-bold hover:bg-slate-300 duration-300 '>Clear search</button>
-                                        <button onClick={handelGetBack} className='w-[120px] border-2  bg-blue-300 py-2  text-blue-800 rounded-md  font-bold hover:bg-blue-400 duration-300'>Get back</button>
-                                    </div>
-                                </footer> */}
-                            </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                </div>
+
+                            </footer>
                         )
                     }
                 </div>
-                <div className='  sm:hidden md:hidden flex  justify-center justify-items-center  flex-col  lg:hidden   mt-7 '>
+                <div className='  sm:hidden md:hidden flex space-y-5 justify-center items-center  flex-col  lg:hidden   mt-7 '>
 
                     {
                         (friend_reciver.length) ? friend_reciver.map((user: any) => (
 
 
 
-                            <div className='  w-[418px]  h-24     rounded-xl border-2 border-[#005AB5] drop-shadow shadow-md shadow-black  mt-4 flex flex-row '>
+                            <div className='   w-[368px] h-24     rounded-xl border-2 border-[#005AB5] drop-shadow shadow-md shadow-black  mt-4 flex flex-row '>
 
-                                <div className='bg-white rounded-l-xl border-r-[2px] border-blue-600  w-72 h-24  flex flex-row'>
+                                <div className='bg-white rounded-l-xl border-r-[2px] border-blue-600  w-full h-24  flex flex-row'>
                                     <button onClick={() => profailamis(user.sender.username, user.sender.id)} >
                                         <div className='flex justify-start items-center  ml-3'>
                                             <img
@@ -510,30 +431,48 @@ const User = () => {
 
                             </div>
 
-                        )) : null
+                        )) : (
+
+                            <footer className='w-full   rounded-2xl  flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-8 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                </div>
+
+                            </footer>
+
+                        )
 
                     }
                 </div>
 
-                {/* <div className="border-t-4  mt-7   w-96  h-0  border-black ..."></div> */}
-                <div className='flex flex-auto bxg-red-600 flex-row mt-7  justify-start  items-start'>
+                <div className='flex flex-auto bxg-red-600 flex-row mt-7  sm:justify-start  sm:items-start justify-center items-center'>
 
 
                     <div className="border-4    text-black  text-base  w-96 flex justify-center items-center drop-shadow shadow-md shadow-black   rounded-lg bg-white borsder-blue-600  ...">Friend requests</div>
 
                     <div className="sm:flex flex-auto  roundesd-2xl border-t-4  mt-3  hidden w-64 h-1 drop-shadow shadow-md shadow-black   border-[#eee] ..."></div>
                 </div>
-
-                <div className=' hidden  sm:grid  md:grid  m-3 mt-7
-         lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0    lg:gap-x-4 lg:gap-y-4    sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4  md:flex-row justify-center   '>
-
+                <div className={`  hidden  ${friend_request.length != 0 ? '   sm:grid  md:grid  m-3 mt-7  lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0     lg:gap-x-4 lg:gap-y-4    sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4' : ' sm:flex w-full bg-bdlack  '}  md:flex-row justify-center  `}>
                     {
 
 
                         (friend_request.length) ? friend_request.map((user: any) => (
                             <div className='flex    rounded-xl items-start  '>
 
-                                {/* <LevelBar user={user} amis={amis} id={currentUser1.id} flag={1} /> */}
                                 <div className=' bg-white border-4  w-48 h-[300px] drop-shadow shadow-md shadow-black  rounded-xl  flex  flex-col   '>
                                     <button onClick={() => profailamis(user.receiver.username, user.receiver.id)}>
 
@@ -552,7 +491,6 @@ const User = () => {
                                                 {user.receiver.username}
                                             </p>
                                         </button>
-                                        {/* <button onClick={() => profailamis(user.receiver.username, user.receiver.id)} className='normal-case no-underline font-semibold font-serif' >{user.receiver.username}</button> */}
                                         <Mutaulfriends user={user.receiver} amis={amis} />
                                         <div className='flex  justify-center flex-col mt-5 rounded-md bg-xwhite'>
 
@@ -560,7 +498,6 @@ const User = () => {
                                             <button>
 
                                                 <div onClick={() => CanacelRequest(user.receiver.id)} className=' flex justify-center items-center mt- text-sm font-bol bg-blue-600  rounded-md w-36 h-8 hover:bg-slate-100 hover:scale-110 duration-300'>
-                                                    {/* <svg fill="#000000" width="20" height="20" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M624 208h-64v-64c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v64h-64c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h64v64c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-64h64c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm-400 48c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z" /></svg> */}
                                                     <div className=' text-black ml-1 text-base'>Cancel request</div>
                                                 </div>
                                             </button>
@@ -574,20 +511,44 @@ const User = () => {
 
 
 
-                        )) : null
+                        )) : (
+
+                            <footer className='w-full   rounded-2xl mt-5 py-10 flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                </div>
+
+                            </footer>
+
+                        )
+
                     }
                 </div>
-                <div className='  sm:hidden md:hidden flex  justify-center justify-items-center flex-col  m-3 mt-7  lg:hidden     '>
+                <div className='  sm:hidden md:hidden flex  space-y-5 justify-center  items-center flex-col  m-3 mt-7  lg:hidden     '>
 
                     {
                         (friend_request.length) ? friend_request.map((user: any) => (
 
 
 
-                            <div className=' w-[418px]  h-24     -m-3  drop-shadow shadow-md shadow-black  rounded-xl border-[1px] border-blue-600  mt-4 flex flex-row '>
+                            <div className=' w-[368px] h-24     -sm-3  drop-shadow shadow-md shadow-black  rounded-xl border-[1px] border-blue-600  mt-4 flex flex-row '>
 
 
-                                <div className='bg-white rounded-l-xl border-r-[2px] border-blue-600 w-72 h-24  flex flex-row '>
+                                <div className='bg-white rounded-l-xl border-r-[2px] border-blue-600 w-full h-24  flex flex-row '>
                                     <button onClick={() => profailamis(user.receiver.username, user.receiver.id)} >
                                         <div className='flex justify-start items-center ml-3'>
                                             <img
@@ -612,7 +573,6 @@ const User = () => {
 
                                     </div>
 
-                                    {/* </div> */}
 
 
                                 </div>
@@ -629,30 +589,50 @@ const User = () => {
 
                             </div>
 
-                        )) : null
+                        )) : (
+
+                            <footer className='w-full   rounded-2xl  flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-8 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                </div>
+
+                            </footer>
+
+                        )
+
 
                     }
                 </div>
 
-                {/* <div className="border-t-4  mt-7   w-96  h-0  border-black ..."></div> */}
-                <div className='flex flex-auto bxg-red-600 flex-row mt-7  justify-start  items-start'>
-                    {/* <div className="flex-auto border-t-4  mt-3 w-10 h-0  bg-white bordser-blue-600 ..."></div> */}
+                <div className='flex flex-auto bxg-red-600 flex-row mt-7 sm:justify-start  sm:items-start justify-center items-center'>
 
                     <div className="border-4    text-black  text-base  w-96 flex justify-center items-center drop-shadow shadow-md shadow-black   rounded-lg bg-white borsder-blue-600 ...">People you may know</div>
 
-                    <div className=" md:flex flex-auto  roundesd-2xl border-t-4  mt-3  hidden w-64 h-1 drop-shadow shadow-md shadow-black   border-[#eee] ..."></div>
+                    <div className="sm:flex flex-auto  roundesd-2xl border-t-4  mt-3  hidden w-64 h-1 drop-shadow shadow-md shadow-black   border-[#eee] ..."></div>
                 </div>
-                <div className=' hidden  sm:grid  md:grid  m-3 mt-7
-         lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0     lg:gap-x-4 lg:gap-y-4    sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4  md:flex-row justify-center  '>
 
+
+                <div className={`  hidden  ${allfriends.length != 0 ? '   sm:grid  md:grid  m-3 mt-7  lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0     lg:gap-x-4 lg:gap-y-4    sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4' : ' sm:flex w-full bg-bdlack  '}  md:flex-row justify-center  `}>
                     {
                         (allfriends.length) ? allfriends.map((user: userProps) => (
 
 
-
                             <div className='flex    rounded-xl items-start  '>
 
-                                {/* <LevelBar user={user} amis={amis} id={currentUser1.id} flag={1} /> */}
                                 <div className=' bg-white border-4 w-48 h-[300px]  drop-shadow shadow-md shadow-black rounded-xl  flex  flex-col  '>
                                     <div className='flex justify-center  mt-3'>
                                         <img
@@ -681,7 +661,6 @@ const User = () => {
                                             <button>
 
                                                 <div onClick={() => profailamis(user.username, user.id)} className=' flex justify-center items-center mt-1 text-sm font-bol bg-blue-600 rounded-md w-36 h-8 hover:bg-slate-100 hover:scale-110 duration-300'>
-                                                    {/* <svg fill="#000000" width="20" height="20" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M624 208h-64v-64c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v64h-64c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h64v64c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-64h64c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm-400 48c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z" /></svg> */}
                                                     <div className=' text-black ml-1 text-base'>Profail</div>
                                                 </div>
                                             </button>
@@ -691,23 +670,48 @@ const User = () => {
 
                                 </div>
 
+
                             </div>
 
+                        )) : (
 
-                        )) : null
+                            <footer className='w-full   rounded-2xl mt-8 rpy-10 flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                </div>
+                                <div className="space-x-3">
+                                </div>
+                            </footer>
+
+                        )
+
 
                     }
 
                 </div>
-                <div className='  sm:hidden md:hidden   m-3 mt-3 flex justify-center justify-items-center flex-col items-center  lg:hidden   '>
+                <div className='  sm:hidden md:hidden   space-y-5 m-3 mt-3 flex justify-center justify-items-center flex-col items-center  lg:hidden   '>
 
                     {
                         (allfriends.length) ? allfriends.map((user: userProps) => (
 
 
 
-                            <div className='       w-[419px]  h-24  -m-3   drop-shadow shadow-md shadow-black  rounded-xl border-[1px] border-blue-600  mt-4 flex flex-row '>
-                                <div className='bg-white rounded-l-xl border-r-[2px] border-r-blue-600 w-80 h-24  flex flex-row'>
+                            <div className='       w-[368px] max-w-96  h-24  -mxs-3   drop-shadow shadow-md shadow-black  rounded-xl border-[1px] border-blue-600  mt-4 flex flex-row '>
+                                <div className='bg-white rounded-l-xl border-r-[2px] border-r-blue-600 w-full  h-24  flex flex-row'>
                                     <div className='flex justify-start items-center m-4'>
                                         <img
                                             src={user.foto_user}
@@ -749,7 +753,32 @@ const User = () => {
 
                             </div>
 
-                        )) : null
+                        )) : (
+
+                            <footer className='w-full   rounded-2xl mt-5 pys-10 flex flex-col justify-center items-center space-y-3'>
+                                <div className="mt-8 bg-green-w500 flex items-end -space-x-2">
+                                    <div className="">
+                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    </div>
+                                    <div className=" z-10">
+                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    </div>
+                                    <div className="">
+                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    </div>
+                                </div>
+                                <div className=" w-[50%] text-center  text-xl font-semibold">
+                                    <h1>No user found</h1>
+                                </div>
+                                <div className=' w-[50%]   text-center'>
+                                    <h2> Sorry, We couldn't find any user </h2>
+                                </div>
+                                <div className="space-x-3">
+                                </div>
+                            </footer>
+
+                        )
+
 
                     }
                 </div>

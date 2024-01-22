@@ -60,7 +60,7 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
                     {
                         on == 0 && Leaderboard.map((value: any, index: any) => (
 
-                            <div key={index} className=' flex -mt-3 wh-[40%] w-full   fledx-row ml-14  spface-x-3'>
+                            <div className=' flex -mt-3 wh-[40%] w-full   fledx-row ml-14  spface-x-3'>
                                 {
 
 
@@ -121,7 +121,7 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
 
                         ))
                     }
-                    <div className={` bg-white w-full md:beg-slate-500 md:w-[350px] lg:w-96 msd:w-84    ${on == 1 ? ' h-[600px]  ' : ' h-[333px]'}    lg:bg-white  flex  mt- overflow-y-scroll jusdtify-center items-center mt-   flex-col scrollbar-hide myl-1 rounded-t-3xl`}>
+                    <div className={` bg-white w-full md:beg-slate-500 md:w-[350px] lg:w-96 msd:w-84    ${on == 1 ? ' h-[600px] ' : ' h-[333px]'}    lg:bg-white  flex  mt-14 overflow-y-scroll jusdtify-center items-center mt-   flex-col scrollbar-hide myl-1 rounded-t-3xl`}>
 
                         {
                             on == 0 && <button className=' flex justify-start w-10 bg-slate-400 h-3 mt-2  rounded-3xl' onClick={() => seton(1)}></button>
@@ -137,7 +137,7 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
                                             <div className=' lg:ml-10  md:ml-5 ml-10 mft-2 flex  border-2  h-6 justify-center items-center w-6 rounded-full'>{index + 1} </div>
                                             <div className='-mwt-3 flex flex-row w-40  vbg-slate-500 justify-start items-center space-x-3'>
                                                 <img className="h-8 w-8 borwder-2 bofrder-blue-600 rounded-full drop-shadow shadow-md shadow-black  " src={value.foto_user} alt="" />
-                                                <button onClick={() => profailamis(users_id.username, users_id.id)} className={` text-sm  } font-serif itwalic`}
+                                                <button onClick={() => profailamis(users_id.username, users_id.id)}  className={` text-sm  } font-serif itwalic`}
                                                 > {value.username}</button>
                                             </div>
                                             <div className=" flex w-24 ml-10 bgf-black space-x-2">

@@ -63,6 +63,7 @@ export class FriendsController {
       // Handle other potential errors
     }
   }
+  
   @Get('accepted-friends/:userId')
   async getAcceptedFriends(
     @Param('userId', ParseIntPipe) userId: number,
@@ -81,7 +82,8 @@ export class FriendsController {
       return {}
   }
   @Get(':userId/send-requests')
-  async getSendFriendRequests(@Param('userId') userId: number) {
+  async getSendFriendRequests(@Param('userId') userId: number, @Request() req:any) {
+ 
     if (Number(userId) > 0)
       return this.friendsService.getSendFriendRequests(Number(userId));
     else

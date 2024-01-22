@@ -1,10 +1,45 @@
 import { Socket } from "socket.io-client";
-import { string } from "zod";
+export interface messageProps {
+    id: number,
+    content: string,
+    createdAt: string,
+    foto_user: string
+    senderId: number
+}
+export interface channelProps {
+    type: string;
+    name: string,
+    id: number,
+}
+export interface listConversationDirect {
+    flag?: boolean
+    updateAt: string,
+    id: number,
+    username: string,
+    foto_user: string,
+    won: number,
+    level: number,
+}
+
+export interface participantsProps {
+    id: number,
+    username: string,
+    isAdmin: boolean,
+    isOwner: boolean,
+    isBanned: boolean,
+    foto_user: string
+}
+export interface channelProps {
+    type: string;
+    name: string,
+    id: number,
+    password: string;
+}
 
 export interface userProps {
 
-
-    flag1: boolean;    // 
+    flag1: boolean;
+    dakhal: boolean;    // 
     id: number,
     createdAt: string,
     updatedAt: string,
@@ -54,4 +89,4 @@ export interface GameCardsProps {
 
 }
 
-export const userData = { id: 0, opponentId: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, gameStatus: '', userId: 0, flag: false, flag1: false, room: '', won: 0, lost: 0, level: 0 }
+export const userData = { id: 0, opponentId: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, gameStatus: '', userId: 0, flag: false, flag1: false, room: '', won: 0, lost: 0, level: 0, dakhal: false }

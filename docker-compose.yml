@@ -1,31 +1,10 @@
-# version: '3.8'
 
-# services:
-#   postgres:
-#     image: postgres
-#     container_name: postgres
-#     environment:
-#       POSTGRES_PASSWORD: 123
-#     ports:
-#       - "5432:5432"
-
-#   backend:
-#     build:
-#       context: ./backend
-#       dockerfile: Dockerfile
-#     container_name: my-nestjs-container
-#     ports:
-#       - "3333:3333"
-#     depends_on:
-#       - postgres
-#     environment:
-#       DATABASE_URL: postgresql://postgres:123@localhost:5432/nest?schema=public
-version: '3.8'
+version: '3.9'
 services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      # dockerfile: Dockerfile
     container_name: backend
     restart: always
     ports:
@@ -37,7 +16,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+   # dockerfile: Dockerfile
     container_name: frontend
     restart: always
     ports:
@@ -49,16 +28,10 @@ services:
       - ./frontend/.env
 
   postgres:
-    image: postgres:13
+    image: postgres
     container_name: postgres
     restart: always
     ports:
       - "5432:5432"
     env_file:
       - ./backend/.env
-    # volumes:
-    #   - postgres:/var/lib/postgresql/data
-
-    # volumes:
-    #   postgres:
-    #     name: nest-prisma-docker-db

@@ -4,9 +4,9 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY . /fontend/
+COPY . /fontend
 
-WORKDIR /fontend/
+WORKDIR /fontend
 
 EXPOSE 3000
 

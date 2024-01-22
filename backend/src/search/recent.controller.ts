@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Request } from "@nestjs/common";
 import { RecentService } from "./recent.service";
 import { recentDto } from "./dto/recent";
 
@@ -12,9 +12,10 @@ export class RecentController {
         }
     }
     @Get('/recent/:userid')
-    async getRecentSearch(@Param('userid') userid: string) {
+    async getRecentSearch(@Param('userid') userid: string, @Request() req:any) {
         try {
             console.log('======>>>>')
+            console.log("--------------------------->>",req.user, req["user"]);
             return await this.recentservice.getRecentSearch(userid)
         } catch (error) {
         }

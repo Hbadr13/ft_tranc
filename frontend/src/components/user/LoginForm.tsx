@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import * as z from 'zod';
+import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import { checkAuth, checklogin } from "@/hooks/userHooks";
 import { Constant } from "@/constants/constant";
@@ -16,7 +17,9 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [TwoFactor, setTwoFactor] = useState("");
+  const [validationErrors, setvalidationErrors] = useState<any>("");
   const [tfofocot, settfofocot] = useState(0);
+  const [error, seterror] = useState(0);
   const formData = {
     email: email,
     password: password
@@ -41,7 +44,7 @@ export default function LoginForm() {
   const handleGoogleLogin = () => {
     // const currentUrl = window.location.href;
     // Redirect to the desired URL
-    // window.open("http://localhost:3333/auth/42","_self");
+    // window.open("${Constant.API_URL}/auth/42","_self");
     // Redirect to Google authentication
 
     const how = window.location.replace(`${Constant.API_URL}/auth/42`);
@@ -66,6 +69,7 @@ export default function LoginForm() {
     } else {
       // Form data is invalid
       const validationErrors = validationResult.error.flatten();
+      seterror(1);
       console.error('Validation errors:', validationErrors);
       const form = e.target;
       form.reset();
@@ -91,7 +95,10 @@ export default function LoginForm() {
         }),
       });
       const content = await res.json();
+      console.log(content.status)
       if (content.status == 200 && res.ok) {
+
+        console.log(res.status)
 
         // const form = e.target;
         // form.reset();
@@ -103,14 +110,16 @@ export default function LoginForm() {
         settfofocot(1);
       }
       else {
-        // const form = e.target;
-        // form.reset();
+        seterror(1);
+        const form = e.target;
+        form.reset();
         return;
       }
 
     } catch (error) {
-      // const form = e.target;
-      // form.reset();
+      seterror(1);
+      const form = e.target;
+      form.reset();
 
       // console.log("kin wahd hna: ", error);
     }
@@ -126,9 +135,19 @@ export default function LoginForm() {
               {/* form */}
               <div className="md:w-1/2 px-8 md:px-16">
                 <h2 className="font-bold text-2xl text-[#002D74]">Login</h2>
-                <p className="text-xs mt-4 text-[#002D74]">If you are already a member, easily log in</p>
+                {
+                  error == 0 && <p className="text-xs mt-4 text-[#002D74]">If you are already a member, easily log in</p>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                }
+                {
+                  error == 1 &&
+                  <div className=" bg-red-600 mt-4 drop-shadow-md  flex justify-center items-center     rounded-md  w-60 h-10">
+                    <p className="text-md mdt-4 text-white">Login or password  is invalid </p>
+                  </div>
+
+                }
+
+                <form onSubmit={handleSubmit} className="flex -mt-3 flex-col gap-4">
                   <input required onChange={(e) => setEmail(e.target.value)} className="p-2 mt-8 rounded-xl border w-full" type="email" name="email" placeholder="Email" />
                   <div className="relative">
                     <input required onChange={(e) => setPassword(e.target.value)} className="p-2 rounded-xl border w-full" type="password" name="password" placeholder="Password" />
@@ -154,8 +173,8 @@ export default function LoginForm() {
                   <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 48 48">
                     {/* <rect x="8" y="9" width="40" height="30" fill="" /> */}
 
-                    {/* <text x="10" y="36" font-family="Arial, sans-serif" fontSize="30" fill="white">42</text> */}
-                    <text x="10" y="36" fontFamily="Arial, sans-serif " fontSize="30" fill="black" >
+                    {/* <text x="10" y="36" font-family="Arial, sans-serif" font-size="30" fill="white">42</text> */}
+                    <text x="10" y="36" font-family="Arial, sans-serif " font-size="30" fill="black" >
                       <tspan fill="blue font-semibold">4</tspan>
                       <tspan fill="green font-semibold">2</tspan>
                     </text>
@@ -177,9 +196,9 @@ export default function LoginForm() {
             </div>
           </section>) :
           (
-            <div className=' flex z-10  h-screen w-screen  justify-center items-center '>
+            <div className=' flex z-10  bg-[/game/click-to-start-3.gif]  h-screen w-full  justify-center bg-bldack items-center ' >
 
-              <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-white bg-black '>
+              <div className='flex  justify-center flex-col  h-80  w-[500px]  -ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
                 <p className=' text-xl  '> Please Enter Two-Factor Code?</p>
                 <input onChange={(e) => setTwoFactor(e.target.value)} className="p-2  rounded-xl mt-6 text-gray-900 border border-gray-900 rouncursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 ml-4 w-72" type="code" name="text" placeholder="code" />
                 <button onClick={handleSubmit} className=' flex justify-center items-center text-black mt-8 w-56 h-10 rounded-2xl  border-2 bg-white  border-blue-500 hover:scale-110 duration-300' >Enter</button>

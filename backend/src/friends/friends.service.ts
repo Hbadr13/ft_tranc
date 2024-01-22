@@ -31,13 +31,7 @@ export class FriendsService {
           status: 'pending', // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
         },
       });
-      await this.prisma.friendship.create({
-        data: {
-          userAId: seenderId,
-          userBId: reeceiverId,
-          status: 'pending', // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
-        },
-      });
+  
 
     }
   }

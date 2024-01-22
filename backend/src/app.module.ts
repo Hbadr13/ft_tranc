@@ -57,6 +57,7 @@ import { OnlineModule } from './online/online.module';
 import { RoomService } from './game/room/room.service';
 import { JwtAuthGuard } from './auth/jwt/jwt-auth.guard';
 import { JwtMiddleware } from './auth/jwt/jwt.middleware';
+import { ChatModule } from './chat/chat.module';
 import { RecentModule } from './search/recent.module';
 
 
@@ -69,7 +70,7 @@ import { RecentModule } from './search/recent.module';
         }),
         ConfigModule.forRoot({
             isGlobal: true
-        }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule, GameModule, OnlineModule, RecentModule],
+        }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule, GameModule, ChatModule, OnlineModule, RecentModule],
     providers: [],
 
 })

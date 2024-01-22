@@ -1,4 +1,5 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+import { Constant } from 'src/constants/constant';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -10,7 +11,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       status = exception.getStatus();
     }
 
-   response.redirect('http://localhost:3000/auth/login')
+   response.redirect(`${Constant.API_URL}/auth/login`)
     // response.status(status).json({
     //   statusCode: status,
     //   message: exception.message,

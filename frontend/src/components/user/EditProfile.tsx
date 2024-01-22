@@ -11,10 +11,10 @@ import { Constant } from "@/constants/constant";
 
 
 interface LevelBarpros {
-    value: number
+    value: String
 }
 function LevelBar({ value }: LevelBarpros) {
-    const progressWidth = `${value}%`;
+    const progressWidth = `${value}0%`;
 
 
 
@@ -40,6 +40,9 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
     const [check, setCheck] = useState(0);
     const [check1, setCheck1] = useState(0);
     const [check2, setCheck2] = useState(0);
+    const [level, setlevel] = useState();
+    const [level1, setlevel1] = useState("");
+    const [level2, setlevel2] = useState("");
     const [id, setid] = useState(0);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -147,6 +150,15 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                     setid(content.id);
                     setEmail(content.email);
                     setUsername(content.username)
+                    setlevel(content.level)
+                    const stringValue2: string = String(level);
+                    const level3 = stringValue2.split('.');
+                    
+                    if (level3[1])
+                        setlevel1(level3[1]);
+                    else
+                        setlevel1("0");
+                    setlevel2(level3[0]);
                 } catch (error) {
 
                 }
@@ -208,26 +220,26 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
     fetchAllAmis({ setAmis, currentUser });
     return (
 
-        <div className='flex  flex-wrap  justify-center  min-h-screen  min-w-screen ml-10 items-center  p-6 '>
-            <div className='  flex-none   z-20   w-[408px] mt-[120px] mb-10  h-[100%] drop-shadow-2xl   items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
-                <div className="text-center">
+        <div className='flex  flex-wrap  justify-center  min-h-screen  w-full items-center  ps-6 '>
+            <div className='   flex-none smr-6 sm:mr-0  z-20  sm:w-[408px]   w-auto mt-[120px] mb-10  h-[100%] drop-shadow-2xl   items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
+                <div className=" w-full flex-col justify-center items-center text-center">
                     <span>My Profile</span>
-                    <div className="mt-6">
+                    <div className="mt-6 w-full justify-center flex bg-dblack items-center">
                         {foto_user && (
                             <img
                                 src={foto_user}
                                 alt="Your Image Alt Text"
-                                className=" w-52 h-52   border-2 border-[#E3E8EC]  drop-shadow shadow-md shadow-black rounded-[40px] inline-block" // Adjust the width as needed
+                                className=" w-52 h-52   border-2 border-[#E3E8EC]  drop-shadow shadow-md shadow-black rounded-[40px] " // Adjust the width as needed
                             />
                         )}
                     </div>
-                    <div className='mt-6 ml-2'>
+                    <div className='mt-6 w-full flex justify-center items-center flex-col'>
                         <h1 className="text-xl font-bold">{(username)}</h1>
                         <span className="text-sm  font-serif italic flex justify-center mt-3">{email}</span>
                     </div>
-                    <div className="mt-8 ml-6">
-                        <LevelBar value={60} />
-                        <p className=' mt-4 text-white shadow-sm shadow-black  ml-28  w-28 font-serif italic uppercase'>level 8-86%</p>
+                    <div className="mt-8 bg-bflack justify-center flex items-center flex-col w-full  mdl-6">
+                        <LevelBar value={level1} />
+                        <p className=' mt-4 text-white shadow-sm shadow-black  mfl-28  w-28 font-serif italic uppercase'>level {level2}-{level1}%</p>
 
                     </div>
                     <div className=" hidden md:flex ">
@@ -242,36 +254,26 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                                 alt="Your"
                                 className="w-80 mt-6 h-60  ml-6 rounded-[32px] inline-block"
                             />
-                            {/* <button className="flex justify-center  items-center mt-6  bg-[#f4f5f8] transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-12 hover:scale-105 ">Login</button> */}
                         </div>
                     </div>
-                    <div className=" md:hidden flex flex-col ml-6 ">
-                        <Link className="text-base font-bold flex justify-center mt-6 mr-8 items-center ml-4 text-blue-600" href={"/profile"}><span className=" py-2 px-32 bg-white  shadow-sm shadow-black   border rounded-xl hover:scale-110 duration-300">Profile</span>
+                    <div className=" md:hidden flex  justify-center w-full items-center flex-col mdl-6 ">
+                        <Link className="text-base font-bold flex justify-center mt-6 mdr-8 items-center  bg-bslack w-80 h-12 msl-4 text-blue-600" href={"/profile"}><span className=" w-full flex  justify-center items-center  h-full sm:py-2 sm:px-32 bg-white  shadow-sm shadow-black   border rounded-xl hover:scale-110 duration-300">Profile</span>
                         </Link>
 
-                        <div className='mt-6 mr-6'>
-                            <p className="     text-2xl  mr-52">Settings</p>
-                            <Link className=" mt-10   py-2  rounded-xl  h-10  flex justify-center  items-center bg-blue-600 hover:scale-110 drop-shadow shadow-md shadow-black  duration-300 text-white text-sm border border-white  font-bold" href={"/EditProfile"}> <span className=" flex flex-row  " >Profile_Settings</span></Link>
+                        <div className='mt-6 w-full justify-center   flex-col flex bg-blarck items-center'>
+                            <p className="     text-2xl  dmr-52">Settings</p>
+                            <Link className=" mt-6   w-80   rounded-xl  h-12  flex justify-center  items-center bg-blue-600  hover:scale-110 drop-shadow shadow-md shadow-black  duration-300 text-white text-sm border border-white font-bold" href={"/EditProfile"}> <span className=" flex flex-row  " >Profile Settings</span></Link>
 
-
-
-
-
-                            <Link className="text-base font-bold flex justify-center items-center text-blue-600" href={"/Listblocked"}><span className=" py-2 px-[120px] mt-10    border-white rounded-xl bg-white  drop-shadow shadow-md shadow-black border  hover:scale-110 duration-300">Blocked</span>
+                            <Link className="text-base w-80  h-12 font-bold flex justify-center items-center text-blue-600" href={"/Listblocked"}><span className=" flex justify-center items-center  mt-10    w-full h-full  border-white  rounded-xl bg-white  drop-shadow shadow-md shadow-black border  hover:scale-110 duration-300">Blocked</span>
                             </Link>
 
-                            <Link className="text-base font-bold flex justify-center items-center text-blue-600" href={"/Code_QR"}><span className=" py-2  px-[120px] mt-10 bg-white     border-white rounded-xl border drop-shadow shadow-md shadow-black hover:scale-110 duration-300">Code_OR</span>
+                            <Link className="text-base font-bold w-80 mt-5  h-12  flex justify-center items-center text-blue-600" href={"/Code_QR"}><span className="  mt-10 bg-white flex justify-center items-center w-full h-full     border-white rounded-xl border drop-shadow shadow-md shadow-black hover:scale-110 duration-300">Code_OR</span>
                             </Link>
-
-
-
-
-
 
                         </div>
                     </div>
-                    <div className="mt-8">
-                        <button className="bg-white  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600 py-2  px-32 hover:bg:white hover:texts-white hover:scale-105 duration-300 ">Logout</button>
+                    <div className="mt-10 w-full ">
+                        <button className="bg-white   w-80  h-12  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600  hover:bg:white hover:texts-white hover:scale-105 duration-300 ">Logout</button>
                     </div>
                 </div>
             </div>
@@ -289,9 +291,8 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                     <Link className="text-base font-bold flex justify-center items-center  text-blue-600" href={"/Listblocked"}><span className=" py-2 px-[96px] mt-10 bg-white border   hover:scale-110 duration-300">Blocked</span>
                     </Link>
 
-                    <Link className="text-base font-bold flex justify-center items-center  text-blue-600" href={"/Code_QR"}><span className=" py-2 px-[94px] mt-10 bg-white border   hover:scale-110 duration-300">Code_OR</span>
+                    <Link className="text-base font-bold flex justify-center items-center  text-blue-600" href={"/Code_QR"}><span className=" py-2 px-[92px] mt-10 bg-white border   hover:scale-110 duration-300">Code_OR</span>
                     </Link>
-
 
 
 
@@ -311,7 +312,6 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
 
                         <input onChange={handleFileChange}
 
-                            // className="p-2 block  -mt-6 mb-5 text-xs text-gray-900 border border-gray-900 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  ml-[119px]  w-72"
                             className=" p-2   bg-white rounded-lg  -mt-2   drop-shadow shadow-lg  dark:text-gray-900  dark:white  mb-4  h-12 flex justify-center items-center  w-96 borser border-black
                                 file:rounded-full file:border-0
                                     file:text-sm file:font-semibold
@@ -343,16 +343,14 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                         </select>
                     </label>
                 </div>
-                {/* <div className="4"> */}
 
                 <button className="bg-blue-600  mt-16    drop-shadow shadow-lg    w-80 rounded-lg text-white py-2 hover:scale-105 hover:bg-blue-600 duration-500 " onClick={handleSubmit}>Save Changes</button>
 
 
-                {/* </div> */}
 
 
             </div>
-            <div className="md:hidden flex-none    flex flex-col justify-center items-center md:opacity-150  min-h-[845px]  ml-5 min-w-[200px] bg-blue-50  w-[500px] h-16 rounded-2xl  p-6" >
+            <div className="md:hidden flex-none    flex flex-col justify-center items-center md:opacity-150  min-h-[845px] w-full  ml-5 sm:min-w-[200px] bg-blue-50 sm:w-[500px] h-16 rounded-2xl  p-6" >
                 <div className="h-10   flex  bg-blue-600 drop-shadow shadow-lg  mt-20 rounded-lg  w-auto">
                     <span className=" py-2 px-[102px] font-bold flex  text-sm text-white ">Edit Your Personal Setting</span>
                 </div>
@@ -365,7 +363,6 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
 
                         <input onChange={handleFileChange}
 
-                            // className="p-2 block  -mt-6 mb-5 text-xs text-gray-900 border border-gray-900 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  ml-[119px]  w-72"
                             className=" p-2   bg-white rounded-lg  -mt-4   drop-shadow shadow-lg  dark:text-gray-900  dark:white  mb-4  h-12 flex justify-center items-center  w-96 borser border-black
                                 file:rounded-full file:border-0
                                     file:text-sm file:font-semibold
@@ -397,21 +394,15 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                         </select>
                     </label>
                 </div>
-                {/* <div className="4"> */}
 
                 <button className="bg-blue-700  mt-10     w-72 rounded-lg drop-shadow shadow-lg  text-white py-2 hover:scale-105 " onClick={handleSubmit}>Save Changes</button>
 
 
-                {/* </div> */}
 
 
             </div>
         </div>
-        //       <div class="grid grid-rows-3 grid-flow-col gap-4">
-        //   <div class="row-start-6  row-span-2  bg-black ...">01</div>
-        //   <div class="row-end-6 row-span-2 ...">02</div>
-        //   <div class="row-start-1 row-end-4 ...">03</div>
-        // </div>
+
 
 
     );

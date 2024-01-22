@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 import { JwtAuthGuard } from './jwt/jwt-auth.guard';
 import { JwtMiddleware } from './jwt/jwt.middleware';
+import { Constant } from 'src/constants/constant';
 
 
 
@@ -113,14 +114,14 @@ export class AuthController {
         if (user.twoFactorSecret) {
             // Two-Factor Authentication is enabled for this user
             // Redirect to a page where the user can enter their 2FA code
-            response.redirect(`http://localhost:3000/enter-2fa/${user.id}`);
+            response.redirect(`${Constant.API_URL}/enter-2fa/${user.id}`);
         }
         else {
 
             //  console.log("ssssss");
             const jwt = await this.jwtService.signAsync({ id: user.id })
             response.cookie('jwt', jwt, { httpOnly: true });
-            response.redirect('http://localhost:3000/');
+            response.redirect(`${Constant.API_URL}`);
         }
     }
     @Post('set-2fa/:id/:code')

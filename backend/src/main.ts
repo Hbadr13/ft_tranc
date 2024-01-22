@@ -15,15 +15,16 @@ import { JwtService } from '@nestjs/jwt';
 
 
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import { Constant } from './constants/constant';
 
 async function bootstrap() {
     dotenv.config();
     const app = await NestFactory.create(AppModule);
     app.use(cookieParser());
     app.enableCors({
-        origin: 'http://localhost:3000',
-        // origin: 'http://192.168.43.62:3000',
-        // origin: 'http://192.168.0.31:3000',
+        // origin: 'http://localhost:3000',
+        // origin: 'http://192.168.43.146:3000',
+        origin: Constant.API_URL,
         credentials: true
     })
 
@@ -45,5 +46,4 @@ async function bootstrap() {
     await app.listen(3333);
 }
 bootstrap();
-
 
