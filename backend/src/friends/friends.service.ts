@@ -3,10 +3,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
-import { ChatService } from '../chat/chat.service';
+// import { ChatService } from '../chat/chat.service';
 @Injectable()
 export class FriendsService {
-  constructor(private readonly prisma: PrismaService,private chatService: ChatService) { }
+  constructor(private readonly prisma: PrismaService) { }
 
   async sendFriendRequest(seenderId: number, reeceiverId: number): Promise<void> {
     // Check if the friendship already exists (optional)
@@ -64,7 +64,7 @@ export class FriendsService {
       });
     }
     else if (existingFriendship.status !== 'blocked' ||  existingFriendship1.status !== 'blocked') {
-      await this.chatService.blockChatTwoUser(Number(seenderId), Number(reeceiverId))
+      // await this.chatService.blockChatTwoUser(Number(seenderId), Number(reeceiverId))
       const friendRequest = await this.prisma.friendRequest.findFirst({
         where: {
           senderId: seenderId,
