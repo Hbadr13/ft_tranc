@@ -88,7 +88,7 @@ export default function ChannelsConversationList({ msg2, users, currentUser, set
       <div className='overflow-y-scrdoll scrolldbar-hide bfg-blue-500 h-[430px] w-full'>
         {
           click == 'create' &&
-          <div className=" bg-white max-w-96 h-auto flex flex-col items-center justify-center rounded-xl border border-sky-200">
+          <div className=" bg-white max-w-96 h-auto  dark:bg-sky-400 flex-col items-center justify-center rounded-xl border border-sky-200">
             <div className="bg-sgky-400 w-full h-20 flex justify-cenjter items-cejnter">
               <div className='flex justify-start w-full items-center ml-8  text-black'>
                 <h1 className=' text-shadow-sm'>New Channel</h1></div>
