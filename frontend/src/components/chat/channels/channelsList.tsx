@@ -69,7 +69,7 @@ export default function ChannelsConversationList({ msg2, users, currentUser, set
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path d="M19 11H13V5C13 4.73478 12.8946 4.48043 12.7071 4.29289C12.5196 4.10536 12.2652 4 12 4C11.7348 4 11.4804 4.10536 11.2929 4.29289C11.1054 4.48043 11 4.73478 11 5V11H5C4.73478 11 4.48043 11.1054 4.29289 11.2929C4.10536 11.4804 4 11.7348 4 12C4 12.2652 4.10536 12.5196 4.29289 12.7071C4.48043 12.8946 4.73478 13 5 13H11V19C11 19.2652 11.1054 19.5196 11.2929 19.7071C11.4804 19.8946 11.7348 20 12 20C12.2652 20 12.5196 19.8946 12.7071 19.7071C12.8946 19.5196 13 19.2652 13 19V13H19C19.2652 13 19.5196 12.8946 19.7071 12.7071C19.8946 12.5196 20 12.2652 20 12C20 11.7348 19.8946 11.4804 19.7071 11.2929C19.5196 11.1054 19.2652 11 19 11Z" fill="white" />
             </svg>
-            {/* <h1 className="sm:hidden md:hidden lg:text-lg">Create New Channel</h1> */}
+            <h1 className=" hidden">Create New Channel</h1>
           </div>
         </button>
       }
@@ -80,7 +80,7 @@ export default function ChannelsConversationList({ msg2, users, currentUser, set
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none">
               <path d="M8.46002 8.28978C8.27172 8.09617 8.01422 7.98529 7.74416 7.98154C7.47411 7.97779 7.21363 8.08147 7.02002 8.26978C6.82641 8.45808 6.71554 8.71558 6.71179 8.98564C6.70804 9.25569 6.81172 9.51617 7.00002 9.70978L9.34002 11.9998L7.00002 14.2898C6.90629 14.3827 6.8319 14.4933 6.78113 14.6152C6.73036 14.7371 6.70422 14.8678 6.70422 14.9998C6.70422 15.1318 6.73036 15.2625 6.78113 15.3844C6.8319 15.5062 6.90629 15.6168 7.00002 15.7098C7.09298 15.8035 7.20359 15.8779 7.32545 15.9287C7.4473 15.9794 7.57801 16.0056 7.71002 16.0056C7.84203 16.0056 7.97274 15.9794 8.0946 15.9287C8.21646 15.8779 8.32706 15.8035 8.42002 15.7098L11.42 12.7098C11.5138 12.6168 11.5881 12.5062 11.6389 12.3844C11.6897 12.2625 11.7158 12.1318 11.7158 11.9998C11.7158 11.8678 11.6897 11.7371 11.6389 11.6152C11.5881 11.4933 11.5138 11.3827 11.42 11.2898L8.46002 8.28978ZM16.96 11.2898L13.96 8.28978C13.7717 8.10147 13.5163 7.99569 13.25 7.99569C12.9837 7.99569 12.7283 8.10147 12.54 8.28978C12.3517 8.47808 12.2459 8.73348 12.2459 8.99978C12.2459 9.26608 12.3517 9.52147 12.54 9.70978L14.84 11.9998L12.54 14.2898C12.4463 14.3827 12.3719 14.4933 12.3211 14.6152C12.2704 14.7371 12.2442 14.8678 12.2442 14.9998C12.2442 15.1318 12.2704 15.2625 12.3211 15.3844C12.3719 15.5062 12.4463 15.6168 12.54 15.7098C12.633 15.8035 12.7436 15.8779 12.8654 15.9287C12.9873 15.9794 13.118 16.0056 13.25 16.0056C13.382 16.0056 13.5127 15.9794 13.6346 15.9287C13.7565 15.8779 13.8671 15.8035 13.96 15.7098L16.96 12.7098C17.0564 12.6195 17.134 12.511 17.1882 12.3906C17.2424 12.2701 17.2723 12.1401 17.276 12.0081C17.2797 11.8761 17.2572 11.7446 17.2099 11.6213C17.1625 11.498 17.0912 11.3854 17 11.2898H16.96Z" fill="white" />
             </svg>
-            {/* <h1 className="">Start New Channel</h1> */}
+            <h1 className=" hidden">Start New Channel</h1>
 
           </div>
         </button>}
@@ -141,7 +141,7 @@ export default function ChannelsConversationList({ msg2, users, currentUser, set
                   <button key={index} onClick={() => joinchanle(item)} className="h-16 mt-3 w-full p-2 bg-white justify-between items-center inline-flex  hover:shadow-lg   border border-sky-500  hover:bg-sky-100 duration-1000  transition shahydow-md rounded-[20px] ">
                     <div className="h-auto  justify-start items-center gap-2.5 flex">
                       <div className={`flex justify-center items-center w-12 h-12 rounded-full border-2 border-sky-500 ${item.type == 'public' && ' bg-amber-300'}  ${item.type == 'private' && 'bg-sky-500'}  ${item.type == 'protected' && ' bg-red-500'}`} >
-                        <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{item.name[0].toUpperCase()}</h1>
+                        <h1 className='flex items-center justify-center text-[30px] font-bold text-white'>{item.name[0].toUpperCase()}</h1>
                       </div>                      <div className="   flex flex-col justify-center items-start space-y-1 ">
                         <h4 className="  hidden md:flex text-lg md:text-md">{item.name}</h4>
                       </div>
@@ -201,7 +201,7 @@ export default function ChannelsConversationList({ msg2, users, currentUser, set
 
                     <div className="h-auto w-full  justify-start items-center gap-2.5 flex">
                       <div className={`flex justify-center items-center w-14 h-14 rounded-full ${item.type == 'public' && ' bg-amber-300'}  ${item.type == 'private' && 'bg-sky-500'}  ${item.type == 'protected' && ' bg-red-500'}`} >
-                        <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{item.name[0].toUpperCase()}</h1>
+                        <h1 className='flex items-center justify-center text-[30px] font-bold text-white'>{item.name[0].toUpperCase()}</h1>
                       </div>                      <div className="   flex flex-col justify-center items-start space-y-1 ">
 
                         <h4 className={`${Room.id ? 'hidden md:flex' : null} text-lg md:text-md`}>{item.name}</h4>

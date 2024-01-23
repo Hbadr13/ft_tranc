@@ -14,12 +14,12 @@ export default function ConversationList({ msg2, amis, setReceiver, setButton, c
             <div className=" bg-bdlack self-stretch  h-20 flex  justify-center items-center gap-3">
                 <button onClick={() => { setClick(true); setButton(false) }} className={` w-40 h-10 ${click ? ' bg-blue-400 text-white' : 'bg-white text-blue-500'} rounded-full justify-center items-center inline-flex duration-1000 hover:bg-blue-400 border-2  border-sky-400 `}>
                     <div className="justify-start items-center gap-2 flex">
-                        {/* <div className="">Direct</div> */}
+                        <div className=" ">Direct</div>
                     </div>
                 </button>
                 <button onClick={() => { setClick(false); setButton(true)}} className={`w-40  h-10 ${!click ? ' bg-blue-400 text-white' : 'bg-white text-blue-500'} rounded-full justify-center items-center inline-flex duration-1000 hover:bg-blue-400 border-2  border-sky-400`}>
                     <div className="justify-start  items-center gap-2 flex">
-                        {/* <div className="">Channels</div> */}
+                        <div className="">Channels</div>
                     </div>
                 </button>
             </div>

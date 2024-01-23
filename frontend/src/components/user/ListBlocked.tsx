@@ -6,11 +6,8 @@ import Rank from "./Rank";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
 import { useRouter } from "next/navigation";
 import { AppProps, userProps } from "@/interface/data";
-<<<<<<< HEAD
 import Image from 'next/image';
-=======
 import { Constant } from "@/constants/constant";
->>>>>>> hbadr
 
 
 

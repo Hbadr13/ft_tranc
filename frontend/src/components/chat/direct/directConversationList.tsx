@@ -9,13 +9,13 @@ export default function DirectConversationList({ msg2, setReceiver, users, amis,
     const [liststatus, setliststatus] = useState<number[]>([]);
     const [last_amis, setLastAmis] = useState<Array<userProps>>([])
 
-    const router = useRouter()
-
+    
     // const userData = { id: , createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, flag1: false, room: '', won: 0, lost: 0, level: 0 }
     const [currentUser1, setCurrentUser1] = useState<userProps>(currentUser);
     const [khadmi, setKhadmi] = useState<userProps>()
     const [conversationList, setConversationList] = useState<Array<listConversationDirect>>([])
-
+    
+    const router = useRouter()
     useEffect(() => {
         users.map((item) => {
             if (Number(router.query.user) == item.id)

@@ -123,15 +123,15 @@ export default function index({ users, amis }: AppProps) {
 
 
   return (
-    <div className="  flex w-full h-screen  justify-center items-center">
-      <div className="  flex  flex-col w-full max-w-[1500px] ">
+    <div className="  flex w-full h-screen justify-center items-center">
+      <div className="  flex  flex-col w-full max-w-[1800px] ">
         <div className={` bg-bldack flex-uwrap  ${joinchannel == true ? 'blur-sm' : null} min-w-full mt-6 min-h-screen flex flex-row justify-centder items-csenter dark:bg-black space-x-2 sm:space-x-6`}>
           <ConversationList msg2={msg2} amis={amis} setReceiver={setReceiver} Receiver={Receiver} setButton={setButton} currentUser={currentUser} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} Room={Room} setJoinRoom={setJoinRoom} />
           <Conversation setMsg2={setMsg2} users={users} setMyStatusInRoom={setMyStatusInRoom} chatSocket={chatSocket} Receiver={Receiver} button={button} Room={Room} currentUser={currentUser} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
           {button == false && Receiver.id != 0 &&
             <div className="md:hidaden sm:hidsden hidden  bg-gray-100 dark:bg-slate-800 p-2  mt-12  w-[20%] h-[820px]      lg:flex justify-start items-start   border-2  border-sky-400 rounded-xl">
               <div className="w-full h-[547.06px] flex-col justify-start items-center  bg-blwack  gasp-[26px] flex">
-                <Edit currentUser={currentUser} Receiver={Receiver} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
+                <Edit  users={users} currentUser={currentUser} Receiver={Receiver} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
               </div>
             </div>}
           {button == true && Room.id != 0 &&

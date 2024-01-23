@@ -1,8 +1,9 @@
 import { Constant } from '@/constants/constant'
-import { channelProps, participantsProps, userProps } from '@/interface/data'
+import { channelProps, participantsProps, userData, userProps } from '@/interface/data'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import AddPeople from './addPeople'
+import { useRouter } from 'next/router'
 
 export default function EditChannel({ users, setMyStatusInRoom, currentUser, Room }: { users: userProps[], setMyStatusInRoom: (value: participantsProps) => void, currentUser: userProps, Room: channelProps }) {
     const [click, setClick] = useState<number>(0)
@@ -16,7 +17,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
     const [leavingRoom, setLeavingRoom] = useState(false);
     const [select, setSelect] = useState(false)
     const [people, setPeople] = useState<number[]>([])
-
+ 
     useEffect(() => {
         if (Room.id) {
             (
@@ -233,7 +234,7 @@ export default function EditChannel({ users, setMyStatusInRoom, currentUser, Roo
                         {participants.map((item, index) => (
                             (item.isAdmin) ? (
                                 <div key={index} className=" bg-white   space-x-3 h-14 w-full items-center inline-flex border rounded-lg space-y-2">
-                                    <div className=" w-full  h-full justify-start items-center gap-2.5 flex">
+                                    <div className=" w-full  bg-blue-400 h-full justify-start items-center gap-2.5 flex rounded-xl">
                                         <img className="w-10 h-10  rounded-full" src={item.foto_user} />
                                         <div className="   flex  h-full  flex-row space-x-2 w-full bg-bldue-600 rounded-lg justify-cente items-center space-y-1 ">
                                             <h4 className=" text-lg">{item.username}</h4>

@@ -274,7 +274,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                         <div className=' w-full flex justify-center items-center'>
 
                             <div className=' flex w-[93%] bg-white h-16 rounded-xl border-2 justify-start items-center  border-sky-400 wml-3 mt-2 '>
-                                {button == false && <button className="sm:ml-4 w-full flex hover:scale-105 ps-1 space-x-2 h-full  duration-300 justify-center items-center" >
+                                {button == false && <button  className="sm:ml-4 w-full flex hover:scale-105 ps-1 space-x-2 h-full  duration-300 justify-center items-center" >
                                     {!status_tow_user && <div className=' mt-1  sm:mt-0 flex h-full flex-col  w-auto  bg-blacsk justify-center items-end  sm:items-center  -space-y-4 sm:space-y-0'>
                                         <div className="w-3 h-3 z-10 flex sm:hidden   bg-green-600 rounded-[20px] " />
                                         <img className="w-14 h-14 rounded-full" src={resevo?.foto_user} />
@@ -316,7 +316,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
 
                                                 {button == false &&
                                                     <div className=" bg-bflack w-full h-full flex-col justify-start items-center  bg-blwack  gasp-[26px] flex">
-                                                        <Edit currentUser={currentUser} Receiver={Receiver} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
+                                                        <Edit users={users} currentUser={currentUser} Receiver={Receiver} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
                                                     </div>
                                                 }
                                                 {button == true &&
@@ -371,7 +371,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                                                         </div>
                                                         {button == false &&
                                                             <>
-                                                                {!status_tow_user && <img className="w-12 h-12  -mt-10  rounded-full" src={Receiver.foto_user} />}
+                                                                {!status_tow_user && <img className="w-12 h-12  -mt-10  rounded-full" src={resevo.foto_user} />}
                                                                 {status_tow_user && <img className="w-12 h-12  -mt-10  rounded-full" src="https://cdn3.iconfinder.com/data/icons/shape-icons/128/icon48pt_different_account-512.png" />}
                                                             </>
                                                         }
@@ -392,7 +392,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                         <div className={` w-full  break-all   h-12 z-h10 mt-2  ${flag == true ? 'blur-sm  lg:blur-0' : null} lg:${flag == true ? null : null} flex flex-row px-3 bg-blasck`}>
 
                             {
-                                (status.status == "accepted" || !status) &&
+                                (status.status == "accepted"  || !status) &&
                                 <>
                                     <input
 
