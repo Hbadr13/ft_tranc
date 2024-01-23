@@ -89,7 +89,6 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { BookmarkModule } from './bookmark/bookmark.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { FriendsModule } from './friends/friends.module';
@@ -115,7 +114,7 @@ import { RecentModule } from './search/recent.module';
         }),
         ConfigModule.forRoot({
             isGlobal: true
-        }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule, GameModule, ChatModule, OnlineModule, RecentModule],
+        }), AuthModule, UserModule, PrismaModule, FriendsModule, GameModule, ChatModule, OnlineModule, RecentModule],
     providers: [],
 
 })

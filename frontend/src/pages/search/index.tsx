@@ -40,7 +40,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
         (
             async () => {
                 try {
-                    const respons = await fetch(`${Constant.API_URL}/search/recent`)
+                    const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`)
                     const content = await respons.json()
                     setRecentSearches(Array.from(content))
                 } catch (error) {
@@ -108,7 +108,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     }, [router])
     const handelClickProfile = async (id: Number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/search/recent`, {
+            const response = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -124,7 +124,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     }
     const handelClearSearch = async () => {
         try {
-            const response = await fetch(`${Constant.API_URL}/search/recent`, {
+            const response = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -135,11 +135,11 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     }
     const handelClearOneFromSearch = async (id: Number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/search/recent/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
-            const respons = await fetch(`${Constant.API_URL}/search/recent`)
+            const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`)
             const content = await respons.json()
             setRecentSearches(Array.from(content))
 
@@ -308,6 +308,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                             </div>
                         ))}
                 </div>
+
 
             </menu>
             <div className={`${filterUser.length == 0 ? ' flex ' : ' hidden '} w-full 300   justify-center `}>

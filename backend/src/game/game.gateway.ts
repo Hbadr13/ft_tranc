@@ -32,7 +32,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private gameService: GameService,
     private gameHistory: HistoryService,
     private achievementService: AchievementService
-
   ) { }
   @WebSocketServer()
   server: Server;
@@ -50,6 +49,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const user = await this.gameService.checkuserIfAuth(auth_cookie)
       const userId = user.id
       client.handshake.query.userId = String(user.id);
+      console.log('----->game-->')
       this.IdOfPlayer.set(client, userId);
     } catch (error) {
       client.disconnect();
@@ -84,7 +84,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       const opponentid = game.player1_Id == userid ? game.player2_Id : game.player1_Id
       if (game.player1.status == '' && game.player2.status == '' && game.status != 'Pause') {
-         game.player1_Id = -1
+        game.player1_Id = -1
         game.player2_Id = -1
         await this.gameHistory.updateUsershistory(userid, {
           opponentId: opponentid,
@@ -118,6 +118,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (room == '' || this.rooms.get(room) == 2)
       return
     try {
+      console.log()
       this.players.forEach((value, key) => {
         if (value.user_id == userId)
           throw new Error('ExitLoopException');

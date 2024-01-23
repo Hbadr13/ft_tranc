@@ -8,23 +8,43 @@ export class HistoryController {
     constructor(private readonly updateService: HistoryService) { }
     @Post()
     async updateUsershistory(@Req() req: Request, @Body() body: historyDto) {
-        return this.updateService.updateUsershistory(Number(req['id']), body)
+        try {
+            return this.updateService.updateUsershistory(Number(req['id']), body)
+        } catch (error) {
+
+        }
     }
 
     @Get()
     async getUsershistory(@Req() req: Request,) {
-        return await this.updateService.getUsershistory(Number(req['id']))
+        try {
+            return await this.updateService.getUsershistory(Number(req['id']))
+        } catch (error) {
+
+        }
     }
     @Get(':customid')
     async getUsersCustomhistory(@Req() req: Request, @Param('customid') customid: string) {
-        return this.updateService.getUsersCustomhistory(Number(req['id']), Number(customid))
+        try {
+            return this.updateService.getUsersCustomhistory(Number(req['id']), Number(customid))
+        } catch (error) {
+
+        }
     }
     @Delete()
     async clearUsershistory(@Req() req: Request,) {
-        return this.updateService.clearUsershistory(Number(req['id']))
+        try {
+            return this.updateService.clearUsershistory(Number(req['id']))
+        } catch (error) {
+
+        }
     }
     @Delete(':customid')
     async clearUsersCustomhistory(@Req() req: Request, @Param('customid') customid: string) {
-        return this.updateService.clearUsersCustomhistory(Number(req['id']), Number(customid))
+        try {
+            return this.updateService.clearUsersCustomhistory(Number(req['id']), Number(customid))
+        } catch (error) {
+
+        }
     }
 }

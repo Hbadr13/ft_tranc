@@ -184,7 +184,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
     return (
         <>
             <div className={`navbar fixed top-0 z-40  bg-CusColor_light flex justify-between items-center py-1 pl-10`}>
-                <div className=" left-6 w-full sm:w-[45%] xl:w-[35%]">
+                <div className=" left-6 w-full sm:w-[45%] xl:w-[35%] max-w-[500px]">
                     <div className="relative ">
                         <button title='iconssearch' onClick={handelButtonSearch} className="absolute  z-50 inset-y-0 -left-8  md:left-0 flex items-center pl-3 md:pointer-events-none">
                             <svg className=" w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 20 20">
