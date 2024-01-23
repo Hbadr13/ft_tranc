@@ -1,13 +1,10 @@
-import React, { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import UserInfo from '../user/UserInfo'
 import { AppProps, userProps } from '@/interface/data'
 import { useRouter } from 'next/router'
-import { Transition } from '@headlessui/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { handelSendRequest } from '@/handeler/handelbutttons'
-
-import { fetchData } from '@/hooks/appContexts';
 import { usefetchDataContext } from '@/hooks/usefetchDataContext'
 import { handelChallenge } from '../game/listOfFriends'
 import { Constant } from '@/constants/constant'
@@ -25,20 +22,18 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
     const [filterUser, setfilterUser] = useState<Array<userProps>>([])
     const [newAmis, setAmis] = useState<Array<userProps>>(amis)
     const [selectUser, setselectUser] = useState<Number>(-1);
-    const { refreshData, setRefreshData } = usefetchDataContext()
-
 
 
     const toggleTheme = () => {
         document.body.classList.toggle('dark');
     };
     const handelOnSubmit = () => {
-        // setRefreshData((pr) => !pr)
         const search = query.trim().replace(/\s+/g, ' ')
         if (query.replace(/\s+/g, '')) {
             router.push(`/search?query=${search}`)
         }
     }
+
     const handelOnKeyDown = (e: any) => {
         if (e.key == 'Enter') {
             const search = query.trim().replace(/\s+/g, ' ')
@@ -64,12 +59,12 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
 
             }
         )();
-    }, [refreshData, amis]);
+    }, [amis]);
     const handelClickInInput = async () => {
         setclickInInput((pr) => !pr)
         setclick(true)
         try {
-            const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`, {
+            const respons = await fetch(`${Constant.API_URL}/search/recent`, {
                 credentials: 'include'
             })
             const content = await respons.json()
@@ -117,7 +112,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
 
     const handelClickProfile = async (id: Number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`, {
+            const response = await fetch(`${Constant.API_URL}/search/recent`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -132,11 +127,11 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
     }
     const handelClearOneFromSearch = async (id: Number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/search/recent/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
-            const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`,
+            const respons = await fetch(`${Constant.API_URL}/search/recent`,
                 {
                     credentials: 'include'
                 })
@@ -179,7 +174,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
                 }
             }
         )();
-    }, [currentUser, query, Ssend, refreshData]);
+    }, [currentUser, query, Ssend,]);
     const handelButtonSearch = () => {
         const search = document.querySelector('.Search')
         search?.classList.toggle('display')
@@ -317,7 +312,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
                                                             )
                                                         }
 
-                                                        <button onClick={()=>router.push(`/chat?user=${user.id}`)} className=' bg-blue-300 p-2 rounded-md  hover:ring-offset-2 hover:ring-2 duration-300'>
+                                                        <button onClick={() => router.push(`/chat?user=${user.id}`)} className=' bg-blue-300 p-2 rounded-md  hover:ring-offset-2 hover:ring-2 duration-300'>
                                                             <Image src='/icons-chat-black.png' className='' alt='search' width={20} height={20}></Image>
                                                         </button>
                                                     </div>
@@ -332,7 +327,8 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
                     </div>
                 </div>
                 <div className="flex w-[55%] sm:w-[20%] relative justify-around items-center">
-
+                    {/* 
+                    <=== Dark Mode ===>
                     <div className="">
                         <button className=' block dark:hidden  rounded-md' onClick={toggleTheme}>
                             <Image src='/night-mode.png' className='' alt='home' width={27} height={27}></Image>
@@ -342,17 +338,17 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
                             <Image src='/sun.png' className='' alt='home' width={27} height={27}></Image>
 
                         </button>
-                    </div>
-                    <button className=" relative ">
+                    </div> */}
+                    {/* <button className=" relative ">
                         <Image src='/notification-2.png' className='' alt='home' width={27} height={27}></Image>
                         <div className=" border-2 border-CusColor_light w-5 h-5 bg-CusColor_danger  absolute -top-[3px] -right-1 rounded-full flex justify-center items-center">
-                            {/* <h4 className=" absolute text-[13px]  text-white -top-[2px]"> */}
                             <h4 className="text-[13px]  text-white ">
                                 +9
                             </h4>
                         </div>
-                    </button>
-                    <div className="">
+                    </button> */}
+                    <div className="flex items-center space-x-3 text-xl capitalize">
+                        <div>{currentUser.username}</div>
                         <UserInfo socket={socket} />
                     </div>
                 </div>
@@ -360,5 +356,4 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
         </>
     )
 }
-// 
 export default Navbar

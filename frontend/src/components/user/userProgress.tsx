@@ -2,7 +2,6 @@ import React from 'react'
 import Image from 'next/image'
 import { userProps } from '@/interface/data'
 const Stape = ({ currentUser, src, style, level, prevLevel }: { prevLevel: number, currentUser: userProps, src: string, style: string, level: number }) => {
-    {/* <div className={`${currentUser.level > level ? ' bg-[#FFD600]' : 'bg-[#E5E5E5]'} w-[100px] h-[100px] lg:w-[120px] lg:h-[120px] relative  rounded-full  flex justify-center items-center`}> */ }
     return (
         <div className={style + ` relative  w-full h-[30%]  rounded-xl flex justify-center items-center   `}>
             <div className={` w-[100px] h-[100px] lg:w-[120px] lg:h-[120px] relative  rounded-full  flex justify-center items-center`}>
@@ -20,7 +19,6 @@ const Stape = ({ currentUser, src, style, level, prevLevel }: { prevLevel: numbe
                             a 15.9155 15.9155 0 0 1 0 -31.831"
                     />
                     <path className="circle  stroke-[#F9D809]"
-                        // stroke-dasharray={`88, 100`}
                         strokeDasharray={`${(currentUser.level - prevLevel) < 0 ? 0 : (((currentUser.level - prevLevel) * 100) / (level - prevLevel))}, 100`}
                         d="M18 2.0845
                             a 15.9155 15.9155 0 0 1 0 31.831

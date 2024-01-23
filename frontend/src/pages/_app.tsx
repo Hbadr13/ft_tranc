@@ -205,7 +205,7 @@ export default function App({ Component, pageProps }: AppProps) {
     sethideRequest((prev) => !prev)
     setmyIdFromOpponent(-2)
     // try {
-    //   const responseDelete = await fetch(`${Constant.API_URL}/game/room/${currentUser.id}`, {
+    //   const responseDelete = await fetch(`${Constant.API_URL}/game/room`, {
     //     method: 'DELETE',
     //     credentials: 'include',
     //   });
@@ -220,7 +220,7 @@ export default function App({ Component, pageProps }: AppProps) {
     socket?.emit('deleteFromsearchForOpponent');
     setmyIdFromOpponent(-2)
     sethideRequest((prev) => !prev)
-    const response = await fetch(`${Constant.API_URL}/game/room/${currentUser.id}`, {
+    const response = await fetch(`${Constant.API_URL}/game/room`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

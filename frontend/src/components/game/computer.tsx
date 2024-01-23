@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState, RefObject } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { Ball, Canvas, Player } from "./class";
 import Image from "next/image";

@@ -28,8 +28,6 @@ export class UserController {
     @Param('userName') userName: string,
     @Param('userId') userId,
   ) {
-    // console.log('userId--->', userId);
-    // console.log('userName--->', userName);
     return this.userService.findOneUsers(Number(userId), userName);
   }
   @Post('update_info/:userId')
@@ -47,7 +45,6 @@ export class UserController {
   }
   @Post('enable-2fa/:userId')
   async enableTwoFactor(@Param('userId') userId: string) {
-    // Assuming user is authenticated
     const secret = await this.userService.enableTwoFactor(Number(userId));
 
     return {

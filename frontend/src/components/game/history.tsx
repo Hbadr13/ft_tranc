@@ -16,7 +16,7 @@ const History = ({ currentUser, users }: { users: Array<userProps>, currentUser:
             async () => {
                 setMatchs([])
                 try {
-                    const response = await fetch(`${Constant.API_URL}/game/history/${currentUser.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/game/history`, {
                         credentials: 'include',
                     });
                     if (response.status == 200) {
@@ -44,14 +44,12 @@ const History = ({ currentUser, users }: { users: Array<userProps>, currentUser:
         )();
     }, [users])
     const handelClearHistorique = async () => {
-        const response = await fetch(`${Constant.API_URL}/game/history/${currentUser.id}`, {
+        const response = await fetch(`${Constant.API_URL}/game/history`, {
             method: 'DELETE',
             credentials: 'include',
         });
         if (response.status == 200) {
             setMatchs([])
-            // const content = await response.json()
-            // setMatchs(content)
         }
         try {
         } catch (error) {
@@ -103,14 +101,6 @@ const History = ({ currentUser, users }: { users: Array<userProps>, currentUser:
                                         </Image>
                                     </div>
                                 </div>
-                                {/* <div className=" w-[40%] h-full flex justify-between items-center bg-red-300">
-                                    <h1 className='pl-10  uppercase text-white font-bold text-sm lg:text-xl '>{currentUser.username}</h1>
-                                    <div className=" relative h-full w-12">
-                                        <Image className='w-12 rounded-md'
-                                            src={currentUser.foto_user} fill style={{ objectFit: "cover" }} alt={'player Image'}>
-                                        </Image>
-                                    </div>
-                                </div> */}
                             </div>
                         </div>
 

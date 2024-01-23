@@ -26,8 +26,6 @@ const Index = ({ socket }: AppProps) => {
                             alt="My Image"
                             fill
                             style={{ objectFit: "cover" }}
-                            // height={2000}
-                            // width={2000}
                             sizes='[]'
                             priority={true}
                         />

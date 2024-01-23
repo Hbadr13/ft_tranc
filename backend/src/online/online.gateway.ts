@@ -51,7 +51,7 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(client: Socket) {
     // const auth_cookie = parse(client.handshake.headers.cookie).jwt;
     const auth_cookie = client.handshake.headers.cookie;
-    console.log('auth_cookie', auth_cookie)
+    // console.log('auth_cookie', auth_cookie)
     const userId = Number(client.handshake.query.userId);
     console.log('------>connnnect', userId)
     if (userId < 1)

@@ -222,21 +222,19 @@ const Settings = ({ opponent, setopponent, currentUser, setCurrentUser, setgameI
         (
             async () => {
                 try {
-
                     if (selectPlayer != 'computer') {
                         const response = await fetch(`${Constant.API_URL}/auth/user`, {
                             credentials: 'include',
                         });
                         if (response.ok) {
                             const content = await response.json()
-                            console.log('--------->status:', content)
                             if (content.gameStatus != 'toMatch') {
                                 if (content.gameStatus || !content.opponentId) {
                                     router.push('/game')
                                     return
                                 }
                             }
-                            const response_ = await fetch(`${Constant.API_URL}/game/room/play/${content.id}`, {
+                            const response_ = await fetch(`${Constant.API_URL}/game/room/play`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',

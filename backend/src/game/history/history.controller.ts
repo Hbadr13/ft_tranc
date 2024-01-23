@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Req, Param, Post } from '@nestjs/common';
 
 import { historyDto } from '../dto/game'
 import { HistoryService } from './history.service';
@@ -6,28 +6,25 @@ import { HistoryService } from './history.service';
 export class HistoryController {
 
     constructor(private readonly updateService: HistoryService) { }
-    @Post(':id')
-    async updateUsershistory(@Param('id') userid: string, @Body() body: historyDto) {
-        return this.updateService.updateUsershistory(Number(userid), body)
+    @Post()
+    async updateUsershistory(@Req() req: Request, @Body() body: historyDto) {
+        return this.updateService.updateUsershistory(Number(req['id']), body)
     }
 
-    @Get(':id')
-    async getUsershistory(@Param('id') userid: string,) {
-        // console.log('------------>history', userid)
-        const cont = await this.updateService.getUsershistory(Number(userid))
-        // console.log(cont)
-        return cont
+    @Get()
+    async getUsershistory(@Req() req: Request,) {
+        return await this.updateService.getUsershistory(Number(req['id']))
     }
-    @Get(':id/:customid')
-    async getUsersCustomhistory(@Param('id') userid: string, @Param('customid') customid: string) {
-        return this.updateService.getUsersCustomhistory(Number(userid), Number(customid))
+    @Get(':customid')
+    async getUsersCustomhistory(@Req() req: Request, @Param('customid') customid: string) {
+        return this.updateService.getUsersCustomhistory(Number(req['id']), Number(customid))
     }
-    @Delete(':id')
-    async clearUsershistory(@Param('id') userid: string,) {
-        return this.updateService.clearUsershistory(Number(userid))
+    @Delete()
+    async clearUsershistory(@Req() req: Request,) {
+        return this.updateService.clearUsershistory(Number(req['id']))
     }
-    @Delete(':id/:customid')
-    async clearUsersCustomhistory(@Param('id') userid: string, @Param('customid') customid: string) {
-        return this.updateService.clearUsersCustomhistory(Number(userid), Number(customid))
+    @Delete(':customid')
+    async clearUsersCustomhistory(@Req() req: Request, @Param('customid') customid: string) {
+        return this.updateService.clearUsersCustomhistory(Number(req['id']), Number(customid))
     }
 }

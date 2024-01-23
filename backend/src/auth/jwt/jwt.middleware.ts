@@ -10,8 +10,8 @@ export class JwtMiddleware implements NestMiddleware {
         try {
             const { url, method } = req;
             if (!url.startsWith('/auth/')) {
-                const cookie = req.cookies['jwt'];
-                
+                console.log('cc---->', req.cookies['jwt'])
+                const cookie = req.cookies['jwt']; 
 
                 if (!cookie) {
                     throw new UnauthorizedException('JWT token is missing.');
@@ -22,7 +22,7 @@ export class JwtMiddleware implements NestMiddleware {
                 if (!condition) {
                     throw new UnauthorizedException('JWT token is invalid.');
                 }
-                req["id"]= condition['id']
+                req["id"] = condition['id']
             }
             // If needed, you can attach the user to the request
             // const user = await this.authService.findOne({ id: condition['id'] });

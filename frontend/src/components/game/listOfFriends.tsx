@@ -1,12 +1,11 @@
-import { AppProps, AppPropsNow, userData, userProps } from '@/interface/data'
+import {AppPropsNow, userData, userProps } from '@/interface/data'
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router';
 import { v4 as uuid } from 'uuid';
 import { fetchAllAmis, fetchAllUsers, fetchCurrentUser, getCurrentUser } from '@/hooks/userHooks';
 import { Constant } from '@/constants/constant';
-import { tree } from 'next/dist/build/templates/app-page';
-import { number } from 'zod';
+
 
 interface ExtendedAppProps extends AppPropsNow {
 }
@@ -44,7 +43,6 @@ export function getTheDateAndTheTime(dateString: string) {
 
     return (formattedDate)
 }
-const dateString = "2023-10-28T09:04:35.054Z";
 
 
 export const handelChallenge = async ({ oppId, socket, currentUser, selectUser, setselectUser, router, setclick }: any) => {
@@ -62,7 +60,7 @@ export const handelChallenge = async ({ oppId, socket, currentUser, selectUser, 
         const content = await response.json();
         if (!content.gameStatus) {
             const room: string = uuid();
-            const response = await fetch(`${Constant.API_URL}/game/room/${currentUser.id}`, {
+            const response = await fetch(`${Constant.API_URL}/game/room`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -111,7 +109,6 @@ export const getTheGrad = (level: number) => {
         return '/game/grad/grad-3.svg'
     else if (level < 10)
         return '/game/grad/grad-2.svg'
-    // else if (level < 3)
     return '/game/grad/grad-1.svg'
 }
 const ListOfFriends = ({ onlineUsersss, socket }: ExtendedAppProps) => {
@@ -134,7 +131,6 @@ const ListOfFriends = ({ onlineUsersss, socket }: ExtendedAppProps) => {
         else (
             setGame(true)
         )
-        // console.log(currentUser)
     }, [currentUser])
     useEffect(() => {
         setNoutFount(amis.length == 0)
@@ -144,7 +140,7 @@ const ListOfFriends = ({ onlineUsersss, socket }: ExtendedAppProps) => {
         setMatchs([])
         sethistoriqueHidden((prev) => prev == -1 ? Number(e.target.value) : -1)
         try {
-            const response = await fetch(`${Constant.API_URL}/game/history/${currentUser.id}/${e.target.value}`, {
+            const response = await fetch(`${Constant.API_URL}/game/history/${e.target.value}`, {
                 credentials: 'include',
             });
             if (response.status == 200) {
@@ -158,14 +154,12 @@ const ListOfFriends = ({ onlineUsersss, socket }: ExtendedAppProps) => {
     }
 
     const handelClearHistorique = async (userid: number) => {
-        const response = await fetch(`${Constant.API_URL}/game/history/${currentUser.id}/${userid}`, {
+        const response = await fetch(`${Constant.API_URL}/game/history/${userid}`, {
             method: 'DELETE',
             credentials: 'include',
         });
         if (response.status == 200) {
             setMatchs([])
-            // const content = await response.json()
-            // setMatchs(content)
         }
         try {
         } catch (error) {
@@ -319,14 +313,6 @@ const ListOfFriends = ({ onlineUsersss, socket }: ExtendedAppProps) => {
                                         <div className=" w-[50%] text-center  text-xl font-semibold">
                                             <h1>No user found</h1>
                                         </div>
-                                        {/* <div className=' w-[50%]   text-center'>
-                                            <h2> Sorry, We couldn't find any user </h2>
-                                            <h2 className={`${currentPath == '/search' ? 'hidden' : 'block'}`}>with the name "{query}" .Please try again.</h2>
-                                        </div> */}
-                                        {/* <div className="space-x-3">
-                                            <button onClick={handelClearSearch} className='w-[120px] border-2 border-slate-300 py-2  rounded-md  font-bold hover:bg-slate-300 duration-300 '>Clear search</button>
-                                            <button onClick={handelGetBack} className='w-[120px] border-2  bg-blue-300 py-2  text-blue-800 rounded-md  font-bold hover:bg-blue-400 duration-300'>Get back</button>
-                                        </div> */}
                                     </footer>
                                 </div>
                             )

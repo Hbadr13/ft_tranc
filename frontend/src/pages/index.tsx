@@ -1,11 +1,5 @@
-
-
-import Image from 'next/image'
-
-
 import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks';
-import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
+import { useState } from 'react';
 import { AppProps, userData, userProps } from '@/interface/data';
 import History from '@/components/game/history';
 import Leaderboard from '@/components/game/leaderboard';
@@ -96,5 +90,3 @@ function Index({ onlineUsersss }: AppProps) {
 }
 
 export default Index;
-
-

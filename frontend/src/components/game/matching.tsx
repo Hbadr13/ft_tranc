@@ -42,7 +42,7 @@ const Matching = ({ socket }: { socket: Socket }) => {
                     if (currentUser.id)
                         setGame(true)
                     if (currentUser.id) {
-                        const response_ = await fetch(`${Constant.API_URL}/game/room/play/${currentUser.id}`, {
+                        const response_ = await fetch(`${Constant.API_URL}/game/room/play`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ const Matching = ({ socket }: { socket: Socket }) => {
                 if (content.isOnline == false) {
                     const room: string = uuid();
                     socket?.emit('userjointToGame', { userId: currentUser.id })
-                    const response_ = await fetch(`${Constant.API_URL}/game/room/play/${currentUser.id}`, {
+                    const response_ = await fetch(`${Constant.API_URL}/game/room/play`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ const Matching = ({ socket }: { socket: Socket }) => {
                         }),
                         credentials: 'include',
                     });
-                    const responsePost = await fetch(`${Constant.API_URL}/game/room/${currentUser.id}`, {
+                    const responsePost = await fetch(`${Constant.API_URL}/game/room`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ const Matching = ({ socket }: { socket: Socket }) => {
                         }),
                         credentials: 'include',
                     });
-                    const responsePost2 = await fetch(`${Constant.API_URL}/game/room/${opponent?.id}`, {
+                    const responsePost2 = await fetch(`${Constant.API_URL}/game/room/`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

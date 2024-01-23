@@ -1,59 +1,48 @@
-import { Body, Controller, Delete, Get, Param, Post, Request } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Req, Request } from "@nestjs/common";
 import { RecentService } from "./recent.service";
 import { recentDto } from "./dto/recent";
 
 @Controller('search/')
 export class RecentController {
     constructor(private readonly recentservice: RecentService) { }
-    @Get()
-    async gettt() {
-        return {
-            hello: 1234
-        }
-    }
-    @Get('/recent/:userid')
-    async getRecentSearch(@Param('userid') userid: string, @Request() req:any) {
+    @Get('/recent')
+    async getRecentSearch(@Req() req: Request) {
         try {
-            console.log('======>>>>')
-            console.log("--------------------------->>",req.user, req["user"]);
-            return await this.recentservice.getRecentSearch(userid)
+            return await this.recentservice.getRecentSearch(req['id'])
         } catch (error) {
         }
     }
-    @Post('/recent/:userid')
-    async addUserToRecentSearch(@Body() body: recentDto, @Param('userid') userid: string) {
+    @Post('/recent')
+    async addUserToRecentSearch(@Body() body: recentDto, @Req() req: Request) {
         try {
-
-            return await this.recentservice.addUserToRecentSearch(body, userid)
+            return await this.recentservice.addUserToRecentSearch(body, req['id'])
         } catch (error) {
 
         }
     }
-    @Delete('/recent/:userid')
-    async deleteRecentSearch(@Param('userid') userid: string) {
-        console.log('userid0:', userid)
+    @Delete('/recent')
+    async deleteRecentSearch(@Req() req: Request) {
+        console.log('userid0:', req['id'])
         try {
-            await this.recentservice.deleteRecentSearch(userid)
+            await this.recentservice.deleteRecentSearch(req['id'])
         } catch (error) {
-
 
         }
     }
     // @Delete('/recent/:userid/:oneid')
-    // async deleteOneFromRecentSearch(@Param('userid') userid: string) {
+    // async deleteOneFromRecentSearch(@Req() req: Request) {
     //     console.log('userid:', userid)
     //     try {
     //         await this.recentservice.deleteRecentSearch(userid)
     //     } catch (error) {
-
     //     }
     // }
-    @Delete('/recent/:userid/:oneid')
-    async deleteOneFromRecentSearch(@Param('userid') userid: string, @Param('oneid') oneid: string) {
+    @Delete('/recent/:oneid')
+    async deleteOneFromRecentSearch(@Req() req: Request, @Param('oneid') oneid: string) {
         console.log('oneid', oneid)
-        console.log('userid', userid)
+        console.log('userid', req['id'])
         try {
-            await this.recentservice.deleteOneFromRecentSearch(userid, oneid)
+            await this.recentservice.deleteOneFromRecentSearch(req['id'], oneid)
         } catch (error) {
 
         }
