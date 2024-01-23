@@ -62,12 +62,12 @@ function Index({ onlineUsersss }: AppProps) {
 
   return (
     <div className='w-full h-screen flex justify-center'>
-      <menu className="w-full max-w-[1500px]    Dashboard   mt-14 flex  flex-col md:flex-row gap-5md: gap-5 p-5  ">
+      <menu className="w-full  max-h-[1400px pb-0 md:pb-20 max-w-[1500px]    Dashboard    mt-14 flex  flex-col md:flex-row gap-5md: gap-5 p-5  ">
         <div className=" w-full md:w-[50%]  h-full rounded-xl flex flex-col gap-5 ">
-          <div className="w-full h-[100px] md:h-[20%] bg-slate-300 rounded-xl p-2">
+          <div className="w-full h-[120px] bg-slate-200 rounded-xl p-2">
             <OnlineUserss onlineUsersss={onlineUsersss} amis={amis} />
           </div>
-          <div className="w-full  h-[500px] md:h-[80%]  bg-[#f7f7f7   shadow-md rounded-xl flex p-5  overflow-hidden" >
+          <div className="w-full  h-[500px] md:h-[100%]  bg-[#f7f7f7   shadow-md rounded-xl flex p-5  overflow-hidden" >
             <Leaderboard currentUser={currentUser} />
           </div>
         </div>

@@ -169,8 +169,8 @@ const ListOfFriends = ({ onlineUsersss, socket }: ExtendedAppProps) => {
     if (game)
         return (
             <>
-                <div className='w-full   flex  space-y-3 justify-center  h-  '>
-                    <div className=' rounded-sm md:rounded-2xl space-y-4 w-[100%] h-[90%] sm:w-[70%]  md:w-[60%] xl:w-[50%]  bg-white flex flex-col items-center mt-14 mb-0 md:mt-20 md:mb-20 '>
+                <div className='w-full   flex  space-y-3 justify-center   '>
+                    <div className=' rounded-sm md:rounded-2xl space-y-4 w-[100%] max-w-[900px] h-[90%] sm:w-[70%]  md:w-[60%] xl:w-[50%]   flex flex-col items-center mt-14 mb-0 md:mt-20 md:mb-20 '>
                         <div className='relative border-b-2 w-full flex items-center justify-center p-2 '>
                             <button className='flex justify-center items-center' onClick={() => router.push('/game')}>
                                 <Image src={'/game/back.png'} alt='get back' width={20} height={20} className=" absolute left-4" />

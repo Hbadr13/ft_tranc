@@ -11,7 +11,8 @@ import { exit } from 'process';
 import { Server, Socket } from 'socket.io';
 import { Constant } from 'src/constants/constant';
 import { PrismaService } from 'src/prisma/prisma.service';
-
+import { OnlineService } from './online.service';
+import * as cookieParser from 'cookie-parser';
 
 export interface userProps {
 
@@ -40,6 +41,7 @@ export interface userProps {
   }
 )
 export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
+
   @WebSocketServer()
   server: Server;
 
@@ -47,19 +49,23 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   searchForOpponent: Map<Socket, userProps> = new Map();
   userInGame: Map<number, Socket> = new Map()
 
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService, private onlineService: OnlineService) { }
   async handleConnection(client: Socket) {
-    // const auth_cookie = parse(client.handshake.headers.cookie).jwt;
-    const auth_cookie = client.handshake.headers.cookie;
-    // console.log('auth_cookie', auth_cookie)
-    const userId = Number(client.handshake.query.userId);
-    console.log('------>connnnect', userId)
-    if (userId < 1)
-      return
-    this.onlineUsers.set(client, userId);
-    const myset: Set<number> = new Set();
-    Array.from(this.onlineUsers).map((item) => myset.add(item[1]))
-    this.server.emit('updateOnlineUsers', Array.from(myset));
+    try {
+
+      const auth_cookie = parse(client.handshake.headers.cookie).jwt;
+      const user = await this.onlineService.checkuserIfAuth(auth_cookie)
+      console.log('=>', user.id)
+      const userId = user.id
+      client.handshake.query.userId = String(user.id);
+      this.onlineUsers.set(client, userId);
+      const myset: Set<number> = new Set();
+      Array.from(this.onlineUsers).map((item) => myset.add(item[1]))
+      this.server.emit('updateOnlineUsers', Array.from(myset));
+    } catch (error) {
+      console.log('errro..')
+      client.disconnect();
+    }
   }
   async handleDisconnect(client: Socket) {
     try {
@@ -75,13 +81,10 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const userid = Number(client.handshake.query.userId)
       if (userid < 1)
         return
-      // const userid = this.onlineUsers.get(client)
-
       this.onlineUsers.delete(client);
       const myset: Set<number> = new Set();
       Array.from(this.onlineUsers).map((item) => myset.add(item[1]))
       this.server.emit('updateOnlineUsers', Array.from(myset));
-      // console.log('-------->')
       if (this.userInGame.get(userid)) {
         if (this.userInGame.get(userid).id == client.id) {
           await this.prisma.user.update({

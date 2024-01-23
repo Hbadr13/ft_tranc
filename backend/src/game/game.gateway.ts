@@ -1,4 +1,5 @@
 import { UserService } from '../user/user.service';
+import { parse } from 'cookie';
 
 import {
   WebSocketGateway,
@@ -41,16 +42,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   rooms: Map<string, number> = new Map<string, number>();
   ballPosition: Map<string, { x: number, y: number }> = new Map<string, { x: number, y: number }>();
   matchs: Map<string, number> = new Map<string, number>();
-
   games: Map<string, Game> = new Map<string, Game>();
 
   async handleConnection(client: Socket) {
-    // try {
-    const userId = Number(client.handshake.query.userId);
-    // console.log('1--->connect', userId, client.id, ':')
-    if (userId < 1) return;
-    this.IdOfPlayer.set(client, userId);
-    // } catch (error) { }
+    try {
+      const auth_cookie = parse(client.handshake.headers.cookie).jwt;
+      const user = await this.gameService.checkuserIfAuth(auth_cookie)
+      const userId = user.id
+      client.handshake.query.userId = String(user.id);
+      this.IdOfPlayer.set(client, userId);
+    } catch (error) {
+      client.disconnect();
+    }
   }
 
   async handleDisconnect(client: Socket) {
@@ -60,7 +63,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         (item) => item._client.id != client.id,
       );
       if (user) {
-        // console.log('---------->deconnect', this.IdOfPlayer.get(client), client.id)
         await this.roomService.deleteRoom(this.IdOfPlayer.get(client));
         this.rooms.delete(user._room);
         this.IdOfPlayer.delete(client);
@@ -81,10 +83,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async leaveTheGame({ game, userid }) {
     try {
       const opponentid = game.player1_Id == userid ? game.player2_Id : game.player1_Id
-      // console.log('gmae status', game.status)
       if (game.player1.status == '' && game.player2.status == '' && game.status != 'Pause') {
-        // console.log('d5al', game.status)
-        game.player1_Id = -1
+         game.player1_Id = -1
         game.player2_Id = -1
         await this.gameHistory.updateUsershistory(userid, {
           opponentId: opponentid,

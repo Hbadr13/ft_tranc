@@ -10,9 +10,8 @@ export class JwtMiddleware implements NestMiddleware {
         try {
             const { url, method } = req;
             if (!url.startsWith('/auth/')) {
-                console.log('cc---->', req.cookies['jwt'])
-                const cookie = req.cookies['jwt']; 
-
+                // console.log('cc---->', req.cookies['jwt'])
+                const cookie = req.cookies['jwt'];
                 if (!cookie) {
                     throw new UnauthorizedException('JWT token is missing.');
                 }

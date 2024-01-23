@@ -110,6 +110,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(!router.asPath.startsWith('/auth/login'))
   const [isSideMenuVisible2, setisSideMenuVisible2] = useState(!router.asPath.startsWith('/register'))
   const [isSideMenuVisible3, setisSideMenuVisible3] = useState(!router.asPath.startsWith(`/enter-2fa/`))
+  const [connect, setConnect] = useState(false);
 
   const [socket, setSocket] = useState<any>();
   const [hideRequest, sethideRequest] = useState<boolean>(true);
@@ -151,10 +152,6 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     try {
       const newSocket = io(`${Constant.API_URL}/OnlineGateway`, {
-        query: {
-          userId: currentUser.id,
-          amis: amis,
-        },
         transports: ["websocket"],
         withCredentials: true
       });
@@ -187,7 +184,7 @@ export default function App({ Component, pageProps }: AppProps) {
     }
     catch (error) {
     }
-  }, [currentUser]);
+  }, [connect]);
 
   const modifiedPageProps = {
     ...pageProps,
@@ -271,6 +268,8 @@ export default function App({ Component, pageProps }: AppProps) {
       setpath(router.route)
     if (oldPath != '/game/online?settings=true' && router.asPath == '/game/online?play=true')
       router.push('/game')
+    if (oldPath == '/auth/login' && router.asPath == '/')
+      setConnect((pr) => !pr)
     setOldPath(router.asPath)
     setIsSideMenuVisible(router.asPath != '/auth/login')
     setisSideMenuVisible2(router.asPath != '/register')
@@ -288,7 +287,7 @@ export default function App({ Component, pageProps }: AppProps) {
             isLogin && isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3 &&
             <>
               <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
-              <SideMenu currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
+              <SideMenu />
             </>
           }
           <div
