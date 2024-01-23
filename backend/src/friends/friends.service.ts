@@ -3,10 +3,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
-
+import { ChatService } from '../chat/chat.service';
 @Injectable()
 export class FriendsService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService,private chatService: ChatService) { }
 
   async sendFriendRequest(seenderId: number, reeceiverId: number): Promise<void> {
     // Check if the friendship already exists (optional)
@@ -50,6 +50,9 @@ export class FriendsService {
         receiverId: seenderId,
       },
     });
+    // if (!existingFriendship || existingFriendship.status !== 'pending' || ) {
+    //   throw new NotFoundException('Friend request not found or already accepted/rejected.');
+    // }
     if (!existingFriendship && !existingFriendship1) {
       // Create a friend request in the database
       await this.prisma.friendRequest.create({
@@ -60,7 +63,8 @@ export class FriendsService {
         },
       });
     }
-    else {
+    else if (existingFriendship.status !== 'blocked' ||  existingFriendship1.status !== 'blocked') {
+      await this.chatService.blockChatTwoUser(Number(seenderId), Number(reeceiverId))
       const friendRequest = await this.prisma.friendRequest.findFirst({
         where: {
           senderId: seenderId,
@@ -81,7 +85,7 @@ export class FriendsService {
           receiver: true, // Include the receiver of the request
         },
       });
-      if (friendRequest) {
+      if (friendRequest && friendRequest.status != 'blocked') {
         
         await this.prisma.friendRequest.update({
           where: {
@@ -112,6 +116,8 @@ export class FriendsService {
 
 
     }
+    else
+    throw new NotFoundException('Friend request not found or already blocked.');
   }
 
   async acceptFriendRequest(requestId: number, sendId: number): Promise<void> {

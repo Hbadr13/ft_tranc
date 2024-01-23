@@ -288,9 +288,9 @@ const User = () => {
     }, [currentUser1]);
 
     return (
-        <div className='    flex justify-center bdg-white w-full   items-center     flex-col'>
+        <div className='    flex justify-center bdg-white w-full   items-center  h-screen  flex-col'>
 
-            <div className='  flex-auto justify-start items-start     w-full   min-h-screen   flex-col  sm:w-auto md:auto   mt-16  rounded-xl drop-shadow-2xl  bg-clip-border  border-2 bg-white   dark:bg-CusColor_dark  border-solid'>
+            <div className='  flex-auto justify-start items-start     w-full   min-h-auto   flex-col  sm:w-auto md:auto   mt-16  rounded-xl drop-shadow-2xl  bg-clip-border  border-2 bg-white  p-4  dark:bg-CusColor_dark  border-solid'>
                 <div className='flex flex-auto bxg-red-600 flex-row mt-7  sm:justify-start  sm:items-start justify-center items-center'>
 
 

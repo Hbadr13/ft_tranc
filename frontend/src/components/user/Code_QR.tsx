@@ -14,11 +14,14 @@ import { Constant } from "@/constants/constant";
 
 
 interface LevelBarpros {
-    value: number
+    value: string
 }
 function LevelBar({ value }: LevelBarpros) {
-    const progressWidth = `${value}%`;
-
+    let progressWidth;
+    if (value.length > 1)
+        progressWidth = `${value}%`;
+    else
+        progressWidth = `${value}0%`;
 
 
     return (
@@ -46,6 +49,9 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
     const [foto_user, setFoto_user] = useState("");
     const [username, setUsername] = useState("");
     const [twoFactorSecret1, settwoFactorSecret1] = useState("");
+    const [level, setlevel] = useState();
+    const [level1, setlevel1] = useState("");
+    const [level2, setlevel2] = useState("");
 
     const [id, setid] = useState(0);
     const router = useRouter()
@@ -64,6 +70,15 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                 setEmail(content.email);
                 setUsername(content.username)
                 settwoFactorSecret1(content.twoFactorSecret);
+                setlevel(content.level)
+                const stringValue2: string = String(level);
+                const level3 = stringValue2.split('.');
+
+                if (level3[1])
+                    setlevel1(level3[1]);
+                else
+                    setlevel1("0");
+                setlevel2(level3[0]);
             }
         )();
     });
@@ -113,7 +128,6 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                     'Content-Type': 'application/json',
                 }
             })
-<<<<<<< HEAD
             if (response.ok) {
 
                 const counte = await response.json();
@@ -121,9 +135,7 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                 setSuccess(2)
 
             }
-=======
-            const counte = await response.json();
->>>>>>> hbadr
+
 
             // Provide the secret to the user for setup, such as displaying a QR code
         } catch (error) {
@@ -159,7 +171,7 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
     return (
 
         <div className='flex  flex-wrap  justify-center  min-h-screen  bg-blfack w-full items-center   '>
-        <div className='   flex-none smr-6 sm:mr-0  z-20  sm:w-[408px]   w-auto mt-[120px] mb-10  h-[100%] drop-shadow-2xl   items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
+            <div className='   flex-none smr-6 sm:mr-0  z-20  sm:w-[408px]   w-auto mt-[120px] mb-10  h-[100%] drop-shadow-2xl   items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
                 <div className=" w-full flex-col justify-center items-center text-center">
                     <span>My Profile</span>
                     <div className="mt-6 w-full justify-center flex bg-dblack items-center">
@@ -176,8 +188,8 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                         <span className="text-sm  font-serif italic flex justify-center mt-3">{email}</span>
                     </div>
                     <div className="mt-8 bg-bflack justify-center flex items-center flex-col w-full  mdl-6">
-                        <LevelBar value={60} />
-                        <p className=' mt-4 text-white shadow-sm shadow-black  mfl-28  w-28 font-serif italic uppercase'>level 8-86%</p>
+                        <LevelBar value={level1} />
+                        <p className=' mt-4 text-white shadow-sm shadow-black  mfl-28  w-28 font-serif italic uppercase'>level {level2}-{level1}%</p>
 
                     </div>
                     <div className=" hidden md:flex ">
@@ -211,7 +223,7 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                         </div>
                     </div>
                     <div className="mt-10 w-full ">
-                        <button className="bg-white   w-80  h-12  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600  hover:bg:white hover:texts-white hover:scale-105 duration-300 ">Logout</button>
+                        {/* <button className="bg-white   w-80  h-12  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600  hover:bg:white hover:texts-white hover:scale-105 duration-300 ">Logout</button> */}
                     </div>
                 </div>
             </div>
@@ -244,11 +256,11 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                                 }
                                 {
                                     success == 0 &&
-                                <div className=" flex text-blue-600 rounded-md bg-white w-80  drop-shadow shadow-md shadow-black h-10 justify-center items-center">Setting Two-Factor Authentication...</div>
+                                    <div className=" flex text-blue-600 rounded-md bg-white w-80  drop-shadow shadow-md shadow-black h-10 justify-center items-center">Setting Two-Factor Authentication...</div>
                                 }
                                 {
                                     success == 2 &&
-                                <div className=" flex text-white rounded-md  bg-red-600 w-80  drop-shadow shadow-md shadow-black h-10 justify-center items-center">Two-Factor Deactivate successfully ..!</div>
+                                    <div className=" flex text-white rounded-md  bg-red-600 w-80  drop-shadow shadow-md shadow-black h-10 justify-center items-center">Two-Factor Deactivate successfully ..!</div>
                                 }
                             </div>
                             <div className='flex  float-none justify-center items-center  w-[200px] h-[200px] drop-shadow shadow-md shadow-black bg-white border-2 border-black rounded-md mt-10 '>

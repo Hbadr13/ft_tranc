@@ -19,7 +19,11 @@ interface LevelBarpros {
 }
 function LevelBar({ value }: LevelBarpros) {
 
-    const progressWidth = `${value}0%`;
+    let progressWidth;
+    if (value.length > 1)
+        progressWidth = `${value}%`;
+    else
+        progressWidth = `${value}0%`;
 
     return (
         <div className="bg-white h-5  drop-shadow shadow-md shadow-black    w-80  rounded-lg" >
@@ -207,7 +211,6 @@ const YourComponent = ({ currentFileName }: any) => {
                             setlevel1("0");
                         setlevel2(level3[0]);
 
-                        console.log("====================================>level1", level1, level2);
 
                         return;
                     }
@@ -507,10 +510,10 @@ const YourComponent = ({ currentFileName }: any) => {
                                     (
                                         <div className=' flex z-10  h-screen w-screen  justify-center items-center '>
 
-                                            <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-white bg-black '>
+                                            <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
                                                 <p className=' text-xl  '> @{username} ?</p>
                                                 <span className=' text-sm mt-4'> You  cannot reach this user </span>
-                                                <Link className=' flex justify-center items-center text-black mt-8 w-56 h-10 rounded-2xl  border-2 bg-white  border-blue-500 hover:scale-110 duration-300' href={'/'}>Canecel</Link>
+                                                <Link className=' flex justify-center items-center text-black mt-8 w-56 h-10 rounded-2xl  border-2 bg-white  shadow-md  border-blue-500 hover:scale-110 duration-300' href={'/'}>Canecel</Link>
 
                                             </div>
                                         </div>
@@ -518,13 +521,13 @@ const YourComponent = ({ currentFileName }: any) => {
 
                                     <div className=' flex z-10  h-screen w-screen  justify-center items-center '>
 
-                                        <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-white bg-black '>
+                                        <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
                                             <p className=' text-xl  -mt-10'> Unblock @{username} ?</p>
                                             <span className=' text-sm mt-6'> They will  be able to follow you and view your Tweets </span>
 
-                                            <Link className=' flex justify-center items-center text-black  bg-white  w-56  rounded-2xl h-10 mt-8 border-2  border-blue-500 hover:scale-110 duration-300' href={'/Listblocked'}>Unblock</Link>
+                                            <Link className=' flex justify-center items-center text-black  bg-white  w-56  rounded-2xl h-10 mt-8 border-2  border-blue-500 shadow-md hover:scale-110 duration-300' href={'/Listblocked'}>Unblock</Link>
 
-                                            <Link className=' flex justify-center items-center text-white mt-6 w-56 h-10 rounded-2xl  border-2  border-blue-500 hover:scale-110 duration-300' href={'/'}>Canecel</Link>
+                                            <Link className=' flex justify-center items-center text-black mt-6 w-56 h-10 rounded-2xl  border-2  border-blue-500 shadow-md hover:scale-110 duration-300' href={'/'}>Canecel</Link>
 
                                         </div >
                                     </div >
@@ -715,29 +718,32 @@ const YourComponent = ({ currentFileName }: any) => {
                             </footer>)
                 }
             </div >
-            <div>
-                {
+            {
 
-                    blocked == 1 && (<div className="flex   items-center -mt-[1300px] sm:-mt-[1500px] xl:-mt-[1000px] mdl-12 justify-center min-h-screen sm:bg-bldack  md:bg-gdray-700 md:-mt-[1500px]  xl:bg-dblue-600 min-w-screen  z-20  bg-sslate-400">
+                blocked == 1 && <div className=" absolute flex  justify-center items-center w-full h-full bg-gblack">
+                    {
 
-                        <div className=" bg-white md:w-[400px] md:h:72   flex flex-col  justify-strt items-center  sm:w-[400px] sm:h-72  h-72 w-96  drop-shadow shadow-lg shaddow-black  rounded-lg -mst-[1000px] md:-mst-[700px] z-20 text-blue-600 ml-10 md:mdl-[600px]">
-                            <div className='text-blue-500 text-xl mt-8  mr-44  font-black' >Confirm Blocked </div>
-                            <div className=' w-96 hd-2 border-2 mt-5' > </div>
-                            <div className='text-blue-500 text-sm mt-8  ml-16  w-full fonts-black' >Are you sure you  want to blocked this user ?</div>
-                            <div className=' w-96 h-16 fbg-black mt-16 flex flex-row justify-center items-center space-x-6 '>
-                                <button onClick={() => setblocked(0)} className=' bg-white w-20  border-2 border-blue-600 h-10 rounded-lg'>
-                                    <div>Cancel</div>
-                                </button>
-                                <button onClick={blockedfriend} className=' bg-blue-500 text-white w-20  h-10  border-2 border-blue-600 rounded-lg'>
-                                    <div>Ok</div>
-                                </button>
+                        (<div className="flex   items-center   justify-center min-h-screen   min-w-screen  z-20  ">
 
+                            <div className=" bg-white md:w-[400px] md:h:72   flex flex-col  justify-strt items-center  sm:w-[400px] sm:h-72  h-72 w-96  drop-shadow shadow-lg shaddow-black  rounded-lg   z-20 text-blue-600  ">
+                                <div className='text-blue-500 text-xl mt-8  mr-44  font-black' >Confirm Blocked </div>
+                                <div className=' w-96 hd-2 border-2 mt-5' > </div>
+                                <div className='text-blue-500 text-sm mt-8  ml-16  w-full fonts-black' >Are you sure you  want to blocked this user ?</div>
+                                <div className=' w-96 h-16 fbg-black mt-16 flex flex-row justify-center items-center space-x-6 '>
+                                    <button onClick={() => setblocked(0)} className=' bg-white w-20  border-2 border-blue-600 h-10 rounded-lg'>
+                                        <div>Cancel</div>
+                                    </button>
+                                    <button onClick={blockedfriend} className=' bg-blue-500 text-white w-20  h-10  border-2 border-blue-600 rounded-lg'>
+                                        <div>Ok</div>
+                                    </button>
+
+                                </div>
                             </div>
-                        </div>
-                    </div>)
-                }
+                        </div>)
+                    }
 
-            </div>
+                </div>
+            }
 
         </div >
     );

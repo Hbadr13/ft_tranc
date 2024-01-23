@@ -14,7 +14,11 @@ interface LevelBarpros {
     value: String
 }
 function LevelBar({ value }: LevelBarpros) {
-    const progressWidth = `${value}0%`;
+    let progressWidth;
+    if (value.length > 1)
+      progressWidth = `${value}%`;
+    else
+      progressWidth = `${value}0%`;
 
 
 
@@ -273,7 +277,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                         </div>
                     </div>
                     <div className="mt-10 w-full ">
-                        <button className="bg-white   w-80  h-12  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600  hover:bg:white hover:texts-white hover:scale-105 duration-300 ">Logout</button>
+                        {/* <button className="bg-white   w-80  h-12  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600  hover:bg:white hover:texts-white hover:scale-105 duration-300 "></button> */}
                     </div>
                 </div>
             </div>

@@ -73,7 +73,7 @@ function Index({ onlineUsersss }: AppProps) {
           <div className="w-full h-[100px] md:h-[20%] bg-slate-300 rounded-xl p-2">
             <OnlineUserss onlineUsersss={onlineUsersss} amis={amis} />
           </div>
-          <div className="w-full  h-[500px] md:h-[80%]  bg-[#f7f7f7   shadow-md rounded-xl flex p-5  overflow-hidden" >
+          <div className="w-full h-[80%]     shadow-md rounded-xl flex  overflow-hidden" >
             <Leaderboard currentUser={currentUser} />
           </div>
         </div>
