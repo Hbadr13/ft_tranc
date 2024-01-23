@@ -45,7 +45,6 @@ export default function index({ users, amis }: AppProps) {
     try {
       const response = await fetch(`http://localhost:3333/chat/joinChannel/${currentUser.id}/${joinRoom.id}/${password}`, {
         method: 'POST',
-
         credentials: 'include',
 
       })

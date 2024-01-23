@@ -9,7 +9,7 @@ CREATE TABLE "User" (
     "firstName" TEXT,
     "lastName" TEXT,
     "foto_user" TEXT,
-    "level" DECIMAL(65,30),
+    "level" DOUBLE PRECISION,
     "won" INTEGER,
     "lost" INTEGER,
     "gameStatus" TEXT,
