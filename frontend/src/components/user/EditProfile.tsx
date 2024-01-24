@@ -113,7 +113,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
         // console.log(update_gender);
 
         try {
-            const res = await fetch(`${Constant.API_URL}/users/update_info/${id}`, {
+            const res = await fetch(`${Constant.API_URL}/users/update_info`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

@@ -127,7 +127,7 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
 
                             ))
                         }
-                        <div className={` bg-white w-full md:beg-slate-500 md:w-[350px] lg:w-96 msd:w-84    ${on == 1 ? ' h-[600px] ' : ' h-[333] sm:h-[250px] md:h-[403px]'}    lg:bg-white  flex   overflow-y-scroll jusdtify-center items-center m   flex-col scrollbar-hide  rounded-t-3xl`}>
+                        <div className={` bg-white w-full md:beg-slate-500 md:w-[350px] lg:w-96 msd:w-84  mt-12   ${on == 1 ? ' h-[600px] ' : ' h-[333] sm:h-[250px] md:h-[403px]'}    lg:bg-white  flex   overflow-y-scroll jusdtify-center items-center m   flex-col scrollbar-hide  rounded-t-3xl`}>
 
                             {
                                 on == 0 && <button className=' flex justify-start w-10 bg-slate-400 h-3 mt-2  rounded-3xl' onClick={() => seton(1)}></button>

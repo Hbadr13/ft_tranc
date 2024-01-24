@@ -63,7 +63,7 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/${currentUser.id}/send-blocked`, {
+                const response = await fetch(`${Constant.API_URL}/friends/send-blocked`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -76,7 +76,7 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
     }, [currentUser.id, check, check1, Isopen, check2]);
     const Unblockedfriend = async (numberPart: number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${currentUser.id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/Unblocked-friend/${numberPart}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });

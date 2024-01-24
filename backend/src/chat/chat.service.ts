@@ -528,7 +528,7 @@ export class ChatService {
                 id: membership.id
             }
         })
-        console.log('hana tani jit', userId, roomId)
+   
     }
 
 

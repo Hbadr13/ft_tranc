@@ -119,7 +119,7 @@ export default function LoginForm() {
     } catch (error) {
       seterror(1);
       const form = e.target;
-      form.reset();
+      // form.reset();
 
       // console.log("kin wahd hna: ", error);
     }

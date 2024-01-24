@@ -40,6 +40,7 @@ const YourComponent = ({ currentFileName }: any) => {
     const [flag, setFlag] = useState(true)
     const [flag1, setFlag1] = useState(true)
     const [flag2, setFlag2] = useState(true)
+    const [ref, setref] = useState(true)
     const [check_user, setCheck_user] = useState(true)
     const [username, setUsername] = useState("");
     const [level, setlevel] = useState();
@@ -102,12 +103,6 @@ const YourComponent = ({ currentFileName }: any) => {
     }, [id, numberPart]);
 
 
-    const toggleDropdown = () => {
-        // setisfriend(!isfriend);
-
-
-        setIsOpen(false);
-    };
     useEffect(() => {
         (
             async () => {
@@ -227,7 +222,7 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/${id}/received-blocked`, {
+                const response = await fetch(`${Constant.API_URL}/friends/received-blocked`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -242,7 +237,7 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/${id}/received-requests`, {
+                const response = await fetch(`${Constant.API_URL}/friends/received-requests`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -252,7 +247,7 @@ const YourComponent = ({ currentFileName }: any) => {
                 }
             }
         )();
-    }, [id, numberPart, isOpen, check_blocked1, check_blocked2, currentFileName]);
+    }, [id, numberPart, isOpen, check_blocked1, flag1 ,check_blocked2, currentFileName]);
     useEffect(() => {
         (
             async () => {
@@ -287,18 +282,11 @@ const YourComponent = ({ currentFileName }: any) => {
                 }
             }
         )();
-    }, [sendr, received, id, numberPart, check_blocked1, check_blocked2, isOpen]);
-    // useEffect(() => {
-    //     (
-    //         async () => {
-    //             setCheck(0);
-    //         }
-    //     )();
-    // }, [numberPart]);
+    }, [sendr, received, id, numberPart, ref, check_blocked1, check_blocked2, isOpen]);
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/${id}/send-blocked`, {
+                const response = await fetch(`${Constant.API_URL}/friends/send-blocked`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -312,7 +300,7 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/${id}/send-requests`, {
+                const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -322,11 +310,11 @@ const YourComponent = ({ currentFileName }: any) => {
                 }
             }
         )();
-    }, [id, numberPart, received, check, check1, isOpen, check2, currentFileName]);
+    }, [id, numberPart, received, check, check1, ref, isOpen, check2, currentFileName]);
     const sendRequestForaccpet = async () => {
         try {
 
-            const response = await fetch(`${Constant.API_URL}/friends/accept-friend-request/${numberPart}/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/accept-friend-request/${numberPart}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -347,7 +335,7 @@ const YourComponent = ({ currentFileName }: any) => {
     const blockedfriend = async () => {
         try {
 
-            const response = await fetch(`${Constant.API_URL}/friends/blocked-friend-request/${id}/${numberPart}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/blocked-friend-request/${numberPart}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -365,14 +353,15 @@ const YourComponent = ({ currentFileName }: any) => {
     }
     const sendRequest = async () => {
         try {
-            const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}`, {
                 method: 'POST',
                 credentials: 'include',
             });
 
             if (response.ok) {
                 setIsOpen(true);
-                setRefreshData((pr) => !pr)
+                setFlag1(true);
+
 
                 console.log('Friend request sent successfully.');
             } else {
@@ -384,14 +373,36 @@ const YourComponent = ({ currentFileName }: any) => {
     };
     const cancelRequest = async () => {
         try {
-            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
 
             if (response.ok) {
                 setIsOpen(false);
+                // if (ref == true)
+
+                // else
+                // setref(true)
                 setRefreshData((pr) => !pr)
+                console.log('delete-friend-request sent successfully.');
+            } else {
+                console.error('Failed to delete-friend-request.');
+            }
+        } catch (error) {
+            console.error('Error sending friend request:', error);
+        }
+    };
+    const received_request = async () => {
+        try {
+            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                   setFlag1(true)
+              
                 console.log('delete-friend-request sent successfully.');
             } else {
                 console.error('Failed to delete-friend-request.');
@@ -412,30 +423,6 @@ const YourComponent = ({ currentFileName }: any) => {
             }
         )();
     }, [query, id, check, check1, check2, numberPart, currentFileName]);
-    const Unblockedfriend = async () => {
-        try {
-            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${id}`, {
-                method: 'DELETE',
-                credentials: 'include',
-            });
-            // console.log(isOpen1);
-
-            if (response.ok) {
-                router.push("/")
-                // console.log(isOpen1)
-                // setIsOpen(true);
-                console.log('Friend Unblocked sent successfully.');
-            } else {
-                // console.log(isOpen1);
-
-
-                console.error('Failed to Unblock friend request.');
-            }
-
-        } catch (error) {
-            console.error('Error sending friend request:', error);
-        }
-    };
 
     useEffect(() => {
         setFlag(true)
@@ -457,14 +444,13 @@ const YourComponent = ({ currentFileName }: any) => {
                 // Your mapping logic here
                 if (user.sender.id == numberPart) {
 
-                    console.log("check_blocked1")
                     setCheck_bloked1(false)
                 }
             });
         } else { }
         if (Array.isArray(sendr_blocked)) {
             sendr_blocked.map((user: any) => {
-                console.log("check_blocked2")
+
                 // Your mapping logic here
                 if (user.receiver.id == numberPart) {
                     setCheck_bloked2(false)
@@ -495,7 +481,7 @@ const YourComponent = ({ currentFileName }: any) => {
             // Handle the case when 'received' is not an array (e.g., show an error message)
         }
         // setFlag2(true)
-    }, [sendr, numberPart, isfriend, received, currentFileName, sendr_blocked, received_blocked, amis, amis_id, setFlag1, flag2, delete_request])
+    }, [sendr, numberPart, isfriend, received, currentFileName, sendr_blocked, received_blocked, amis, amis_id, flag2, delete_request])
     // console.log(check)
 
     return (
@@ -580,7 +566,7 @@ const YourComponent = ({ currentFileName }: any) => {
                                                                                 <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                                                                                 <button className=" bg-[#dbeafe] border  " onClick={sendRequestForaccpet} >Confrim</button>
                                                                             </div>
-                                                                            <button className="w-32 h-10 flex justify-center items-center p-1 bg-[#dbeafe] border rounded-2xl  hover:scale-110 duration-300 " onClick={sendRequestForaccpet}>Delete</button>
+                                                                            <button className="w-32 h-10 flex justify-center items-center p-1 bg-[#dbeafe] border rounded-2xl  hover:scale-110 duration-300 " onClick={received_request}>Delete</button>
 
                                                                         </div>) :
                                                                     (<div className="text-base font-bold flex items-center w-full justify-center bgw-black  space-x-3  text-[#2c4d82]">
@@ -673,7 +659,7 @@ const YourComponent = ({ currentFileName }: any) => {
                                             <button onClick={() => freind_ranck(1)} className=" mt-40 px-[99px] py-2 text-base font-bold   bg-white border  hover:text-white  hover:bg-[#3b82f6] hover:scale-110 duration-300 text-blue-600">Friends</button>
                                         </div>) : null}
                                         {(check == 1) ? (<div>
-                                            <button onClick={() => freind_ranck(1)} className=" mt-40 px-[100px] py-2  text-base font-bold   bordher-2 borsder-black bg-[#3b82f6] hover:text-blue-600  hover:bg-black hover:scale-110 duration-300 text-white">Friends</button>
+                                            <button onClick={() => freind_ranck(1)} className=" mt-40 px-[100px] py-2  text-base font-bold   bordher-2 borsder-black bg-[#3b82f6] hover:text-blue-600  hover:scale-110 duration-300 text-white">Friends</button>
                                         </div>) : null}
 
 

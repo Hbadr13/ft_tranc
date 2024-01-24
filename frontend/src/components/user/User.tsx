@@ -90,7 +90,7 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/users/other/${currentUser1.id}`, {
+                const response = await fetch(`${Constant.API_URL}/users/other/userId`, {
                     credentials: 'include',
                 });
                 const content = await response.json();
@@ -114,7 +114,7 @@ const User = () => {
     }, []);
     const sendRequest = async (numberPart: number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}/${currentUser1.id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -139,7 +139,7 @@ const User = () => {
 
     const CanacelRequest = async (numberPart: number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${currentUser1.id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -163,7 +163,7 @@ const User = () => {
     const sendRequestForaccpet = async (numberPart: number) => {
         try {
 
-            const response = await fetch(`${Constant.API_URL}/friends/accept-friend-request/${numberPart}/${currentUser1.id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/accept-friend-request/${numberPart}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -185,7 +185,7 @@ const User = () => {
     };
     const CanacelRequest1 = async (numberPart: number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${currentUser1.id}/${numberPart}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -222,7 +222,7 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/${currentUser1.id}/received-requests`, {
+                const response = await fetch(`${Constant.API_URL}/friends/received-requests`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -239,7 +239,7 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/${currentUser1.id}/received-blocked`, {
+                const response = await fetch(`${Constant.API_URL}/friends/received-blocked`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -253,7 +253,7 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/${currentUser1.id}/send-blocked`, {
+                const response = await fetch(`${Constant.API_URL}/friends/send-blocked`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -267,7 +267,7 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/${currentUser1.id}/send-requests`, {
+                const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -280,12 +280,9 @@ const User = () => {
             }
         )();
     }, [amis, currentUser1, allfriends, isOpen]);
-    // useEffect(() => {
-    const [isOpen1, setIsOpen1] = useState("rim")
-    useEffect(() => {
-        setIsOpen1("can");
 
-    }, [currentUser1]);
+    
+   
 
     return (
         <div className='    flex justify-center bdg-white w-full   items-center  h-screen  flex-col'>

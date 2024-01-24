@@ -89,7 +89,7 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/users/enable-2fa/${id}`, {
+                const response = await fetch(`${Constant.API_URL}/users/enable-2fa`, {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -105,7 +105,7 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
 
     const handleEnable2FA = async () => {
         try {
-            const response = await fetch(`${Constant.API_URL}/users/enable-2fa/${currentUser.id}`, {
+            const response = await fetch(`${Constant.API_URL}/users/enable-2fa`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -121,7 +121,7 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
     };
     const DeactivateTwoFactor = async () => {
         try {
-            const response = await fetch(`${Constant.API_URL}/users/DeactivateTwoFactor/${id}`, {
+            const response = await fetch(`${Constant.API_URL}/users/DeactivateTwoFactor`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
