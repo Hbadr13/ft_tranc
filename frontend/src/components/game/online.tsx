@@ -209,7 +209,6 @@ const PlayOnline = ({ opponent, ballTheme, canvasTheme, setgameIsOk, gameIsOk }:
         router.push("/game")
     }
 
-
     if (game)
         return (
             <div className="Gamebackground  w-full  h-screen flex  justify-center   ">

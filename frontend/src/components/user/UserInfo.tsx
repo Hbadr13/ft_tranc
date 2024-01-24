@@ -24,8 +24,8 @@ export default function Home({ socket }: { socket: Socket }) {
           const response = await fetch(`${Constant.API_URL}/auth/user`, {
             credentials: 'include',
           });
-          const content = await response.json();
           if (response.ok) {
+            const content = await response.json();
             setfoto_user(content.foto_user);
             setEmail(content.email);
             setUsername(content.username);

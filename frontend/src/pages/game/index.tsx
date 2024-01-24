@@ -17,7 +17,6 @@ const Index = ({ socket }: AppProps) => {
 
                 {gameStart ? (
                     <div className={'relative w-full h-full -[600p]   rounded-2xl  '}>
-
                         <div className=" Circles absolute w-[50%] z-10 h-[50%]  -left-32 -top-10 rounded-full" />
                         <div className=" Circles absolute  opacity-50 rotate-180 w-[400px] z-10 h-[400px]  -right-5 md:-right-20 -bottom-10 rounded-full" />
                         <Image

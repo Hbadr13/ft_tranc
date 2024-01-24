@@ -27,12 +27,16 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
 
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/auth/user`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
+                try {
+                    const response = await fetch(`${Constant.API_URL}/auth/user`, {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+                    if (response.ok)
+                        setid(content.id);
+                } catch (error) {
 
-                setid(content.id);
+                }
 
             }
         )();
@@ -137,7 +141,7 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
                                             <div className=' lg:ml-10  md:ml-5 ml-10 mft-2 flex  border-2  h-6 justify-center items-center w-6 rounded-full'>{index + 1} </div>
                                             <div className='-mwt-3 flex flex-row w-40  vbg-slate-500 justify-start items-center space-x-3'>
                                                 <img className="h-8 w-8 borwder-2 bofrder-blue-600 rounded-full drop-shadow shadow-md shadow-black  " src={value.foto_user} alt="" />
-                                                <button onClick={() => profailamis(users_id.username, users_id.id)}  className={` text-sm  } font-serif itwalic`}
+                                                <button onClick={() => profailamis(users_id.username, users_id.id)} className={` text-sm  } font-serif itwalic`}
                                                 > {value.username}</button>
                                             </div>
                                             <div className=" flex w-24 ml-10 bgf-black space-x-2">
@@ -194,11 +198,17 @@ const Rank = ({ id, t }: { id: number, t: number }) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/users/${0}`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
-                setUsers_id(Array.from(content));
+                try {
+                    const response = await fetch(`${Constant.API_URL}/users/${0}`, {
+                        credentials: 'include',
+                    });
+                    if (response.ok) {
+                        const content = await response.json();
+                        setUsers_id(Array.from(content));
+                    }
+                } catch (error) {
+
+                }
             }
         )();
     }, [id]);

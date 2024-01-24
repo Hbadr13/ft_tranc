@@ -9,8 +9,8 @@ import { fetchAllAmis, fetchAllUsers, fetchCurrentUser, getCurrentUser } from '@
 import Image from 'next/image';
 import { Open_Sans } from 'next/font/google'
 import { userData, userProps } from '@/interface/data';
-import { getBack } from '@/hooks/appContexts';
-import { fetchData } from '@/hooks/appContexts';
+// import { getBack } from '@/hooks/appContexts';
+// import { fetchData } from '@/hooks/appContexts';
 import { useRouter } from 'next/router';
 import { Constant } from '@/constants/constant';
 import { getLevel } from '@/components/game/listOfFriends';
@@ -132,17 +132,23 @@ export default function App({ Component, pageProps }: AppProps) {
     if (isSideMenuVisible2 && isSideMenuVisible3) {
       (
         async () => {
-          const response = await fetch(`${Constant.API_URL}/auth/user`, {
-            credentials: 'include',
-          });
-          if (response.status != 200 && response.status != 201) {
-            router.push('/auth/login');
-            return;
-          }
-          else {
-            const content = await response.json();
-            setCurrentUser(content);
-            setIsLogin(true)
+          try {
+            const response = await fetch(`${Constant.API_URL}/auth/user`, {
+              credentials: 'include',
+            });
+            if (!response.ok)
+              return
+            if (response.status != 200 && response.status != 201) {
+              router.push('/auth/login');
+              return;
+            }
+            else {
+              const content = await response.json();
+              setCurrentUser(content);
+              setIsLogin(true)
+            }
+          } catch (error) {
+
           }
         }
       )();
@@ -217,19 +223,24 @@ export default function App({ Component, pageProps }: AppProps) {
     socket?.emit('deleteFromsearchForOpponent');
     setmyIdFromOpponent(-2)
     sethideRequest((prev) => !prev)
-    const response = await fetch(`${Constant.API_URL}/game/room`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        'room': room,
-        'opponentId': Number(opponent.id),
-      }),
-      credentials: 'include',
-    });
-    if (response.ok)
-      router.push('/game/online?settings=true')
+    try {
+
+      const response = await fetch(`${Constant.API_URL}/game/room/${currentUser.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          'room': room,
+          'opponentId': Number(opponent.id),
+        }),
+        credentials: 'include',
+      });
+      if (response.ok)
+        router.push('/game/online?settings=true')
+    } catch (error) {
+
+    }
   }
   const [path, setpath] = useState('')
   const [refreshData, setRefreshData] = useState<boolean>(false)
@@ -247,7 +258,7 @@ export default function App({ Component, pageProps }: AppProps) {
             setCurrentUser(content);
             setIsLogin(true)
           }
-          else if (router.asPath != '/register' && router.asPath != '/auth/login')
+          else if (router.asPath != '/register' && !router.asPath.startsWith('/enter-2fa/') && router.asPath != '/auth/login')
             router.push('/auth/login')
         } catch (error) {
 
@@ -262,45 +273,47 @@ export default function App({ Component, pageProps }: AppProps) {
     if ((oldPath == '/game/online?settings=true' && router.asPath != '/game/online?play=true') ||
       (oldPath == '/game/online?search=true' && router.asPath != '/game/online?settings=true'))
       socket?.emit('DeleteuserFromGame', { userId: currentUser.id })
-    if (oldPath == '/auth/login')
+    if (oldPath == '/auth/login' || oldPath.startsWith('/enter-2fa'))
       setlogin((pr) => !pr)
     if (router.route != '/search')
       setpath(router.route)
     if (oldPath != '/game/online?settings=true' && router.asPath == '/game/online?play=true')
       router.push('/game')
-    if (oldPath == '/auth/login' && router.asPath == '/')
+    if ((oldPath == '/auth/login' || oldPath.startsWith('/enter-2fa')) && router.asPath == '/')
       setConnect((pr) => !pr)
     setOldPath(router.asPath)
     setIsSideMenuVisible(router.asPath != '/auth/login')
     setisSideMenuVisible2(router.asPath != '/register')
-    setisSideMenuVisible3(router.asPath != `/enter-2fa/`)
+    setisSideMenuVisible3(!router.asPath.startsWith('/enter-2fa'))
   }, [router])
   const itv = isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3
   return (
-    <fetchData.Provider value={{ setRefreshData: setRefreshData, refreshData: refreshData }}>
-      <getBack.Provider value={path}>
-        <RejectRequestComp router={router} opponent={opponent} rejectRequest={rejectRequest} setrejectRequest={setrejectRequest} />
-        <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
-          hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
-        <div className={`${font.className}   font-medium ${rejectRequest || myIdFromOpponent === Number(currentUser.id) ? 'blur-[0.7px]' : ''}`}>
-          {
-            isLogin && isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3 &&
-            <>
-              <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
-              <SideMenu />
-            </>
-          }
-          <div
-            className={`${isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3 ? 'home' : ''}`}
-            hidden={(!isLogin && isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3)}
+    // <fetchData.Provider value={{ setRefreshData: setRefreshData, refreshData: refreshData }}>
+    // <getBack.Provider value={path}>
+    <>
+      <RejectRequestComp router={router} opponent={opponent} rejectRequest={rejectRequest} setrejectRequest={setrejectRequest} />
+      <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
+        hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
+      <div className={`${font.className}   font-medium ${rejectRequest || myIdFromOpponent === Number(currentUser.id) ? 'blur-[0.7px]' : ''}`}>
+        {
+          isLogin && isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3 &&
+          <>
+            <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
+            <SideMenu />
+          </>
+        }
+        <div
+          className={`${isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3 ? 'home' : ''}`}
+          hidden={(!isLogin && isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3)}
+        >
+          <Component
+            {...modifiedPageProps}
           >
-            <Component
-              {...modifiedPageProps}
-            >
-            </Component>
-          </div>
+          </Component>
         </div>
-      </getBack.Provider>
-    </fetchData.Provider >
+      </div>
+    </>
+    // </getBack.Provider>
+    // </fetchData.Provider >
   )
 }

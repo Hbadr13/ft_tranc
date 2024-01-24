@@ -9,7 +9,7 @@ import path from 'path';
 import { send } from 'process';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { usefetchDataContext } from '@/hooks/usefetchDataContext';
+// import { usefetchDataContext } from '@/hooks/usefetchDataContext';
 import { NullLiteral } from 'typescript';
 import { any, string } from 'zod';
 import { Constant } from '@/constants/constant';
@@ -68,7 +68,7 @@ const YourComponent = ({ currentFileName }: any) => {
     const usernamePart: string = parts[0];
 
     const [number, setNumber] = useState(0);
-    const { refreshData, setRefreshData } = usefetchDataContext()
+    // const { refreshData, setRefreshData } = usefetchDataContext()
     const [id, setid] = useState(0);
 
     useEffect(() => {
@@ -331,7 +331,7 @@ const YourComponent = ({ currentFileName }: any) => {
             if (response.ok) {
                 console.log('Friend request sent successfully.');
                 setisfriend(!isfriend);
-                setRefreshData((pr) => !pr)
+                // setRefreshData((pr) => !pr)
 
             } else {
                 setIsOpen(false);
@@ -369,7 +369,7 @@ const YourComponent = ({ currentFileName }: any) => {
 
             if (response.ok) {
                 setIsOpen(true);
-                setRefreshData((pr) => !pr)
+                // setRefreshData((pr) => !pr)
 
                 console.log('Friend request sent successfully.');
             } else {
@@ -388,7 +388,7 @@ const YourComponent = ({ currentFileName }: any) => {
 
             if (response.ok) {
                 setIsOpen(false);
-                setRefreshData((pr) => !pr)
+                // setRefreshData((pr) => !pr)
                 console.log('delete-friend-request sent successfully.');
             } else {
                 console.error('Failed to delete-friend-request.');
