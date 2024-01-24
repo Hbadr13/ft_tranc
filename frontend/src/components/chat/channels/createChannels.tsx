@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { userProps } from '@/interface/data'
 import { disconnect } from 'process';
 
-export default function Channels({ users, setClick, currentUser }: { users: userProps[], setClick: (value: string) => void, currentUser: userProps }) {
+export default function Channels({ users, setClick}: { users: userProps[], setClick: (value: string) => void}) {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -21,7 +21,7 @@ export default function Channels({ users, setClick, currentUser }: { users: user
       lastUsers.map((item: userProps) => {
         item.flag = false
       })
-      await fetch(`http://localhost:3333/chat/createChannel/${currentUser.id}`, {
+      await fetch(`http://localhost:3333/chat/createChannel`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -62,25 +62,25 @@ model Message {
 
 model Room {
   id           Int           @id @default(autoincrement())
-  name         String        @db.VarChar()
-  description  String?       @db.VarChar()
+  name         String
+  description  String?
   type         String
   conversation Conversation?
-  password     String?       @db.VarChar()
+  password     String?
   createdAt    DateTime      @default(now()) @db.Timestamp(6)
   updatedAt    DateTime?     @updatedAt @db.Timestamp(6)
   Memberships  Membership[]  @relation("membership")
 }
 
 model Membership {
-  id       Int     @id @default(autoincrement())
-  isOwner  Boolean @default(false)
-  isAdmin  Boolean @default(false)
-  isBanned Boolean @default(false)
-  timeMute Int     @default(0)
-  room     Room    @relation("membership", fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id       Int       @id @default(autoincrement())
+  isOwner  Boolean   @default(false)
+  isAdmin  Boolean   @default(false)
+  isBanned Boolean   @default(false)
+  timeMute DateTime?
+  room     Room      @relation("membership", fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   roomId   Int
-  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId   Int
 }
 
@@ -111,7 +111,7 @@ model History {
 
 model Friendship {
   id     Int    @id @default(autoincrement())
-  status String // You can use this to track the status of the friendship (e.g., 'accepted', 'pending', 'rejected')
+  status String
 
   userAId Int
   userA   User @relation("UserFriends", fields: [userAId], references: [id])

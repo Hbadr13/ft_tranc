@@ -1,5 +1,5 @@
 
-import { Controller, Post, Param, UseGuards, Request, NotFoundException, Get, ParseIntPipe, Delete } from '@nestjs/common';
+import { Controller, Post, Param, UseGuards, Request, NotFoundException, Get, ParseIntPipe, Delete, Req } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { AuthGuard } from '@nestjs/passport';
@@ -63,13 +63,13 @@ export class FriendsController {
       // Handle other potential errors
     }
   }
-  
-  @Get('accepted-friends/:userId')
+
+  @Get('accepted-friends')
   async getAcceptedFriends(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Req() req: Request,
   ) {
     const friends = await this.friendsService.findFriendsByStatus(
-      userId,
+      Number(req['id']),
       'accepted',
     );
     return friends;
@@ -82,8 +82,8 @@ export class FriendsController {
       return {}
   }
   @Get(':userId/send-requests')
-  async getSendFriendRequests(@Param('userId') userId: number, @Request() req:any) {
- 
+  async getSendFriendRequests(@Param('userId') userId: number, @Request() req: any) {
+
     if (Number(userId) > 0)
       return this.friendsService.getSendFriendRequests(Number(userId));
     else

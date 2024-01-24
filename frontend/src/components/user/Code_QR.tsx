@@ -113,7 +113,6 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                     'Content-Type': 'application/json',
                 }
             })
-<<<<<<< HEAD
             if (response.ok) {
 
                 const counte = await response.json();
@@ -121,9 +120,6 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                 setSuccess(2)
 
             }
-=======
-            const counte = await response.json();
->>>>>>> hbadr
 
             // Provide the secret to the user for setup, such as displaying a QR code
         } catch (error) {

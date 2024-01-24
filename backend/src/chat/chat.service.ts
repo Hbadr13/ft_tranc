@@ -298,6 +298,7 @@ export class ChatService {
                         isAdmin: true,
                         isOwner: true,
                         isBanned: true,
+                        timeMute: true,
                         userId: true,
                         user: {
                             select: {
@@ -316,6 +317,7 @@ export class ChatService {
             isAdmin: m.isAdmin,
             isOwner: m.isOwner,
             isBanned: m.isBanned,
+            timeMute: m.timeMute,
             foto_user: m.user.foto_user
         }));
         return participant;
@@ -447,8 +449,31 @@ export class ChatService {
     }
 
 
-    async setAdmin(roomId: number, participantId: number, item: string) {
-        console.log('ana hna asat =>', roomId, participantId, item)
+    private scheduleMuteExpirationCheck(id: number, timeMute: Date): void {
+        const timeUntilExpiration = timeMute.getTime() - new Date().getTime();
+
+        if (timeUntilExpiration > 0) {
+            setTimeout(async () => {
+                // Check if the mute time has expired and update the user's mute status
+                const membership = await this.prisma.membership.findUnique({ where: { id: id } });
+                if (membership && membership.timeMute && new Date() >= membership.timeMute) {
+                    await this.prisma.membership.update({
+                        where: {
+                            id: id
+                        },
+                        data: {
+                            timeMute: null
+                        }
+                    })
+                }
+            }, timeUntilExpiration);
+        }
+    }
+
+
+    async setAdmin(roomId: number, participantId: number, item: string, duration: string) {
+
+        console.log('ana hna asat =>', roomId, participantId, item, duration)
         let room = await this.prisma.room.findUnique({
             where: {
                 id: roomId,
@@ -461,10 +486,10 @@ export class ChatService {
                 }
             }
         })
-        const id = room.Memberships[0]?.id
+        const id = room.Memberships[0].id
 
         if (item == 'admin') {
-            let membership = await this.prisma.membership.update({
+            await this.prisma.membership.update({
                 where: {
                     id: id
                 },
@@ -474,14 +499,14 @@ export class ChatService {
             })
         }
         else if (item == 'kick') {
-            let membership = await this.prisma.membership.delete({
+            await this.prisma.membership.delete({
                 where: {
                     id: id
                 },
             })
         }
         else if (item == 'banned') {
-            let membership = await this.prisma.membership.update({
+            await this.prisma.membership.update({
                 where: {
                     id: id
                 },
@@ -491,7 +516,7 @@ export class ChatService {
             })
         }
         else if (item == 'no banned') {
-            let membership = await this.prisma.membership.update({
+            await this.prisma.membership.update({
                 where: {
                     id: id
                 },
@@ -501,7 +526,7 @@ export class ChatService {
             })
         }
         else if (item == 'inAdmin') {
-            let membership = await this.prisma.membership.update({
+            await this.prisma.membership.update({
                 where: {
                     id: id
                 },
@@ -509,6 +534,36 @@ export class ChatService {
                     isAdmin: false
                 }
             })
+        }
+
+        else if (item == 'mute') {
+            const currentTime = new Date();
+            let timeMute: Date;
+            switch (duration.toLowerCase()) {
+                case '1min':
+                    timeMute = new Date(currentTime.getTime() + 60 * 1000);
+                    break;
+                case '1h':
+                    timeMute = new Date(currentTime.getTime() + 60 * 60 * 1000);
+                    break;
+                case '1day':
+                    timeMute = new Date(currentTime.getTime() + 24 * 60 * 60 * 1000);
+                    break;
+                case '1week':
+                    timeMute = new Date(currentTime.getTime() + 7 * 24 * 60 * 60 * 1000);
+                    break;
+                default:
+                    throw new Error('Invalid duration');
+            }
+            await this.prisma.membership.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    timeMute: timeMute
+                }
+            })
+            this.scheduleMuteExpirationCheck(id, timeMute);
         }
 
 

@@ -29,30 +29,21 @@ function LevelBar({ value }: LevelBarpros) {
 
 
 
-export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSocket, Receiver, button, Room, currentUser, setStatus_Tow_User, status_tow_user }: { setMsg2: (value: string) => void, users: userProps[], setMyStatusInRoom: (value: participantsProps) => void, chatSocket: Socket, Receiver: userProps, button: boolean, Room: channelProps, currentUser: userProps, setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean }) {
+export default function Conversation({ myStatusInRoom, currentUser, setMsg2, users, chatSocket, button, Room, setStatus_Tow_User, status_tow_user }: { myStatusInRoom: participantsProps, currentUser: userProps, setMsg2: (value: string) => void, users: userProps[], chatSocket: Socket, button: boolean, Room: channelProps, setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean }) {
     const [messages, setMessages] = useState<messageProps[]>([]);
     const [content, setContent] = useState('');
     const [isend, setIsend] = useState(false);
     const [flag, setfalg] = useState(false);
     const [msg, setMsg] = useState('')
-    const [click, setClick] = useState(0)
-    const [type, setType] = useState(Room.type)
-    const [Room1, setRoom1] = useState<channelProps>(Room);
-    const [password, setPassword] = useState(Room.password);
-    const [participants, setParticipants] = useState<participantsProps[]>([])
-    const [participant, setParticipant] = useState<participantsProps>()
-    const [userStatusRoom, setUserStatusRoom] = useState<participantsProps>()
-    const [error, seterror] = useState(false);
-    const [resevo, setResevo] = useState<userProps>(userData)
+    const [receiver, setReceiver] = useState<userProps>(userData)
     let router = useRouter()
-
 
     useEffect(() => {
 
         let id = Number(router.query.user)
         users.map((item) => {
             if (id == item.id)
-                setResevo(item)
+                setReceiver(item)
         })
     }, [router])
 
@@ -61,7 +52,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
         (
             async () => {
                 try {
-                    const response = await fetch(`${Constant.API_URL}/chat/statusChatTwoUser/${currentUser.id}/${resevo.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/chat/statusChatTwoUser/${receiver.id}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -74,17 +65,17 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
         )();
         setContent('')
         setMsg2(msg);
-    }, [currentUser.id, Receiver, isend, msg, status_tow_user]);
+    }, [receiver, isend, msg, status_tow_user]);
 
     if (!button) {
 
         useEffect(() => {
-            if (resevo.id) {
+            if (receiver.id) {
 
                 (
                     async () => {
                         try {
-                            const response = await fetch(`${Constant.API_URL}/chat/getConversationDirect/${currentUser.id}/${resevo.id}`, {
+                            const response = await fetch(`${Constant.API_URL}/chat/getConversationDirect/${receiver.id}`, {
                                 credentials: 'include',
                             });
                             const content = await response.json();
@@ -96,14 +87,14 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                 )();
             }
             setContent('')
-        }, [currentUser.id, Receiver, isend, msg, resevo]);
+        }, [receiver, isend, msg, receiver]);
     }
     else {
         useEffect(() => {
             (
                 async () => {
                     try {
-                        const response = await fetch(`${Constant.API_URL}/chat/allMessagesChannel/${currentUser.id}/${Room.id}`, {
+                        const response = await fetch(`${Constant.API_URL}/chat/allMessagesChannel/${Room.id}`, {
                             credentials: 'include',
                         });
                         const content = await response.json();
@@ -115,16 +106,21 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                 }
             )();
             setContent('')
-            setResevo(userData)
-        }, [currentUser.id, Room, button, isend, msg]);
+            router.replace('/chat')
+            setReceiver(userData)
+        }, [Room, button, isend, msg]);
     }
+
+    useEffect(() => {
+        console.log('->>>>>>>>>>>>>>>>>', myStatusInRoom);
+    }, [myStatusInRoom])
 
     useEffect(() => {
         chatSocket?.on('message', (message) => {
             if (message) {
                 setMsg(message);
                 if (button) {
-                    fetch(`${Constant.API_URL}/chat/directMessage/${currentUser.id}/${resevo.id}`, {
+                    fetch(`${Constant.API_URL}/chat/directMessage/${receiver.id}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -136,7 +132,8 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                     });
                 }
                 else {
-                    fetch(`${Constant.API_URL}/chat/sendMessageToChannel/${Room.id}/${currentUser.id}`, {
+                    console.log('=>?????????????', Room.id);
+                    fetch(`${Constant.API_URL}/chat/sendMessageToChannel/${Room.id}`, {
                         method: 'POST',
 
                         headers: {
@@ -155,10 +152,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
     const handleClick = async () => {
         if (content) {
             if (!button) {
-
-
-
-                await fetch(`${Constant.API_URL}/chat/directMessage/${currentUser.id}/${resevo.id}`, {
+                await fetch(`${Constant.API_URL}/chat/directMessage/${receiver.id}`, {
                     method: 'POST',
 
                     headers: {
@@ -169,11 +163,11 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                     }),
                     credentials: 'include',
                 });
-                chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Receiver.id, content: content });
+                chatSocket.emit('message', { senderId: currentUser.id, receiverId: receiver.id, content: content });
             }
             else {
 
-                await fetch(`${Constant.API_URL}/chat/sendMessageToChannel/${Room.id}/${currentUser.id}`, {
+                await fetch(`${Constant.API_URL}/chat/sendMessageToChannel/${Room.id}`, {
                     method: 'POST',
 
                     headers: {
@@ -184,7 +178,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                     }),
                     credentials: 'include',
                 });
-                chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Room.id, content: content });
+                chatSocket.emit('message', { senderId: currentUser.id, receiverId: Room.id, content: content });
             }
         }
         // const currentDate = new Date();
@@ -211,7 +205,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
             if (content) {
                 if (!button) {
 
-                    await fetch(`${Constant.API_URL}/chat/directMessage/${currentUser.id}/${resevo.id}`, {
+                    await fetch(`${Constant.API_URL}/chat/directMessage/${receiver.id}`, {
                         method: 'POST',
 
                         headers: {
@@ -222,12 +216,12 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                         }),
                         credentials: 'include',
                     });
-                    chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: resevo.id, content: content });
+                    chatSocket.emit('message', { senderId: currentUser.id, receiverId: receiver.id, content: content });
                 }
                 else {
 
 
-                    await fetch(`${Constant.API_URL}/chat/sendMessageToChannel/${Room.id}/${currentUser.id}`, {
+                    await fetch(`${Constant.API_URL}/chat/sendMessageToChannel/${Room.id}`, {
                         method: 'POST',
 
                         headers: {
@@ -238,7 +232,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                         }),
                         credentials: 'include',
                     });
-                    chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Room.id, content: content });
+                    chatSocket.emit('message', { senderId: currentUser.id, receiverId: Room.id, content: content });
                 }
             }
             if (isend == false)
@@ -247,17 +241,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                 setIsend(false)
             setContent('')
         }
-        // const currentDate = new Date();
 
-        // // Extract hours and minutes
-        // const hours = String(currentDate.getHours()).padStart(2, '0');
-        // const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-
-        // // Format the time as "00:00"
-        // const currentTime = `${hours}:${minutes}`;
-
-        // // Print the result
-        // console.log('Current time in the local time zone (24-hour clock):', currentTime);
 
     };
     const handltime = (time: string) => {
@@ -269,7 +253,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
     return (
         <div className="w-[45%] flex-auto fledx h-[820px] mt-12 relative bg-gray-100  border-2  border-sky-400 rounded-xl ">
             {
-                ((resevo?.id != 0 || Room.id != 0)) ? (
+                ((receiver.id != 0 || Room.id != 0)) ? (
                     <>
                         <div className=' w-full flex justify-center items-center'>
 
@@ -277,13 +261,13 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                                 {button == false && <button className="sm:ml-4 w-full flex hover:scale-105 ps-1 space-x-2 h-full  duration-300 justify-center items-center" >
                                     {!status_tow_user && <div className=' mt-1  sm:mt-0 flex h-full flex-col  w-auto  bg-blacsk justify-center items-end  sm:items-center  -space-y-4 sm:space-y-0'>
                                         <div className="w-3 h-3 z-10 flex sm:hidden   bg-green-600 rounded-[20px] " />
-                                        <img className="w-14 h-14 rounded-full" src={resevo?.foto_user} />
+                                        <img className="w-14 h-14 rounded-full" src={receiver?.foto_user} />
                                     </div>
                                     }
                                     {status_tow_user && <img className="w-14 h-14 rounded-full" src="https://cdn3.iconfinder.com/data/icons/shape-icons/128/icon48pt_different_account-512.png" />}
 
                                     <div className="flex flex-col w-full justify-start items-start">
-                                        <p className="text-black  text-lg">{resevo?.username}</p>
+                                        <p className="text-black  text-lg">{receiver?.username}</p>
                                         <div className="justify-start  -mt-1 space-x-1 items-center flex">
                                             <div className=' hidden sm:flex'>
                                                 <div className="w-3 h-3  bg-green-600 rounded-[20px] " />
@@ -316,13 +300,13 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
 
                                                 {button == false &&
                                                     <div className=" bg-bflack w-full h-full flex-col justify-start items-center  bg-blwack  gasp-[26px] flex">
-                                                        <Edit currentUser={currentUser} Receiver={Receiver} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
+                                                        <Edit users={users} currentUser={currentUser} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
                                                     </div>
                                                 }
                                                 {button == true &&
 
                                                     <div className="w-full h-full flex-col justify-start items-center   gasp-[26px] flex">
-                                                        <EditChannel users={users} setMyStatusInRoom={setMyStatusInRoom} currentUser={currentUser} Room={Room} />
+                                                        <EditChannel users={users} currentUser={currentUser} Room={Room} />
                                                     </div>
                                                     // </div>
 
@@ -371,7 +355,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                                                         </div>
                                                         {button == false &&
                                                             <>
-                                                                {!status_tow_user && <img className="w-12 h-12  -mt-10  rounded-full" src={Receiver.foto_user} />}
+                                                                {!status_tow_user && <img className="w-12 h-12  -mt-10  rounded-full" src={receiver.foto_user} />}
                                                                 {status_tow_user && <img className="w-12 h-12  -mt-10  rounded-full" src="https://cdn3.iconfinder.com/data/icons/shape-icons/128/icon48pt_different_account-512.png" />}
                                                             </>
                                                         }
@@ -389,11 +373,11 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                         </div>
 
 
-                        <div className={` w-full  break-all   h-12 z-h10 mt-2  ${flag == true ? 'blur-sm  lg:blur-0' : null} lg:${flag == true ? null : null} flex flex-row px-3 bg-blasck`}>
+                        {myStatusInRoom.timeMute == null ? <div className={` w-full  break-all   h-12 z-h10 mt-2  ${flag == true ? 'blur-sm  lg:blur-0' : null} lg:${flag == true ? null : null} flex flex-row px-3 bg-blasck`}>
 
                             {
                                 (status.status == "accepted" || !status) &&
-                                <>
+                                <div>
                                     <input
 
                                         onChange={(e) => setContent(e.target.value)}
@@ -409,7 +393,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                                         className='hover:scale-110 duration-300'
                                         onClick={() => handleClick()}
                                     ><img src='https://cdn-icons-png.flaticon.com/512/3682/3682321.png' className='h-8 w-8 ml-2' /></button>
-                                </>
+                                </div>
                             }
                             <>
                                 {
@@ -418,7 +402,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                                             status.userAId == currentUser.id &&
 
                                             <div className=' w-full h-full  flex justify-center items-center'>
-                                                <button className='w-[80%] h-full rounded-full flex hover:scale-105 duration-300  items-center  justify-center   text-md  bg-blue-400 shadow-md text-white border-2 mdl-20 border-white'>Unblocked {Receiver.username} </button>
+                                                <button className='w-[80%] h-full rounded-full flex hover:scale-105 duration-300  items-center  justify-center   text-md  bg-blue-400 shadow-md text-white border-2 mdl-20 border-white'>Unblocked {receiver.username} </button>
                                             </div>
 
 
@@ -435,7 +419,7 @@ export default function Conversation({ setMsg2, users, setMyStatusInRoom, chatSo
                                 }
                             </>
 
-                        </div>
+                        </div> : <div>i cant your mute hahahaha</div>}
 
 
                     </>) : (

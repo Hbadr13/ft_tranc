@@ -54,21 +54,6 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
 
         // const form = e.target;
         // form.reset();
-<<<<<<< HEAD
-  
-        console.log("kin wahd hna: ", error);
-      }
-   
-    } 
-    return(
-        <div className=' flex z-10  h-screen w-full  justify-center items-center '>
-
-        <div className='flex  justify-center flex-col  h-96  w-[500px]  -ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
-            <p className=' text-xl  '> Please Enter Two-Factor Code?</p>
-            <input onChange={(e) => setTwoFactor(e.target.value)} className="p-2  rounded-xl mt-6 text-gray-900 border border-gray-900 rouncursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 ml-4 w-72" type="code" name="text" placeholder="code" />
-                <button onClick={handleTwoFactorVerification} className=' flex justify-center items-center text-black mt-8 w-56 h-10 rounded-2xl  border-2 bg-white  border-blue-500 hover:scale-110 duration-300' >Enter</button>
-        </div>
-=======
 
         router.push('/');
         //   router.push('/');
@@ -96,7 +81,6 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
         <input onChange={(e) => setTwoFactor(e.target.value)} className="p-2  rounded-xl mt-6 text-gray-900 border border-gray-900 rouncursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 ml-4 w-72" type="code" name="text" placeholder="code" />
         <button onClick={handleTwoFactorVerification} className=' flex justify-center items-center text-black mt-8 w-56 h-10 rounded-2xl  border-2 bg-white  border-blue-500 hover:scale-110 duration-300' >Enter</button>
       </div>
->>>>>>> hbadr
     </div>
   );
 

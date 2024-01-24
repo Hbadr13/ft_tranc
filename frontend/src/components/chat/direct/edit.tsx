@@ -1,6 +1,7 @@
 import { Constant } from '@/constants/constant';
-import { userProps } from '@/interface/data'
+import { userData, userProps } from '@/interface/data'
 import Link from 'next/link'
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 interface LevelBarpros {
     value: string
@@ -23,17 +24,27 @@ function LevelBar({ value }: LevelBarpros) {
     );
 }
 
-export default function Edit({ currentUser, Receiver, setStatus_Tow_User, status_tow_user }: { currentUser: userProps, Receiver: userProps, setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean }) {
+export default function Edit({ currentUser, users, setStatus_Tow_User, status_tow_user }: { currentUser: userProps, users: userProps[], setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean }) {
 
     const [status, setstatus] = useState<any>('');
+    const router = useRouter();
+    const [receiver, setReceiver] = useState<userProps>(userData)
 
-
+    useEffect(() => {
+        let id = Number(router.query.user)
+        users.map((item) => {
+            if (item.id == id) {
+                setReceiver(item)
+                console.log('========?>', item.id);
+            }
+        })
+    }, [router])
 
     useEffect(() => {
         (
             async () => {
                 try {
-                    const response = await fetch(`${Constant.API_URL}/chat/statusChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/chat/statusChatTwoUser/${receiver.id}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -46,10 +57,10 @@ export default function Edit({ currentUser, Receiver, setStatus_Tow_User, status
             }
         )();
 
-    }, [currentUser.id, Receiver, status_tow_user]);
+    }, [receiver, status_tow_user]);
     const blockChatTwoUser = async () => {
 
-        const response = await fetch(`${Constant.API_URL}/chat/blockChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+        const response = await fetch(`${Constant.API_URL}/chat/blockChatTwoUser/${receiver.id}`, {
             method: 'POST',
 
             headers: {
@@ -61,11 +72,11 @@ export default function Edit({ currentUser, Receiver, setStatus_Tow_User, status
         if (response.ok)
             setStatus_Tow_User(true)
 
-        // chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Receiver.id, content: content });
+        // chatSocket.emit('message', { senderId: currentUser.id, receiverId: receiver.id, content: content });
     }
     const unblockChatTwoUser = async () => {
 
-        const response = await fetch(`${Constant.API_URL}/chat/unblockChatTwoUser/${currentUser.id}/${Receiver.id}`, {
+        const response = await fetch(`${Constant.API_URL}/chat/unblockChatTwoUser/${receiver.id}`, {
             method: 'POST',
 
             headers: {
@@ -76,17 +87,17 @@ export default function Edit({ currentUser, Receiver, setStatus_Tow_User, status
         });
         if (response.ok)
             setStatus_Tow_User(false)
-        // chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Receiver.id, content: content });
+        // chatSocket.emit('message', { senderId: currentUser.id, receiverId: receiver.id, content: content });
     }
 
     return (
         <div className='w-full h-full'>
-            <Link className="flex-col justify-start items-center gap-3.5 mt-20 flex " href={`/users/${Receiver.username}.${Receiver.id}`}>
-                {!status_tow_user && <img className="w-[136px] h-[136px] rounded-full border-4 border-green-600" src={Receiver.foto_user} />}
+            <Link className="flex-col justify-start items-center gap-3.5 mt-20 flex " href={`/users/${receiver.username}.${receiver.id}`}>
+                {!status_tow_user && <img className="w-[136px] h-[136px] rounded-full border-4 border-green-600" src={receiver.foto_user} />}
                 {status_tow_user && <img className="w-[136px] h-[136px] rounded-full border-4 border-green-600" src="https://cdn3.iconfinder.com/data/icons/shape-icons/128/icon48pt_different_account-512.png" />}
                 <div className="flex-col justify-start items-center gap-1 flex">
-                    <div className="text-zinc-900 dark:text-CusColor_light text-[32px] font-bold font-['Satoshi']">{Receiver.username}</div>
-                    <div className="text-neutral-600 text-base font-normal font-['Satoshi'] leading-[18px]">{Receiver.email}</div>
+                    <div className="text-zinc-900 dark:text-CusColor_light text-[32px] font-bold font-['Satoshi']">{receiver.username}</div>
+                    <div className="text-neutral-600 text-base font-normal font-['Satoshi'] leading-[18px]">{receiver.email}</div>
                 </div>
             </Link>
             <div className="flex-col  justify-center  items-center    w-full gdap-5 flex">
