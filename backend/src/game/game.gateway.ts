@@ -15,6 +15,7 @@ import { HistoryService } from './history/history.service';
 import { BALL, Canvas, Game, Player } from './interface';
 import { GameService } from './game.service';
 import { AchievementService } from './achievement/achievement.service';
+import { parse } from 'cookie';
 
 @WebSocketGateway(
   {
@@ -45,12 +46,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   games: Map<string, Game> = new Map<string, Game>();
 
   async handleConnection(client: Socket) {
-    // try {
-    const userId = Number(client.handshake.query.userId);
-    // console.log('1--->connect', userId, client.id, ':')
-    if (userId < 1) return;
-    this.IdOfPlayer.set(client, userId);
-    // } catch (error) { }
+    try {
+      const auth_cookie = parse(client.handshake.headers.cookie).jwt;
+      const user = await this.gameService.checkuserIfAuth(auth_cookie)
+      const userId = user.id
+      client.handshake.query.userId = String(user.id);
+      this.IdOfPlayer.set(client, userId);
+    } catch (error) {
+      client.disconnect();
+    }
   }
 
   async handleDisconnect(client: Socket) {
@@ -60,7 +64,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         (item) => item._client.id != client.id,
       );
       if (user) {
-        // console.log('---------->deconnect', this.IdOfPlayer.get(client), client.id)
         await this.roomService.deleteRoom(this.IdOfPlayer.get(client));
         this.rooms.delete(user._room);
         this.IdOfPlayer.delete(client);
