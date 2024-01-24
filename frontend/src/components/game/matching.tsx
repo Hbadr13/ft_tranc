@@ -79,7 +79,7 @@ const Matching = ({ socket }: { socket: Socket }) => {
                         }),
                         credentials: 'include',
                     });
-                    const responsePost = await fetch(`${Constant.API_URL}/game/room/${currentUser.id}`, {
+                    const responsePost = await fetch(`${Constant.API_URL}/game/room`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

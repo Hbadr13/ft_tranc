@@ -28,7 +28,7 @@ export const lightSuccess: string = '#BBF7D0'
 
 
 
-const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
+const SideMenu = () => {
     const [isDivHidden, setIsDivHidden] = useState(false);
     const [isDivHidden2, setIsDivHidden2] = useState(!true);
     const [activeButton, setActiveButton] = useState<Number>(0);

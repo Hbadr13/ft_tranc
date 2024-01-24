@@ -62,7 +62,7 @@ export const handelChallenge = async ({ oppId, socket, currentUser, selectUser, 
         const content = await response.json();
         if (!content.gameStatus) {
             const room: string = uuid();
-            const response = await fetch(`${Constant.API_URL}/game/room/${currentUser.id}`, {
+            const response = await fetch(`${Constant.API_URL}/game/room`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

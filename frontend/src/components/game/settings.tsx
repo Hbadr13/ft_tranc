@@ -251,7 +251,6 @@ const Settings = ({ opponent, setopponent, currentUser, setCurrentUser, setgameI
                             });
 
                             if (response2.ok && response_.ok) {
-                                // if (response2.ok && response_.ok) {
                                 const data = await response2.json()
                                 setCurrentUser(content)
                                 setopponent(data)

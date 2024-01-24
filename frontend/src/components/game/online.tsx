@@ -111,9 +111,8 @@ const PlayOnline = ({ opponent, ballTheme, canvasTheme, setgameIsOk, gameIsOk }:
         }
         const socketUrl = `${Constant.API_URL}/gameGateway`;
         const newSocket = io(socketUrl, {
-            query: {
-                userId: currentUser.id,
-            },
+            transports: ["websocket"],
+            withCredentials: true
         });
         newSocket.emit("joinRoom", { room: currentUser.room, userId: currentUser.id, opponentId: currentUser.opponentId });
         newSocket.on('initGame', (game_) => {
