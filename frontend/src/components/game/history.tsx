@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { AppProps, userProps } from '@/interface/data'
 import { getTheDateAndTheTime } from './listOfFriends'
 import { Constant } from '@/constants/constant'
+import { useRouter } from 'next/router'
 function findUserbyId(users: Array<userProps>, userId: Number) {
     const user = users.find((item) => {
         return item.id == userId
@@ -12,6 +13,7 @@ function findUserbyId(users: Array<userProps>, userId: Number) {
 const History = ({ currentUser, users }: { users: Array<userProps>, currentUser: userProps }) => {
     const [matchs, setMatchs] = useState<Array<any>>([])
     const [ok, setoK] = useState(false)
+    const router = useRouter()
     useEffect(() => {
         (
             async () => {
@@ -20,23 +22,10 @@ const History = ({ currentUser, users }: { users: Array<userProps>, currentUser:
                     const response = await fetch(`${Constant.API_URL}/game/history`, {
                         credentials: 'include',
                     });
+                    console.log('------------------------logl')
                     if (response.status == 200) {
                         const content = await response.json()
-                        if (content != undefined && Array.from(content).length) {
-                            const _matchs: Array<any> = []
-                            Array.from(content).reverse().map((item: any) => {
-
-                                const usr = findUserbyId(users, item.opponentId)
-                                if (usr)
-                                    _matchs.push({
-                                        createdAt: item.createdAt,
-                                        myGools: item.myGools,
-                                        opponentGools: item.opponentGools,
-                                        opponent: usr,
-                                    })
-                            })
-                            setMatchs(_matchs)
-                        }
+                        setMatchs(content)
                         setoK(true)
                     }
                 } catch (error) {
@@ -44,7 +33,7 @@ const History = ({ currentUser, users }: { users: Array<userProps>, currentUser:
                 }
             }
         )();
-    }, [users])
+    }, [])
     const handelClearHistorique = async () => {
         const response = await fetch(`${Constant.API_URL}/game/history`, {
             method: 'DELETE',
@@ -73,11 +62,9 @@ const History = ({ currentUser, users }: { users: Array<userProps>, currentUser:
                     {
                         (matchs.length) ? matchs.map((match: any) => (
                             <div key={match.createdAt} className="w-[96%] ms:w-[80%] h-14  rounded-xl flex flex-col justify-center item-center">
-
                                 <div className="bg-blue-800 mx-[20%] text-sm  text-center rounded-t-3xl h-10 mt-2 text-white flex justify-center items-center">
                                     {getTheDateAndTheTime(match.createdAt)}
                                 </div>
-
                                 <div className="bg-blue-500 w-full flex justify-center items-start h-16 rounded-md">
                                     <div className=" w-[40%] h-full flex justify-between items-center">
                                         <div className=" relative h-full w-12">
@@ -106,10 +93,9 @@ const History = ({ currentUser, users }: { users: Array<userProps>, currentUser:
                                     </div>
                                 </div>
                             </div>
-
                         )) : (
                             <div className={`${matchs.length == 0 ? ' flex ' : ' hidden '} w-full 300   justify-center `}>
-                                <footer className='w-[60%] min-w-[400px] max-w-[760px]  rounded-2xl py-10 flex flex-col justify-start items-center space-y-3'>
+                                <footer className='w-[60%] min-w-[400px] max-w-[760px]  rounded-2xl pb-10 flex flex-col justify-center items-center space-y-3 '>
                                     <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
                                         <div className="">
                                             <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
@@ -129,8 +115,8 @@ const History = ({ currentUser, users }: { users: Array<userProps>, currentUser:
                                         {/* <h2 className={`${currentPath == '/search' ? 'hidden' : 'block'}`}>with the name "{query}" .Please try again.</h2> */}
                                     </div>
                                     <div className="space-x-3">
-                                        <button onClick={undefined} className='w-[120px] border-2 border-slate-300 py-2  rounded-md  font-bold hover:bg-slate-300 duration-300 '>Clear search</button>
-                                        <button onClick={undefined} className='w-[120px] border-2  bg-blue-300 py-2  text-blue-800 rounded-md  font-bold hover:bg-blue-400 duration-300'>Get back</button>
+                                        <button onClick={() => router.push('/game/online?listoffriends=true')} className='w-[120px] border-2 border-white py-2  rounded-md  font-bold hover:bg-slate-300 duration-300 '>Create Match</button>
+                                        {/* <button onClick={undefined} className='w-[120px] border-2  bg-blue-300 py-2  text-blue-800 rounded-md  font-bold hover:bg-blue-400 duration-300'>Get back</button> */}
                                     </div>
                                 </footer>
                             </div>
@@ -140,7 +126,7 @@ const History = ({ currentUser, users }: { users: Array<userProps>, currentUser:
             </div>
         )
     return (
-        <div className='w-full h-full bg-white'></div>
+        <div className='w-full h-full bg-blue-400'></div>
     )
 }
 

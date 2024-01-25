@@ -2,10 +2,11 @@ import { Body, Controller, Delete, Get, Req, Param, Post } from '@nestjs/common'
 
 import { historyDto } from '../dto/game'
 import { HistoryService } from './history.service';
+import { UserService } from 'src/user/user.service';
 @Controller('game/history')
 export class HistoryController {
 
-    constructor(private readonly updateService: HistoryService) { }
+    constructor(private readonly updateService: HistoryService, private readonly userService: UserService) { }
     @Post()
     async updateUsershistory(@Req() req: Request, @Body() body: historyDto) {
         try {
@@ -15,10 +16,31 @@ export class HistoryController {
         }
     }
 
+    findUserbyId(users: Array<any>, userId: Number) {
+        const user = users.find((item) => {
+            return item.id == userId
+        })
+        return user
+    }
     @Get()
     async getUsershistory(@Req() req: Request,) {
+        console.log('>>>>>>')
+        const historys = await this.updateService.getUsershistory(Number(req['id']))
+        const users = await this.userService.findAllUsers(Number(req['id']));
+        const _matchs: Array<any> = []
+        Array.from(historys).reverse().map((item: any) => {
+            console.log('-??', item.username)
+            const usr = this.findUserbyId(users, item.opponentId)
+            if (usr)
+                _matchs.push({
+                    createdAt: item.createdAt,
+                    myGools: item.myGools,
+                    opponentGools: item.opponentGools,
+                    opponent: usr,
+                })
+        })
+        return _matchs
         try {
-            return await this.updateService.getUsershistory(Number(req['id']))
         } catch (error) {
 
         }
