@@ -76,7 +76,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   useEffect(() => {
     (
       async () => {
-        const response = await fetch(`${Constant.API_URL}/friends/${currentUser}/send-requests`, {
+        const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
           credentials: 'include',
         });
         const counte = await response.json();
@@ -90,7 +90,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   }, [currentUser, isOpen]);
   const CanacelRequest = async (numberPart: number) => {
     try {
-      const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${currentUser}`, {
+      const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -138,7 +138,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   // fetchCurrentUser(setid);
   const sendRequest = async (numberPart: number) => {
     try {
-      const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}/${currentUser}`, {
+      const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}`, {
         method: 'POST',
         credentials: 'include',
       });
