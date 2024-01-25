@@ -61,7 +61,7 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
 
 
             <div className='flex  justify-center h-[90%] items-center bg-btack  w-full  flex-row'>
-                <div className="   2xl:w-[60%] sm:h-auto  md:h-full  w-[97%] md:w-[90%]  justify-center items-center     bg-blue-500    rounded-bl-lg  rounded-t-2xl flex flex-col ">
+                <div className="   2xl:w-[60%] sm:h-auto  md:h-full  w-[97%] md:w-[90%]  justify-center items-center     bg-blue-500   sm:mt-8   rounded-2xl flex flex-col ">
                     <div className=' flex  bg-bwlack   justify-center items-center hd-full flex-col'>
                         {
                             on == 0 && Leaderboard.map((value: any, index: any) => (
@@ -127,7 +127,7 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
 
                             ))
                         }
-                        <div className={` bg-white w-full md:beg-slate-500 md:w-[350px] lg:w-96 msd:w-84  mt-12   ${on == 1 ? ' h-[600px] ' : ' h-[333] sm:h-[250px] md:h-[403px]'}    lg:bg-white  flex   overflow-y-scroll jusdtify-center items-center m   flex-col scrollbar-hide  rounded-t-3xl`}>
+                        <div className={` bg-white w-full md:beg-slate-500 md:w-[350px] lg:w-96 msd:w-84  mt-11   ${on == 1 ? ' h-[600px] ' : ' h-[200px] lg:h-[550px] sm:h-[250px] md:h-[403px]'}    lg:bg-white  flex   overflow-y-scroll jusdtify-center items-center   flex-col scrollbar-hide  rounded-t-3xl`}>
 
                             {
                                 on == 0 && <button className=' flex justify-start w-10 bg-slate-400 h-3 mt-2  rounded-3xl' onClick={() => seton(1)}></button>

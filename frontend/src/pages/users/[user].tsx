@@ -496,7 +496,7 @@ const YourComponent = ({ currentFileName }: any) => {
                                     (
                                         <div className=' flex z-10  h-screen w-screen  justify-center items-center '>
 
-                                            <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
+                                            <div className='flex  justify-center flex-col  h-80  w-[400px] sm:w-[500px]   z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
                                                 <p className=' text-xl  '> @{username} ?</p>
                                                 <span className=' text-sm mt-4'> You  cannot reach this user </span>
                                                 <Link className=' flex justify-center items-center text-black mt-8 w-56 h-10 rounded-2xl  border-2 bg-white  shadow-md  border-blue-500 hover:scale-110 duration-300' href={'/'}>Canecel</Link>
@@ -507,7 +507,7 @@ const YourComponent = ({ currentFileName }: any) => {
 
                                     <div className=' flex z-10  h-screen w-screen  justify-center items-center '>
 
-                                        <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
+                                        <div className='flex  justify-center flex-col  h-80  w-[400px] sm:w-[500px]  z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
                                             <p className=' text-xl  -mt-10'> Unblock @{username} ?</p>
                                             <span className=' text-sm mt-6'> They will  be able to follow you and view your Tweets </span>
 

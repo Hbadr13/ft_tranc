@@ -38,11 +38,11 @@ export class AuthController {
     @Post('signup')
     // @UseGuards(JwtAuthGuard)
     
-    signup(@Body() dto: AuthDto) {
+    async signup(@Body() dto: AuthDto) {
         console.log({
             dto,
         });
-        return this.authService.signup(dto);
+        return await this.authService.signup(dto);
     }
     @Post('signin')
     // @UseGuards(JwtAuthGuard)
@@ -88,7 +88,7 @@ export class AuthController {
         const user = await this.authService.verifyTwoFactor_intra(dto);
 
         // If 2FA code is valid, generate JWT and set it in the response cookie
-        console.log(user.id);
+   
         await this.setJwtCookie(response, user.id);
 
         return {
@@ -156,7 +156,7 @@ export class AuthController {
     }
     @Post('logout')
     async logout(@Res({ passthrough: true }) response: Response) {
-        response.clearCookie('jwt');
+         await response.clearCookie('jwt');
         return {
             message: 'success',
             status: 201

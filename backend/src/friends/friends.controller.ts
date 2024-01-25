@@ -74,12 +74,12 @@ export class FriendsController {
       userId,
       'accepted',
     );
-    return friends;
+    return  friends;
   }
   @Get('/received-requests')
   async getReceivedFriendRequests(@Req() req) {
     if (Number(req['id']) > 0)
-      return this.friendsService.getReceivedFriendRequests(Number(req['id']));
+      return await this.friendsService.getReceivedFriendRequests(Number(req['id']));
     else
       return {}
   }
@@ -87,14 +87,14 @@ export class FriendsController {
   async getSendFriendRequests(@Req() req) {
  
     if (Number(req['id']) > 0)
-      return this.friendsService.getSendFriendRequests(Number(req['id']));
+      return  await this.friendsService.getSendFriendRequests(Number(req['id']));
     else
       return {}
   }
   @Get('/received-blocked')
   async getReceivedFriendBlocked( @Req() req) {
     if (Number(req['id']) > 0)
-      return this.friendsService.getReceivedFriendBlocked(Number(req['id']));
+      return  await this.friendsService.getReceivedFriendBlocked(Number(req['id']));
     else
       return {}
   }
@@ -102,22 +102,22 @@ export class FriendsController {
   @Get('/send-blocked')
   async getSendFriendBlocked( @Req() req) {
     if (Number(req['id']) > 0)
-      return this.friendsService.getSendFriendblocked(Number(req['id']));
+      return await this.friendsService.getSendFriendblocked(Number(req['id']));
     else
       return {}
   }
   @Delete('delete-friend-request/:requestId')
   async deleteFriendRequest(@Param('requestId') requestId: number,  @Req() req) {
     
-    return this.friendsService.deleteFriendRequest(Number(requestId), Number(req['id']));
+    return await this.friendsService.deleteFriendRequest(Number(requestId), Number(req['id']));
   }
   @Delete('Unblocked-friend/:requestId')
   async unblocked_friend(@Param('requestId') requestId: number,  @Req() req) {
     
-    return this.friendsService.unblocked_friend(Number(requestId), Number(req['id']));
+    return  await this.friendsService.unblocked_friend(Number(requestId), Number(req['id']));
   }
   @Get('received/:receiverId')
   async getReceivedFriendRequests1(@Param('receiverId') receiverId: number) {
-    return this.friendsService.getReceivedFriendRequests1(receiverId);
+    return await this.friendsService.getReceivedFriendRequests1(receiverId);
   }
 }
