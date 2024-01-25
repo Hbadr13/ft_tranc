@@ -19,7 +19,7 @@ model User {
   foto_user              String?
   level                  Float?
   won                    Int?
-  lost                   Int?
+  lost                   Int? 
   gameStatus             String?
   twoFactorSecret        String?
   tempSecret             String?

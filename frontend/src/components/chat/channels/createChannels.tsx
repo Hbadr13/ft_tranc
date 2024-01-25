@@ -73,11 +73,11 @@ export default function Channels({ users, setClick}: { users: userProps[], setCl
               <div className="flex flex-col justify-center items-center p-6 w-full bg-sjlate-400">
                 <h2 className='flex ml- w-full'> Channel Name</h2>
                 <input className='focus:outline-none  flex items-center justify-center mt-2 pl-4 w-full h-10 border border-sky-200 text-CuisColor_dark_grey' type="text" name='Enter channel name' value={name} onChange={(e) => setName(e.target.value)} />
-                    {(good == 1 && !name)&& <p className=' text-red-500'>enter name</p>}
+                {(good == 1 && !name) && <p className=' text-red-500'>enter name</p>}
                 <h2 className='flex mt-4 w-full'> Description</h2>
                 <input className='focus:outline-none  flex items-center justify-center mt-2 pl-4 w-full h-24 border  border-sky-200 text-CuisColor_dark_grey' required type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
-                    {(good == 1 && !description )&& <p className=' text-red-500'>enter description</p>}
-        
+                {(good == 1 && !description) && <p className=' text-red-500'>enter description</p>}
+
               </div>
               <div className=' w-full h-[1px] bg-sky-200' />
               <div className='bg-grajy-400 p-4'>
@@ -94,7 +94,7 @@ export default function Channels({ users, setClick}: { users: userProps[], setCl
               {Type == 'protected' && <div className='flex flex-col justify-center items-center h-24 w-full bg-sjlate-400'>
                 <h2 className='flex ml-12 w-full'>Password</h2>
                 <input className='focus:outline-none  flex items-center justify-center mt-2 pl-4 w-80 h-10 border  text-CuisColor_dark_grey' required type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                {(good == 1 && !password )&& <p className=' text-red-500'>enter password</p>}
+                {(good == 1 && !password) && <p className=' text-red-500'>enter password</p>}
               </div>}
               {Type == 'private' && <div className=" bg-stofne-600 flex flex-col justify-center items-center">
                 <h2 className="w-full ml-20">Add People</h2>

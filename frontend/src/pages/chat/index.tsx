@@ -31,6 +31,7 @@ export default function index({ users, amis }: AppProps) {
         console.log('========?>', item.id);
       }
     })
+    setMyStatusInRoom(participantsData)
   }, [router, button])
 
   useEffect(() => {
@@ -108,6 +109,7 @@ export default function index({ users, amis }: AppProps) {
   useEffect(() => {
     setRoom(channelData);
     setReceiver(userData)
+    setMyStatusInRoom(participantsData)
     setcorrcet(0)
   }, [button]);
   useEffect(() => {
@@ -121,7 +123,7 @@ export default function index({ users, amis }: AppProps) {
     <div className="  flex w-full h-screen  justify-center items-center">
       <div className="  flex  flex-col w-full max-w-[1500px] ">
         <div className={` bg-bldack flex-uwrap  ${joinchannel == true ? 'blur-sm' : null} min-w-full mt-6 min-h-screen flex flex-row justify-centder items-csenter dark:bg-black space-x-2 sm:space-x-6`}>
-          <ConversationList msg2={msg2} amis={amis} setButton={setButton} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} Room={Room} setJoinRoom={setJoinRoom} />
+          <ConversationList currentUser={currentUser} msg2={msg2} amis={amis} setButton={setButton} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} Room={Room} setJoinRoom={setJoinRoom} />
           <Conversation myStatusInRoom={myStatusInRoom} currentUser={currentUser} setMsg2={setMsg2} users={users} chatSocket={chatSocket} button={button} Room={Room} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
           {button == false && receiver.id != 0 &&
             <div className="md:hidaden sm:hidsden hidden  bg-gray-100 dark:bg-slate-800 p-2  mt-12  w-[20%] h-[820px]      lg:flex justify-start items-start   border-2  border-sky-400 rounded-xl">

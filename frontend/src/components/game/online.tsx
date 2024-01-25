@@ -248,7 +248,7 @@ const PlayOnline = ({ opponent, ballTheme, canvasTheme, setgameIsOk, gameIsOk }:
                                 >
                                 </canvas>
                                 {!gameStart ? (
-                                    <GameIsReady username={currentUser.username} opponenetUsername="Ai" userImage={currentUser.foto_user} opponentImage='/game/ai.png' />
+                                    <GameIsReady username={currentUser.username} opponenetUsername={opponent.username} userImage={currentUser.foto_user} opponentImage={opponent.foto_user} />
                                 ) : null
                                 }
                                 {

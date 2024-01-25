@@ -3,7 +3,7 @@ import { AppProps, userProps, listConversationDirect, userData } from '@/interfa
 import { Constant } from '@/constants/constant';
 import { useRouter } from 'next/router';
 
-export default function DirectConversationList({ msg2, users, amis, setStatus_Tow_User, status_tow_user }: { msg2: string, users: userProps[], amis: userProps[], setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean }) {
+export default function DirectConversationList({currentUser, msg2, users, amis, setStatus_Tow_User, status_tow_user }: {currentUser: userProps, msg2: string, users: userProps[], amis: userProps[], setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean }) {
 
     const [click, setClick] = useState(false)
     const [liststatus, setliststatus] = useState<number[]>([]);
@@ -26,7 +26,7 @@ export default function DirectConversationList({ msg2, users, amis, setStatus_To
             async () => {
                 try {
 
-                    const response = await fetch(`${Constant.API_URL}/friends/accepted-friends`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${currentUser.id}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -37,7 +37,7 @@ export default function DirectConversationList({ msg2, users, amis, setStatus_To
                 }
             }
         )();
-    }, []);
+    }, [currentUser]);
 
     useEffect(() => {
         (

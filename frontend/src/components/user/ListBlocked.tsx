@@ -12,21 +12,24 @@ import { Constant } from "@/constants/constant";
 
 
 interface LevelBarpros {
-    value: number
+    value: string
 }
 function LevelBar({ value }: LevelBarpros) {
-    const progressWidth = `${value}%`;
-
+    let progressWidth;
+    if (value.length > 1)
+        progressWidth = `${value}%`;
+    else
+        progressWidth = `${value}0%`;
 
 
     return (
-        <div className="bg-white h-5  drop-shadow-lg  shadow-indigo-500/40    w-[96%]  sm:w-80 rounded-2xl">
-            <div className="bg-[#0ea5e9] h-5 rounded-full " style={{ width: progressWidth }}>
-                {/* <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
-              {`${value}%`} */}
-                {/* </span> */}
-            </div>
+        <div className="bg-white h-5  drop-shadow shadow-md shadow-black    w-80 rounded-lg">
+        <div className="bg-[#0ea5e9] h-5 rounded-lg " style={{ width: progressWidth }}>
+            {/* <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
+          {`${value}%`} */}
+            {/* </span> */}
         </div>
+    </div>
     );
 }
 
@@ -50,6 +53,9 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
     const [username, setUsername] = useState("");
     const [update_email, setupdate_email] = useState("");
     const [update_gender, setupdate_gender] = useState("");
+    const [level1, setlevel1] = useState("");
+    const [level2, setlevel2] = useState("");
+    const [level, setlevel] = useState();
     const [update_name, setupdate_name] = useState("");
     const [update_foto_user, setupdate_foto_user] = useState("");
     const [sendr_blocked, setsendr_blocked] = useState<Array<any>>([]);
@@ -57,7 +63,7 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/${currentUser.id}/send-blocked`, {
+                const response = await fetch(`${Constant.API_URL}/friends/send-blocked`, {
                     credentials: 'include',
                 });
                 const counte = await response.json();
@@ -70,7 +76,7 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
     }, [currentUser.id, check, check1, Isopen, check2]);
     const Unblockedfriend = async (numberPart: number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${currentUser.id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/Unblocked-friend/${numberPart}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -106,6 +112,15 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
                 setid(content.id);
                 setEmail(content.email);
                 setUsername(content.username)
+                setlevel(content.level)
+                const stringValue2: string = String(level);
+                const level3 = stringValue2.split('.');
+
+                if (level3[1])
+                    setlevel1(level3[1]);
+                else
+                    setlevel1("0");
+                setlevel2(level3[0]);
             }
         )();
     });
@@ -151,7 +166,7 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
     fetchAllAmis({ setAmis, currentUser });
     return (
         <div className='flex  flex-wrap  justify-center  min-h-screen  bg-blfack w-full items-center   '>
-        <div className='   flex-none smr-6 sm:mr-0  z-20  sm:w-[408px]   w-auto mt-[120px] mb-10  h-[100%] drop-shadow-2xl   items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
+            <div className='   flex-none smr-6 sm:mr-0  z-20  sm:w-[408px]   w-auto mt-[120px] mb-10  h-[100%] drop-shadow-2xl   items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
                 <div className=" w-full flex-col justify-center items-center text-center">
                     <span>My Profile</span>
                     <div className="mt-6 w-full justify-center flex bg-dblack items-center">
@@ -168,8 +183,8 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
                         <span className="text-sm  font-serif italic flex justify-center mt-3">{email}</span>
                     </div>
                     <div className="mt-8 bg-bflack justify-center flex items-center flex-col w-full  mdl-6">
-                        <LevelBar value={60} />
-                        <p className=' mt-4 text-white shadow-sm shadow-black  mfl-28  w-28 font-serif italic uppercase'>level 8-86%</p>
+                        <LevelBar value={level1} />
+                        <p className=' mt-4 text-white shadow-sm shadow-black    w-28 font-serif italic uppercase'>level {level2}-{level1}%</p>
 
                     </div>
                     <div className=" hidden md:flex ">
@@ -203,7 +218,7 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
                         </div>
                     </div>
                     <div className="mt-10 w-full ">
-                        <button className="bg-white   w-80  h-12  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600  hover:bg:white hover:texts-white hover:scale-105 duration-300 ">Logout</button>
+                        {/* <button className="bg-white   w-80  h-12  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600  hover:bg:white hover:texts-white hover:scale-105 duration-300 ">Logout</button> */}
                     </div>
                 </div>
             </div>
@@ -280,25 +295,25 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
                         )) :
                             (
                                 <footer className='  w-full  rounded-2xl h-full -mt-28  flex flex-col justify-center items-center space-y-3'>
-                                <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
-                                    <div className="">
-                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                                        <div className="">
+                                            <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                        </div>
+                                        <div className=" z-10">
+                                            <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                        </div>
+                                        <div className="">
+                                            <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                        </div>
                                     </div>
-                                    <div className=" z-10">
-                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    <div className=" w-[50%] text-center  text-xl font-semibold">
+                                        <h1>No user found</h1>
                                     </div>
-                                    <div className="">
-                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    <div className=' w-[50%]   text-center'>
+                                        <h2> Sorry, We couldn't find any user </h2>
                                     </div>
-                                </div>
-                                <div className=" w-[50%] text-center  text-xl font-semibold">
-                                    <h1>No user found</h1>
-                                </div>
-                                <div className=' w-[50%]   text-center'>
-                                    <h2> Sorry, We couldn't find any user </h2>
-                                </div>
 
-                            </footer>
+                                </footer>
 
                             )
 
@@ -337,7 +352,7 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
 
                                     </div>
 
-                                 
+
 
 
                                 </div>
@@ -358,25 +373,25 @@ const ListBlocked = ({ currentUser }: { currentUser: userProps }) => {
                         )) :
                             (
                                 <footer className='  w-full  rounded-2xl h-full  -mt-20 flex flex-col justify-center items-center space-y-3'>
-                                <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
-                                    <div className="">
-                                        <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                    <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                                        <div className="">
+                                            <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                                        </div>
+                                        <div className=" z-10">
+                                            <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                        </div>
+                                        <div className="">
+                                            <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                        </div>
                                     </div>
-                                    <div className=" z-10">
-                                        <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                                    <div className=" w-[50%] text-center  text-xl font-semibold">
+                                        <h1>No user found</h1>
                                     </div>
-                                    <div className="">
-                                        <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                                    <div className=' w-[50%]   text-center'>
+                                        <h2> Sorry, We couldn't find any user </h2>
                                     </div>
-                                </div>
-                                <div className=" w-[50%] text-center  text-xl font-semibold">
-                                    <h1>No user found</h1>
-                                </div>
-                                <div className=' w-[50%]   text-center'>
-                                    <h2> Sorry, We couldn't find any user </h2>
-                                </div>
 
-                            </footer>
+                                </footer>
                             )
 
                     }

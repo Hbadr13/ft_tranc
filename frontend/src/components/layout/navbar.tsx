@@ -69,7 +69,9 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
         setclickInInput((pr) => !pr)
         setclick(true)
         try {
-            const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`)
+            const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`, {
+                credentials: 'include'
+            })
             const content = await respons.json()
             setRecentSearches(Array.from(content))
         } catch (error) {
@@ -134,7 +136,10 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
                 method: 'DELETE',
                 credentials: 'include',
             });
-            const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`)
+            const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`,
+                {
+                    credentials: 'include'
+                })
             const content = await respons.json()
             setRecentSearches(Array.from(content))
 

@@ -70,7 +70,7 @@ import { RecentModule } from './search/recent.module';
         }),
         ConfigModule.forRoot({
             isGlobal: true
-        }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule, GameModule, ChatModule, OnlineModule,RecentModule],
+        }), AuthModule, UserModule, BookmarkModule, PrismaModule, FriendsModule, GameModule, ChatModule, OnlineModule, RecentModule],
     providers: [],
 
 })

@@ -36,8 +36,8 @@ export default function AddPeople({ participants, setCancel, users }: { particip
 
     }, [users])
 
-    const   handleClick = () =>{
-        
+    const handleClick = () => {
+
     }
     return (
 

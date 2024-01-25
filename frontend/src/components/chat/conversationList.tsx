@@ -5,7 +5,7 @@ import { AppProps, channelProps, userData, userProps } from '@/interface/data';
 import { useRouter } from 'next/router';
 
 
-export default function ConversationList({ msg2, amis, setButton, users, setRoom, setjoinchannel, setStatus_Tow_User, status_tow_user, Room, setJoinRoom }: { msg2: string, amis: userProps[], setButton: (value: boolean) => void, users: userProps[], setRoom: (value: channelProps) => void, setjoinchannel: (value: boolean) => void, setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean, Room: channelProps, setJoinRoom: (value: channelProps) => void, }) {
+export default function ConversationList({currentUser, msg2, amis, setButton, users, setRoom, setjoinchannel, setStatus_Tow_User, status_tow_user, Room, setJoinRoom }: {currentUser: userProps, msg2: string, amis: userProps[], setButton: (value: boolean) => void, users: userProps[], setRoom: (value: channelProps) => void, setjoinchannel: (value: boolean) => void, setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean, Room: channelProps, setJoinRoom: (value: channelProps) => void, }) {
 
     const [click, setClick] = useState(true)
     const [receiver, setReceiver] = useState<userProps>(userData)
@@ -36,7 +36,7 @@ export default function ConversationList({ msg2, amis, setButton, users, setRoom
             </div>
             <div className='w-full h-ful'>
                 {click ? (
-                    <DirectConversationList msg2={msg2} users={users} amis={amis} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
+                    <DirectConversationList currentUser={currentUser} msg2={msg2} users={users} amis={amis} setStatus_Tow_User={setStatus_Tow_User} status_tow_user={status_tow_user} />
                 ) : (
                     <ChannelsList msg2={msg2} users={users} setRoom={setRoom} setjoinchannel={setjoinchannel} Room={Room} setJoinRoom={setJoinRoom} />
                 )}

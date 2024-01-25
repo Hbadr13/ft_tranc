@@ -373,7 +373,7 @@ export default function Conversation({ myStatusInRoom, currentUser, setMsg2, use
                         </div>
 
 
-                        {myStatusInRoom.timeMute == null ? <div className={` w-full  break-all   h-12 z-h10 mt-2  ${flag == true ? 'blur-sm  lg:blur-0' : null} lg:${flag == true ? null : null} flex flex-row px-3 bg-blasck`}>
+                        {(myStatusInRoom.timeMute == null && button == true )? <div className={` w-full  break-all   h-12 z-h10 mt-2  ${flag == true ? 'blur-sm  lg:blur-0' : null} lg:${flag == true ? null : null} flex flex-row px-3 bg-blasck`}>
 
                             {
                                 (status.status == "accepted" || !status) &&

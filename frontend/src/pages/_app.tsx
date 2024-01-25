@@ -3,19 +3,22 @@ import '@/styles/game.css'
 import type { AppProps } from 'next/app'
 import SideMenu from '@/components/layout/sideMenu';
 import Navbar from '@/components/layout/navbar';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { fetchAllAmis, fetchAllUsers, fetchCurrentUser, getCurrentUser } from '@/hooks/userHooks';
+import { fetchAllAmis, fetchAllUsers, fetchCurrentUser } from '@/hooks/userHooks';
 import Image from 'next/image';
 import { Open_Sans } from 'next/font/google'
 import { userData, userProps } from '@/interface/data';
+// import ThemeContext from '@/hooks/themeContext';
+// import { useRouter } from 'next/navigation';
+import { Transition } from '@headlessui/react';
+import { createContext, } from 'react'
 import { getBack } from '@/hooks/appContexts';
 import { fetchData } from '@/hooks/appContexts';
+import { string } from 'zod';
 import { useRouter } from 'next/router';
-import { Constant } from '@/constants/constant';
-import { getLevel } from '@/components/game/listOfFriends';
-
 const font = Open_Sans({ subsets: ['latin'] })
+// import {useConta}
 export interface CardInvitation {
   currentUser: userProps;
   opponent: userProps;
@@ -24,159 +27,106 @@ export interface CardInvitation {
   hideRequest: boolean;
   myIdFromOpponent: Number
 }
-const RejectRequestComp = ({ router, opponent, rejectRequest, setrejectRequest }: { router: any, opponent: userProps, rejectRequest: boolean, setrejectRequest: (rejectRequest: boolean) => void }) => {
-  return (
-    <>
-      {
-        (rejectRequest) ? (
-          <div className='w-full h-full flex justify-center items-center z-50 absolute top-0   '>
-            <div className="w-full h-full absolute  bg-black opacity-10 "></div>
-            <div className=" shadow-xl overflow-hidden font-sans w-[80%]  md:w-[30%] md:min-w-[400px]  max-w-[500px] h-[330px] md:h-[420px] bg-[#EEF0F6] rounded-2xl flexitems-centerjustify-around  relative">
-              <div className=" relative h-1/4 w-full bg-[#205BF1] rounded-t-2xl flex justify-end items-center">
-                <div className=" absolute w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-full top-[55%] md:top-[50%] left-5 border-4 border-[#EEF0F6]">
-                  {/* <div className=" absolute w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-full top-[55%] md:top-[50%] left-5 border-4 border-[#1F2025]"> */}
-                  <Image className='rounded-full bg-[#EEF0F6]' src={opponent.foto_user} fill style={{ objectFit: "cover" }} alt='user'></Image>
-                </div>
+
+export const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hideRequest, myIdFromOpponent, handerAcceptButton }: CardInvitation) => {
+  const [hide, setHide] = useState(false)
+  return (<>
+    {
+      myIdFromOpponent === Number(currentUser.id) ?
+        (
+          <div className={` z-40 absolute w-full h-screen -top-10  flex justify-center items-center`}>
+            <div className=' w-[30%] h-[30%] bg-white rounded-3xl shadow-sm shadow-black flex flex-col justify-around items-center'>
+              <div className="flex flex-col justify-around items-center border-b-2 border-blue-600  space-y-3">
+                <Image className='rounded-full w-24' height={200} width={200} alt={`image:${opponent.username}`} src={opponent.foto_user}></Image>
+                <h1>{opponent.username}</h1>
               </div>
-              <div className="h-2/3 w-full  space-y-4 p-2 top-6 relative">
-                <div className="w-full flex items-center px-5 md:p-5 -space-x-2 md:space-x-5  ">
-                  <div className="text-[#1F2025] text-xl sm:text-2xl md:text-3xl   capitalize  font-bold overflow-hidden whitespace-nowrap overflow-ellipsis w-[120px] sm:w-max">{'hamza'}</div>
-                  <Image className='w-[40px] h-[40px] lg:w-[60px] lg:h-[60px]' src={'/game/grad/grad-1.svg'} width={60} height={60} alt='grad'></Image>
-                </div>
-                <div className="w-full   text-center text-2xl text-[#1F2025]  capitalize ">
-                  <span>
-                    {opponent.username} reject your request.
-                  </span>
-                  <Image className='ml-1 inline-block' width={20} height={20} alt='ping' src={'/icons-ping-pong-white.png'} />
-                </div>
-                <div className='flex justify-around items-center  w-full  pt-5'>
-                  <button onClick={() => { setrejectRequest(false), router.push('/game') }} className='py-1 px-8  md:px-12 md:py-2 rounded-xl border-2  text-[#1F2025] border-[#1F2025] text-2xl font-medium'>OK</button>
-                </div>
+              <div className='flex justify-around items-center  w-full'>
+                <button onClick={handerRefuseButton} className='m-2 border-2 border-black rounded-xl py-1 px-4 duration-500 ease-in-out hover:py-2 hover:px-5 hover:text-xl'>Refuse</button>
+                <button onClick={handerAcceptButton} className='m-2 border-2 border-black rounded-xl py-1 px-4 bg-[#77A6F7] duration-500 ease-in-out hover:py-2 hover:px-5 hover:text-xl'>Accept</button>
               </div>
             </div>
           </div>
         ) : null
-      }
-    </>
+    }
+  </>
   )
 }
 
+// '{ id: number; createdAt: string; updatedAt: string; email: string; hash: string; username: string; firstName: string; lastName: string; foto_user: string; isOnline: false; userId: number; flag: false; flag1: false; length: any; }'
 
-const CardInvitation = ({ currentUser, opponent, handerRefuseButton, hideRequest, myIdFromOpponent, handerAcceptButton }: CardInvitation) => {
-  return (
-    <>
-      {
-        myIdFromOpponent === Number(currentUser.id) ?
-          (
-            <div className={` z-40  absolute w-full h-screen   flex justify-center items-center `}>
-              <div className=" absolute w-full h-full opacity-10 bg-black"></div>
-              <div className=" shadow-xl overflow-hidden font-sans w-[80%]  md:w-[40%] md:min-w-[450px]  max-w-[600px] max-h-[430px] h-1/2 bg-[#EEF0F6] rounded-2xl flexitems-centerjustify-around  relative">
-                <div className=" relative h-1/4 w-full bg-[#205BF1] rounded-t-2xl flex justify-end items-center">
-                  <div className="text-xl sm:text-2xl text-[#EEF0F6] p-10 relative top-1 md:top-4">
-                    LEVEL:{getLevel(opponent.level)}
-                  </div>
-                  <div className=" absolute w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-full top-[55%] md:top-[50%] left-5 border-4 border-[#EEF0F6]">
-                    <Image className='rounded-full bg-[#EEF0F6]' src={opponent.foto_user} fill style={{ objectFit: "cover" }} alt='user'></Image>
-                  </div>
-                </div>
-                <div className="w-full  flex items-center justify-end text-lg md:text-xl pt-2 pr-4 space-x-2  md:pt-5 md:pr-10 md:space-x-5 ">
-                  <div className=" text-[#4a4a4a]   bottom-2 relative  ">Won: {opponent.won ? opponent.won : 0}</div>
-                  <div className=" text-[#4a4a4a]  bottom-2 relative ">Lost: {opponent.lost ? opponent.lost : 0}</div>
-                </div>
-                <div className="h-2/3 w-full  space-y-5 p-2">
-                  <div className="w-full flex items-center px-5 p-5 -space-x-4 sm:space-x-2 md:space-x-3  ">
-                    <div className="text-[#1F2025] text-2xl  md:text-3xl   capitalize  font-bold overflow-hidden whitespace-nowrap overflow-ellipsis w-[120px] sm:w-max">{opponent.username}</div>
-                    <Image className='w-[40px] h-[40px] lg:w-[60px] lg:h-[60px]' src={'/game/grad/grad-1.svg'} width={60} height={60} alt='grad'></Image>
-                  </div>
-                  <div className="w-full   text-center text-2xl text-[#363636]  capitalize ">
-                    <span>
-                      {opponent.username} wants to play with your.
-                    </span>
-                    <Image className='ml-1 inline-block' width={20} height={20} alt='ping' src={'/icons-ping-pong-black.png'} />
-                  </div>
-                  <div className='flex justify-around items-center  w-full  text-xl pt-5  '>
-                    <button onClick={handerRefuseButton} className='py-2 px-4  md:px-5 md:py-3 rounded-xl border-2  text-[#2d55ba] border-[#2d55ba] font-semibold'>Refuse</button>
-                    <button onClick={handerAcceptButton} className='py-2 px-4  md:px-5 md:py-3 rounded-xl bg-[#205BF1] text-[#EEF0F6] font-semibold'>Accept</button>
-                  </div>
-                </div>
-              </div>
-            </div>)
-          : null
-      }
-    </>
-  )
-}
+// '{ id: number; createdAt: string; updatedAt: string; email: string; hash: string; username: string; firstName: string; lastName: string; foto_user: string; isOnline: false; userId: number; flag: false; flag1: false; length: any; }'
+// const getBakc = createContext<string>('')
+
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter()
-  const [isSideMenuVisible, setIsSideMenuVisible] = useState(!router.asPath.startsWith('/auth/login'))
-  const [isSideMenuVisible2, setisSideMenuVisible2] = useState(!router.asPath.startsWith('/register'))
-  const [isSideMenuVisible3, setisSideMenuVisible3] = useState(!router.asPath.startsWith(`/enter-2fa/`))
+  const isSideMenuVisible = !router.asPath.startsWith('/auth/login');
+  const isSideMenuVisible2 = !router.asPath.startsWith('/register')
+  const isSideMenuVisible3 = !router.asPath.startsWith('/auth/login')
+  const isSideMenuVisible4 = !router.asPath.startsWith(`/enter-2fa/`)
 
   const [socket, setSocket] = useState<any>();
   const [hideRequest, sethideRequest] = useState<boolean>(true);
+
   const [myIdFromOpponent, setmyIdFromOpponent] = useState<number>(-2);
   const [room, setRoom] = useState('')
   const [opponent, setopponent] = useState<userProps>(userData);
+  // const [opponent, setopponent] = useState<userProps>({ id: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, userId: 0, flag: false, });
   const [rejectRequest, setrejectRequest] = useState(false)
-  const [login, setlogin] = useState<boolean>(false)
+
+  const [flag, setflag] = useState<boolean>(true)
+  // const [pathOfGame, setpathOfGame] = useState<string>('')
+  // const router = useRouter()
+
+
   const [onlineUsersss, setOnlineUsersss] = useState<Array<number>>([]);
   const [amis, setAmis] = useState<any>([])
   const [users, setUsers] = useState<Array<any>>([]);
   const [currentUser, setCurrentUser] = useState<userProps>(userData);
-  const [isLogin, setIsLogin] = useState(false)
-  const routerHelp = useRef('')
+  fetchCurrentUser({ setCurrentUser })
   fetchAllUsers({ setUsers, currentUser })
   fetchAllAmis({ setAmis, currentUser })
 
   useEffect(() => {
-    if (isSideMenuVisible2 && isSideMenuVisible3) {
+    if (isSideMenuVisible3 && isSideMenuVisible2 && isSideMenuVisible4) {
       (
         async () => {
-          const response = await fetch(`${Constant.API_URL}/auth/user`, {
+          const response = await fetch('http://localhost:3333/auth/user', {
             credentials: 'include',
           });
           if (response.status != 200 && response.status != 201) {
             router.push('/auth/login');
             return;
           }
-          else {
-            const content = await response.json();
-            setCurrentUser(content);
-            setIsLogin(true)
-          }
         }
       )();
     }
-  }, []);
-  const [opponentSocket, setopponentSocket] = useState()
+  });
+
   useEffect(() => {
     try {
-      const newSocket = io(`${Constant.API_URL}/OnlineGateway`, {
+      const newSocket = io('http://localhost:3333/OnlineGateway', {
         query: {
           userId: currentUser.id,
           amis: amis,
         },
-        transports: ["websocket"],
-        withCredentials: true
+
       });
+
       setSocket(newSocket);
       newSocket?.on("updateOnlineUsers", (amisOnline: any) => {
         setOnlineUsersss(amisOnline)
       });
-      newSocket?.on("areYouReady", ({ opponentSocket, OpponentId, currentPlayer, room }: { opponentSocket: any, OpponentId: string, currentPlayer: userProps, room: string }) => {
+      newSocket?.on("areYouReady", ({ OpponentId, currentPlayer, room }: { OpponentId: string, currentPlayer: userProps, room: string }) => {
         console.log("areYouReady")
         setRoom(room)
-        setopponentSocket(opponentSocket)
         setmyIdFromOpponent(Number(OpponentId))
+        // setpathOfGame(pathOfGame);
         setopponent(currentPlayer);
         sethideRequest(true)
       });
-      newSocket?.on("rejectRequest", async ({ _opponent, _room }: { _opponent: userProps, _room: string }) => {
-        const user = await getCurrentUser()
-        if (user.room == _room) {
-          setrejectRequest(true)
-          setopponent(_opponent)
-        }
+      newSocket?.on("rejectRequest", () => {
+        // console.log('hello---')
+        setrejectRequest(true)
       })
       newSocket?.on("rejectAcceptRequesthidden", () => {
         sethideRequest((prev) => !prev)
@@ -187,8 +137,9 @@ export default function App({ Component, pageProps }: AppProps) {
       };
     }
     catch (error) {
+
     }
-  }, [currentUser]);
+  }, [currentUser, amis]);
 
   const modifiedPageProps = {
     ...pageProps,
@@ -205,14 +156,21 @@ export default function App({ Component, pageProps }: AppProps) {
     setRoom('')
     sethideRequest((prev) => !prev)
     setmyIdFromOpponent(-2)
-    // try {
-    //   const responseDelete = await fetch(`${Constant.API_URL}/game/room/${currentUser.id}`, {
-    //     method: 'DELETE',
-    //     credentials: 'include',
-    //   });
-    // } catch (error) {
-    // }
-    socket.emit("rejectRequest", { currentUser, opponent, opponentSocket, room });
+    try {
+      const responseDelete = await fetch(`http://localhost:3333/game/room/${currentUser.id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      console.log('id->:', opponent.id)
+      const responseDelete2 = await fetch(`http://localhost:3333/game/room/${opponent.id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+    } catch (error) {
+
+    }
+    setflag(true)
+    socket.emit("rejectRequest", { currentUser, opponent });
   }
 
   const handerAcceptButton = async () => {
@@ -221,7 +179,8 @@ export default function App({ Component, pageProps }: AppProps) {
     socket?.emit('deleteFromsearchForOpponent');
     setmyIdFromOpponent(-2)
     sethideRequest((prev) => !prev)
-    const response = await fetch(`${Constant.API_URL}/game/room/${currentUser.id}`, {
+    console.log(room)
+    const response = await fetch(`http://localhost:3333/game/room/${currentUser.id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -239,70 +198,58 @@ export default function App({ Component, pageProps }: AppProps) {
   const [refreshData, setRefreshData] = useState<boolean>(false)
   const [oldPath, setOldPath] = useState('')
   useEffect(() => {
-    (
-      async () => {
-        try {
-
-          const response = await fetch(`${Constant.API_URL}/auth/user`, {
-            credentials: 'include',
-          });
-          if (response.status == 200 || response.status == 201) {
-            const content = await response.json();
-            setCurrentUser(content);
-            setIsLogin(true)
-          }
-          else if (router.asPath != '/register' && router.asPath != '/auth/login')
-            router.push('/auth/login')
-        } catch (error) {
-
-        }
-      }
-    )();
-  }, [login]);
-  useEffect(() => {
-    routerHelp.current = router.asPath
     if ((oldPath == '/game/online?search=true' && router.asPath != '/game/online?settings=true') || oldPath == '/game/online?settings=true')
       socket?.emit('withdrawalFromMatching')
-    if ((oldPath == '/game/online?settings=true' && router.asPath != '/game/online?play=true') ||
-      (oldPath == '/game/online?search=true' && router.asPath != '/game/online?settings=true'))
+    if (oldPath == '/game/online?settings=true' && router.asPath != '/game/online?play=true')
       socket?.emit('DeleteuserFromGame', { userId: currentUser.id })
-    if (oldPath == '/auth/login')
-      setlogin((pr) => !pr)
+
+    console.log('-----------------slkdfjafd')
+    setOldPath(router.asPath)
     if (router.route != '/search')
       setpath(router.route)
-    if (oldPath != '/game/online?settings=true' && router.asPath == '/game/online?play=true')
-      router.push('/game')
-    setOldPath(router.asPath)
-    setIsSideMenuVisible(router.asPath != '/auth/login')
-    setisSideMenuVisible2(router.asPath != '/register')
-    setisSideMenuVisible3(router.asPath != `/enter-2fa/`)
   }, [router])
-  const itv = isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3
+
   return (
-    <fetchData.Provider value={{ setRefreshData: setRefreshData, refreshData: refreshData }}>
-      <getBack.Provider value={path}>
-        <RejectRequestComp router={router} opponent={opponent} rejectRequest={rejectRequest} setrejectRequest={setrejectRequest} />
-        <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
-          hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
-        <div className={`${font.className}   font-medium ${rejectRequest || myIdFromOpponent === Number(currentUser.id) ? 'blur-[0.7px]' : ''}`}>
-          {
-            isLogin && isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3 &&
-            <>
-              <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
-              <SideMenu currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
-            </>
-          }
-          <div
-            className={`${isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3 ? 'home' : ''}`}
-            hidden={(!isLogin && isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3)}
-          >
-            <Component
-              {...modifiedPageProps}
-            >
-            </Component>
+    <>
+      <fetchData.Provider value={{ setRefreshData: setRefreshData, refreshData: refreshData }}>
+        <getBack.Provider value={path}>
+          <RejectRequestComp rejectRequest={rejectRequest} setrejectRequest={setrejectRequest} />
+          <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
+            hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
+          <div className={`${font.className}   font-medium `}>
+            {isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible4 &&
+              <>
+                <Navbar currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
+                <SideMenu currentUser={currentUser} users={users} amis={amis} onlineUsersss={onlineUsersss} socket={socket} />
+
+              </>
+            }
+            <div className="home ">
+              <Component  {...modifiedPageProps} />
+            </div>
           </div>
-        </div>
-      </getBack.Provider>
-    </fetchData.Provider >
+        </getBack.Provider>
+      </fetchData.Provider>
+    </>
+  )
+}
+const RejectRequestComp = ({ rejectRequest, setrejectRequest }: { rejectRequest: boolean, setrejectRequest: (rejectRequest: boolean) => void }) => {
+  return (
+    <>
+      {
+        (rejectRequest) ? (
+          <div className='w-full h-full flex justify-center items-center z-50 absolute top-0  '>
+            <div className=' shadow-2xl w-[300px] h-[200px] bg-white flex flex-col justify-around item-center  rounded-3xl'>
+              <div className="flex justify-around item-center ">
+                <h1 className=''>reject you Request</h1>
+              </div>
+              <div className="flex justify-around item-center">
+                <button onClick={() => setrejectRequest(false)} className='bg-[#77A6F7] px-5  py-1 rounded-xl'>OK</button>
+              </div>
+            </div>
+          </div>
+        ) : null
+      }
+    </>
   )
 }
