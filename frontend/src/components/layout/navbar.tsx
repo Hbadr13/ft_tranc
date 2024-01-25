@@ -7,8 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { handelSendRequest } from '@/handeler/handelbutttons'
 
-import { fetchData } from '@/hooks/appContexts';
-import { usefetchDataContext } from '@/hooks/usefetchDataContext'
+
 import { handelChallenge } from '../game/listOfFriends'
 import { Constant } from '@/constants/constant'
 
@@ -25,7 +24,6 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
     const [filterUser, setfilterUser] = useState<Array<userProps>>([])
     const [newAmis, setAmis] = useState<Array<userProps>>(amis)
     const [selectUser, setselectUser] = useState<Number>(-1);
-    const { refreshData, setRefreshData } = usefetchDataContext()
 
 
 
@@ -64,7 +62,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
 
             }
         )();
-    }, [refreshData, amis]);
+    }, [ amis]);
     const handelClickInInput = async () => {
         setclickInInput((pr) => !pr)
         setclick(true)
@@ -179,7 +177,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
                 }
             }
         )();
-    }, [currentUser, query, Ssend, refreshData]);
+    }, [currentUser, query, Ssend]);
     const handelButtonSearch = () => {
         const search = document.querySelector('.Search')
         search?.classList.toggle('display')

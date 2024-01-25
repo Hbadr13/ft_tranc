@@ -2,17 +2,17 @@
 import Friends from '@/components/user/Friend';
 import Rank from '@/components/user/Rank';
 import { fetchAllAmis, fetchCurrentUser } from '@/hooks/userHooks';
-import { AppProps, userProps } from '@/interface/data';
+import { AppProps, userData, userProps } from '@/interface/data';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import path from 'path';
 import { send } from 'process';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { usefetchDataContext } from '@/hooks/usefetchDataContext';
 import { NullLiteral } from 'typescript';
 import { any, string } from 'zod';
 import { Constant } from '@/constants/constant';
+import { handelChallenge } from '@/components/game/listOfFriends';
 
 interface LevelBarpros {
     value: string
@@ -36,7 +36,7 @@ function LevelBar({ value }: LevelBarpros) {
     );
 }
 
-const YourComponent = ({ currentFileName }: any) => {
+const YourComponent = ({ onlineUsersss, socket, currentFileName }: { onlineUsersss: Array<Number>, socket: any, currentFileName: any }) => {
     const [flag, setFlag] = useState(true)
     const [flag1, setFlag1] = useState(true)
     const [flag2, setFlag2] = useState(true)
@@ -62,20 +62,21 @@ const YourComponent = ({ currentFileName }: any) => {
     const [amis, setAmis] = useState<Array<userProps>>([])
     const [amis_id, setAmisid] = useState<Array<userProps>>([])
     const [delete_request, setdelete_request] = useState<any>([])
+    const [selectUser, setselectUser] = useState<Number>(-1);
 
     const [received, setreceived] = useState<Array<any>>([]);
     const [sendr, setsendr] = useState<Array<any>>([]);
     const [received_blocked, setreceived_blocked] = useState<Array<any>>([]);
     const [sendr_blocked, setsendr_blocked] = useState<Array<any>>([]);
+
     const router = useRouter()
     const parts = currentFileName.split('.');
     const numberPart: number = Number(parts[1]);
     const usernamePart: string = parts[0];
-
+    // console.log('socket 2', socket)
     const [number, setNumber] = useState(0);
-    const { refreshData, setRefreshData } = usefetchDataContext()
     const [id, setid] = useState(0);
-
+    const [currentUser, setCurrentUser] = useState<userProps>(userData);
     useEffect(() => {
         (
             async () => {
@@ -87,7 +88,7 @@ const YourComponent = ({ currentFileName }: any) => {
                     if (response.ok) {
 
                         const content = await response.json();
-
+                        setCurrentUser(content)
                         setid(content.id);
                     }
                 } catch (error) {
@@ -97,7 +98,7 @@ const YourComponent = ({ currentFileName }: any) => {
                 // console.log(content.id);
             }
         )();
-    });
+    }, []);
 
     useEffect(() => {
 
@@ -349,7 +350,6 @@ const YourComponent = ({ currentFileName }: any) => {
             if (response.ok) {
                 console.log('Friend request sent successfully.');
                 setisfriend(!isfriend);
-                setRefreshData((pr) => !pr)
 
             } else {
                 setIsOpen(false);
@@ -580,7 +580,8 @@ const YourComponent = ({ currentFileName }: any) => {
                                                                     <span className='normal-case'>Friends</span>
                                                                 </div>
                                                                 <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center bg-[#dbeafe] border rounded-2xl p-1 hover:scale-110 duration-300" >Message</Link>
-                                                                <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center  bg-[#dbeafe]  border rounded-2xl p-1 hover:scale-110 duration-300" >play</Link>
+                                                                {/* <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center  bg-[#dbeafe]  border rounded-2xl p-1 hover:scale-110 duration-300" >play</Link> */}
+                                                                <button onClick={() => onlineUsersss.includes(numberPart) ? handelChallenge({ oppId: numberPart, socket: socket, currentUser: currentUser, selectUser: selectUser, setselectUser: setselectUser, router: router }) : undefined} content='play' className="  w-28  h-10 flex justify-center items-center  bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</button>
 
 
                                                             </div>
@@ -603,7 +604,7 @@ const YourComponent = ({ currentFileName }: any) => {
                                                                             <span className='normal-case'>Friends</span>
                                                                         </div>
                                                                         <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
-                                                                        <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center  bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</Link>
+                                                                        <button onClick={() => onlineUsersss.includes(numberPart) ? handelChallenge({ oppId: numberPart, socket: socket, currentUser: currentUser, selectUser: selectUser, setselectUser: setselectUser, router: router }) : undefined} content='play' className="  w-28  h-10 flex justify-center items-center  bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</button>
 
 
                                                                     </div>)
@@ -768,6 +769,7 @@ const YourComponent = ({ currentFileName }: any) => {
 export async function getServerSideProps(context: any) {
     // const currentFileName = path.basename(__filename);
     const currentFileName = context.query.user;
+    console.log('socket,', context.socket)
 
     return {
         props: {
