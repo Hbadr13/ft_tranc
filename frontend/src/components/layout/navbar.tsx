@@ -5,12 +5,12 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 import Link from 'next/link'
 import { handelSendRequest } from '@/handeler/handelbutttons'
-import { usefetchDataContext } from '@/hooks/usefetchDataContext'
 import { handelChallenge } from '../game/listOfFriends'
 import { Constant } from '@/constants/constant'
+import { fetchAllAmis, fetchAllUsers, getAllAmis, getAllUsers } from '@/hooks/userHooks'
 
 
-const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) => {
+const Navbar = ({ onlineUsersss, currentUser, socket }: AppProps) => {
     const refCardSearch = useRef<any>();
     const refInput = useRef<any>();
     const [clickInInput, setclickInInput] = useState(false)
@@ -20,13 +20,13 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
     const [Ssend, setSend] = useState<boolean>(false)
     const router = useRouter()
     const [filterUser, setfilterUser] = useState<Array<userProps>>([])
-    const [newAmis, setAmis] = useState<Array<userProps>>(amis)
     const [selectUser, setselectUser] = useState<Number>(-1);
+    const [amis, setAmis] = useState<Array<any>>([])
+    const [users, setUsers] = useState<Array<any>>([]);
+    fetchAllAmis({ setAmis, currentUser })
+    fetchAllUsers({ setUsers, currentUser })
+    // const [newAmis, _setAmis] = useState<Array<userProps>>(amis)
 
-
-    const toggleTheme = () => {
-        document.body.classList.toggle('dark');
-    };
     const handelOnSubmit = () => {
         const search = query.trim().replace(/\s+/g, ' ')
         if (query.replace(/\s+/g, '')) {
@@ -43,26 +43,15 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
             }
         }
     }
-    useEffect(() => {
-        (
-            async () => {
-                try {
 
-                    const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${currentUser.id}`, {
-                        credentials: 'include',
-                    });
-                    const content = await response.json();
-                    setAmis(Array.from(content));
-                } catch (error) {
-
-                }
-
-            }
-        )();
-    }, [amis]);
     const handelClickInInput = async () => {
         setclickInInput((pr) => !pr)
         setclick(true)
+        console.log('hello--------input')
+        const data = await getAllAmis({ currentUser })
+        const data1 = await getAllUsers({ currentUser })
+        setAmis(Array.from(data))
+        setUsers(Array.from(data1))
         try {
             const respons = await fetch(`${Constant.API_URL}/search/recent`, {
                 credentials: 'include'
@@ -85,7 +74,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
         if (query.replace(/\s+/g, '')) {
             const usrs = users.filter((user: userProps) => {
                 user.flag = true
-                newAmis.filter((usr: userProps) => {
+                amis.filter((usr: userProps) => {
                     if (usr.id == user.id) {
                         user.flag = false
                     }
@@ -98,7 +87,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
         if (query == '') {
             const usrs = recentSearches.filter((user: userProps) => {
                 user.flag = true
-                newAmis.filter((usr: userProps) => {
+                amis.filter((usr: userProps) => {
                     if (usr.id == user.id) {
                         user.flag = false
                     }
@@ -108,7 +97,7 @@ const Navbar = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =
             )
             setfilterUser(usrs)
         }
-    }, [query, users, newAmis, recentSearches])
+    }, [query, users, amis, recentSearches])
 
     const handelClickProfile = async (id: Number) => {
         try {

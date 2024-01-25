@@ -57,8 +57,8 @@ function Index({ onlineUsersss }: AppProps) {
   const [currentUser, setCurrentUser] = useState<userProps>(userData);
 
   fetchCurrentUser({ setCurrentUser })
-  fetchAllUsers({ setUsers, currentUser })
   fetchAllAmis({ setAmis, currentUser })
+  fetchAllUsers({ setUsers, currentUser })
 
   return (
     <div className='w-full h-screen flex justify-center'>

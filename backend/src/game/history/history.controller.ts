@@ -24,7 +24,6 @@ export class HistoryController {
     }
     @Get()
     async getUsershistory(@Req() req: Request,) {
-        console.log('>>>>>>')
         const historys = await this.updateService.getUsershistory(Number(req['id']))
         const users = await this.userService.findAllUsers(Number(req['id']));
         const _matchs: Array<any> = []

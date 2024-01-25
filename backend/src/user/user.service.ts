@@ -91,7 +91,6 @@ export class UserService {
     });
 
     const filteredUsers = users.filter(user => user.id !== userAId);
-
     const filteredUsers1 = filteredUsers.filter(user => {
       const hasMatchingSentRequest = data_rese.sentFriendRequests.some(
         sentRequest => sentRequest.receiver.id === user.id
