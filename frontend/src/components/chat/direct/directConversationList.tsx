@@ -130,7 +130,7 @@ export default function DirectConversationList({currentUser, msg2, users, amis, 
 
 
     return (
-        <div className=' w-full h-full bgf-black flex justify-start items-center flex-col bg-blackf'>
+        <div className=' w-[90%] h-full bg-blackf flex justify-start items-center flex-col bg-blackf'>
             {
                 !click ? (
                     <button onClick={() => setClick(true)} className=" text-white  bg-blue-400 rounded-[52px] justify-center w-full h-12 items-center  duration-300 hover:scale-105">
@@ -144,7 +144,7 @@ export default function DirectConversationList({currentUser, msg2, users, amis, 
                 ) : null
             }
 
-            <div className='overflow-y-scroll scrollbar-hide bg-fblack bfg-blue-500 h-[86%] w-full'>
+            <div className='overflow-y-scroll scrollbar-hide bg-fblack bg-blfue-500 h-[600px] w-full'>
                 {
                     click ? (
 

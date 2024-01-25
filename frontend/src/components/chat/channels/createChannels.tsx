@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { userProps } from '@/interface/data'
 import { disconnect } from 'process';
 
-export default function Channels({ users, setClick}: { users: userProps[], setClick: (value: string) => void}) {
+export default function Channels({ users, setClick }: { users: userProps[], setClick: (value: string) => void }) {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -57,10 +57,7 @@ export default function Channels({ users, setClick}: { users: userProps[], setCl
       setSelect(false)
     else
       setSelect(true)
-    // console.log(item
-    // console.log('-???', item[index].flag)
     setLastUsers(item)
-    // console.log(lastUsers)
   }
 
   return (
@@ -83,22 +80,22 @@ export default function Channels({ users, setClick}: { users: userProps[], setCl
               <div className='bg-grajy-400 p-4'>
 
                 <h2 className='flex  w-full justify-center'> Type</h2>
-                <div className="w-full flex  justify-center">
-                  <select className=' border border-sky-200 p-2 mt-2' onChange={(e) => setType(e.target.value)}>
+                <div className=" flex  justify-center">
+                  <select className=' border border-sky-200 p-2 mt-2 w-[40%]' onChange={(e) => setType(e.target.value)}>
                     <option value="public">Public</option>
                     <option value="protected">Protected</option>
                     <option value="private">Private</option>
                   </select>
                 </div>
               </div>
-              {Type == 'protected' && <div className='flex flex-col justify-center items-center h-24 w-full bg-sjlate-400'>
+              {Type == 'protected' && <div className='flex flex-col justify-center items-center h-24 w-full bg-sflate-400'>
                 <h2 className='flex ml-12 w-full'>Password</h2>
-                <input className='focus:outline-none  flex items-center justify-center mt-2 pl-4 w-80 h-10 border  text-CuisColor_dark_grey' required type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input className='focus:outline-none  flex items-center justify-center mt-2 pl-4 w-[90%] h-10 border  bg-blafck  text-CuisColor_dark_grey' required type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 {(good == 1 && !password) && <p className=' text-red-500'>enter password</p>}
               </div>}
               {Type == 'private' && <div className=" bg-stofne-600 flex flex-col justify-center items-center">
                 <h2 className="w-full ml-20">Add People</h2>
-                <div className='overflow-y-scroll bg-blfack scrollbar-hide flex bg-gdray-600 flex-row justify-start items-center flex-wrap gridx grid-cols-2x grid-flolw-colx  h-28   w-80 bg-slatef-400 mt-2  space-fx-0 spacfe-y-0 gap-1 bg-slatfe-700'>
+                <div className='overflow-y-scroll bg-blfack bg-blafck scrollbar-hide flex bg-gdray-600 flex-row justify-start items-center flex-wrap gridx grid-cols-2x grid-flolw-colx  h-28   w-[90%] bg-slatef-400 mt-2  space-fx-0 spacfe-y-0 gap-1 bg-slatfe-700'>
                   {lastUsers.map((item, index) => (
                     <div className=' bg-ambder-500 bord,fer border-sfky-900 rounded-md  w-auto b-black'>
                       {
@@ -138,11 +135,11 @@ export default function Channels({ users, setClick}: { users: userProps[], setCl
               {message && <p>{message}</p>}
             </div>
           </div>
-        ) : (<div className='flex flex-col bg-blac shadow-xl w-96'>
+        ) : (<div className='flex flex-col bg-blfack shadow-xl w-full '>
           <div className="bg-sgky-400 w-full h-20 flex justify-cenjter items-cejnter">
             <div className='flex justify-start w-full items-center ml-8  text-black'>
               <h1 className=' text-shadow-sm'>Add People</h1></div>
-            <div className='w-full justify-end items-center bg-blhack flex'>
+            <div className='w-full justify-end items-center bg-blac flex'>
               <button onClick={() => setAdd(false)} className=" mr-6">
                 <svg width="10" height="10" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path id="Vector" d="M117.5 100L196.25 21.25C201.25 16.25 201.25 8.75 196.25 3.75C191.25 -1.25 183.75 -1.25 178.75 3.75L100 82.5L21.25 3.75C16.25 -1.25 8.75 -1.25 3.75 3.75C-1.25 8.75 -1.25 16.25 3.75 21.25L82.5 100L3.75 178.75C1.25 181.25 0 183.75 0 187.5C0 195 5 200 12.5 200C16.25 200 18.75 198.75 21.25 196.25L100 117.5L178.75 196.25C181.25 198.75 183.75 200 187.5 200C191.25 200 193.75 198.75 196.25 196.25C201.25 191.25 201.25 183.75 196.25 178.75L117.5 100Z" fill="#376EFA" fill-opacity="0.85" />
@@ -151,7 +148,7 @@ export default function Channels({ users, setClick}: { users: userProps[], setCl
             </div>
           </div>
           <div className=' w-full h-[1px] bg-sky-200' />
-          <div className='flex-row-revferse overflow-x-scroll scrollbar-hide flex w-96 p-4'>
+          <div className='flex-row-revferse overflow-x-scroll scrollbar-hide flex w-[90%] p-4'>
             {lastUsers.map((item, index) => (
               <div className=' bg-blfack bggf-blue-600  w-32 h-14 p-2 flex justify-center items-center'>
                 {
