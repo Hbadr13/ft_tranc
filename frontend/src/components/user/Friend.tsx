@@ -21,10 +21,9 @@ function LevelBar(userid: any) {
           const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${userid.userid}`, {
             credentials: 'include',
           });
-          if (response.ok) {
-            const content = await response.json();
-            setAmisid(Array.from(content));
-          }
+          const content = await response.json();
+
+          setAmisid(Array.from(content));
         } catch (error) {
 
         }
@@ -77,7 +76,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   useEffect(() => {
     (
       async () => {
-        const response = await fetch(`${Constant.API_URL}/friends/${currentUser}/send-requests`, {
+        const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
           credentials: 'include',
         });
         const counte = await response.json();
@@ -111,7 +110,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
 
     // console.log(send)
     let freid = 0;
-    let filterUser: any = amis_id?.filter((user: userProps) => {
+    let filterUser: any = amis_id.filter((user: userProps) => {
       user.flag = true;
       user.flag1 = true;
 
@@ -275,7 +274,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
               </div>
 
             </footer>
-
+         
 
           )
         }

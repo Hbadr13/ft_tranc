@@ -54,11 +54,18 @@ const UseProfile = () => {
   useEffect(() => {
     (
       async () => {
-        const response = await fetch(`${Constant.API_URL}/auth/user`, {
-          credentials: 'include',
-        });
-        const content = await response.json();
-        setCurrentUser(content);
+        try {
+
+          const response = await fetch(`${Constant.API_URL}/auth/user`, {
+            credentials: 'include',
+          });
+          if (response.ok) {
+            const content = await response.json();
+            setCurrentUser(content);
+          }
+        } catch (error) {
+
+        }
       }
     )();
   }, []);
@@ -71,25 +78,24 @@ const UseProfile = () => {
           const response = await fetch(`${Constant.API_URL}/auth/user`, {
             credentials: 'include',
           });
-          const content = await response.json();
-          setFoto_user(content.foto_user);
-          setid(content.id);
-          setEmail(content.email);
-          setUsername(content.username)
-          setlevel(content.level)
-          const stringValue2: string = String(level);
-          const level3 = stringValue2.split('.');
-          if (level3[1])
-            setlevel1(level3[1]);
-          else
-            setlevel1("0");
-          setlevel2(level3[0]);
+          if (response.ok) {
+            const content = await response.json();
+            setFoto_user(content.foto_user);
+            setid(content.id);
+            setEmail(content.email);
+            setUsername(content.username)
+            setlevel(content.level)
+            const stringValue2: string = String(level);
+            const level3 = stringValue2.split('.');
+            if (level3[1])
+              setlevel1(level3[1]);
+            else
+              setlevel1("0");
+            setlevel2(level3[0]);
+          }
         } catch (error) {
 
         }
-        // setUsername(content.username);
-
-        // console.log(content.id);
       }
     )();
   });
@@ -150,19 +156,18 @@ const UseProfile = () => {
     (
       async () => {
         try {
-
           const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${id}`, {
             credentials: 'include',
           });
-          const content = await response.json();
-          setAmis(content);
+          if (response.ok) {
+            const content = await response.json();
+            setAmis(content);
+          }
         } catch (error) {
         }
       }
     )();
   }, [query, id]);
-
-
 
 
   return (

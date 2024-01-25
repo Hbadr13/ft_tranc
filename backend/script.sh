@@ -1,3 +1,4 @@
-npx prisma migrate dev --name database_trans
-# npx prisma generate
+npx prisma migrate dev
+npx prisma generate
+npx prisma migrate deploy
 npm run start:dev

@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState, RefObject } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { Ball, Canvas, Player } from "./class";
 import Image from "next/image";
@@ -237,7 +237,7 @@ const PlayWithComputer = ({ currentUser, selectPlayer, setselectPlayer, ballThem
 
     return (
         <div className="Gamebackground   w-full h-screen flex  justify-center   ">
-            <div className=" relative w-full  h-[800px] flex flex-col  justify-center items-center  mt-[70px]">
+            <div className=" relative w-full  max-w-[1700px] h-[800px] flex flex-col  justify-center items-center  mt-[70px]">
                 <ScoreBoard currentUser={currentUser} direction="right" pause={pause} handelButtonLeave={() => router.push('/game')}
                     handelButtonGameStatus={handelButtonGameStatus} gameStatus={gameStatus} Ai={true} AiProfile="/game/ai.png" />
 

@@ -55,8 +55,10 @@ export const fetchAllUsers = ({ setUsers, currentUser }:
                     const response = await fetch(`${Constant.API_URL}/users/${currentUser.id}`, {
                         credentials: 'include',
                     });
-                    const content = await response.json();
-                    setUsers(Array.from(content));
+                    if (response.ok) {
+                        const content = await response.json();
+                        setUsers(Array.from(content));
+                    }
                 } catch (error) {
 
                 }
@@ -79,12 +81,13 @@ export const fetchAllAmis = ({ setAmis, currentUser }: fetchAllAmisprops) => {
                     const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${currentUser.id}`, {
                         credentials: 'include',
                     });
-                    const content = await response.json();
-                    setAmis(Array.from(content));
+                    if (response.ok) {
+                        const content = await response.json();
+                        setAmis(Array.from(content));
+                    }
                 } catch (error) {
 
                 }
-
             }
         )();
     }, [currentUser]);
@@ -99,8 +102,10 @@ export const fetchCurrentUser = ({ setCurrentUser }: { setCurrentUser: (currentU
                     const response = await fetch(`${Constant.API_URL}/auth/user`, {
                         credentials: 'include',
                     });
-                    const content = await response.json();
-                    setCurrentUser(content);
+                    if (response.ok) {
+                        const content = await response.json();
+                        setCurrentUser(content);
+                    }
                 } catch (error) {
 
                 }
@@ -113,8 +118,10 @@ export const getCurrentUser = async () => {
         const response = await fetch(`${Constant.API_URL}/auth/user`, {
             credentials: 'include',
         });
-        const content = await response.json();
-        return content
+        if (response.ok) {
+            const content = await response.json();
+            return content
+        }
     } catch (error) {
 
     }

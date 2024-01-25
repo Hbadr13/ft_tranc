@@ -93,7 +93,6 @@ export class Canvas {
     public ClearCanvas(): void {
         if (!this.ctx) return;
         this.ctx.fillStyle = this.gameInfo.CANVAS_COLOR
-        // this.ctx.fillStyle = this.gameInfo.CANVAS_COLOR
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         // var img = new Image();
         // img.src = '/ping-pong.png';
@@ -111,22 +110,10 @@ export class Canvas {
         // this.ctx.arc(ball.x, ball.y, ball.raduis, 0, Math.PI * 2, true);
         // this.ctx.closePath();
         // this.ctx.fill();
+        
         var img = new Image();
         img.src = ball.color;
-        // this.ctx.fillRect(ball.x-15, ball.y-10, 30, 20);
-        const radiusX = 30
-        const radiusY = 15
-        // this.ctx.save();
-
-        // this.ctx.beginPath();
-        // this.ctx.ellipse(ball.x, ball.y, radiusX, radiusY, 0, 0, 2 * Math.PI);
-        // this.ctx.closePath();
-
-        // this.ctx.clip();
         this.ctx.drawImage(img, ball.x - ball.radiusX, ball.y - ball.radiusY, ball.radiusX * 2, ball.radiusY * 2);
-
-        // this.ctx.restore();
-        // this.ctx.drawImage(img, ball.x - ball.raduis, ball.y - ball.raduis, ball.raduis * 2, ball.raduis * 2);
     }
 
     public drawText(text: string, x: number, y: number, color: string) {

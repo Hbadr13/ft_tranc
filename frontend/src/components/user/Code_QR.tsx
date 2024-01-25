@@ -135,10 +135,6 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                 setSuccess(2)
 
             }
-<<<<<<< .merge_file_6oeerQ
-=======
-
->>>>>>> .merge_file_mikvQ0
 
             // Provide the secret to the user for setup, such as displaying a QR code
         } catch (error) {

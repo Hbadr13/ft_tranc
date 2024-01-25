@@ -1,22 +1,18 @@
 import { useRouter } from 'next/router'
 import React, { useContext, useEffect, useState } from 'react'
 import Image from 'next/image'
-import { getBack } from '@/hooks/appContexts'
 import { AppProps, userProps } from '@/interface/data'
 import Link from 'next/link'
 import { handelSendRequest } from '@/handeler/handelbutttons'
-import { usefetchDataContext } from '@/hooks/usefetchDataContext'
 import { handelChallenge } from '@/components/game/listOfFriends'
 import { Constant } from '@/constants/constant'
 const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) => {
     const router = useRouter()
-    const oldpath = useContext(getBack)
     const [filterUser, setfilterUser] = useState<Array<userProps>>([])
     const [currentPath, setcurrentPath] = useState<string>('')
     const [recentSearches, setRecentSearches] = useState<Array<userProps>>([])
     const [arrayOfsender, setarrayOfsender] = useState<Array<Number>>([])
     const [Ssend, setSend] = useState<boolean>(false)
-    const { refreshData, setRefreshData } = usefetchDataContext()
     const [selectUser, setselectUser] = useState<Number>(-1);
 
     const qr: string | string[] | undefined = router.query.query
@@ -30,10 +26,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     }
 
     const handelGetBack = () => {
-        if (oldpath == '/users/[user]')
-            router.push('/')
-        else
-            router.push(oldpath)
+        router.push('/')
     }
 
     useEffect(() => {
@@ -100,7 +93,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                 }
             }
         )();
-    }, [currentUser, query, Ssend, refreshData]);
+    }, [currentUser, query, Ssend]);
 
 
     useEffect(() => {
@@ -128,7 +121,8 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                 method: 'DELETE',
                 credentials: 'include',
             });
-            setRecentSearches([])
+            if (response.ok)
+                setRecentSearches([])
         } catch (error) {
 
         }
@@ -141,7 +135,8 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
             });
             const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`)
             const content = await respons.json()
-            setRecentSearches(Array.from(content))
+            if (respons.ok && respons.ok)
+                setRecentSearches(Array.from(content))
 
         } catch (error) {
         }

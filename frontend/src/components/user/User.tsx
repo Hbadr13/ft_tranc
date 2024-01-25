@@ -791,4 +791,3 @@ export default User;
 function strjoin(separator: any, strings: any[]) {
     return strings.join(separator);
 }
-

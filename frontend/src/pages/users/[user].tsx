@@ -9,7 +9,6 @@ import path from 'path';
 import { send } from 'process';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { usefetchDataContext } from '@/hooks/usefetchDataContext';
 import { NullLiteral } from 'typescript';
 import { any, string } from 'zod';
 import { Constant } from '@/constants/constant';
@@ -73,7 +72,6 @@ const YourComponent = ({ currentFileName }: any) => {
     const usernamePart: string = parts[0];
 
     const [number, setNumber] = useState(0);
-    const { refreshData, setRefreshData } = usefetchDataContext()
     const [id, setid] = useState(0);
 
     useEffect(() => {
@@ -322,7 +320,6 @@ const YourComponent = ({ currentFileName }: any) => {
             if (response.ok) {
                 console.log('Friend request sent successfully.');
                 setisfriend(!isfriend);
-                setRefreshData((pr) => !pr)
 
             } else {
                 setIsOpen(false);
@@ -384,7 +381,6 @@ const YourComponent = ({ currentFileName }: any) => {
 
                 // else
                 // setref(true)
-                setRefreshData((pr) => !pr)
                 console.log('delete-friend-request sent successfully.');
             } else {
                 console.error('Failed to delete-friend-request.');
@@ -496,7 +492,7 @@ const YourComponent = ({ currentFileName }: any) => {
                                     (
                                         <div className=' flex z-10  h-screen w-screen  justify-center items-center '>
 
-                                            <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
+                                            <div className='flex  justify-center flex-col  h-80  w-[400px] sm:w-[500px]   z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
                                                 <p className=' text-xl  '> @{username} ?</p>
                                                 <span className=' text-sm mt-4'> You  cannot reach this user </span>
                                                 <Link className=' flex justify-center items-center text-black mt-8 w-56 h-10 rounded-2xl  border-2 bg-white  shadow-md  border-blue-500 hover:scale-110 duration-300' href={'/'}>Canecel</Link>
@@ -507,7 +503,7 @@ const YourComponent = ({ currentFileName }: any) => {
 
                                     <div className=' flex z-10  h-screen w-screen  justify-center items-center '>
 
-                                        <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
+                                        <div className='flex  justify-center flex-col  h-80  w-[400px] sm:w-[500px]  z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
                                             <p className=' text-xl  -mt-10'> Unblock @{username} ?</p>
                                             <span className=' text-sm mt-6'> They will  be able to follow you and view your Tweets </span>
 
@@ -749,4 +745,3 @@ export async function getServerSideProps(context: any) {
 }
 
 export default YourComponent;
-

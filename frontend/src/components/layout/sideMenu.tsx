@@ -1,42 +1,33 @@
-
-
-import { Combobox, Transition } from '@headlessui/react'
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-
-import UserInfo from '../user/UserInfo'
-import { AppProps, BoxSearchrProps, userProps } from '@/interface/data'
-import { CustomLinkSideMenuProps } from '../../interface/model'
+import { AppProps } from '@/interface/data'
 import { useRouter } from 'next/router'
 
 
-
-export const SideMenuColor: string = '#1ba098'
-export const light: string = '#eee'
-export const primary: string = '#1976D2'
-export const lightPrimary: string = '#CFE8FF'
-export const grey: string = '#eee'
-export const darkGrey: string = '#AAAAAA'
-export const dark: string = '#363949'
-export const danger: string = '#D32F2F'
-export const lightDanger: string = '#FECDD3'
-export const warning: string = '#FBC02D'
-export const lightWarning: string = '#FFF2C6'
-export const success: string = '#388E3C'
-export const lightSuccess: string = '#BBF7D0'
-
+// export const SideMenuColor: string = '#1ba098'
+// export const light: string = '#eee'
+// export const primary: string = '#1976D2'
+// export const lightPrimary: string = '#CFE8FF'
+// export const grey: string = '#eee'
+// export const darkGrey: string = '#AAAAAA'
+// export const dark: string = '#363949'
+// export const danger: string = '#D32F2F'
+// export const lightDanger: string = '#FECDD3'
+// export const warning: string = '#FBC02D'
+// export const lightWarning: string = '#FFF2C6'
+// export const success: string = '#388E3C'
+// export const lightSuccess: string = '#BBF7D0'
 
 
-const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
-    const [isDivHidden, setIsDivHidden] = useState(false);
-    const [isDivHidden2, setIsDivHidden2] = useState(!true);
+
+const SideMenu = () => {
+    
     const [activeButton, setActiveButton] = useState<Number>(0);
     const router = useRouter()
     const grey: string = ' bg-[#eee] ';
     const light: string = ' bg-[#f6f6f9] ';
     const handelsplitSidebar = () => {
-        setIsDivHidden2((pr) => !pr)
         const sidebar = document.querySelector('.sidebar')
         if (window.innerWidth < 768) {
 
@@ -82,7 +73,7 @@ const SideMenu = ({ onlineUsersss, currentUser, users, amis }: AppProps) => {
                 </button>
             </div>
             <div className={`text-md sidebar  hidden  md:block  fixed top-0 z-40  pt-20 h-screen  ${light}  space-y-3`}>
-                <span id='' hidden={isDivHidden} className="z-50 -top-4  right- absolute  duration-300 right-1" >
+                <span id=''  className="z-50 -top-4  right- absolute  duration-300 right-1" >
                     <Image src='/ping-pong-2.png' className={` z-50 xl:block   w-auto`} alt='home' width={65} height={20} priority={true}></Image>
                 </span>
 

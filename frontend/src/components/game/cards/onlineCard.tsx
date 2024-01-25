@@ -25,8 +25,8 @@ const OnlineCard = ({ setselectPlayer }: { setselectPlayer: (selectPlayer: strin
         } catch (error) {
 
         }
-
     }
+    
     return (
         <div className="w-full h-full flex  justify-center items-center ">
             <div className="OnlineCard  relative  overflow-hidden w-[100%] h-[90%]  flex flex-col justify-center items-center rounded-xl">

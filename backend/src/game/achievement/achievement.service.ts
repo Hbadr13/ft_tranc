@@ -7,14 +7,6 @@ import { AchievementDto } from '../dto/game';
 export class AchievementService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async getLevel(userId: number) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-    return user.level;
-  }
   async updateLevel(userId: number, body: AchievementDto) {
     let newLevel: number = 0
     let ifWon = 0

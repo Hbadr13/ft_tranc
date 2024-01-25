@@ -1,30 +1,28 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+
+
+import { Body, Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { playDto, roomDto } from '../dto/game';
+import { Request } from 'express';
 
 @Controller('game/room')
 export class RoomController {
   constructor(private readonly roomService: RoomService) { }
-  @Get('/:userId')
-  async getRoom(@Param('userId') userId: string) {
-    return this.roomService.getRoom(Number(userId));
+  @Get()
+  async getRoom(@Req() req: Request) {
+    return this.roomService.getRoom(Number(req['id']));
   }
   @Post('/:userId')
   async creatRoom(@Param('userId') userId: string, @Body() body: roomDto) {
-    return this.roomService.creatRoom(Number(userId), body);
+    return await this.roomService.creatRoom(Number(userId), body);
   }
-  @Post('/play/:userId')
-  async startGame(@Param('userId') userId: string, @Body() body: playDto) {
-    // console.log(body, userId)
-    return this.roomService.startGame(Number(userId), body);
+  @Post('/play/:id')
+  async startGame(@Req() req: Request, @Body() body: playDto) {
+    return await this.roomService.startGame(Number(req['id']), body);
   }
-  @Post('/settings/:userId')
-  async choiseSettingGame(@Param('userId') userId: string, @Body() body: playDto) {
-    // console.log(body)
-    // return this.roomService.choiseSettingGame(Number(userId), body);
-  }
-  @Delete('/:userId')
-  async deleteRoom(@Param('userId') userId: string) {
-    return this.roomService.deleteRoom(Number(userId));
+
+  @Delete()
+  async deleteRoom(@Req() req: Request) {
+    return this.roomService.deleteRoom(Number(req['id']));
   }
 }
