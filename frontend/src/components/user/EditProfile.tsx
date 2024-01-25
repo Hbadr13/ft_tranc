@@ -14,7 +14,11 @@ interface LevelBarpros {
     value: String
 }
 function LevelBar({ value }: LevelBarpros) {
-    const progressWidth = `${value}0%`;
+    let progressWidth;
+    if (value.length > 1)
+      progressWidth = `${value}%`;
+    else
+      progressWidth = `${value}0%`;
 
 
 
@@ -34,8 +38,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
     const [query, sequery] = useState("")
 
     const [isOpen, setIsOpen] = useState(false)
-    const falq1 = "https://i.pinimg.com/564x/dc/51/61/dc5161dd5e36744d184e0b98e97d31ba.jpg";
-    const flaq2 = "https://i.pinimg.com/564x/30/c7/1b/30c71b3c02f31c2f3747c9b7404d6880.jpg";
+    
 
     const [check, setCheck] = useState(0);
     const [check1, setCheck1] = useState(0);
@@ -109,7 +112,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
         // console.log(update_gender);
 
         try {
-            const res = await fetch(`${Constant.API_URL}/users/update_info/${id}`, {
+            const res = await fetch(`${Constant.API_URL}/users/update_info`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -168,18 +171,11 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
     useEffect(() => {
         (
             async () => {
-                // console.log(update_foto_user);
-                if (update_foto_user)
-                    setupdate_gender(update_foto_user)
-                else if (!update_foto_user && (foto_user == falq1 || foto_user == flaq2) && update_gender)
-                    setupdate_gender(update_gender)
-                else
-                    setupdate_gender(foto_user)
                 if (!update_email)
                     setupdate_email(email);
                 if (!update_name)
                     setupdate_name(username);
-                // console.log(content.id);
+
             }
         )();
     });
@@ -273,7 +269,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                         </div>
                     </div>
                     <div className="mt-10 w-full ">
-                        <button className="bg-white   w-80  h-12  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600  hover:bg:white hover:texts-white hover:scale-105 duration-300 ">Logout</button>
+                        {/* <button className="bg-white   w-80  h-12  transition-all shadow-sm shadow-black active:scale-100 rounded-xl border text-blue-600  hover:bg:white hover:texts-white hover:scale-105 duration-300 "></button> */}
                     </div>
                 </div>
             </div>
@@ -334,14 +330,14 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                 </div>
 
                 <div className="flex flex-row  mt-12  text-sm  space-x-5  ">
-                    <div className="flex justify-center items-center font-bold text-sm   drop-shadow shadow-lg bg-blue-600  h-8 w-44  rounded-lg    text-white ">Gender</div>
-                    <label>
+                    {/* <div className="flex justify-center items-center font-bold text-sm   drop-shadow shadow-lg bg-blue-600  h-8 w-44  rounded-lg    text-white ">Gender</div> */}
+                    {/* <label>
                         <select required value={gender} onChange={(e) => setupdate_gender(e.target.value)} className="p-2  rounded-lg  drop-shadow shadow-lg -mt-2 text-black  rouncursor-pointer bg-white dark:text-black focus:outline-none dark:bg-white dark:border-black h-12 w-96" >
                             <option value="">Select gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                         </select>
-                    </label>
+                    </label> */}
                 </div>
 
                 <button className="bg-blue-600  mt-16    drop-shadow shadow-lg    w-80 rounded-lg text-white py-2 hover:scale-105 hover:bg-blue-600 duration-500 " onClick={handleSubmit}>Save Changes</button>

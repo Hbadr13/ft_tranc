@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { userProps } from "@/interface/data";
 import { Constant } from "@/constants/constant";
+import Image from 'next/image';
 
 function Profiles(Leaderboard: any) {
     return (
@@ -551,10 +552,12 @@ const Rank = ({ amis_id, amis, id }: { amis_id: Array<userProps>, amis: Array<us
         (
             async () => {
                 try {
+
                     const response = await fetch(`${Constant.API_URL}/users/${0}`, {
                         credentials: 'include',
                     });
                     if (response.ok) {
+
                         const content = await response.json();
                         setUsers_id(Array.from(content));
                     }
@@ -582,8 +585,39 @@ const Rank = ({ amis_id, amis, id }: { amis_id: Array<userProps>, amis: Array<us
             return user
     })
     return (
-        <div className="board">
-            <Profiles Leaderboard={between(filterUser)} />
+        <div className=" w-full h-full flex justify-center items-center">
+
+            {
+                amis_id.length > 0 && <Profiles Leaderboard={between(filterUser)} />
+
+            }
+            {
+                !amis_id.length &&
+                <div className="overflow-y-scroll  scrollbar-hide bg-white  -mt-10 sm:mt-0 w-[96%]  sm:w-[430px] drop-shadow shadow-md shadow-black rounded-2xl h-[85%] mst-2">
+
+                    <footer className='  w-full  rounded-2xl h-full  -mt-20 flex flex-col justify-center items-center space-y-3'>
+                        <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
+                            <div className="">
+                                <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
+                            </div>
+                            <div className=" z-10">
+                                <Image className=' border-2 border-white rounded-full w-[60px] h-[60px]' priority width={600} height={600} src={'/search/woman.png'} alt='woman iamge'></Image>
+                            </div>
+                            <div className="">
+                                <Image className='  border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/boy.png'} alt='woman iamge'></Image>
+                            </div>
+                        </div>
+                        <div className=" w-[50%] text-center  text-xl font-semibold">
+                            <h1>No user found</h1>
+                        </div>
+                        <div className=' w-[50%]   text-center'>
+                            <h2> Sorry, We couldn't find any user </h2>
+                        </div>
+
+                    </footer>
+
+                </div>
+            }
         </div>
     );
 };

@@ -145,7 +145,7 @@ const Navbar = ({ onlineUsersss, currentUser, socket }: AppProps) => {
         (
             async () => {
                 try {
-                    const response = await fetch(`${Constant.API_URL}/friends/${currentUser.id}/send-requests`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
                         credentials: 'include',
                     });
                     const content = await response.json();

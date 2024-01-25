@@ -26,7 +26,8 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     }
 
     const handelGetBack = () => {
-        router.push('/')
+            router.push('/')
+
     }
 
     useEffect(() => {

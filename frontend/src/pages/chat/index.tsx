@@ -161,7 +161,7 @@ export default function index({ users, amis }: AppProps) {
                       <div className=" flex justify-center items-center w-16 h-16 rounded-full bg-white  mt-1 drop-shadow shadow-lg shaddow-black ">
 
                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0,0,256,256">
-                          <g fill="#1437be" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" > <g transform="scale(8.53333,8.53333)"><path d="M15,2c-3.85433,0 -7,3.14567 -7,7v2h-2c-1.105,0 -2,0.895 -2,2v12c0,1.105 0.895,2 2,2h18c1.105,0 2,-0.895 2,-2v-12c0,-1.105 -0.895,-2 -2,-2h-2v-2c0,-3.72842 -2.96342,-6.73143 -6.64453,-6.92773c-0.11309,-0.04556 -0.23356,-0.07005 -0.35547,-0.07227zM15,4c2.77367,0 5,2.22633 5,5v2h-10v-2c0,-2.77367 2.22633,-5 5,-5z"></path></g></g>
+                          <g fill="#1437be" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" fontFamily="none" font-weight="none" fontSize="none" text-anchor="none" > <g transform="scale(8.53333,8.53333)"><path d="M15,2c-3.85433,0 -7,3.14567 -7,7v2h-2c-1.105,0 -2,0.895 -2,2v12c0,1.105 0.895,2 2,2h18c1.105,0 2,-0.895 2,-2v-12c0,-1.105 -0.895,-2 -2,-2h-2v-2c0,-3.72842 -2.96342,-6.73143 -6.64453,-6.92773c-0.11309,-0.04556 -0.23356,-0.07005 -0.35547,-0.07227zM15,4c2.77367,0 5,2.22633 5,5v2h-10v-2c0,-2.77367 2.22633,-5 5,-5z"></path></g></g>
                         </svg>
                       </div>
                       {/* <div className=' w-96 hd-2 border-2 mt-5' > </div> */}
@@ -196,7 +196,7 @@ export default function index({ users, amis }: AppProps) {
                       <div className=" flex justify-center items-center w-16 h-16 rounded-full bg-white  mt-10 drop-shadow shadow-lg shaddow-black ">
 
                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0,0,256,256">
-                          <g fill="#1437be" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(10.66667,10.66667)"><path d="M12,0c-3.30078,0 -6,2.69922 -6,6v2h2v-2c0,-2.21875 1.78125,-4 4,-4c2.21875,0 4,1.78125 4,4v5h-13v13h18v-13h-3v-5c0,-3.30078 -2.69922,-6 -6,-6z"></path></g></g>
+                          <g fill="#1437be" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" fontFamily="none" font-weight="none" fontSize="none" text-anchor="none"><g transform="scale(10.66667,10.66667)"><path d="M12,0c-3.30078,0 -6,2.69922 -6,6v2h2v-2c0,-2.21875 1.78125,-4 4,-4c2.21875,0 4,1.78125 4,4v5h-13v13h18v-13h-3v-5c0,-3.30078 -2.69922,-6 -6,-6z"></path></g></g>
                         </svg>
                       </div>
                       <div className='text-black text-xl mt-3  mel-16   flex justify-center items-center w-full font-black' >Confirm {Room.name}</div>

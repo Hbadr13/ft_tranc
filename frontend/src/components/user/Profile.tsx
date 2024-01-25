@@ -4,25 +4,27 @@ import React, { useEffect, useState } from 'react';
 import Friends from "./Friend";
 import Rank from "./Rank";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
-import { userProps } from "@/interface/data";
+import { userData, userProps } from "@/interface/data";
 
 import Image from 'next/image'
 import { Constant } from "@/constants/constant";
+import { getLevel } from "../game/listOfFriends";
 
 interface LevelBarpros {
   value: string
 }
 function LevelBar({ value }: LevelBarpros) {
-  const progressWidth = `${value}0%`;
+  let progressWidth;
+  if (value.length > 1)
+    progressWidth = `${value}%`;
+  else
+    progressWidth = `${value}0%`;
 
 
 
   return (
     <div className="bg-white h-5  drop-shadow shadow-md shadow-black    w-80 rounded-lg">
       <div className="bg-[#0ea5e9] h-5 rounded-lg " style={{ width: progressWidth }}>
-        {/* <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
-          {`${value}%`} */}
-        {/* </span> */}
       </div>
     </div>
   );
@@ -30,17 +32,11 @@ function LevelBar({ value }: LevelBarpros) {
 
 const UseProfile = () => {
   const [amis, setAmis] = useState<any>([])
-  const [query, sequery] = useState("")
   const [level, setlevel] = useState();
-  const [level1, setlevel1] = useState("");
-  const [level2, setlevel2] = useState("");
-
-  const [isOpen, setIsOpen] = useState(false)
-
   const [check, setCheck] = useState(2);
   const [check1, setCheck1] = useState(0);
   const [check2, setCheck2] = useState(0);
-  const [currentUser, setCurrentUser] = useState<Array<any>>([]);
+  const [currentUser, setCurrentUser] = useState<userProps>(userData);
   const [foto_user, setFoto_user] = useState("");
   const [id, setid] = useState(0);
   const [logout, setLogout] = useState(0);
@@ -83,11 +79,6 @@ const UseProfile = () => {
             setlevel(content.level)
             const stringValue2: string = String(level);
             const level3 = stringValue2.split('.');
-            if (level3[1])
-              setlevel1(level3[1]);
-            else
-              setlevel1("0");
-            setlevel2(level3[0]);
           }
         } catch (error) {
 
@@ -110,16 +101,11 @@ const UseProfile = () => {
       setCheck2(0);
 
     }
-    // else if (fd == 2 && check1 == 1)
-    //     setCheck1(2);
-    // else if (fd == 2 && check1 == 2)
-    //     setCheck1(0);
     else if (check1 == 1) {
 
       setCheck2(0);
       setCheck1(0);
     }
-
   }
   const freind_ranck1 = async (fd: number) => {
     setCheck(fd)
@@ -127,10 +113,6 @@ const UseProfile = () => {
       setCheck2(1);
       setCheck1(0);
     }
-    // else if (fd == 2 && check1 == 1)
-    //     setCheck1(2);
-    // else if (fd == 2 && check1 == 2)
-    //     setCheck1(0);
     else if (check2 == 1) {
       setCheck2(0);
       setCheck1(0);
@@ -163,12 +145,21 @@ const UseProfile = () => {
         }
       }
     )();
-  }, [query, id]);
+  }, [id]);
 
-
+  const getLevel = (level: number | any): string => {
+    if (!level)
+      return '0'
+    return level.toString().slice(0, level.toString().indexOf('.') + 3)
+  }
+  const extractdecimalNumberFromLevel = (_level: number) => {
+    var level: string = _level.toString() + '0'
+    const ret = level.toString().indexOf('.') == -1 ? 0 : level.toString().slice(level.toString().indexOf('.') + 1, level.toString().indexOf('.') + 3)
+    return Number(ret) > 2 ? ret : 0
+  }
   return (
 
-    <div className=" flex flex-col">
+    <div className=" flex flex-col w-full min-h-screen">
 
       <div className={`flex flex-wrap gl-5  sm:ml-0 ${logout == 1 ? 'blur-sm' : null}  justify-center min-h-screen  w-full   items-center  `}>
         <div className='  flex-none   z-20 w-auto bg-slate-400  sm:w-[408px] mt-[120px] mb-10  h-[100%]  shadow-xl  shadow-[#728edb] justify-center items-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-[40px] p-6  text-white'>
@@ -186,9 +177,9 @@ const UseProfile = () => {
               <span className="text-sm  font-serif italic flex justify-center mt-3">{email}</span>
             </div>
             <div className="mt-8  flex justify-center flex-col items-center bgs-black mal-6">
-              <LevelBar value={level1} />
+              <LevelBar value={String(extractdecimalNumberFromLevel(currentUser.level))} />
               <div className="  flex  justify-center items-center">
-                <p className=' mt-4 text-white shadow-sm shadow-black   w-28 font-serif  uppercase'>level {level2}-{level1}%</p>
+                <p className=' mt-4 text-white shadow-sm shadow-black   w-28   uppercasej'>level : {getLevel(currentUser.level)}</p>
               </div>
             </div>
             <div className=" hidden md:flex justify-center items-center  ">
@@ -197,12 +188,13 @@ const UseProfile = () => {
                 <Link className="text-base font-bold flex justify-center  items-center ml- text-blue-600" href={"/EditProfile"}><span className=" py-2 px-28 bg-white border  drop-shadow shadow-md shadow-black  rounded-xl hover:scale-110 duration-300">EditProfile</span>
                 </Link>
                 <h1 className="flex  mt-[40px] ">Recent Activities</h1>
-
-                <img
+                <Image src={'/game/grad/grad-2.svg'} width={400} height={400} alt="card">
+                </Image>
+                {/* <img
                   src="https://w0.peakpx.com/wallpaper/616/177/HD-wallpaper-table-tennis-neon-icon-blue-background-neon-symbols-table-tennis-neon-icons-table-tennis-sign-sports-signs-table-tennis-icon-sports-icons.jpg"
                   alt="Your"
                   className="w-80 mt-6 h-60  rounded-[32px] inline-block"
-                />
+                /> */}
 
               </div>
             </div>
@@ -245,7 +237,7 @@ const UseProfile = () => {
               <button onClick={() => freind_ranck(1)} className=" mt-40 px-[99px] py-2 text-base font-bold   bg-white border  hover:text-white  hover:bg-[#3b82f6] hover:scale-110 duration-300 text-blue-600">Friends</button>
             </div>) : null}
             {(check == 1) ? (<div>
-              <button onClick={() => freind_ranck(1)} className=" mt-40 px-[100px] py-2  text-base font-bold   bordher-2 borsder-black bg-[#3b82f6] hover:text-blue-600  hover:bg-black hover:scale-110 duration-300 text-white">Friends</button>
+              <button onClick={() => freind_ranck(1)} className=" mt-40 px-[100px] py-2  text-base font-bold   bordher-2 borsder-black bg-[#3b82f6] hover:text-blue-600   hover:scale-110 duration-300 text-white">Friends</button>
             </div>) : null}
 
 
@@ -268,29 +260,32 @@ const UseProfile = () => {
         </div>)
         }
       </div>
-      <div>
-        {
+      {
 
-          logout == 1 && (<div className="flex   items-center -mt-[1300px] sm:-mt-[1500px] xl:-mt-[1000px] mdl-12 justify-center min-h-screen sm:bg-bldack  md:bg-gdray-700 md:-mt-[1500px]  xl:bg-dblue-600 min-w-screen  z-20  bg-sslate-400">
+        logout == 1 && <div className=" absolute flex  justify-center items-center w-full h-full bg-hblack">
+          {
 
-            <div className=" bg-white md:w-[400px] md:h:72   flex flex-col  justify-strt items-center  sm:w-[400px] sm:h-72  h-72 w-96  drop-shadow shadow-lg shaddow-black  rounded-lg -mst-[1000px] md:-mst-[700px] z-20 text-blue-600 ml-10 md:mdl-[600px]">
-              <div className='text-blue-500 text-xl mt-8  mr-44  font-black' >Confirm logout </div>
-              <div className=' w-96 hd-2 border-2 mt-5' > </div>
-              <div className='text-blue-500 text-sm mt-8  ml-16  w-full fonts-black' >Are you sure you want to logout ?</div>
-              <div className=' w-96 h-16 fbg-black mt-16 flex flex-row justify-center items-center space-x-6 '>
-                <button onClick={() => setLogout(0)} className=' bg-white w-20  border-2 border-blue-600 h-10 rounded-lg'>
-                  <div>Cancel</div>
-                </button>
-                <Link href="/auth/login" onClick={handelLogOutUser} className=' bg-blue-500 text-white w-20 flex justify-center items-center  h-10  border-2 border-blue-600 rounded-lg'>
-                  OK
-                </Link>
+            (<div className="flex   items-center    justify-center min-h-screen   min-w-screen  z-20  ">
 
+              <div className=" bg-white md:w-[400px] md:h:72   flex flex-col  justify-strt items-center  sm:w-[400px] sm:h-72  h-72 w-96  drop-shadow shadow-lg shaddow-black  rounded-lg   z-20 text-blue-600 mk-10">
+                <div className='text-blue-500 text-xl mt-8  mr-44  font-black' >Confirm logout </div>
+                <div className=' w-96 hd-2 border-2 mt-5' > </div>
+                <div className='text-blue-500 text-sm mt-8  ml-16  w-full fonts-black' >Are you sure you want to logout ?</div>
+                <div className=' w-96 h-16 fbg-black mt-16 flex flex-row justify-center items-center space-x-6 '>
+                  <button onClick={() => setLogout(0)} className=' bg-white w-20  border-2 border-blue-600 h-10 rounded-lg'>
+                    <div>Cancel</div>
+                  </button>
+                  <Link href="/auth/login" onClick={handelLogOutUser} className=' bg-blue-500 text-white w-20 flex justify-center items-center  h-10  border-2 border-blue-600 rounded-lg'>
+                    OK
+                  </Link>
+
+                </div>
               </div>
-            </div>
-          </div>)
-        }
+            </div>)
+          }
 
-      </div>
+        </div>
+      }
     </div>
 
   );

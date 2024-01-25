@@ -12,18 +12,12 @@ function Mutaulfriends({ user, amis }: { user: userProps, amis: Array<userProps>
     useEffect(() => {
         (
             async () => {
-                try {
+                const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${user.id}`, {
+                    credentials: 'include',
+                });
+                const content = await response.json();
 
-                    const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${user.id}`, {
-                        credentials: 'include',
-                    });
-                    if (response.ok) {
-                        const content = await response.json();
-                        setAmisid(Array.from(content));
-                    }
-                } catch (error) {
-
-                }
+                setAmisid(Array.from(content));
 
             }
         )();
@@ -74,7 +68,7 @@ const User = () => {
     let _add: Array<any>
     let flag = true;
 
-
+    // 
     const router = useRouter();
 
     const profailamis = (username: string, userId: number) => {
@@ -85,18 +79,11 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                try {
-
-                    const response = await fetch(`${Constant.API_URL}/users/${currentUser1.id}`, {
-                        credentials: 'include',
-                    });
-                    if (response.ok) {
-                        const content = await response.json();
-                        setUsers(content);
-                    }
-                } catch (error) {
-
-                }
+                const response = await fetch(`${Constant.API_URL}/users/${currentUser1.id}`, {
+                    credentials: 'include',
+                });
+                const content = await response.json();
+                setUsers(content);
             }
         )();
     }, [currentUser1]);
@@ -104,13 +91,11 @@ const User = () => {
         (
             async () => {
                 try {
-                    const response = await fetch(`${Constant.API_URL}/users/other/${currentUser1.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/users/other/userId`, {
                         credentials: 'include',
                     });
-
                     if (response.ok) {
                         const content = await response.json();
-                        // console.log("cont=", content)
                         setallfriends(content);
                     }
                 } catch (error) {
@@ -125,7 +110,6 @@ const User = () => {
         (
             async () => {
                 try {
-
                     const response = await fetch(`${Constant.API_URL}/auth/user`, {
                         credentials: 'include',
                     });
@@ -141,7 +125,7 @@ const User = () => {
     }, []);
     const sendRequest = async (numberPart: number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}/${currentUser1.id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -166,7 +150,7 @@ const User = () => {
 
     const CanacelRequest = async (numberPart: number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${currentUser1.id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -190,7 +174,7 @@ const User = () => {
     const sendRequestForaccpet = async (numberPart: number) => {
         try {
 
-            const response = await fetch(`${Constant.API_URL}/friends/accept-friend-request/${numberPart}/${currentUser1.id}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/accept-friend-request/${numberPart}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -212,7 +196,7 @@ const User = () => {
     };
     const CanacelRequest1 = async (numberPart: number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${currentUser1.id}/${numberPart}`, {
+            const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -237,15 +221,16 @@ const User = () => {
         (
             async () => {
                 try {
+
                     const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${currentUser1.id}`, {
                         credentials: 'include',
                     });
                     if (response.ok) {
+
                         const content = await response.json();
                         setAmis(content);
                     }
                 } catch (error) {
-
                 }
             }
         )();
@@ -257,16 +242,18 @@ const User = () => {
             async () => {
                 try {
 
-                    const response = await fetch(`${Constant.API_URL}/friends/${currentUser1.id}/received-requests`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/received-requests`, {
                         credentials: 'include',
                     });
+                    const counte = await response.json();
                     if (response.status == 200) {
-                        const counte = await response.json();
+
+                        // console.log("content======================", counte)
+
                         setfriend_reciver(counte)
                         return;
                     }
                 } catch (error) {
-
                 }
             }
         )();
@@ -276,16 +263,15 @@ const User = () => {
             async () => {
                 try {
 
-                    const response = await fetch(`${Constant.API_URL}/friends/${currentUser1.id}/received-blocked`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/received-blocked`, {
                         credentials: 'include',
                     });
+                    const counte = await response.json();
                     if (response.status == 200) {
-                        const counte = await response.json();
                         setreceived_blocked(counte)
                         return;
                     }
                 } catch (error) {
-
                 }
             }
         )();
@@ -294,16 +280,16 @@ const User = () => {
         (
             async () => {
                 try {
-                    const response = await fetch(`${Constant.API_URL}/friends/${currentUser1.id}/send-blocked`, {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/send-blocked`, {
                         credentials: 'include',
                     });
+                    const counte = await response.json();
                     if (response.status == 200) {
-                        const counte = await response.json();
                         setsendr_blocked(counte)
                         return;
                     }
                 } catch (error) {
-
                 }
             }
         )();
@@ -312,30 +298,30 @@ const User = () => {
         (
             async () => {
                 try {
-                    const response = await fetch(`${Constant.API_URL}/friends/${currentUser1.id}/send-requests`, {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
                         credentials: 'include',
                     });
+                    const counte = await response.json();
                     if (response.status == 200) {
-                        const counte = await response.json();
                         setFriend_request(counte)
+                        //   console.log(counte[1]?.receiver);
+                        // setrequestt(cont)
                         return;
                     }
                 } catch (error) {
-
                 }
             }
         )();
     }, [amis, currentUser1, allfriends, isOpen]);
-    const [isOpen1, setIsOpen1] = useState("rim")
-    useEffect(() => {
-        setIsOpen1("can");
 
-    }, [currentUser1]);
+
+
 
     return (
-        <div className='    flex justify-center bdg-white w-full   items-center     flex-col'>
+        <div className='    flex justify-center bdg-white w-full   items-center  h-screen  flex-col'>
 
-            <div className='  flex-auto justify-start items-start     w-full   min-h-screen   flex-col  sm:w-auto md:auto   mt-16  rounded-xl drop-shadow-2xl  bg-clip-border  border-2 bg-white   dark:bg-CusColor_dark  border-solid'>
+            <div className='  flex-auto justify-start items-start     w-full   min-h-auto   flex-col  sm:w-auto md:auto   mt-16  rounded-xl drop-shadow-2xl  bg-clip-border  border-2 bg-white  p-4  dark:bg-CusColor_dark  border-solid'>
                 <div className='flex flex-auto bxg-red-600 flex-row mt-7  sm:justify-start  sm:items-start justify-center items-center'>
 
 
@@ -348,8 +334,8 @@ const User = () => {
                     {
 
 
-                        (friend_reciver.length) ? friend_reciver.map((user: any) => (
-                            <div className='flex    rounded-xl items-start  '>
+                        (friend_reciver.length) ? friend_reciver.map((user: any, index: any) => (
+                            <div key={index} className='flex    rounded-xl items-start  '>
 
                                 <div className=' bg-white border-4  bordder-blue-400 w-48 h-[300px] drop-shadow shadow-md shadow-black  rounded-xl  flex  flex-col  '>
                                     <button onClick={() => profailamis(user.sender.username, user.sender.id)}>
@@ -423,11 +409,11 @@ const User = () => {
                 <div className='  sm:hidden md:hidden flex space-y-5 justify-center items-center  flex-col  lg:hidden   mt-7 '>
 
                     {
-                        (friend_reciver.length) ? friend_reciver.map((user: any) => (
+                        (friend_reciver.length) ? friend_reciver.map((user: any, index: any) => (
 
 
 
-                            <div className='   w-[368px] h-24     rounded-xl border-2 border-[#005AB5] drop-shadow shadow-md shadow-black  mt-4 flex flex-row '>
+                            <div key={index} className='   w-[368px] h-24     rounded-xl border-2 border-[#005AB5] drop-shadow shadow-md shadow-black  mt-4 flex flex-row '>
 
                                 <div className='bg-white rounded-l-xl border-r-[2px] border-blue-600  w-full h-24  flex flex-row'>
                                     <button onClick={() => profailamis(user.sender.username, user.sender.id)} >
@@ -515,8 +501,8 @@ const User = () => {
                     {
 
 
-                        (friend_request.length) ? friend_request.map((user: any) => (
-                            <div className='flex    rounded-xl items-start  '>
+                        (friend_request.length) ? friend_request.map((user: any, index: any) => (
+                            <div key={index} className='flex    rounded-xl items-start  '>
 
                                 <div className=' bg-white border-4  w-48 h-[300px] drop-shadow shadow-md shadow-black  rounded-xl  flex  flex-col   '>
                                     <button onClick={() => profailamis(user.receiver.username, user.receiver.id)}>
@@ -578,21 +564,14 @@ const User = () => {
                                 </div>
 
                             </footer>
-
                         )
-
                     }
                 </div>
                 <div className='  sm:hidden md:hidden flex  space-y-5 justify-center  items-center flex-col  m-3 mt-7  lg:hidden     '>
 
                     {
-                        (friend_request.length) ? friend_request.map((user: any) => (
-
-
-
-                            <div className=' w-[368px] h-24     -sm-3  drop-shadow shadow-md shadow-black  rounded-xl border-[1px] border-blue-600  mt-4 flex flex-row '>
-
-
+                        (friend_request.length) ? friend_request.map((user: any, index: any) => (
+                            <div key={index} className=' w-[368px] h-24     -sm-3  drop-shadow shadow-md shadow-black  rounded-xl border-[1px] border-blue-600  mt-4 flex flex-row '>
                                 <div className='bg-white rounded-l-xl border-r-[2px] border-blue-600 w-full h-24  flex flex-row '>
                                     <button onClick={() => profailamis(user.receiver.username, user.receiver.id)} >
                                         <div className='flex justify-start items-center ml-3'>
@@ -673,10 +652,10 @@ const User = () => {
 
                 <div className={`  hidden  ${allfriends.length != 0 ? '   sm:grid  md:grid  m-3 mt-7  lg-grid lg:grid-cols-5   lg:space-x-0 lg:space-y-0     lg:gap-x-4 lg:gap-y-4    sm:grid-cols-3  sm:space-x-0  sm:space-y-0    sm:gap-x-4 sm:gap-y-4  md:space-x-0 md:space-y-0    md:gap-x-4 md:gap-y-4    md:grid-cols-4' : ' sm:flex w-full bg-bdlack  '}  md:flex-row justify-center  `}>
                     {
-                        (allfriends.length) ? allfriends.map((user: userProps) => (
+                        (allfriends.length) ? allfriends.map((user: userProps, index: any) => (
 
 
-                            <div className='flex    rounded-xl items-start  '>
+                            <div key={index} className='flex    rounded-xl items-start  '>
 
                                 <div className=' bg-white border-4 w-48 h-[300px]  drop-shadow shadow-md shadow-black rounded-xl  flex  flex-col  '>
                                     <div className='flex justify-center  mt-3'>
@@ -741,21 +720,15 @@ const User = () => {
                                 <div className="space-x-3">
                                 </div>
                             </footer>
-
                         )
-
-
                     }
-
                 </div>
                 <div className='  sm:hidden md:hidden   space-y-5 m-3 mt-3 flex justify-center justify-items-center flex-col items-center  lg:hidden   '>
 
                     {
-                        (allfriends.length) ? allfriends.map((user: userProps) => (
+                        (allfriends.length) ? allfriends.map((user: userProps, index: any) => (
 
-
-
-                            <div className='       w-[368px] max-w-96  h-24  -mxs-3   drop-shadow shadow-md shadow-black  rounded-xl border-[1px] border-blue-600  mt-4 flex flex-row '>
+                            <div key={index} className=' w-[368px] max-w-96  h-24  -mxs-3   drop-shadow shadow-md shadow-black  rounded-xl border-[1px] border-blue-600  mt-4 flex flex-row '>
                                 <div className='bg-white rounded-l-xl border-r-[2px] border-r-blue-600 w-full  h-24  flex flex-row'>
                                     <div className='flex justify-start items-center m-4'>
                                         <img
@@ -771,7 +744,6 @@ const User = () => {
                                             </p>
                                         </div>
                                         <div>
-
                                             <Mutaulfriends user={user} amis={amis} />
                                         </div>
 
@@ -839,4 +811,3 @@ export default User;
 function strjoin(separator: any, strings: any[]) {
     return strings.join(separator);
 }
-

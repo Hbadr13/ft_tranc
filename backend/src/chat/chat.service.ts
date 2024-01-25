@@ -176,7 +176,7 @@ export class ChatService {
     }
 
     async sendMessageToChannel(body, idRoom: number, idUser: number) {
-        console.log("+++++++++++++++++++++++>")
+      
 
         const user = await this.prisma.user.findUnique({
             where: {
@@ -528,7 +528,7 @@ export class ChatService {
                 id: membership.id
             }
         })
-        console.log('hana tani jit', userId, roomId)
+   
     }
 
 

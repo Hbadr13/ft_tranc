@@ -23,6 +23,8 @@ import { useRouter } from 'next/router'
 
 const SideMenu = () => {
     
+    const [isDivHidden, setIsDivHidden] = useState(false);
+    const [isDivHidden2, setIsDivHidden2] = useState(!true);
     const [activeButton, setActiveButton] = useState<Number>(0);
     const router = useRouter()
     const grey: string = ' bg-[#eee] ';
