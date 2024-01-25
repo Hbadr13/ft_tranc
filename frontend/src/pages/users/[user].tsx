@@ -79,12 +79,19 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/auth/user`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
+                try {
 
-                setid(content.id);
+                    const response = await fetch(`${Constant.API_URL}/auth/user`, {
+                        credentials: 'include',
+                    });
+                    if (response.ok) {
+
+                        const content = await response.json();
+
+                        setid(content.id);
+                    }
+                } catch (error) {
+                }
                 // setUsername(content.username);
 
                 // console.log(content.id);
@@ -222,13 +229,17 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/received-blocked`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setreceived_blocked(counte)
-                    return;
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/received-blocked`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setreceived_blocked(counte)
+                        return;
+                    }
+                } catch (error) {
                 }
             }
         )();
@@ -237,17 +248,21 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/received-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setreceived(counte)
-                    return;
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/received-requests`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setreceived(counte)
+                        return;
+                    }
+                } catch (error) {
                 }
             }
         )();
-    }, [id, numberPart, isOpen, check_blocked1, flag1 ,check_blocked2, currentFileName]);
+    }, [id, numberPart, isOpen, check_blocked1, flag1, check_blocked2, currentFileName]);
     useEffect(() => {
         (
             async () => {
@@ -271,14 +286,18 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/${numberPart}/send-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setFlag2(counte);
-                    // setrequestt(cont)
-                    return;
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/${numberPart}/send-requests`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setFlag2(counte);
+                        // setrequestt(cont)
+                        return;
+                    }
+                } catch (error) {
                 }
             }
         )();
@@ -286,13 +305,17 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/send-blocked`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setsendr_blocked(counte)
-                    return;
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/send-blocked`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setsendr_blocked(counte)
+                        return;
+                    }
+                } catch (error) {
                 }
             }
         )();
@@ -300,13 +323,17 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setsendr(counte)
-                    return;
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setsendr(counte)
+                        return;
+                    }
+                } catch (error) {
                 }
             }
         )();
@@ -384,9 +411,10 @@ const YourComponent = ({ currentFileName }: any) => {
 
                 // else
                 // setref(true)
-                setRefreshData((pr) => !pr)
+
                 console.log('delete-friend-request sent successfully.');
             } else {
+                setIsOpen(false);
                 console.error('Failed to delete-friend-request.');
             }
         } catch (error) {
@@ -401,8 +429,8 @@ const YourComponent = ({ currentFileName }: any) => {
             });
 
             if (response.ok) {
-                   setFlag1(true)
-              
+                setFlag1(true)
+
                 console.log('delete-friend-request sent successfully.');
             } else {
                 console.error('Failed to delete-friend-request.');
@@ -496,7 +524,7 @@ const YourComponent = ({ currentFileName }: any) => {
                                     (
                                         <div className=' flex z-10  h-screen w-screen  justify-center items-center '>
 
-                                            <div className='flex  justify-center flex-col  h-80  w-[400px] sm:w-[500px]   z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
+                                            <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
                                                 <p className=' text-xl  '> @{username} ?</p>
                                                 <span className=' text-sm mt-4'> You  cannot reach this user </span>
                                                 <Link className=' flex justify-center items-center text-black mt-8 w-56 h-10 rounded-2xl  border-2 bg-white  shadow-md  border-blue-500 hover:scale-110 duration-300' href={'/'}>Canecel</Link>
@@ -507,7 +535,7 @@ const YourComponent = ({ currentFileName }: any) => {
 
                                     <div className=' flex z-10  h-screen w-screen  justify-center items-center '>
 
-                                        <div className='flex  justify-center flex-col  h-80  w-[400px] sm:w-[500px]  z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
+                                        <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
                                             <p className=' text-xl  -mt-10'> Unblock @{username} ?</p>
                                             <span className=' text-sm mt-6'> They will  be able to follow you and view your Tweets </span>
 
@@ -749,4 +777,3 @@ export async function getServerSideProps(context: any) {
 }
 
 export default YourComponent;
-

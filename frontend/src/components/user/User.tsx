@@ -90,12 +90,18 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/users/other/userId`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
-                // console.log("cont=", content)
-                setallfriends(content);
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/users/other/userId`, {
+                        credentials: 'include',
+                    });
+                    if (response.ok) {
+                        const content = await response.json();
+                        setallfriends(content);
+                    }
+                } catch (error) {
+
+                }
             }
         )();
     }, [currentUser1, isOpen]);
@@ -104,11 +110,17 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/auth/user`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
-                setCurrentUser1(content);
+                try {
+                    const response = await fetch(`${Constant.API_URL}/auth/user`, {
+                        credentials: 'include',
+                    });
+                    if (response.ok) {
+                        const content = await response.json();
+                        setCurrentUser1(content);
+                    }
+                } catch (error) {
+
+                }
             }
         )();
     }, []);
@@ -209,11 +221,18 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${currentUser1.id}`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
-                setAmis(content);
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${currentUser1.id}`, {
+                        credentials: 'include',
+                    });
+                    if (response.ok) {
+
+                        const content = await response.json();
+                        setAmis(content);
+                    }
+                } catch (error) {
+                }
             }
         )();
     }, [currentUser1, isOpen]);
@@ -222,16 +241,20 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/received-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
+                try {
 
-                    // console.log("content======================", counte)
+                    const response = await fetch(`${Constant.API_URL}/friends/received-requests`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
 
-                    setfriend_reciver(counte)
-                    return;
+                        // console.log("content======================", counte)
+
+                        setfriend_reciver(counte)
+                        return;
+                    }
+                } catch (error) {
                 }
             }
         )();
@@ -239,13 +262,17 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/received-blocked`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setreceived_blocked(counte)
-                    return;
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/received-blocked`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setreceived_blocked(counte)
+                        return;
+                    }
+                } catch (error) {
                 }
             }
         )();
@@ -253,13 +280,17 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/send-blocked`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setsendr_blocked(counte)
-                    return;
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/send-blocked`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setsendr_blocked(counte)
+                        return;
+                    }
+                } catch (error) {
                 }
             }
         )();
@@ -267,22 +298,27 @@ const User = () => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setFriend_request(counte)
-                    //   console.log(counte[1]?.receiver);
-                    // setrequestt(cont)
-                    return;
+                try 
+                {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setFriend_request(counte)
+                        //   console.log(counte[1]?.receiver);
+                        // setrequestt(cont)
+                        return;
+                    }
+                } catch (error) {
                 }
             }
         )();
     }, [amis, currentUser1, allfriends, isOpen]);
 
-    
-   
+
+
 
     return (
         <div className='    flex justify-center bdg-white w-full   items-center  h-screen  flex-col'>

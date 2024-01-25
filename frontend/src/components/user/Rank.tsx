@@ -551,11 +551,18 @@ const Rank = ({ amis_id, amis, id }: { amis_id: Array<userProps>, amis: Array<us
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/users/${0}`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
-                setUsers_id(Array.from(content));
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/users/${0}`, {
+                        credentials: 'include',
+                    });
+                    if (response.ok) {
+
+                        const content = await response.json();
+                        setUsers_id(Array.from(content));
+                    }
+                } catch (error) {
+                }
             }
         )();
     }, [id]);
@@ -584,7 +591,7 @@ const Rank = ({ amis_id, amis, id }: { amis_id: Array<userProps>, amis: Array<us
         <div className=" w-full h-full flex justify-center items-center">
 
             {
-                amis_id.length > 0  && <Profiles Leaderboard={between(filterUser)} />
+                amis_id.length > 0 && <Profiles Leaderboard={between(filterUser)} />
 
             }
             {
