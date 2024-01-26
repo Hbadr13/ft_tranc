@@ -88,8 +88,7 @@ export class ChatController {
     @Get('statusChatTwoUser/:idSender/:idReceiver')
     async StatusChatTwoUser(@Req() req: Request, @Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
 
-        return await this.chatService.statusChatTwoUser(Number(req['id']), Number(idReceiver))
-    }
+        return await this.chatService.statusChatTwoUser(Number(req['id']), Number(idReceiver)) }
     @Post('blockChatTwoUser/:idSender/:idReceiver')
     async BlockChatTwoUser(@Req() req: Request, @Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
 
