@@ -15,7 +15,7 @@ const StatusCard = ({ currentUser }: { currentUser: userProps }) => {
     <>
       <div className=" h-[30%] flex flex-col items-center justify-center bg-[#FF9A3E] rounded-tr-3xl rounded-bl-3xl rounded-tl-lg rounded-br-lg  relative overflow-hidden">
         <div className="text-xl lg:text-3xl">
-          TOTAL WON
+           WON
         </div>
         <div className="text-lg lg:text-2xl">
           {currentUser.won ? currentUser.won : 0} Matchs
@@ -26,7 +26,7 @@ const StatusCard = ({ currentUser }: { currentUser: userProps }) => {
       </div>
       <div className=" h-[30%] flex flex-col items-center justify-center bg-[#F44771] rounded-tr-3xl rounded-bl-3xl rounded-tl-lg rounded-br-lg relative overflow-hidden">
         <div className="text-xl lg:text-3xl">
-          TOTAL LOST
+           LOST
         </div>
         <div className="text-lg lg:text-2xl">
           {currentUser.lost ? currentUser.lost : 0} Matchs

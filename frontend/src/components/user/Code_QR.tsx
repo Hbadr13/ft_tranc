@@ -1,17 +1,10 @@
-'use client'
 import Link from "next/link";
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import Friends from "./Friend";
-import Rank from "./Rank";
-import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
+import React, { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
-import { AppProps, userProps } from "@/interface/data";
-import QRCode from 'qrcode.react'; // Assuming you have qrcode.react installed
-
-import axios from 'axios';
+import { userProps } from "@/interface/data";
+import QRCode from 'qrcode.react';
 import { Constant } from "@/constants/constant";
-
-
+import { extractdecimalNumberFromLevel, getLevel } from "./editProfile";
 
 interface LevelBarpros {
     value: string
@@ -27,36 +20,20 @@ function LevelBar({ value }: LevelBarpros) {
     return (
         <div className="bg-white h-5  drop-shadow shadow-md shadow-black    w-80 rounded-2xl">
             <div className="bg-[#0ea5e9] h-5 rounded-full " style={{ width: progressWidth }}>
-                {/* <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
-              {`${value}%`} */}
-                {/* </span> */}
             </div>
         </div>
     );
 }
 
-const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
-    const [amis, setAmis] = useState<any>([])
-
-
-
-    const [check, setCheck] = useState(0);
-    const [check1, setCheck1] = useState(0);
-    const [check2, setCheck2] = useState(0);
-    const [name, setName] = useState("");
+const Code_QR = () => {
     const [email, setEmail] = useState("");
-    const [gender, setGender] = useState('');
     const [foto_user, setFoto_user] = useState("");
     const [username, setUsername] = useState("");
     const [twoFactorSecret1, settwoFactorSecret1] = useState("");
     const [level, setlevel] = useState();
     const [level1, setlevel1] = useState("");
     const [level2, setlevel2] = useState("");
-
     const [id, setid] = useState(0);
-    const router = useRouter()
-
-
 
     useEffect(() => {
         (
@@ -188,8 +165,8 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                         <span className="text-sm  font-serif italic flex justify-center mt-3">{email}</span>
                     </div>
                     <div className="mt-8 bg-bflack justify-center flex items-center flex-col w-full  mdl-6">
-                        <LevelBar value={level1} />
-                        <p className=' mt-4 text-white shadow-sm shadow-black  mfl-28  w-28 font-serif italic uppercase'>level {level2}-{level1}%</p>
+                        <LevelBar value={String(extractdecimalNumberFromLevel(Number(level)))} />
+                        <p className=' mt-4 text-white shadow-sm shadow-black   w-28   uppercasej'>level : {getLevel(Number(level))}</p>
 
                     </div>
                     <div className=" hidden md:flex ">
@@ -212,12 +189,12 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
 
                         <div className='mt-6 w-full justify-center   flex-col flex bg-blarck items-center'>
                             <p className="     text-2xl  dmr-52">Settings</p>
-                            <Link className=" mt-6   w-80   rounded-xl  h-12  flex justify-center  items-center bg-white hover:scale-110 drop-shadow shadow-md shadow-black  duration-300 text-blue-600 text-sm font-bold" href={"/EditProfile"}> <span className=" flex flex-row  " >Profile_Settings</span></Link>
+                            <Link className=" mt-6   w-80   rounded-xl  h-12  flex justify-center  items-center bg-white hover:scale-110 drop-shadow shadow-md shadow-black  duration-300 text-blue-600 text-sm font-bold" href={"/editProfile"}> <span className=" flex flex-row  " >Profile_Settings</span></Link>
 
-                            <Link className="text-base w-80  h-12 font-bold flex justify-center items-center text-blue-600" href={"/Listblocked"}><span className=" flex justify-center items-center  mt-10    w-full h-full  border-white  rounded-xl bg-white drop-shadow shadow-md shadow-black border  hover:scale-110 duration-300">Blocked</span>
+                            <Link className="text-base w-80  h-12 font-bold flex justify-center items-center text-blue-600" href={"/listblocked"}><span className=" flex justify-center items-center  mt-10    w-full h-full  border-white  rounded-xl bg-white drop-shadow shadow-md shadow-black border  hover:scale-110 duration-300">Blocked</span>
                             </Link>
 
-                            <Link className="text-base font-bold w-80 mt-5  h-12  flex justify-center items-center text-blue-600" href={"/Code_QR"}><span className="  mt-10 bg-blue-600 flex justify-center text-white items-center w-full h-full      border-white rounded-xl border drop-shadow shadow-md shadow-black hover:scale-110 duration-300">Code_OR</span>
+                            <Link className="text-base font-bold w-80 mt-5  h-12  flex justify-center items-center text-blue-600" href={"/code_QR"}><span className="  mt-10 bg-blue-600 flex justify-center text-white items-center w-full h-full      border-white rounded-xl border drop-shadow shadow-md shadow-black hover:scale-110 duration-300">Code_OR</span>
                             </Link>
 
                         </div>
@@ -228,22 +205,13 @@ const Code_QR = ({ currentUser }: { currentUser: userProps }) => {
                 </div>
             </div>
             <div className="z-10 hidden md:flex">
-
                 <div className=" flex flex-col gap-8     h-full w-64 items-center   drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)] bg-[#f9fafb]  mt-[80px] min-h-[845px] rounded-r-[0px] rounded-[0px]">
                     <p className="  text-[25px]  font-bold mt-44  mr-28">Settings</p>
-
-
-                    <Link className=" mt-5   py-2  w-[257px] h-10  flex justify-center   bg-white hover:scale-110   duration-300 border text-blue-600  text-base font-bold" href={"/EditProfile"}> <span className="">Profile Settings</span></Link>
-                    <Link className="text-base font-bold flex justify-center items-center text-blue-600" href={"/Listblocked"}><span className=" py-2 px-[96px] mt-10 bg-white border  hover:scale-110 duration-300">Blocked</span>
+                    <Link className=" mt-5   py-2  w-[257px] h-10  flex justify-center   bg-white hover:scale-110   duration-300 border text-blue-600  text-base font-bold" href={"/editProfile"}> <span className="">Profile Settings</span></Link>
+                    <Link className="text-base font-bold flex justify-center items-center text-blue-600" href={"/listblocked"}><span className=" py-2 px-[96px] mt-10 bg-white border  hover:scale-110 duration-300">Blocked</span>
                     </Link>
-
-                    <Link className=" mt-5   py-2  w-[257px] h-10  flex justify-center  bg-[#3b82f6] hover:scale-110   duration-300 text-white text-base border border-blue-600 font-bold" href={"/Code_QR"}> <span className="">Code_QR</span></Link>
-
-
-
-
+                    <Link className=" mt-5   py-2  w-[257px] h-10  flex justify-center  bg-[#3b82f6] hover:scale-110   duration-300 text-white text-base border border-blue-600 font-bold" href={"/code_QR"}> <span className="">Code_QR</span></Link>
                 </div>
-
             </div>
             <div className=" flex  flex-col justify-center items-center md:opacity-150 bg xl:mt-[80px] min-h-[845px]  xl:bg-blue-50 w-full  sm:w-[700px] h-16 rounded-r-2xl rounded-s-[1px] p-2 sm:p-6" >
                 <div className="flex shrink  flex-col overflow-y-scroll  scrollbar-hide drop-shadow shadow-md shadow-black rounded-lg  border-e border-black items-center bg-white   w-full sm:w-[500px] h-[800px]">

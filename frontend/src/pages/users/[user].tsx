@@ -1,6 +1,6 @@
 
-import Friends from '@/components/user/Friend';
-import Rank from '@/components/user/Rank';
+import Friends from '@/components/user/friend';
+import Rank from '@/components/user/rank';
 import { AppProps, userData, userProps } from '@/interface/data';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -525,7 +525,7 @@ const YourComponent = ({ onlineUsersss, socket, currentFileName }: { onlineUsers
                                             <p className=' text-xl  -mt-10'> Unblock @{username} ?</p>
                                             <span className=' text-sm mt-6'> They will  be able to follow you and view your Tweets </span>
 
-                                            <Link className=' flex justify-center items-center text-black  bg-white  w-56  rounded-2xl h-10 mt-8 border-2  border-blue-500 shadow-md hover:scale-110 duration-300' href={'/Listblocked'}>Unblock</Link>
+                                            <Link className=' flex justify-center items-center text-black  bg-white  w-56  rounded-2xl h-10 mt-8 border-2  border-blue-500 shadow-md hover:scale-110 duration-300' href={'/listblocked'}>Unblock</Link>
 
                                             <Link className=' flex justify-center items-center text-black mt-6 w-56 h-10 rounded-2xl  border-2  border-blue-500 shadow-md hover:scale-110 duration-300' href={'/'}>Canecel</Link>
 

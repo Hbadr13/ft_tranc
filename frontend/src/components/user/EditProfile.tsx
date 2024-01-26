@@ -1,8 +1,6 @@
 'use client'
 import Link from "next/link";
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import Friends from "./Friend";
-import Rank from "./Rank";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
 import { useRouter } from "next/navigation";
 import { AppProps, userProps } from "@/interface/data";
@@ -16,9 +14,9 @@ interface LevelBarpros {
 function LevelBar({ value }: LevelBarpros) {
     let progressWidth;
     if (value.length > 1)
-      progressWidth = `${value}%`;
+        progressWidth = `${value}%`;
     else
-      progressWidth = `${value}0%`;
+        progressWidth = `${value}0%`;
 
 
 
@@ -33,12 +31,25 @@ function LevelBar({ value }: LevelBarpros) {
     );
 }
 
+export const getLevel = (level: number | any): string => {
+    if (!level)
+        return '0'
+    return level.toString().slice(0, level.toString().indexOf('.') + 3)
+}
+export const extractdecimalNumberFromLevel = (_level: number) => {
+    if (!_level)
+        return '0'
+    var level: string = _level.toString() + '0'
+    const ret = level.toString().indexOf('.') == -1 ? 0 : level.toString().slice(level.toString().indexOf('.') + 1, level.toString().indexOf('.') + 3)
+    return Number(ret) > 2 ? ret : 0
+}
+
 const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
     const [amis, setAmis] = useState<any>([])
     const [query, sequery] = useState("")
 
     const [isOpen, setIsOpen] = useState(false)
-    
+
 
     const [check, setCheck] = useState(0);
     const [check1, setCheck1] = useState(0);
@@ -156,7 +167,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                     setlevel(content.level)
                     const stringValue2: string = String(level);
                     const level3 = stringValue2.split('.');
-                    
+
                     if (level3[1])
                         setlevel1(level3[1]);
                     else
@@ -213,6 +224,7 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
         }
 
     };
+
     fetchAllAmis({ setAmis, currentUser });
     return (
 
@@ -234,8 +246,9 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
                         <span className="text-sm  font-serif italic flex justify-center mt-3">{email}</span>
                     </div>
                     <div className="mt-8 bg-bflack justify-center flex items-center flex-col w-full  mdl-6">
-                        <LevelBar value={level1} />
-                        <p className=' mt-4 text-white shadow-sm shadow-black  mfl-28  w-28 font-serif italic uppercase'>level {level2}-{level1}%</p>
+                        {/* <LevelBar value={level1} /> */}
+                        <LevelBar value={String(extractdecimalNumberFromLevel(currentUser.level))} />
+                        <p className=' mt-4 text-white shadow-sm shadow-black   w-28   uppercasej'>level : {getLevel(currentUser.level)}</p>
 
                     </div>
                     <div className=" hidden md:flex ">
@@ -258,12 +271,12 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
 
                         <div className='mt-6 w-full justify-center   flex-col flex bg-blarck items-center'>
                             <p className="     text-2xl  dmr-52">Settings</p>
-                            <Link className=" mt-6   w-80   rounded-xl  h-12  flex justify-center  items-center bg-blue-600  hover:scale-110 drop-shadow shadow-md shadow-black  duration-300 text-white text-sm border border-white font-bold" href={"/EditProfile"}> <span className=" flex flex-row  " >Profile Settings</span></Link>
+                            <Link className=" mt-6   w-80   rounded-xl  h-12  flex justify-center  items-center bg-blue-600  hover:scale-110 drop-shadow shadow-md shadow-black  duration-300 text-white text-sm border border-white font-bold" href={"/editProfile"}> <span className=" flex flex-row  " >Profile Settings</span></Link>
 
-                            <Link className="text-base w-80  h-12 font-bold flex justify-center items-center text-blue-600" href={"/Listblocked"}><span className=" flex justify-center items-center  mt-10    w-full h-full  border-white  rounded-xl bg-white  drop-shadow shadow-md shadow-black border  hover:scale-110 duration-300">Blocked</span>
+                            <Link className="text-base w-80  h-12 font-bold flex justify-center items-center text-blue-600" href={"/listblocked"}><span className=" flex justify-center items-center  mt-10    w-full h-full  border-white  rounded-xl bg-white  drop-shadow shadow-md shadow-black border  hover:scale-110 duration-300">Blocked</span>
                             </Link>
 
-                            <Link className="text-base font-bold w-80 mt-5  h-12  flex justify-center items-center text-blue-600" href={"/Code_QR"}><span className="  mt-10 bg-white flex justify-center items-center w-full h-full     border-white rounded-xl border drop-shadow shadow-md shadow-black hover:scale-110 duration-300">Code_OR</span>
+                            <Link className="text-base font-bold w-80 mt-5  h-12  flex justify-center items-center text-blue-600" href={"/code_QR"}><span className="  mt-10 bg-white flex justify-center items-center w-full h-full     border-white rounded-xl border drop-shadow shadow-md shadow-black hover:scale-110 duration-300">Code_OR</span>
                             </Link>
 
                         </div>
@@ -284,10 +297,10 @@ const EditProfile = ({ currentUser }: { currentUser: userProps }) => {
 
 
 
-                    <Link className="text-base font-bold flex justify-center items-center  text-blue-600" href={"/Listblocked"}><span className=" py-2 px-[96px] mt-10 bg-white border   hover:scale-110 duration-300">Blocked</span>
+                    <Link className="text-base font-bold flex justify-center items-center  text-blue-600" href={"/listblocked"}><span className=" py-2 px-[96px] mt-10 bg-white border   hover:scale-110 duration-300">Blocked</span>
                     </Link>
 
-                    <Link className="text-base font-bold flex justify-center items-center  text-blue-600" href={"/Code_QR"}><span className=" py-2 px-[92px] mt-10 bg-white border   hover:scale-110 duration-300">Code_OR</span>
+                    <Link className="text-base font-bold flex justify-center items-center  text-blue-600" href={"/code_QR"}><span className=" py-2 px-[92px] mt-10 bg-white border   hover:scale-110 duration-300">Code_OR</span>
                     </Link>
 
 

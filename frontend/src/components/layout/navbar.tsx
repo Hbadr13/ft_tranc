@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import UserInfo from '../user/UserInfo'
+import UserInfo from '../user/userInfo'
 import { AppProps, userProps } from '@/interface/data'
 import { useRouter } from 'next/router'
 import Image from 'next/image'

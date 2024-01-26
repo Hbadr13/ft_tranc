@@ -162,9 +162,9 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
 
       <div className=" overflow-y-scroll  scrollbar-hide bg-white  -mt-10 sm:mt-0 w-[96%]  sm:w-[430px] drop-shadow shadow-md shadow-black rounded-2xl max-h-[980px] mst-2">
         {
-          (allfriends.length) ? allfriends.map((user: any) => (
+          (allfriends.length) ? allfriends.map((user: any, index: any) => (
 
-            <div className='   border-b-[2px] mt-0  bg-white w-auto sm:w-[420px] h-16 rounded-l rounded-r items-center      space-x-6 p-2  flex  justify-between'>
+            <div key={index} className='   border-b-[2px] mt-0  bg-white w-auto sm:w-[420px] h-16 rounded-l rounded-r items-center      space-x-6 p-2  flex  justify-between'>
               <div className="flex   space-x-2  ">
                 <img
                   src={user.foto_user}
@@ -274,7 +274,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
               </div>
 
             </footer>
-         
+
 
           )
         }
