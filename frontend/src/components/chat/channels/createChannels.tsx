@@ -66,10 +66,10 @@ export default function Channels({ users, setClick }: { users: userProps[], setC
             <div className='flex flex-col justify-cenfter items-centefr'>
               <div className="flex flex-col justify-center items-center p-6 w-full bg-sjlate-400">
                 <h2 className='flex ml- w-full '> Channel Name</h2>
-                <input className='focus:outline-none  flex items-center justify-center mt-2 pl-4 w-full h-10 border border-sky-200 text-CuisColor_dark_grey' type="text" name='Enter channel name' value={name} onChange={(e) => setName(e.target.value)} />
+                <input maxLength={12} placeholder="Enter up to 10 characters" className='focus:outline-none  flex items-center justify-center mt-2 pl-4 w-full h-10 border border-sky-200 text-CuisColor_dark_grey' type="text" name='Enter channel name' value={name} onChange={(e) => setName(e.target.value)} />
                 {(good == 1 && !name) && <p className=' text-red-500'>enter name</p>}
                 <h2 className='flex mt-4 w-full'> Description</h2>
-                <textarea rows={3} className='focus:outline-none max-h-24  flex items-start justify-center mt-2 pl-4 w-full h-24 border  border-sky-200 text-CuisColor_dark_grey' required value={description} onChange={(e) => setDescription(e.target.value)} />
+                <textarea rows={3} maxLength={140} placeholder="Enter up to 10 characters"  className='focus:outline-none max-h-24  flex items-start justify-center mt-2 pl-4 w-full h-24 border  border-sky-200 text-CuisColor_dark_grey' required value={description} onChange={(e) => setDescription(e.target.value)} />
                 {(good == 1 && !description) && <p className=' text-red-500'>enter description</p>}
 
               </div>
@@ -87,7 +87,7 @@ export default function Channels({ users, setClick }: { users: userProps[], setC
               </div>
               {Type == 'protected' && <div className='flex flex-col justify-center items-center h-24 w-full bg-sflate-400'>
                 <h2 className='flex ml-12 w-full'>Password</h2>
-                <input className='focus:outline-none  flex items-center justify-center mt-2 pl-4 w-[90%] h-10 border  bg-blafck  text-CuisColor_dark_grey' required type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input maxLength={15} placeholder="Enter up to 10 characters"  className='focus:outline-none   flex items-center justify-center mt-2 pl-4 w-[90%] h-10 border  bg-blafck  text-CuisColor_dark_grey' required type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 {(good == 1 && !password) && <p className=' text-red-500'>enter password</p>}
               </div>}
               {Type == 'private' && <div className=" bg-stofne-600 flex flex-col justify-center items-center">

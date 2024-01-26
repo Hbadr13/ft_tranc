@@ -92,14 +92,16 @@ export default function Edit({ currentUser, users, setStatus_Tow_User, status_to
 
     return (
         <div className='w-full h-full'>
-            <Link className="flex-col justify-start items-center gap-3.5 mt-20 flex " href={`/users/${receiver.username}.${receiver.id}`}>
-                <img className="w-[136px] h-[136px] rounded-full border-4 border-green-600" src={receiver.foto_user} />
-                <div className="flex-col justify-start items-center gap-1 flex">
+            <div className="flex-col justify-start items-center mt-4 flex ">
+                <Link  className=' hover:scale-105 duration-500' href={`/users/${receiver.username}.${receiver.id}`}>
+                    <img className="w-40 h-40 rounded-full border-4 border-green-600" src={receiver.foto_user} />
+                </Link>
+                <div className="flex-col justify-start items-center flex">
                     <div className="text-zinc-900 dark:text-CusColor_light text-[32px] font-bold font-['Satoshi']">{receiver.username}</div>
-                    <div className="text-neutral-600 text-base font-normal font-['Satoshi'] leading-[18px]">{receiver.email}</div>
+                    <div className="text-neutral-600 font-normal">{receiver.email}</div>
                 </div>
-            </Link>
-            <div className="flex-col  justify-center  items-center    w-full gdap-5 flex">
+            </div>
+            <div className="flex-col  justify-center  items-center    w-full flex bg-slate-500">
 
                 <div className=" bg-bhlack flex-col w-full bg-blacek    justify-center items-center flex">
                     <div className="w-full justify-center items-center  space-x-2inline-flex">
@@ -117,11 +119,11 @@ export default function Edit({ currentUser, users, setStatus_Tow_User, status_to
                     </div>
                 </div>
             </div>
-            {<div className=' w-full'>
+            {<div className=' w-full  items-end   bg-forange-300 flex justify-end '>
 
                 {
                     (status.status == "accepted" || !status) &&
-                    <div className='w-full bg-bldack h-16 mt-16 flex justify-center items-center'>
+                    <div className='w-full bg-bldack h-16  flex justify-center items-center'>
 
                         <button onClick={() => blockChatTwoUser()}
                             className='hover:scale-110 md:w-full    lg:w-44 h-12 text-md font-black text-red-400 bg-white shadow-md  shadow-red-300 dark:bg-gray-700 rounded-2xl   duration-300'
@@ -133,8 +135,8 @@ export default function Edit({ currentUser, users, setStatus_Tow_User, status_to
                         status.status == "blocked" && <>
                             {
                                 status.userAId == currentUser.id &&
-                                <div className='w-full bg-bldack h-16 mt-16 flex justify-center items-center'>
-                                    <button onClick={() => unblockChatTwoUser()} className='md:w-full    lg:w-44 mt-16 shadow-md  shadow-blue-300 h-12 text-md font-black text-blue-600 bg-white dark:bg-gray-700 rounded-2xl   duration-300 hover:scale-110  '>Unblocked</button>
+                                <div className='w-full bg-bldack h-16 flex justify-center items-center'>
+                                    <button onClick={() => unblockChatTwoUser()} className='shadow-md  shadow-blue-300 h-12 text-md font-black text-blue-600 bg-white dark:bg-gray-700 rounded-2xl   duration-300 hover:scale-110  '>Unblocked</button>
                                 </div>
                             }
                             {

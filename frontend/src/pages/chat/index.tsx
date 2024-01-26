@@ -2,14 +2,13 @@ import EditChannel from "@/components/chat/channels/editChannel";
 import Conversation from "@/components/chat/conversation";
 import ConversationList from "@/components/chat/conversationList";
 import Edit from "@/components/chat/direct/edit";
-import { AppProps, channelProps, participantsData, participantsProps, userData, userProps } from '@/interface/data';
+import { AppProps, channelData, channelProps, participantsData, participantsProps, userData, userProps } from '@/interface/data';
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 export default function index({ users, amis }: AppProps) {
   const [currentUser, setCurrentUser] = useState<userProps>(userData);
-  const channelData = { id: 0, type: "", name: "", password: "" }
   const [Room, setRoom] = useState<channelProps>(channelData);
   const [joinRoom, setJoinRoom] = useState<channelProps>(channelData);
   const [button, setButton] = useState(false);

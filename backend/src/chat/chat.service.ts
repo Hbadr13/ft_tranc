@@ -83,7 +83,8 @@ export class ChatService {
                                 name: true,
                                 type: true,
                                 password: true,
-                                updatedAt: true
+                                updatedAt: true,
+                                description:true,
                             }
                         }
                     }

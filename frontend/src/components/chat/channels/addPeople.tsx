@@ -33,7 +33,7 @@ export default function AddPeople({ participants, setCancel, users }: { particip
 
     return (
 
-        <div className='flex-col shadow-xl w-full '>
+        <div className='flex-col  w-full '>
             <div className="h-14 flex">
                 <div className='flex justify-start w-full items-center ml-8'>
                     <h1 className=' font-mono font-bold'>Add People</h1>
