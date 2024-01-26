@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { userProps, messageProps, channelProps, participantsProps, userData } from '@/interface/data'
 import { Socket } from 'socket.io-client';
-import Link from 'next/link';
-import { Constant } from '@/constants/constant';
 import { useRouter } from 'next/router';
 import Edit from './direct/edit';
 import EditChannel from './channels/editChannel';
+import { Constant } from '@/constants/constant';
 interface LevelBarpros {
     value: string
 }
@@ -111,8 +110,8 @@ export default function Conversation({ myStatusInRoom, currentUser, setMsg2, use
         }, [Room, button, isend, msg]);
     }
 
-    useEffect(() =>{
-            console.log('->>>>>>>>>>>>>>>>>', myStatusInRoom);
+    useEffect(() => {
+        console.log('->>>>>>>>>>>>>>>>>', myStatusInRoom);
     })
 
     useEffect(() => {
@@ -262,12 +261,11 @@ export default function Conversation({ myStatusInRoom, currentUser, setMsg2, use
 
                             <div className=' flex w-[93%] bg-white h-16 rounded-xl border-2 justify-start items-center  border-sky-400 wml-3 mt-2 '>
                                 {button == false && <button className="sm:ml-4 w-full flex hover:scale-105 ps-1 space-x-2 h-full  duration-300 justify-center items-center" >
-                                    {!status_tow_user && <div className=' mt-1  sm:mt-0 flex h-full flex-col  w-auto  bg-blacsk justify-center items-end  sm:items-center  -space-y-4 sm:space-y-0'>
+                                    <div className=' mt-1  sm:mt-0 flex h-full flex-col  w-auto  bg-blacsk justify-center items-end  sm:items-center  -space-y-4 sm:space-y-0'>
                                         <div className="w-3 h-3 z-10 flex sm:hidden   bg-green-600 rounded-[20px] " />
                                         <img className="w-14 h-14 rounded-full" src={receiver?.foto_user} />
                                     </div>
-                                    }
-                                    {status_tow_user && <img className="w-14 h-14 rounded-full" src="https://cdn3.iconfinder.com/data/icons/shape-icons/128/icon48pt_different_account-512.png" />}
+
 
                                     <div className="flex flex-col w-full justify-start items-start">
                                         <p className="text-black  text-lg">{receiver?.username}</p>
@@ -280,7 +278,7 @@ export default function Conversation({ myStatusInRoom, currentUser, setMsg2, use
                                     </div>
                                 </button>}
                                 {button == true && <div className="ml-4 flex hover:scale-105 p-1 space-x-2 duration-300 justify-center items-center" >
-                                    {Room.id && <div className={`flex justify-center items-center w-12 h-12 rounded-full ${Room?.type == 'public' && ' bg-amber-300'}  ${Room?.type == 'private' && 'bg-sky-500'}  ${Room?.type == 'protected' && ' bg-red-500'}`} >
+                                    {Room.id && <div className={`flex justify-center items-center w-12 h-12 rounded-full  ${Room.type == 'public' && ' bg-green-300'}  ${Room.type == 'private' && ' bg-red-400'}  ${Room.type == 'protected' && ' bg-yellow-400'}`} >
                                         <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{Room?.name[0].toUpperCase()}</h1>
                                     </div>}
                                     <div className="">
@@ -356,12 +354,7 @@ export default function Conversation({ myStatusInRoom, currentUser, setMsg2, use
                                                         <div className=" max-w-[440px] w-auto h-auto p-5 ml-16  break-all   bg-white rounded-tl-[20px] rounded-tr-[20px] rounded-br-[20px] justify-center   items-center  text-xl ">
                                                             <p className="whitespace-normal"> {item.content}</p>
                                                         </div>
-                                                        {button == false &&
-                                                            <>
-                                                                {!status_tow_user && <img className="w-12 h-12  -mt-10  rounded-full" src={receiver.foto_user} />}
-                                                                {status_tow_user && <img className="w-12 h-12  -mt-10  rounded-full" src="https://cdn3.iconfinder.com/data/icons/shape-icons/128/icon48pt_different_account-512.png" />}
-                                                            </>
-                                                        }
+                                                        {button == false && <img className="w-12 h-12  -mt-10  rounded-full" src={receiver.foto_user} />}
                                                         {button == true && <img className="w-12 h-12  -mt-10  rounded-full" src={item.foto_user} />}
 
                                                     </div>
@@ -375,9 +368,7 @@ export default function Conversation({ myStatusInRoom, currentUser, setMsg2, use
                             ))}
                         </div>
 
-
-                        <div className={` w-full  break-all   h-12 z-h10 mt-2  ${flag == true ? 'blur-sm  lg:blur-0' : null} lg:${flag == true ? null : null} flex flex-row px-3 bg-blasck`}>
-
+                        <div className={` w-full  break-all   h-12 z-h10 mt-2  ${flag == true ? 'blur-sm  lg:blur-0' : null} lg:${flag == true ? null : null} flex flex-row px-3 bg-black`}>
                             {
                                 (status.status == "accepted" || !status) &&
                                 <>
@@ -395,7 +386,9 @@ export default function Conversation({ myStatusInRoom, currentUser, setMsg2, use
                                     <button
                                         className='hover:scale-110 duration-300'
                                         onClick={() => handleClick()}
-                                    ><img src='https://cdn-icons-png.flaticon.com/512/3682/3682321.png' className='h-8 w-8 ml-2' /></button>
+                                    ><svg xmlns="http://www.w3.org/2000/svg" width="46" height="30" viewBox="0 0 21 18" fill="none">
+                                            <path d="M18.1934 6.00798L4.19345 0.227983C3.66372 0.00876957 3.08228 -0.0540727 2.51795 0.0468957C1.95362 0.147864 1.43004 0.408415 1.00919 0.797703C0.588336 1.18699 0.287838 1.68871 0.143269 2.24348C-0.00130066 2.79824 0.0161127 3.38281 0.193447 3.92798L1.73345 8.77798L0.153447 13.628C-0.0286814 14.1753 -0.0491403 14.7636 0.0945214 15.3223C0.238183 15.881 0.539873 16.3864 0.963447 16.778C1.50809 17.283 2.22073 17.5681 2.96345 17.578C3.35818 17.5777 3.74898 17.4996 4.11345 17.348L18.1634 11.568C18.7106 11.3404 19.1782 10.9559 19.507 10.4629C19.8359 9.96994 20.0114 9.3906 20.0114 8.79798C20.0114 8.20537 19.8359 7.62603 19.507 7.13305C19.1782 6.64007 18.7106 6.25555 18.1634 6.02798L18.1934 6.00798ZM3.38345 15.478C3.20705 15.5507 3.01351 15.5715 2.82569 15.5379C2.63786 15.5042 2.46359 15.4175 2.32345 15.288C2.19143 15.1618 2.09648 15.0019 2.04888 14.8257C2.00129 14.6494 2.00287 14.4634 2.05345 14.288L3.51345 9.77798H17.2434L3.38345 15.478ZM3.51345 7.77798L2.02345 3.30798C1.97286 3.13253 1.97129 2.94658 2.01888 2.7703C2.06648 2.59402 2.16143 2.43413 2.29345 2.30798C2.38755 2.20926 2.50086 2.13083 2.6264 2.07752C2.75194 2.02421 2.88706 1.99714 3.02345 1.99798C3.15749 1.99824 3.29012 2.02545 3.41345 2.07798L17.2434 7.77798H3.51345Z" fill="#2F69FC" />
+                                        </svg></button>
                                 </>
                             }
                             <>

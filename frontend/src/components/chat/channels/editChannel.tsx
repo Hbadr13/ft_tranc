@@ -1,7 +1,7 @@
-import { Constant } from '@/constants/constant'
 import { channelProps, participantsProps, userProps } from '@/interface/data'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import { Constant } from '@/constants/constant'
 import AddPeople from './addPeople'
 
 export default function EditChannel({ setMyStatusInRoom, currentUser, users, Room }: { setMyStatusInRoom?: (value: participantsProps) => void | undefined, currentUser: userProps, users: userProps[], Room: channelProps }) {
@@ -173,7 +173,7 @@ export default function EditChannel({ setMyStatusInRoom, currentUser, users, Roo
             {Room.id && <div className={`  bg-gray-100  ${click != 0 ? 'blur-f[0.7px] brighgtness-[80%]' : null}   w-full h-full  rounded-xl p-3  flex justify-start items-start  z-1g0`}>
                 <div className="w-full h-full bg-blsack flex-col justify-center items-center">
                     <div className="flex-col justify-start items-center flex ">
-                        <div className={`flex justify-center items-center w-12 h-12 rounded-full ${Room.type == 'public' && ' bg-amber-300'}  ${Room?.type == 'private' && 'bg-sky-500'}  ${Room?.type == 'protected' && ' bg-red-500'}`} >
+                        <div className={`flex justify-center items-center w-12 h-12 rounded-full  ${Room.type == 'public' && ' bg-green-300'}  ${Room.type == 'private' && ' bg-red-400'}  ${Room.type == 'protected' && ' bg-yellow-400'}`} >
                             <h1 className='flex items-center justify-center text-[40px] font-bold text-white'>{Room?.name[0].toUpperCase()}</h1>
                         </div>
                         <div className="text-zinc-900 text-[32px] font-bold font-['Satoshi']">{Room?.name}</div>

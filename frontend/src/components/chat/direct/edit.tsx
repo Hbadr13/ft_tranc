@@ -93,8 +93,7 @@ export default function Edit({ currentUser, users, setStatus_Tow_User, status_to
     return (
         <div className='w-full h-full'>
             <Link className="flex-col justify-start items-center gap-3.5 mt-20 flex " href={`/users/${receiver.username}.${receiver.id}`}>
-                {!status_tow_user && <img className="w-[136px] h-[136px] rounded-full border-4 border-green-600" src={receiver.foto_user} />}
-                {status_tow_user && <img className="w-[136px] h-[136px] rounded-full border-4 border-green-600" src="https://cdn3.iconfinder.com/data/icons/shape-icons/128/icon48pt_different_account-512.png" />}
+                <img className="w-[136px] h-[136px] rounded-full border-4 border-green-600" src={receiver.foto_user} />
                 <div className="flex-col justify-start items-center gap-1 flex">
                     <div className="text-zinc-900 dark:text-CusColor_light text-[32px] font-bold font-['Satoshi']">{receiver.username}</div>
                     <div className="text-neutral-600 text-base font-normal font-['Satoshi'] leading-[18px]">{receiver.email}</div>
