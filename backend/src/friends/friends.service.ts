@@ -53,15 +53,13 @@ export class FriendsService {
     });
     
 
-    // if (!existingFriendship || existingFriendship.status !== 'pending' || ) {
-      //   throw new NotFoundException('Friend request not found or already accepted/rejected.');
-      // }
-      // if(existingFriendship)
-      //     status = existingFriendship.status;
-      //   else 
-      //     status = existingFriendship1.status;
+    // if (!existingFriendship || existingFriendship.status !== 'pending') {
+    //     throw new NotFoundException('Friend request not found or already accepted/rejected.');
+    //   }
+  
       if (!existingFriendship && !existingFriendship1) {
-        console.log("ssssssssss")
+   
+        this.chatService.blockChatTwoUser(Number(seenderId), Number(reeceiverId))
         // Create a friend request in the database
         await this.prisma.friendRequest.create({
           data: {
@@ -77,7 +75,7 @@ export class FriendsService {
         else 
           status = existingFriendship1.status;
 
-        console.log(status)
+      
         if(status != 'blocked')
         {
        this.chatService.blockChatTwoUser(Number(seenderId), Number(reeceiverId))

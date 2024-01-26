@@ -27,6 +27,7 @@ export interface participantsProps {
     isAdmin: boolean,
     isOwner: boolean,
     isBanned: boolean,
+    timeMute: string,
     foto_user: string
 }
 export interface channelProps {
@@ -90,3 +91,5 @@ export interface GameCardsProps {
 }
 
 export const userData = { id: 0, opponentId: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, gameStatus: '', userId: 0, flag: false, flag1: false, room: '', won: 0, lost: 0, level: 0, dakhal: false }
+export const channelData = { id: 0, type: "", name: "", password: "" }
+export const participantsData = { id: 0, username: "", isAdmin: false, isOwner: false, isBanned: false, timeMute: "", foto_user: '' }
