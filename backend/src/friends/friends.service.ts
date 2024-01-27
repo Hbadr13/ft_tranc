@@ -3,10 +3,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
-
+import { ChatService } from '../chat/chat.service';
 @Injectable()
 export class FriendsService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService,private chatService: ChatService) { }
 
   async sendFriendRequest(seenderId: number, reeceiverId: number): Promise<void> {
     // Check if the friendship already exists (optional)
@@ -38,6 +38,7 @@ export class FriendsService {
 
   async blockedfriends(seenderId: number, reeceiverId: number): Promise<void> {
     // Check if the friendship already exists (optional)
+    let status;
     const existingFriendship = await this.prisma.friendRequest.findFirst({
       where: {
         senderId: seenderId,
@@ -50,17 +51,37 @@ export class FriendsService {
         receiverId: seenderId,
       },
     });
-    if (!existingFriendship && !existingFriendship1) {
-      // Create a friend request in the database
-      await this.prisma.friendRequest.create({
-        data: {
-          senderId: seenderId,
-          receiverId: reeceiverId,
-          status: 'blocked', // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
-        },
-      });
-    }
-    else {
+    
+
+    // if (!existingFriendship || existingFriendship.status !== 'pending' || ) {
+      //   throw new NotFoundException('Friend request not found or already accepted/rejected.');
+      // }
+      // if(existingFriendship)
+      //     status = existingFriendship.status;
+      //   else 
+      //     status = existingFriendship1.status;
+      if (!existingFriendship && !existingFriendship1) {
+        
+        // Create a friend request in the database
+        this.chatService.blockChatTwoUser(Number(seenderId), Number(reeceiverId))
+        await this.prisma.friendRequest.create({
+          data: {
+            senderId: seenderId,
+            receiverId: reeceiverId,
+            status: 'blocked', // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
+          },
+        });
+      }
+      else  {
+         if(existingFriendship)
+          status = existingFriendship.status;
+        else 
+          status = existingFriendship1.status;
+
+        console.log(status)
+        if(status != 'blocked')
+        {
+       this.chatService.blockChatTwoUser(Number(seenderId), Number(reeceiverId))
       const friendRequest = await this.prisma.friendRequest.findFirst({
         where: {
           senderId: seenderId,
@@ -81,7 +102,7 @@ export class FriendsService {
           receiver: true, // Include the receiver of the request
         },
       });
-      if (friendRequest) {
+      if (friendRequest && friendRequest.status != 'blocked') {
         
         await this.prisma.friendRequest.update({
           where: {
@@ -109,7 +130,13 @@ export class FriendsService {
       
        
       }
+    }
 
+    else
+    {
+     
+      throw new NotFoundException('Friend request not found or already blocked.');
+    }
 
     }
   }
@@ -342,19 +369,57 @@ export class FriendsService {
   }
 
   async deleteFriendRequest(requestId: number, sendId: number) {
-    const friendRequest = await this.prisma.friendRequest.findFirst({
+    let friendRequest = await this.prisma.friendRequest.findFirst({
       where: {
-        senderId: sendId,
-        receiverId: requestId,
+        senderId: requestId,
+        receiverId:sendId ,
       },
       include: {
         sender: true, // Include the sender of the request
         receiver: true, // Include the receiver of the request
       },
     });
+    if(!friendRequest)
+    {
+      friendRequest = await this.prisma.friendRequest.findFirst({
+        where: {
+          senderId: sendId,
+          receiverId:requestId ,
+        },
+        include: {
+          sender: true, // Include the sender of the request
+          receiver: true, // Include the receiver of the request
+        },
+      });
+    }
+  
     if (!friendRequest || (friendRequest.status !== 'pending' && friendRequest.status !== 'blocked')) {
       throw new NotFoundException('Friend request not found or already accepted/rejected.');
     }
+    this.chatService.unblockChatTwoUser(Number(sendId), Number(requestId))
+    await this.prisma.friendRequest.delete({
+      where: {
+        id: friendRequest.id
+      },
+    });
+  }
+  async unblocked_friend(requestId: number, sendId: number) {
+    const friendRequest = await this.prisma.friendRequest.findFirst({
+        where: {
+          senderId: sendId,
+          receiverId:requestId ,
+        },
+        include: {
+          sender: true, // Include the sender of the request
+          receiver: true, // Include the receiver of the request
+        },
+      });
+    
+  
+    if (!friendRequest || (friendRequest.status !== 'blocked')) {
+      throw new NotFoundException('Friend request not found or already accepted/rejected.');
+    }
+    this.chatService.unblockChatTwoUser(Number(sendId), Number(requestId))
     await this.prisma.friendRequest.delete({
       where: {
         id: friendRequest.id

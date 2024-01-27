@@ -24,30 +24,27 @@ function LevelBar({ value }: LevelBarpros) {
     );
 }
 
-
-
-export default function Edit({ users, currentUser, Receiver, setStatus_Tow_User, status_tow_user }: { users: userProps[], currentUser: userProps, Receiver: userProps, setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean }) {
+export default function Edit({ currentUser, users, setStatus_Tow_User, status_tow_user }: { currentUser: userProps, users: userProps[], setStatus_Tow_User: (value: boolean) => void, status_tow_user: boolean }) {
 
     const [status, setstatus] = useState<any>('');
-    const [resevo, setRecevo] = useState<userProps>(userData)
+    const router = useRouter();
+    const [receiver, setReceiver] = useState<userProps>(userData)
 
-    const router = useRouter()
     useEffect(() => {
+        let id = Number(router.query.user)
         users.map((item) => {
-            if (Number(router.query.user) == item.id)
-                setRecevo(item)
+            if (item.id == id) {
+                setReceiver(item)
+                // console.log('========?>', item.id);
+            }
         })
-        // console.log('->>>>>>>>>>>>>', router.query.user)
     }, [router])
-
-
-
 
     useEffect(() => {
         (
             async () => {
                 try {
-                    const response = await fetch(`${Constant.API_URL}/chat/statusChatTwoUser/${currentUser.id}/${resevo.id}`, {
+                    const response = await fetch(`${Constant.API_URL}/chat/statusChatTwoUser/${receiver.id}`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -60,10 +57,10 @@ export default function Edit({ users, currentUser, Receiver, setStatus_Tow_User,
             }
         )();
 
-    }, [currentUser.id, Receiver, status_tow_user]);
+    }, [receiver, status_tow_user]);
     const blockChatTwoUser = async () => {
 
-        const response = await fetch(`${Constant.API_URL}/chat/blockChatTwoUser/${currentUser.id}/${resevo.id}`, {
+        const response = await fetch(`${Constant.API_URL}/chat/blockChatTwoUser/${receiver.id}`, {
             method: 'POST',
 
             headers: {
@@ -75,11 +72,11 @@ export default function Edit({ users, currentUser, Receiver, setStatus_Tow_User,
         if (response.ok)
             setStatus_Tow_User(true)
 
-        // chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Receiver.id, content: content });
+        // chatSocket.emit('message', { senderId: currentUser.id, receiverId: receiver.id, content: content });
     }
     const unblockChatTwoUser = async () => {
 
-        const response = await fetch(`${Constant.API_URL}/chat/unblockChatTwoUser/${currentUser.id}/${resevo.id}`, {
+        const response = await fetch(`${Constant.API_URL}/chat/unblockChatTwoUser/${receiver.id}`, {
             method: 'POST',
 
             headers: {
@@ -90,20 +87,21 @@ export default function Edit({ users, currentUser, Receiver, setStatus_Tow_User,
         });
         if (response.ok)
             setStatus_Tow_User(false)
-        // chatSocket.emit('message', { senderId: currentUser.id, ReceiverId: Receiver.id, content: content });
+        // chatSocket.emit('message', { senderId: currentUser.id, receiverId: receiver.id, content: content });
     }
 
     return (
         <div className='w-full h-full'>
-            <Link className="flex-col justify-start items-center gap-3.5 mt-20 flex " href={`/users/${resevo.username}.${resevo.id}`}>
-                {!status_tow_user && <img className="w-[136px] h-[136px] rounded-full border-4 border-green-600" src={resevo.foto_user} />}
-                {status_tow_user && <img className="w-[136px] h-[136px] rounded-full border-4 border-green-600" src="https://cdn3.iconfinder.com/data/icons/shape-icons/128/icon48pt_different_account-512.png" />}
-                <div className="flex-col justify-start items-center gap-1 flex">
-                    <div className="text-zinc-900 dark:text-CusColor_light text-[32px] font-bold font-['Satoshi']">{resevo.username}</div>
-                    <div className="text-neutral-600 text-base font-normal font-['Satoshi'] leading-[18px]">{resevo.email}</div>
+            <div className="flex-col justify-start items-center mt-4 flex ">
+                <Link  className=' hover:scale-105 duration-500' href={`/users/${receiver.username}.${receiver.id}`}>
+                    <img className="w-32 h-32 rounded-full border-4 border-green-600" src={receiver.foto_user} />
+                </Link>
+                <div className="flex-col justify-start items-center flex">
+                    <div className="text-zinc-900 dark:text-CusColor_light text-[32px] font-bold font-['Satoshi']">{receiver.username}</div>
+                    <div className="text-neutral-600 font-normal">{receiver.email}</div>
                 </div>
-            </Link>
-            <div className="flex-col  justify-center  items-center    w-full gdap-5 flex">
+            </div>
+            <div className="flex-col  justify-center  items-center    w-full flex ">
 
                 <div className=" bg-bhlack flex-col w-full bg-blacek    justify-center items-center flex">
                     <div className="w-full justify-center items-center  space-x-2inline-flex">
@@ -121,11 +119,11 @@ export default function Edit({ users, currentUser, Receiver, setStatus_Tow_User,
                     </div>
                 </div>
             </div>
-            {<div className=' w-full'>
+            {<div className=' w-full  items-end   bg-forange-300 flex justify-end '>
 
                 {
                     (status.status == "accepted" || !status) &&
-                    <div className='w-full bg-bldack h-16 mt-16 flex justify-center items-center'>
+                    <div className='w-full bg-bldack h-16  flex justify-center items-center'>
 
                         <button onClick={() => blockChatTwoUser()}
                             className='hover:scale-110 md:w-full    lg:w-44 h-12 text-md font-black text-red-400 bg-white shadow-md  shadow-red-300 dark:bg-gray-700 rounded-2xl   duration-300'
@@ -137,8 +135,8 @@ export default function Edit({ users, currentUser, Receiver, setStatus_Tow_User,
                         status.status == "blocked" && <>
                             {
                                 status.userAId == currentUser.id &&
-                                <div className='w-full bg-bldack h-16 mt-16 flex justify-center items-center'>
-                                    <button onClick={() => unblockChatTwoUser()} className='md:w-full    lg:w-44 mt-16 shadow-md  shadow-blue-300 h-12 text-md font-black text-blue-600 bg-white dark:bg-gray-700 rounded-2xl   duration-300 hover:scale-110  '>Unblocked</button>
+                                <div className='w-full bg-bldack h-16 flex justify-center items-center'>
+                                    <button onClick={() => unblockChatTwoUser()} className='shadow-md  shadow-blue-300 h-12 text-md font-black text-blue-600 bg-white dark:bg-gray-700 rounded-2xl   duration-300 hover:scale-110  '>Unblocked</button>
                                 </div>
                             }
                             {

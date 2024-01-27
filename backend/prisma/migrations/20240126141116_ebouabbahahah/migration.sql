@@ -50,10 +50,10 @@ CREATE TABLE "Message" (
 -- CreateTable
 CREATE TABLE "Room" (
     "id" SERIAL NOT NULL,
-    "name" VARCHAR NOT NULL,
-    "description" VARCHAR,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
     "type" TEXT NOT NULL,
-    "password" VARCHAR,
+    "password" TEXT,
     "createdAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(6),
 
@@ -66,7 +66,7 @@ CREATE TABLE "Membership" (
     "isOwner" BOOLEAN NOT NULL DEFAULT false,
     "isAdmin" BOOLEAN NOT NULL DEFAULT false,
     "isBanned" BOOLEAN NOT NULL DEFAULT false,
-    "timeMute" INTEGER NOT NULL DEFAULT 0,
+    "timeMute" TIMESTAMP(3),
     "roomId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
 

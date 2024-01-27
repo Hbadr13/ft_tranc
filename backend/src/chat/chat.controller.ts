@@ -10,36 +10,37 @@ export class ChatController {
 
     /******************************************************* Channel Message ****************************************************************/
 
-    @Post('createChannel/:idUser')
-    async CreateChannel(@Req() req: Request, @Body() body: { people: number[] }, @Param('idUser') idUser: number, @Param('people') people: number[]) {
+    @Post('createChannel')
+    async CreateChannel(@Req() req: Request, @Body() body: { people: number[] }) {
         await this.chatService.createChannel(body, Number(req['id']))
     }
 
-    @Post('joinChannel/:idUser/:idRoom/:password')
+    @Post('joinChannel/:idRoom/:password')
     async JoinChannel(@Req() req: Request, @Param('idUser') idUser: number, @Param('idRoom') idRoom: number, @Param('password') password: string) {
         await this.chatService.joinChannel(Number(req['id']), Number(idRoom), password)
     }
 
-    @Get('allChannelByUserId/:idUser')
-    async GetAllChannelByUserId(@Req() req: Request, @Param('idUser') idUser: number) {
+    @Get('allChannelByUserId')
+    async GetAllChannelByUserId(@Req() req: Request) {
         return await this.chatService.getAllChannelByUserId(Number(req['id']));
     }
 
-    @Post('sendMessageToChannel/:idRoom/:idUser')
-    async SendMessageToChannel(@Req() req: Request, @Body() body, @Param('idRoom') idRoom: number, @Param('idUser') idUser: number) {
+    @Post('sendMessageToChannel/:idRoom')
+    async SendMessageToChannel(@Req() req: Request, @Body() body, @Param('idRoom') idRoom: number) {
+        // try {
         await this.chatService.sendMessageToChannel(body, Number(idRoom), Number(req['id']))
+        //  } catch (error) {
+        //     console.log(error);
+        // }
     }
 
-    @Get('allMessagesChannel/:idUser/:idRoom')
-    async GetallMessagesChannel(@Req() req: Request, @Param('idUser') idUser: number, @Param('idRoom') idRoom: number) {
+    @Get('allMessagesChannel/:idRoom')
+    async GetallMessagesChannel(@Req() req: Request, @Param('idRoom') idRoom: number) {
         return await this.chatService.getallMessagesChannel(Number(req['id']), Number(idRoom))
     }
-    @Get('listUserBlockedInChat/:idUser')
-    async listUserBlockedInChat(@Req() req: Request, @Param('idUser') idUser: number) {
-        return await this.chatService.list_user_blocked_in_chat(Number(req['id']))
-    }
-    @Get('upadteChannel/:idUser/:idRoom/:type/:password')
-    async upadteChannel(@Req() req: Request, @Param('idUser') idUser: number, @Param('idRoom') idRoom: number, @Param('type') type: string, @Param('password') password: string) {
+
+    @Get('upadteChannel/:idRoom/:type/:password')
+    async upadteChannel(@Req() req: Request, @Param('idRoom') idRoom: number, @Param('type') type: string, @Param('password') password: string) {
         return await this.chatService.upadteChannel(Number(req['id']), Number(idRoom), type, password)
     }
 
@@ -52,15 +53,14 @@ export class ChatController {
         return await this.chatService.oneChannel(Number(idRoom))
     }
 
-
-    @Get('allChannel/:userId')
-    async AllChannel(@Req() req: Request, @Param('userId') userId: number) {
+    @Get('allChannel')
+    async AllChannel(@Req() req: Request) {
         return await this.chatService.allChannel(Number(req['id']))
     }
 
-    @Post('setAdmin/:roomId/:participantId/:item')
-    async SetAdmin(@Req() req: Request, @Param('roomId') roomId: number, @Param('participantId') participantId: number, @Param('item') item: string) {
-        await this.chatService.setAdmin(Number(roomId), Number(participantId), item)
+    @Post('setAdmin/:roomId/:participantId/:item/:duration')
+    async SetAdmin(@Req() req: Request, @Param('roomId') roomId: number, @Param('participantId') participantId: number, @Param('item') item: string, @Param('duration') duration: string) {
+        await this.chatService.setAdmin(Number(roomId), Number(participantId), item, duration)
     }
 
     @Post('addParticipants/:roomId')
@@ -68,43 +68,53 @@ export class ChatController {
         await this.chatService.addParticipants(Number(roomId), body)
     }
 
-    @Delete('leavingRoom/:userId/:roomId')
-    async LeavingRoom(@Req() req: Request, @Param('userId') userId: number, @Param('roomId') roomId: number) {
-        await this.chatService.LeavingRoom(Number(req['id']), Number(roomId))
+    @Get('myStatusInRoom/:roomId')
+    async MyStatusInRoom(@Req() req: Request, @Param('roomId') roomId: number) {
+        return await this.chatService.myStatusInRoom(Number(req['id']), Number(roomId))
     }
 
     /******************************************************* Direct Message ****************************************************************/
 
-    @Post('directMessage/:idSender/:idReceiver')
-    async SendDirectMessage(@Req() req: Request, @Body() body, @Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
+    @Post('directMessage/:idReceiver')
+    async SendDirectMessage(@Req() req: Request, @Body() body, @Param('idReceiver') idReceiver: number) {
+        // try {
         await this.chatService.sendDirectMessage(body, Number(req['id']), Number(idReceiver))
+        // } catch (error) {
+
+        // }
     }
 
-    @Get('getConversationDirect/:idSender/:idReceiver')
-    async GetConversationDirect(@Req() req: Request, @Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
-        console.log("hana hana");
+    @Get('getConversationDirect/:idReceiver')
+    async GetConversationDirect(@Req() req: Request, @Param('idReceiver') idReceiver: number) {
+        // try {
         return await this.chatService.getConversationDirect(Number(req['id']), Number(idReceiver))
-    }
-    @Get('statusChatTwoUser/:idSender/:idReceiver')
-    async StatusChatTwoUser(@Req() req: Request, @Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
 
-        return await this.chatService.statusChatTwoUser(Number(req['id']), Number(idReceiver)) }
-    @Post('blockChatTwoUser/:idSender/:idReceiver')
-    async BlockChatTwoUser(@Req() req: Request, @Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
+        // } catch (error) {
+
+        // }
+    }
+    @Get('statusChatTwoUser/:idReceiver')
+    async StatusChatTwoUser(@Req() req: Request, @Param('idReceiver') idReceiver: number) {
+
+        return await this.chatService.statusChatTwoUser(Number(req['id']), Number(idReceiver))
+    }
+    @Post('blockChatTwoUser/:idReceiver')
+    async BlockChatTwoUser(@Req() req: Request, @Param('idReceiver') idReceiver: number) {
 
         return await this.chatService.blockChatTwoUser(Number(req['id']), Number(idReceiver))
     }
-    @Post('UnblockChatTwoUser/:idSender/:idReceiver')
-    async UnblockChatTwoUser(@Req() req: Request, @Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
+    @Post('UnblockChatTwoUser/:idReceiver')
+    async UnblockChatTwoUser(@Req() req: Request, @Param('idReceiver') idReceiver: number) {
         return await this.chatService.unblockChatTwoUser(Number(req['id']), Number(idReceiver))
     }
 
-    @Delete('deleteConversationDirect/:idSender/:idReceiver')
-    async DeleteConversationDirect(@Req() req: Request, @Param('idSender') idSender: number, @Param('idReceiver') idReceiver: number) {
-        await this.chatService.deleteConversationDirect(Number(req['id']), Number(idReceiver))
+    @Get('listUserBlockedInChat')
+    async listUserBlockedInChat(@Req() req: Request) {
+        return await this.chatService.list_user_blocked_in_chat(Number(req['id']))
     }
-    @Get('getConversationListDirect/:idUser/:type')
-    async GetConversationListDirect(@Req() req: Request, @Param('idUser') idUser: number, @Param('type') type: string) {
+
+    @Get('getConversationListDirect/:type')
+    async GetConversationListDirect(@Req() req: Request, @Param('type') type: string) {
         return await this.chatService.getConversationListDirect(Number(req['id']), type)
     }
 }

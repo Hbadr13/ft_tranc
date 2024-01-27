@@ -111,9 +111,8 @@ const PlayOnline = ({ opponent, ballTheme, canvasTheme, setgameIsOk, gameIsOk }:
         }
         const socketUrl = `${Constant.API_URL}/gameGateway`;
         const newSocket = io(socketUrl, {
-            query: {
-                userId: currentUser.id,
-            },
+            transports: ["websocket"],
+            withCredentials: true
         });
         newSocket.emit("joinRoom", { room: currentUser.room, userId: currentUser.id, opponentId: currentUser.opponentId });
         newSocket.on('initGame', (game_) => {
@@ -210,11 +209,10 @@ const PlayOnline = ({ opponent, ballTheme, canvasTheme, setgameIsOk, gameIsOk }:
         router.push("/game")
     }
 
-
     if (game)
         return (
             <div className="Gamebackground  w-full  h-screen flex  justify-center   ">
-                <div className=" relative w-full  h-[800px] flex flex-col  justify-center items-center  mt-[70px]">
+                <div className=" relative w-full  max-w-[1700px]  h-[800px] flex flex-col  justify-center items-center  mt-[70px]">
                     {playerLocation.current == 'left' ?
                         <ScoreBoard direction={'left'} opponent={opponent} currentUser={currentUser} gameStatus={gameStatus}
                             pause={pause} handelButtonGameStatus={handelButtonGameStatus} handelButtonLeave={handelButtonLeave} />
@@ -248,7 +246,7 @@ const PlayOnline = ({ opponent, ballTheme, canvasTheme, setgameIsOk, gameIsOk }:
                                 >
                                 </canvas>
                                 {!gameStart ? (
-                                    <GameIsReady username={currentUser.username} opponenetUsername="Ai" userImage={currentUser.foto_user} opponentImage='/game/ai.png' />
+                                    <GameIsReady username={currentUser.username} opponenetUsername={opponent.username} userImage={currentUser.foto_user} opponentImage={opponent.foto_user} />
                                 ) : null
                                 }
                                 {

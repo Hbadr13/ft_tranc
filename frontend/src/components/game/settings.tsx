@@ -229,14 +229,14 @@ const Settings = ({ opponent, setopponent, currentUser, setCurrentUser, setgameI
                         });
                         if (response.ok) {
                             const content = await response.json()
-                            console.log('--------->status:', content)
+                            // console.log('--------->status:', content)
                             if (content.gameStatus != 'toMatch') {
                                 if (content.gameStatus || !content.opponentId) {
                                     router.push('/game')
                                     return
                                 }
                             }
-                            const response_ = await fetch(`${Constant.API_URL}/game/room/play/${content.id}`, {
+                            const response_ = await fetch(`${Constant.API_URL}/game/room/play/1`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -251,7 +251,6 @@ const Settings = ({ opponent, setopponent, currentUser, setCurrentUser, setgameI
                             });
 
                             if (response2.ok && response_.ok) {
-                                // if (response2.ok && response_.ok) {
                                 const data = await response2.json()
                                 setCurrentUser(content)
                                 setopponent(data)

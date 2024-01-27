@@ -5,8 +5,7 @@ interface ConstantProps {
 
 export const Constant: ConstantProps = {
     API_URL: 'http://localhost:3000',
-    API_URL_SERVER: 'http://localhost:3333'
-    // API_URL_SERVER: `${Constant.API_URL}`
-    // API_URL: 'http://192.168.0.31:3000'
-    // API_URL: 'http://localhost:3000'
+    API_URL_SERVER: 'http://localhost:3333',
+    // API_URL_SERVER: 'http://backend:3333',
+    // API_URL: 'http://frontend:3000'
 }

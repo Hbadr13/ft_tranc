@@ -16,6 +16,7 @@ export class HistoryService {
           opponentGools: Number(body.opponentGools),
           status: body.status,
           opponentId: Number(body.opponentId),
+
           user: {
             connect: {
               id: Number(userid),

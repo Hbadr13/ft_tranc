@@ -43,6 +43,7 @@ export class UserService {
     return filteredUsers;
   }
   async findAautherUsers(userAId: number) {
+    
     const users = await this.prisma.user.findMany();
     const data_rese = await this.prisma.user.findUnique({
       where: { id: userAId },

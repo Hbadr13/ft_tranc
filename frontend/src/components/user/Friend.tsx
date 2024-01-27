@@ -76,7 +76,7 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   useEffect(() => {
     (
       async () => {
-        const response = await fetch(`${Constant.API_URL}/friends/${currentUser}/send-requests`, {
+        const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
           credentials: 'include',
         });
         const counte = await response.json();
