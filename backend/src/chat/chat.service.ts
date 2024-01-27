@@ -348,7 +348,7 @@ export class ChatService {
         })
 
         resultMessages = resultMessages.filter(item => !send_blocked.some(item2 => item2.receiver.id === item.senderId));
-        resultMessages = resultMessages.filter(item => !received_blocked1.some(item2 => item2.sender.id === item.senderId)); console.log("resultMessages" , resultMessages);
+        resultMessages = resultMessages.filter(item => !received_blocked1.some(item2 => item2.sender.id === item.senderId)); console.log("resultMessages", resultMessages);
         return resultMessages
 
     }
@@ -538,9 +538,14 @@ export class ChatService {
     }
 
 
-    async setAdmin(roomId: number, participantId: number, item: string, duration: string) {
+    async setAdmin(userId: number, roomId: number, participantId: number, item: string, duration: string) {
 
 
+        let myStatus = await this.prisma.membership.findFirst({
+            where: { userId: userId }
+        })
+        if (myStatus.isBanned || myStatus.timeMute || !myStatus.isAdmin)
+            throw new UnauthorizedException()
         let room = await this.prisma.room.findUnique({
             where: {
                 id: roomId,
@@ -578,7 +583,8 @@ export class ChatService {
                     id: id
                 },
                 data: {
-                    isBanned: true
+                    isBanned: true,
+                    isAdmin: false,
                 }
             })
         }
@@ -710,7 +716,7 @@ export class ChatService {
                 data: {
                     userAId: idSender,
                     userBId: idReceiver,
-                    status: 'accepted', // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
+                    status: 'accepted', 
                 },
             });
             conversation = await this.prisma.conversation.create({

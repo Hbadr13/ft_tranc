@@ -60,7 +60,7 @@ export class ChatController {
 
     @Post('setAdmin/:roomId/:participantId/:item/:duration')
     async SetAdmin(@Req() req: Request, @Param('roomId') roomId: number, @Param('participantId') participantId: number, @Param('item') item: string, @Param('duration') duration: string) {
-        await this.chatService.setAdmin(Number(roomId), Number(participantId), item, duration)
+        await this.chatService.setAdmin(Number(req['id']), Number(roomId), Number(participantId), item, duration)
     }
 
     @Post('addParticipants/:roomId')

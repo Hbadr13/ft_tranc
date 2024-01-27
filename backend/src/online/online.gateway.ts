@@ -52,7 +52,7 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private prisma: PrismaService, private onlineService: OnlineService) { }
   async handleConnection(client: Socket) {
     try {
-
+      console.log(client.handshake)
       const auth_cookie = parse(client.handshake.headers.cookie).jwt;
       const user = await this.onlineService.checkuserIfAuth(auth_cookie)
       console.log('=>', user.id)

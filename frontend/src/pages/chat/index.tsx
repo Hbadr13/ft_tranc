@@ -2,12 +2,13 @@ import EditChannel from "@/components/chat/channels/editChannel";
 import Conversation from "@/components/chat/conversation";
 import ConversationList from "@/components/chat/conversationList";
 import Edit from "@/components/chat/direct/edit";
+import { Constant } from "@/constants/constant";
 import { AppProps, channelData, channelProps, participantsData, participantsProps, userData, userProps } from '@/interface/data';
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-export default function index({ socket, onlineUsersss, users, amis }: AppProps) {
+export default function index({ socket, onlineUsersss, amis }: AppProps) {
   const [currentUser, setCurrentUser] = useState<userProps>(userData);
   const [Room, setRoom] = useState<channelProps>(channelData);
   const [joinRoom, setJoinRoom] = useState<channelProps>(channelData);
@@ -21,7 +22,26 @@ export default function index({ socket, onlineUsersss, users, amis }: AppProps) 
   const router = useRouter();
   const [receiver, setReceiver] = useState<userProps>(userData)
   const [myStatusInRoom, setMyStatusInRoom] = useState<participantsProps>(participantsData)
+  
+  const [users, setUsers] = useState<userProps[]>([])
+  useEffect(() => {
+    (
+      async () => {
+        try {
 
+          const response = await fetch(`${Constant.API_URL}/users/${currentUser.id}`, {
+            credentials: 'include',
+          });
+          if (response.ok) {
+            const content = await response.json();
+            setUsers(Array.from(content));
+          }
+        } catch (error) {
+
+        }
+      }
+    )();
+  }, [currentUser]);
   useEffect(() => {
     let id = Number(router.query.user)
     users.map((item) => {
@@ -31,7 +51,7 @@ export default function index({ socket, onlineUsersss, users, amis }: AppProps) 
       }
     })
     setMyStatusInRoom(participantsData)
-  }, [router])
+  }, [router, currentUser])
 
   useEffect(() => {
     (
