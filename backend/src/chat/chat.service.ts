@@ -1,9 +1,11 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { FriendsService } from 'src/friends/friends.service';
 import { RoomModule } from 'src/game/room/room.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ChatService {
+
     constructor(private prisma: PrismaService) {
     }
 
@@ -83,7 +85,8 @@ export class ChatService {
                                 name: true,
                                 type: true,
                                 password: true,
-                                updatedAt: true
+                                updatedAt: true,
+                                description: true,
                             }
                         }
                     }
@@ -158,87 +161,83 @@ export class ChatService {
 
         }
 
-        // await this.prisma.message.create({
-        //     data: {
-        //         content: null,
-        //         sender: {
-        //             connect: {
-        //                 id: idUser
-        //             }
-        //         },
-        //         chat: {
-        //             connect: {
-        //                 id: Conversation.id
-        //             }
-        //         }
-        //     }
-        // });
     }
 
     async sendMessageToChannel(body, idRoom: number, idUser: number) {
-      
-
-        const user = await this.prisma.user.findUnique({
+        let membership = await this.prisma.membership.findFirst({
             where: {
-                id: idUser,
-            },
-            include: {
-                conversations: {
-                    where: {
-                        roomId: idRoom
-                    },
-                },
+                roomId: idRoom,
+                userId: idUser
             }
         })
 
-        // console.log(',,,,,',idUser, body.content,user.conversations[0])
-
-        if (user) {
-
-
-            let Conversation = await this.prisma.conversation.findUnique({
+        if (!membership.timeMute && !membership.isBanned) {
+            const user = await this.prisma.user.findUnique({
                 where: {
-                    type: 'channel',
-                    roomId: idRoom
-                }
-            });
-            // console.log("Conversation:" ,Conversation)
-            Conversation = await this.prisma.conversation.update({
-                where: {
-                    id: Conversation.id
+                    id: idUser,
                 },
-                data: {
-                    participants: {
-                        connect: {
-                            id: idUser
-                        }
+                include: {
+                    conversations: {
+                        where: {
+                            roomId: idRoom
+                        },
                     },
                 }
-            });
-            let msg = await this.prisma.message.create({
-                data: {
-                    content: body.content,
-                    sender: {
-                        connect: {
-                            id: idUser
-                        }
+            })
+            if (user) {
+
+                let Conversation = await this.prisma.conversation.findUnique({
+                    where: {
+                        type: 'channel',
+                        roomId: idRoom
+                    }
+                });
+                Conversation = await this.prisma.conversation.update({
+                    where: {
+                        id: Conversation.id
                     },
-                    chat: {
-                        connect: {
-                            id: Conversation.id
+                    data: {
+                        participants: {
+                            connect: {
+                                id: idUser
+                            }
+                        },
+                    }
+                });
+                let msg = await this.prisma.message.create({
+                    data: {
+                        content: body.content,
+                        sender: {
+                            connect: {
+                                id: idUser
+                            }
+                        },
+                        chat: {
+                            connect: {
+                                id: Conversation.id
+                            }
                         }
                     }
-                }
-            });
-            let r = await this.prisma.room.update({
-                where: { id: idRoom },
-                data: { updatedAt: msg.createdAt }
-            })
+                });
+                let r = await this.prisma.room.update({
+                    where: { id: idRoom },
+                    data: { updatedAt: msg.createdAt }
+                })
+            }
         }
+
+        // console.log(`${idUser} has sent a message: ${body.content} to ${idRoom}`);
 
     }
 
     async getallMessagesChannel(idUser: number, idRoom: number) {
+
+        // console.log("idUser == ", idUser);
+        // console.log("idRoom == ", idRoom);
+        const member = await this.prisma.membership.findFirst({
+            where: { roomId: idRoom, userId: idUser },
+            select: { id: true }
+        })
 
         const user = await this.prisma.user.findUnique({
             where: {
@@ -270,7 +269,7 @@ export class ChatService {
         const conversation = user.conversations[0];
         conversation.messages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
-        const resultMessages = conversation.messages
+        let resultMessages = conversation.messages
             .map((message) => ({
                 id: message.id,
                 content: message.content,
@@ -280,9 +279,64 @@ export class ChatService {
                 username: conversation.participants.find((participant) => participant.id === message.senderId)?.username,
                 foto_user: conversation.participants.find((participant) => participant.id === message.senderId)?.foto_user,
             }));
+        const data_rese = await this.prisma.user.findUnique({
+            where: { id: idUser },
+            include: {
+                receivedFriendRequests: {
+                    where: {
+                        status: 'blocked',
+                    },
+                    select: {
+                        id: false,
+                        status: false,
+                        sender: {
+                            select:
+                            {
+                                id: true,
 
 
-        return resultMessages
+
+                            },
+                        },
+
+                    },
+
+                },
+            },
+        });
+        const data_rese1 = await this.prisma.user.findUnique({
+            where: { id: idUser },
+            include: {
+                sentFriendRequests: {
+                    where: {
+                        status: 'blocked',
+                    },
+                    select: {
+                        id: false,
+                        status: false,
+                        receiver: {
+                            select:
+                            {
+                                id: true,
+                            },
+                        },
+
+                    },
+                },
+            },
+        });
+        const send_blocked = data_rese1.sentFriendRequests
+        const received_blocked1 = data_rese.receivedFriendRequests
+        received_blocked1.map((item) => {
+        })
+
+        send_blocked.map((item) => {
+        })
+
+        resultMessages = resultMessages.filter(item => !send_blocked.some(item2 => item2.receiver.id === item.senderId));
+        resultMessages = resultMessages.filter(item => !received_blocked1.some(item2 => item2.sender.id === item.senderId));
+        // console.log("channelmESSAGES === ", resultMessages);
+        return resultMessages;
 
     }
 
@@ -393,7 +447,6 @@ export class ChatService {
         filteredRoom = filteredRoom.filter(item => !banned.memberships.some(item2 => item2.roomId === item.id));
 
         return filteredRoom;
-        // return banned.memberships;
     }
     async upadteChannel(id: number, roomId: number, type: string, password: string) {
         const room = await this.prisma.membership.findFirst({
@@ -454,7 +507,6 @@ export class ChatService {
 
         if (timeUntilExpiration > 0) {
             setTimeout(async () => {
-                // Check if the mute time has expired and update the user's mute status
                 const membership = await this.prisma.membership.findUnique({ where: { id: id } });
                 if (membership && membership.timeMute && new Date() >= membership.timeMute) {
                     await this.prisma.membership.update({
@@ -471,9 +523,13 @@ export class ChatService {
     }
 
 
-    async setAdmin(roomId: number, participantId: number, item: string, duration: string) {
-
-        console.log('ana hna asat =>', roomId, participantId, item, duration)
+    async setAdmin(userId: number, roomId: number, participantId: number, item: string, duration: string) {
+        let myStatus = await this.prisma.membership.findFirst({
+            where: { userId: userId, roomId: roomId }
+        })
+        if (myStatus.isBanned || myStatus.timeMute || !myStatus.isAdmin) {
+            throw new UnauthorizedException()
+        }
         let room = await this.prisma.room.findUnique({
             where: {
                 id: roomId,
@@ -511,7 +567,8 @@ export class ChatService {
                     id: id
                 },
                 data: {
-                    isBanned: true
+                    isBanned: true,
+                    isAdmin: false,
                 }
             })
         }
@@ -540,9 +597,6 @@ export class ChatService {
             const currentTime = new Date();
             let timeMute: Date;
             switch (duration.toLowerCase()) {
-                case '1min':
-                    timeMute = new Date(currentTime.getTime() + 60 * 1000);
-                    break;
                 case '1h':
                     timeMute = new Date(currentTime.getTime() + 60 * 60 * 1000);
                     break;
@@ -555,6 +609,7 @@ export class ChatService {
                 default:
                     throw new Error('Invalid duration');
             }
+
             await this.prisma.membership.update({
                 where: {
                     id: id
@@ -565,7 +620,6 @@ export class ChatService {
             })
             this.scheduleMuteExpirationCheck(id, timeMute);
         }
-
 
     }
 
@@ -583,7 +637,7 @@ export class ChatService {
                 id: membership.id
             }
         })
-   
+
     }
 
 
@@ -612,6 +666,24 @@ export class ChatService {
 
     }
 
+
+    async myStatusInRoom(id: number, roomId: number) {
+        let membership = await this.prisma.membership.findFirst({
+            where: {
+                roomId: roomId,
+                userId: id
+            }
+        })
+        return membership;
+    }
+
+
+    async removeChannel(roomId: number) {
+        await this.prisma.room.delete({
+            where: { id: roomId }
+        })
+    }
+
     /******************************************************* Direct Message ****************************************************************/
 
     async sendDirectMessage(body, idSender: number, idReceiver: number) {
@@ -632,7 +704,7 @@ export class ChatService {
                 data: {
                     userAId: idSender,
                     userBId: idReceiver,
-                    status: 'accepted', // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
+                    status: 'accepted',
                 },
             });
             conversation = await this.prisma.conversation.create({
@@ -787,11 +859,9 @@ export class ChatService {
             },
         });
 
-        // Extract user IDs from the friend request records
         const friendUserIds = friendRequests.flatMap((request) => [
             request.userAId === userId ? request.userBId : request.userAId,
         ]);
-        console.log(friendUserIds)
         if (!friendUserIds)
             return 0;
         return (friendUserIds)
@@ -804,8 +874,8 @@ export class ChatService {
                 userBId: idReceiver,
             },
             include: {
-                userA: true, // Include the sender of the request
-                userB: true, // Include the receiver of the request
+                userA: true,
+                userB: true,
             }
         });
         if (friendRequest) {
@@ -836,13 +906,12 @@ export class ChatService {
             },
         });
         if (!existingFriendship && !existingFriendship1) {
-            // Create a friend request in the database
             await this.prisma.friendship.create({
                 data: {
                     userAId: idSender,
 
                     userBId: idReceiver,
-                    status: 'blocked', // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
+                    status: 'blocked',
                 },
             });
         }
@@ -854,8 +923,8 @@ export class ChatService {
                     userBId: idReceiver,
                 },
                 include: {
-                    userA: true, // Include the sender of the request
-                    userB: true, // Include the receiver of the request
+                    userA: true,
+                    userB: true,
                 }
             });
             const friendRequest1 = await this.prisma.friendship.findFirst({
@@ -865,8 +934,8 @@ export class ChatService {
                     userBId: idSender,
                 },
                 include: {
-                    userA: true, // Include the sender of the request
-                    userB: true, // Include the receiver of the request
+                    userA: true,
+                    userB: true,
                 },
             });
             if (friendRequest && friendRequest.status !== 'blocked') {
@@ -892,7 +961,7 @@ export class ChatService {
                         userAId: idSender,
 
                         userBId: idReceiver,
-                        status: 'blocked', // You can set a status to track the request (e.g., 'pending', 'accepted', 'rejected')
+                        status: 'blocked',
                     },
                 });
             }
@@ -938,7 +1007,6 @@ export class ChatService {
             },
         });
 
-        // Extract user IDs from the friend request records
         const friendUserIds = friendRequests.flatMap((request) => [
             request.userAId === idUser ? request.userBId : request.userAId,
         ]);
@@ -962,7 +1030,6 @@ export class ChatService {
                 id: item.id,
                 username: item.username,
                 foto_user: item.foto_user,
-                // Add other properties you want to include in the modified object
             }));
 
         result1.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());

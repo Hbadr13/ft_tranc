@@ -1,13 +1,9 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service'; // You should have a Prisma service
 import { User } from '@prisma/client';
-import * as speakeasy from 'speakeasy';
 import { toDataURL } from 'qrcode'
-import * as qrcode from 'qrcode';
 import { authenticator } from 'otplib';
-import { hash } from 'argon2';
 import { TwoFactorAuthService } from './TwoFactorAuthService';
-import { use } from 'passport';
 
 
 @Injectable()
@@ -16,17 +12,14 @@ export class UserService {
   constructor(private prisma: PrismaService) { }
 
   async findByUserId(id: number): Promise<User | undefined> {
-    // Replace this with your actual logic to find a user by username
     const user = await this.prisma.user.findUnique({
       where: {
         id: id,
       },
     });
-    // console.log(user)
     return user;
   }
   async makeUserInGame(id: number) {
-    // Replace this with your actual logic to find a user by username
     await this.prisma.user.update({
       where: {
         id: id,
@@ -92,7 +85,6 @@ export class UserService {
     });
 
     const filteredUsers = users.filter(user => user.id !== userAId);
-
     const filteredUsers1 = filteredUsers.filter(user => {
       const hasMatchingSentRequest = data_rese.sentFriendRequests.some(
         sentRequest => sentRequest.receiver.id === user.id
@@ -106,11 +98,6 @@ export class UserService {
       );
       return !hasMatchingReceivedRequest;
     });
-
-    filteredUsers2.forEach(user => console.log(user.id, user.username));
-    // data_rese.sentFriendRequests.forEach(user => console.log(user.receiver.id, user.receiver.username));
-    // data_rese.receivedFriendRequests.filter(user => console.log(user.sender.id, user.sender.username));
-
     return filteredUsers2;
   }
   async findOneUsers(userAId: number, userName: string) {
@@ -127,10 +114,6 @@ export class UserService {
     return user;
   }
   async apdate_user(userAId: number, userName: string, foto_user: string, email: string) {
-    if (foto_user === "male")
-      foto_user = "https://i.pinimg.com/564x/dc/51/61/dc5161dd5e36744d184e0b98e97d31ba.jpg";
-    else if (foto_user === "female")
-      foto_user = "https://i.pinimg.com/564x/30/c7/1b/30c71b3c02f31c2f3747c9b7404d6880.jpg";
     if (userName.length > 15) {
       userName = userName.substring(0, 15);
     }
@@ -147,7 +130,6 @@ export class UserService {
     });
   }
   async enableTwoFactor(userId: number): Promise<string> {
-    // Check if the user exists
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
     });
@@ -155,9 +137,6 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
-    // Generate a new 2FA secret
-    // const secret = this.twoFactorAuthService.generateSecret();
     const secret = authenticator.generateSecret();
     const uri = authenticator.keyuri(user.username, '2FA Tutorial', secret);
     const image = toDataURL(uri);
@@ -170,20 +149,9 @@ export class UserService {
         tempSecret: secret
       },
     });
-    console.log(user.tempSecret)
-
-    // Save the secret to the user in the database
-    // await this.prisma.user.update({
-    //   where: { id: userId },
-    //   data: { 
-    //     twoFactorSecret : secret
-    //   },
-    // });
-
     return uri;
   }
   async DeactivateTwoFactor(userId: number) {
-    // Check if the user exists
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
     });
@@ -191,11 +159,6 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
-    // Generate a new 2FA secret
-    // const secret = this.twoFactorAuthService.generateSecret();
-
-
     await this.prisma.user.update({
       where: {
         id: userId
@@ -204,8 +167,21 @@ export class UserService {
         twoFactorSecret: null
       },
     });
-
-
-
+  }
+  async FirstTime(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    await this.prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        first_login: false
+      },
+    });
   }
 }

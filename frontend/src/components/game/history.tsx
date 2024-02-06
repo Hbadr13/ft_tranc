@@ -22,7 +22,6 @@ const History = ({ currentUser, users }: { users: Array<userProps>, currentUser:
                     const response = await fetch(`${Constant.API_URL}/game/history`, {
                         credentials: 'include',
                     });
-                    console.log('------------------------logl')
                     if (response.status == 200) {
                         const content = await response.json()
                         setMatchs(content)

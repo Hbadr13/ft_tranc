@@ -19,7 +19,8 @@ model User {
   foto_user              String?
   level                  Float?
   won                    Int?
-  lost                   Int? 
+  lost                   Int?
+  first_login            Boolean?
   gameStatus             String?
   twoFactorSecret        String?
   tempSecret             String?
@@ -62,11 +63,11 @@ model Message {
 
 model Room {
   id           Int           @id @default(autoincrement())
-  name         String
-  description  String?
+  name         String        @db.VarChar()
+  description  String?       @db.VarChar()
   type         String
   conversation Conversation?
-  password     String?
+  password     String?       @db.VarChar()
   createdAt    DateTime      @default(now()) @db.Timestamp(6)
   updatedAt    DateTime?     @updatedAt @db.Timestamp(6)
   Memberships  Membership[]  @relation("membership")
@@ -111,7 +112,7 @@ model History {
 
 model Friendship {
   id     Int    @id @default(autoincrement())
-  status String
+  status String // You can use this to track the status of the friendship (e.g., 'accepted', 'pending', 'rejected')
 
   userAId Int
   userA   User @relation("UserFriends", fields: [userAId], references: [id])

@@ -34,6 +34,7 @@ export const checklogin = () => {
                         credentials: 'include',
                     });
 
+                    
                     if (response.status == 200) {
                         router.push('/');
                         return;
@@ -116,6 +117,35 @@ export const fetchCurrentUser = ({ setCurrentUser }: { setCurrentUser: (currentU
 export const getCurrentUser = async () => {
     try {
         const response = await fetch(`${Constant.API_URL}/auth/user`, {
+            credentials: 'include',
+        });
+        if (response.ok) {
+            const content = await response.json();
+            return content
+        }
+    } catch (error) {
+
+    }
+}
+
+
+export const getAllAmis = async ({ currentUser }: { currentUser: userProps }) => {
+    try {
+
+        const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${currentUser.id}`, {
+            credentials: 'include',
+        });
+        if (response.ok) {
+            const content = await response.json();
+            return content;
+        }
+    } catch (error) {
+    }
+}
+
+export const getAllUsers = async ({ currentUser }: { currentUser: userProps }) => {
+    try {
+        const response = await fetch(`${Constant.API_URL}/users/${currentUser.id}`, {
             credentials: 'include',
         });
         if (response.ok) {

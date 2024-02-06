@@ -1,13 +1,14 @@
-'use client'
 import Link from "next/link";
 import React, { useEffect, useState } from 'react';
-import Friends from "./Friend";
-import Rank from "./Rank";
 import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
-import { userProps } from "@/interface/data";
+import { userData, userProps } from "@/interface/data";
 
 import Image from 'next/image'
 import { Constant } from "@/constants/constant";
+import { getLevel } from "../game/listOfFriends";
+
+import Friends from "./friend";
+import Rank from "./rank";
 
 interface LevelBarpros {
   value: string
@@ -24,27 +25,32 @@ function LevelBar({ value }: LevelBarpros) {
   return (
     <div className="bg-white h-5  drop-shadow shadow-md shadow-black    w-80 rounded-lg">
       <div className="bg-[#0ea5e9] h-5 rounded-lg " style={{ width: progressWidth }}>
-        {/* <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
-          {`${value}%`} */}
-        {/* </span> */}
       </div>
     </div>
   );
 }
 
+
+export const getTheGrad = (level: number) => {
+  if (level < 3)
+    return '/game/grad/grad-5.svg'
+  else if (level < 5)
+    return '/game/grad/grad-4.svg'
+  else if (level < 8)
+    return '/game/grad/grad-3.svg'
+  else if (level < 10)
+    return '/game/grad/grad-2.svg'
+  // else if (level < 3)
+  return '/game/grad/grad-1.svg'
+}
+
 const UseProfile = () => {
   const [amis, setAmis] = useState<any>([])
-  const [query, sequery] = useState("")
   const [level, setlevel] = useState();
-  const [level1, setlevel1] = useState("");
-  const [level2, setlevel2] = useState("");
-
-  const [isOpen, setIsOpen] = useState(false)
-
   const [check, setCheck] = useState(2);
   const [check1, setCheck1] = useState(0);
   const [check2, setCheck2] = useState(0);
-  const [currentUser, setCurrentUser] = useState<Array<any>>([]);
+  const [currentUser, setCurrentUser] = useState<userProps>(userData);
   const [foto_user, setFoto_user] = useState("");
   const [id, setid] = useState(0);
   const [logout, setLogout] = useState(0);
@@ -87,18 +93,13 @@ const UseProfile = () => {
             setlevel(content.level)
             const stringValue2: string = String(level);
             const level3 = stringValue2.split('.');
-            if (level3[1])
-              setlevel1(level3[1]);
-            else
-              setlevel1("0");
-            setlevel2(level3[0]);
           }
         } catch (error) {
 
         }
       }
     )();
-  });
+  }, []);
   useEffect(() => {
     (
       async () => {
@@ -114,16 +115,11 @@ const UseProfile = () => {
       setCheck2(0);
 
     }
-    // else if (fd == 2 && check1 == 1)
-    //     setCheck1(2);
-    // else if (fd == 2 && check1 == 2)
-    //     setCheck1(0);
     else if (check1 == 1) {
 
       setCheck2(0);
       setCheck1(0);
     }
-
   }
   const freind_ranck1 = async (fd: number) => {
     setCheck(fd)
@@ -131,10 +127,6 @@ const UseProfile = () => {
       setCheck2(1);
       setCheck1(0);
     }
-    // else if (fd == 2 && check1 == 1)
-    //     setCheck1(2);
-    // else if (fd == 2 && check1 == 2)
-    //     setCheck1(0);
     else if (check2 == 1) {
       setCheck2(0);
       setCheck1(0);
@@ -167,9 +159,20 @@ const UseProfile = () => {
         }
       }
     )();
-  }, [query, id]);
+  }, [id]);
 
-
+  const getLevel = (level: number | any): string => {
+    if (!level)
+      return '0'
+    return level.toString().slice(0, level.toString().indexOf('.') + 3)
+  }
+  const extractdecimalNumberFromLevel = (_level: number) => {
+    if (!_level)
+      return '0'
+    var level: string = _level.toString() + '0'
+    const ret = level.toString().indexOf('.') == -1 ? 0 : level.toString().slice(level.toString().indexOf('.') + 1, level.toString().indexOf('.') + 3)
+    return Number(ret) > 2 ? ret : 0
+  }
   return (
 
     <div className=" flex flex-col w-full min-h-screen">
@@ -190,29 +193,25 @@ const UseProfile = () => {
               <span className="text-sm  font-serif italic flex justify-center mt-3">{email}</span>
             </div>
             <div className="mt-8  flex justify-center flex-col items-center bgs-black mal-6">
-              <LevelBar value={level1} />
+              <LevelBar value={String(extractdecimalNumberFromLevel(currentUser.level))} />
               <div className="  flex  justify-center items-center">
-                <p className=' mt-4 text-white shadow-sm shadow-black   w-28 font-serif  uppercase'>level {level2}-{level1}%</p>
+                <p className=' mt-4 text-white shadow-sm shadow-black   w-28   uppercasej'>level : {getLevel(currentUser.level)}</p>
               </div>
             </div>
             <div className=" hidden md:flex justify-center items-center  ">
 
-              <div className='mt-6'>
-                <Link className="text-base font-bold flex justify-center  items-center ml- text-blue-600" href={"/EditProfile"}><span className=" py-2 px-28 bg-white border  drop-shadow shadow-md shadow-black  rounded-xl hover:scale-110 duration-300">EditProfile</span>
+              <div className='mt-6 flex  flex-col items-center'>
+                <Link className="text-base font-bold flex justify-center  items-center ml- text-blue-600" href={"/editProfile"}><span className=" py-2 px-28 bg-white border  drop-shadow shadow-md shadow-black  rounded-xl hover:scale-110 duration-300">EditProfile</span>
                 </Link>
                 <h1 className="flex  mt-[40px] ">Recent Activities</h1>
-
-                <img
-                  src="https://w0.peakpx.com/wallpaper/616/177/HD-wallpaper-table-tennis-neon-icon-blue-background-neon-symbols-table-tennis-neon-icons-table-tennis-sign-sports-signs-table-tennis-icon-sports-icons.jpg"
-                  alt="Your"
-                  className="w-80 mt-6 h-60  rounded-[32px] inline-block"
-                />
-
+                <div className={` ${(currentUser.level) < 5 ? `w-80` : 'w-60'} mt-6 h-60   flex items-center justify-center relative`}>
+                  <Image fill style={{ objectFit: "cover" }} className='' src={getTheGrad(currentUser.level)} alt='grad'></Image>
+                </div>
               </div>
             </div>
             <div className=" md:hidden flex justify-center items-center flex-col ml-3 mt-6 ">
 
-              <Link className="text-base font-bold flex justify-center  items-center ml- text-blue-600" href={"/EditProfile"}><span className=" py-2 px-28 bg-white border  drop-shadow shadow-md shadow-black  rounded-xl hover:scale-110 duration-300">EditProfile</span>
+              <Link className="text-base font-bold flex justify-center  items-center ml- text-blue-600" href={"/editProfile"}><span className=" py-2 px-28 bg-white border  drop-shadow shadow-md shadow-black  rounded-xl hover:scale-110 duration-300">EditProfile</span>
               </Link>
 
               <div className='mt-2 msl-1'>
@@ -252,23 +251,16 @@ const UseProfile = () => {
               <button onClick={() => freind_ranck(1)} className=" mt-40 px-[100px] py-2  text-base font-bold   bordher-2 borsder-black bg-[#3b82f6] hover:text-blue-600   hover:scale-110 duration-300 text-white">Friends</button>
             </div>) : null}
 
-
-
-
           </div>
 
         </div>
         {(<div className=" flex   flex-col justify-center items-center md:opacity-150 bg xl:mt-[80px] sm:mt-6  bg-wshite rounded-md min-h-[845px] dark:bg-slate-500  sm:bg-blue-50  w-[550px] xl:w-[700px] h-16 xl:rounded-2xl xl:rounded-s-[1px] p-2" >
           {
             check === 2 && <Rank amis_id={amis} amis={amis} id={id} />
-
-
           }
           {
             check === 1 && <Friends amis_id={amis} amis={amis} currentUser={id} />
           }
-
-
         </div>)
         }
       </div>

@@ -18,6 +18,6 @@ import { UserService } from 'src/user/user.service';
     PassportModule.register({ defaultStrategy: '42' }),
   ],
   controllers: [AuthController],
-  providers: [AuthService,UserService,JwtStrategy,FortyTwoStrategy,PrismaClient], // Make sure 't' is included here if it's a provider.
+  providers: [AuthService,UserService,JwtStrategy,FortyTwoStrategy,PrismaClient],
 })
 export class AuthModule {}

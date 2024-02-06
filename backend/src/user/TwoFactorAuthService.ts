@@ -8,7 +8,7 @@ export class TwoFactorAuthService {
 
   generateSecret(): string {
     // Generate a new 2FA secret
-    console.log("secret")
+  
     const secret = speakeasy.generateSecret({ length: 10 }).base32;
     return secret;
   }

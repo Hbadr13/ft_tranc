@@ -1,14 +1,10 @@
-// 'use client'
+
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import * as z from 'zod';
-import Image from 'next/image'
-import { useRouter } from 'next/navigation';
-import { checkAuth, checklogin } from "@/hooks/userHooks";
+import {  checklogin } from "@/hooks/userHooks";
 import { Constant } from "@/constants/constant";
-// import { useState } from "react";
-// import { signIn } from "next-auth/react";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 export default function LoginForm() {
   checklogin();
@@ -20,33 +16,13 @@ export default function LoginForm() {
   const [validationErrors, setvalidationErrors] = useState<any>("");
   const [tfofocot, settfofocot] = useState(0);
   const [error, seterror] = useState(0);
+ 
   const formData = {
     email: email,
     password: password
   };
-  //   console.log("ssssss")
-  //   useEffect(() => {
-  //     try {
-  //       async () => {
-  //         const response = await fetch(`${Constant.API_URL}/auth/user`, {
-  //           credentials: 'include',
-  //         });
-  //         console.log("ssssss------------");
-  //             console.log(response.status )
-  //             if (response.status != 200) {
-  //                 router.push('/');
-  //                 return;
-  //             }
-  //         };
-  //     } catch (error) {
-  //     }
-  // });
-  const handleGoogleLogin = () => {
-    // const currentUrl = window.location.href;
-    // Redirect to the desired URL
-    // window.open("${Constant.API_URL}/auth/42","_self");
-    // Redirect to Google authentication
-
+  const handleIntraLogin = () => {
+  
     const how = window.location.replace(`${Constant.API_URL}/auth/42`);
   };
 
@@ -90,20 +66,12 @@ export default function LoginForm() {
           "password": password,
           foto_user: "",
           twoFactorSecret: TwoFactor
-
-
         }),
       });
       const content = await res.json();
-      console.log(content.status)
+
       if (content.status == 200 && res.ok) {
 
-        console.log(res.status)
-
-        // const form = e.target;
-        // form.reset();
-
-        // router.push('/');
         router.push('/');
       }
       else if (content.status == 201 && res.ok) {
@@ -119,9 +87,6 @@ export default function LoginForm() {
     } catch (error) {
       seterror(1);
       const form = e.target;
-      // form.reset();
-
-      // console.log("kin wahd hna: ", error);
     }
   }
   return (
@@ -164,32 +129,21 @@ export default function LoginForm() {
                   <p className="text-center text-sm">OR</p>
                   <hr className="border-gray-400" />
                 </div>
-                {/* <form   onClick={handleGoogleLogin} className="flex flex-col gap-4"> */}
-                <button onClick={handleGoogleLogin} className="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-105 duration-300 text-[#002D74]">
-                  {/* <svg className="mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="25px"> */}
-                  {/* SVG paths */}
-                  {/* </svg> */}
+                <button onClick={handleIntraLogin} className="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-105 duration-300 text-[#002D74]">
                   Login with Intra
                   <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 48 48">
-                    {/* <rect x="8" y="9" width="40" height="30" fill="" /> */}
-
-                    {/* <text x="10" y="36" font-family="Arial, sans-serif" font-size="30" fill="white">42</text> */}
-                    <text x="10" y="36" font-family="Arial, sans-serif " font-size="30" fill="black" >
+                    <text x="10" y="36" fontFamily="Arial, sans-serif " fontSize="30" fill="black" >
                       <tspan fill="blue font-semibold">4</tspan>
                       <tspan fill="green font-semibold">2</tspan>
                     </text>
                   </svg>
 
                 </button>
-                {/* </form> */}
-
                 <div>
                   <Link className="mt-3 text-xs flex justify-between items-center text-[#002D74]" href={"/register"}> Don't have an account ? <span className="underline py-2 px-5 bg-white border rounded-xl hover:scale-110 duration-300">Register</span>
                   </Link>
                 </div>
               </div>
-
-              {/* image */}
               <div className="md:block hidden w-1/2">
                 <img className="rounded-2xl w-[1000px] h-[500px]" src="https://i.pinimg.com/originals/95/bf/ae/95bfae2de987bf5694a00092142a3dd6.gif" alt="Login" />
               </div>

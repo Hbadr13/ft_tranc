@@ -9,21 +9,15 @@ import { AuthGuard } from '@nestjs/passport';
 export class FriendsController {
   constructor(private readonly friendsService: FriendsService) { }
 
-  //   @UseGuards(JwtAuthGuard) // Use a guard to ensure the user is authenticated
- 
   @Post('send-request/:friendId')
-  // @UseGuards(AuthGuard('jwt'))
   async sendFriendRequest(
     @Param('friendId') friendId: number,
    
-    @Request() req, // Use Request to access the user from the request object
+    @Request() req, 
   ): Promise<void> {
   
     const userId = req['id'];
-  
-    // console.log(userId) // Assuming you have stored user information in the request object during authentication
     if (Number(userId) != Number(friendId)) {
-      console.log("________________________________________________________")
       await this.friendsService.sendFriendRequest(Number(userId), Number(friendId));
     }
   }
@@ -37,7 +31,6 @@ export class FriendsController {
       if (error instanceof NotFoundException) {
         throw new NotFoundException(error.message);
       }
-      // Handle other potential errors
     }
   }
   @Post('blocked-friend-request/:requestId')
@@ -50,7 +43,6 @@ export class FriendsController {
       if (error instanceof NotFoundException) {
         throw new NotFoundException(error.message);
       }
-      // Handle other potential errors
     }
   }
   @Post('refuse-friend-request/:requestId')
@@ -62,7 +54,6 @@ export class FriendsController {
       if (error instanceof NotFoundException) {
         throw new NotFoundException(error.message);
       }
-      // Handle other potential errors
     }
   }
   
@@ -74,12 +65,12 @@ export class FriendsController {
       userId,
       'accepted',
     );
-    return friends;
+    return  friends;
   }
   @Get('/received-requests')
   async getReceivedFriendRequests(@Req() req) {
     if (Number(req['id']) > 0)
-      return this.friendsService.getReceivedFriendRequests(Number(req['id']));
+      return await this.friendsService.getReceivedFriendRequests(Number(req['id']));
     else
       return {}
   }
@@ -87,14 +78,14 @@ export class FriendsController {
   async getSendFriendRequests(@Req() req) {
  
     if (Number(req['id']) > 0)
-      return this.friendsService.getSendFriendRequests(Number(req['id']));
+      return  await this.friendsService.getSendFriendRequests(Number(req['id']));
     else
       return {}
   }
   @Get('/received-blocked')
   async getReceivedFriendBlocked( @Req() req) {
     if (Number(req['id']) > 0)
-      return this.friendsService.getReceivedFriendBlocked(Number(req['id']));
+      return  await this.friendsService.getReceivedFriendBlocked(Number(req['id']));
     else
       return {}
   }
@@ -102,22 +93,22 @@ export class FriendsController {
   @Get('/send-blocked')
   async getSendFriendBlocked( @Req() req) {
     if (Number(req['id']) > 0)
-      return this.friendsService.getSendFriendblocked(Number(req['id']));
+      return await this.friendsService.getSendFriendblocked(Number(req['id']));
     else
       return {}
   }
   @Delete('delete-friend-request/:requestId')
   async deleteFriendRequest(@Param('requestId') requestId: number,  @Req() req) {
     
-    return this.friendsService.deleteFriendRequest(Number(requestId), Number(req['id']));
+    return await this.friendsService.deleteFriendRequest(Number(requestId), Number(req['id']));
   }
   @Delete('Unblocked-friend/:requestId')
   async unblocked_friend(@Param('requestId') requestId: number,  @Req() req) {
     
-    return this.friendsService.unblocked_friend(Number(requestId), Number(req['id']));
+    return  await this.friendsService.unblocked_friend(Number(requestId), Number(req['id']));
   }
   @Get('received/:receiverId')
   async getReceivedFriendRequests1(@Param('receiverId') receiverId: number) {
-    return this.friendsService.getReceivedFriendRequests1(receiverId);
+    return await this.friendsService.getReceivedFriendRequests1(receiverId);
   }
 }

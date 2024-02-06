@@ -1,17 +1,16 @@
-
-import Friends from '@/components/user/Friend';
-import Rank from '@/components/user/Rank';
-import { fetchAllAmis, fetchCurrentUser } from '@/hooks/userHooks';
-import { AppProps, userProps } from '@/interface/data';
+import { AppProps, userData, userProps } from '@/interface/data';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import path from 'path';
 import { send } from 'process';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { NullLiteral } from 'typescript';
-import { any, string } from 'zod';
 import { Constant } from '@/constants/constant';
+import { getTheGrad, handelChallenge } from '@/components/game/listOfFriends';
+
+import Friends from '@/components/user/friend';
+import Rank from '@/components/user/rank';
+
 
 interface LevelBarpros {
     value: string
@@ -35,7 +34,7 @@ function LevelBar({ value }: LevelBarpros) {
     );
 }
 
-const YourComponent = ({ currentFileName }: any) => {
+const YourComponent = ({ onlineUsersss, socket, currentFileName }: { onlineUsersss: Array<Number>, socket: any, currentFileName: any }) => {
     const [flag, setFlag] = useState(true)
     const [flag1, setFlag1] = useState(true)
     const [flag2, setFlag2] = useState(true)
@@ -61,45 +60,44 @@ const YourComponent = ({ currentFileName }: any) => {
     const [amis, setAmis] = useState<Array<userProps>>([])
     const [amis_id, setAmisid] = useState<Array<userProps>>([])
     const [delete_request, setdelete_request] = useState<any>([])
+    const [selectUser, setselectUser] = useState<Number>(-1);
 
     const [received, setreceived] = useState<Array<any>>([]);
     const [sendr, setsendr] = useState<Array<any>>([]);
     const [received_blocked, setreceived_blocked] = useState<Array<any>>([]);
     const [sendr_blocked, setsendr_blocked] = useState<Array<any>>([]);
+
     const router = useRouter()
     const parts = currentFileName.split('.');
     const numberPart: number = Number(parts[1]);
     const usernamePart: string = parts[0];
-
-    const [number, setNumber] = useState(0);
     const [id, setid] = useState(0);
-
+    const [currentUser, setCurrentUser] = useState<userProps>(userData);
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/auth/user`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
+                try {
+                    const response = await fetch(`${Constant.API_URL}/auth/user`, {
+                        credentials: 'include',
+                    });
+                    if (response.ok) {
 
-                setid(content.id);
-                // setUsername(content.username);
-
-                // console.log(content.id);
+                        const content = await response.json();
+                        setCurrentUser(content)
+                        setid(content.id);
+                    }
+                } catch (error) {
+                }
             }
         )();
-    });
+    }, []);
 
     useEffect(() => {
-
-
         if (numberPart === id) {
             router.push("/profile")
-
         }
         setCheck(2)
     }, [id, numberPart]);
-
 
     useEffect(() => {
         (
@@ -220,13 +218,17 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/received-blocked`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setreceived_blocked(counte)
-                    return;
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/received-blocked`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setreceived_blocked(counte)
+                        return;
+                    }
+                } catch (error) {
                 }
             }
         )();
@@ -235,62 +237,74 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/received-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setreceived(counte)
-                    return;
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/received-requests`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setreceived(counte)
+                        return;
+                    }
+                } catch (error) {
                 }
             }
         )();
-    }, [id, numberPart, isOpen, check_blocked1, flag1 ,check_blocked2, currentFileName]);
+    }, [id, numberPart, isOpen, check_blocked1, flag1, check_blocked2, currentFileName]);
+    // useEffect(() => {
+    //     (
+    //         async () => {
+    //             try {
+
+    //                 const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}`, {
+    //                     credentials: 'include',
+    //                 });
+    //                 const content = await response.json();
+    //                 if (response.status == 200) {
+    //                     setFlag2(content);
+    //                     // setrequestt(cont)
+    //                     return;
+    //                 }
+    //             } catch (error) {
+
+    //             }
+    //         }
+    //     )();
+    // }, [sendr, received, numberPart, isOpen]);
+    // useEffect(() => {
+    //     (
+    //         async () => {
+    //             try {
+
+    //                 const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}`, {
+    //                     credentials: 'include',
+    //                 });
+    //                 const counte = await response.json();
+    //                 if (response.status == 200) {
+    //                     setFlag2(counte);
+    //                     // setrequestt(cont)
+    //                     return;
+    //                 }
+    //             } catch (error) {
+    //             }
+    //         }
+    //     )();
+    // }, [sendr, received, numberPart, ref, check_blocked1, check_blocked2, isOpen]);
     useEffect(() => {
         (
             async () => {
                 try {
 
-                    const response = await fetch(`${Constant.API_URL}/friends/${numberPart}/send-requests`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/send-blocked`, {
                         credentials: 'include',
                     });
-                    const content = await response.json();
+                    const counte = await response.json();
                     if (response.status == 200) {
-                        setFlag2(content);
-                        // setrequestt(cont)
+                        setsendr_blocked(counte)
                         return;
                     }
                 } catch (error) {
-
-                }
-            }
-        )();
-    }, [sendr, received, id, numberPart, isOpen]);
-    useEffect(() => {
-        (
-            async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/${numberPart}/send-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setFlag2(counte);
-                    // setrequestt(cont)
-                    return;
-                }
-            }
-        )();
-    }, [sendr, received, id, numberPart, ref, check_blocked1, check_blocked2, isOpen]);
-    useEffect(() => {
-        (
-            async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/send-blocked`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setsendr_blocked(counte)
-                    return;
                 }
             }
         )();
@@ -298,13 +312,17 @@ const YourComponent = ({ currentFileName }: any) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
-                    credentials: 'include',
-                });
-                const counte = await response.json();
-                if (response.status == 200) {
-                    setsendr(counte)
-                    return;
+                try {
+
+                    const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
+                        credentials: 'include',
+                    });
+                    const counte = await response.json();
+                    if (response.status == 200) {
+                        setsendr(counte)
+                        return;
+                    }
+                } catch (error) {
                 }
             }
         )();
@@ -318,9 +336,7 @@ const YourComponent = ({ currentFileName }: any) => {
             });
 
             if (response.ok) {
-                console.log('Friend request sent successfully.');
                 setisfriend(!isfriend);
-
             } else {
                 setIsOpen(false);
                 console.error('Failed to send friend request.');
@@ -338,9 +354,7 @@ const YourComponent = ({ currentFileName }: any) => {
             });
 
             if (response.ok) {
-                // setIsOpen1(true);
                 router.push("/")
-                console.log('Friend blocked sent successfully.');
             } else {
                 console.error('Failed to send friend request.');
             }
@@ -354,13 +368,9 @@ const YourComponent = ({ currentFileName }: any) => {
                 method: 'POST',
                 credentials: 'include',
             });
-
             if (response.ok) {
                 setIsOpen(true);
                 setFlag1(true);
-
-
-                console.log('Friend request sent successfully.');
             } else {
                 console.error('Failed to send friend request.');
             }
@@ -377,12 +387,8 @@ const YourComponent = ({ currentFileName }: any) => {
 
             if (response.ok) {
                 setIsOpen(false);
-                // if (ref == true)
-
-                // else
-                // setref(true)
-                console.log('delete-friend-request sent successfully.');
             } else {
+                setIsOpen(false);
                 console.error('Failed to delete-friend-request.');
             }
         } catch (error) {
@@ -397,9 +403,7 @@ const YourComponent = ({ currentFileName }: any) => {
             });
 
             if (response.ok) {
-                   setFlag1(true)
-              
-                console.log('delete-friend-request sent successfully.');
+                setFlag1(true)
             } else {
                 console.error('Failed to delete-friend-request.');
             }
@@ -478,8 +482,16 @@ const YourComponent = ({ currentFileName }: any) => {
         }
         // setFlag2(true)
     }, [sendr, numberPart, isfriend, received, currentFileName, sendr_blocked, received_blocked, amis, amis_id, flag2, delete_request])
-    // console.log(check)
-
+    const getLevel = (level: number | any): string => {
+        if (!level)
+            return '0'
+        return level.toString().slice(0, level.toString().indexOf('.') + 3)
+    }
+    const extractdecimalNumberFromLevel = (_level: number) => {
+        var level: string = _level.toString() + '0'
+        const ret = level.toString().indexOf('.') == -1 ? 0 : level.toString().slice(level.toString().indexOf('.') + 1, level.toString().indexOf('.') + 3)
+        return Number(ret) > 2 ? ret : 0
+    }
     return (
         <div className='flex  flex-col'>
             <div className=' '>
@@ -492,7 +504,7 @@ const YourComponent = ({ currentFileName }: any) => {
                                     (
                                         <div className=' flex z-10  h-screen w-screen  justify-center items-center '>
 
-                                            <div className='flex  justify-center flex-col  h-80  w-[400px] sm:w-[500px]   z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
+                                            <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
                                                 <p className=' text-xl  '> @{username} ?</p>
                                                 <span className=' text-sm mt-4'> You  cannot reach this user </span>
                                                 <Link className=' flex justify-center items-center text-black mt-8 w-56 h-10 rounded-2xl  border-2 bg-white  shadow-md  border-blue-500 hover:scale-110 duration-300' href={'/'}>Canecel</Link>
@@ -503,11 +515,11 @@ const YourComponent = ({ currentFileName }: any) => {
 
                                     <div className=' flex z-10  h-screen w-screen  justify-center items-center '>
 
-                                        <div className='flex  justify-center flex-col  h-80  w-[400px] sm:w-[500px]  z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
+                                        <div className='flex  justify-center flex-col  h-80  w-[500px]  ml-12 z-20  drop-shadow-2xl  border-2 border-blue-500 rounded-2xl  items-center text-black bg-white '>
                                             <p className=' text-xl  -mt-10'> Unblock @{username} ?</p>
                                             <span className=' text-sm mt-6'> They will  be able to follow you and view your Tweets </span>
 
-                                            <Link className=' flex justify-center items-center text-black  bg-white  w-56  rounded-2xl h-10 mt-8 border-2  border-blue-500 shadow-md hover:scale-110 duration-300' href={'/Listblocked'}>Unblock</Link>
+                                            <Link className=' flex justify-center items-center text-black  bg-white  w-56  rounded-2xl h-10 mt-8 border-2  border-blue-500 shadow-md hover:scale-110 duration-300' href={'/listblocked'}>Unblock</Link>
 
                                             <Link className=' flex justify-center items-center text-black mt-6 w-56 h-10 rounded-2xl  border-2  border-blue-500 shadow-md hover:scale-110 duration-300' href={'/'}>Canecel</Link>
 
@@ -533,8 +545,8 @@ const YourComponent = ({ currentFileName }: any) => {
                                             <span className="text-sm  font-serif italic flex justify-center mt-3">{Email}</span>
                                         </div>
                                         <div className="mt-8 w-full flex justify-center items-center flex-col ">
-                                            <LevelBar value={level1} />
-                                            <p className=' mt-4 text-white shadow-sm shadow-black   w-28 font-serif italic uppercase'>level {level2}-{level1}%</p>
+                                            <LevelBar value={String(extractdecimalNumberFromLevel(Number(level)))} />
+                                            <p className=' mt-4 text-white shadow-sm shadow-black   w-28  italic uppercase'>level : {getLevel(Number(level))}</p>
                                         </div>
                                         <div className='mt-6'>
                                             <div className="text-base  w-full font-bold flex  justify-center  items-center text-[#2c4d82]">
@@ -544,12 +556,12 @@ const YourComponent = ({ currentFileName }: any) => {
                                                         (
                                                             <div className="text-base font-bold flex items-center w-full justify-center bgw-black  space-x-3  text-[#2c4d82]">
                                                                 <div className="   w-28  h-10  bg-[#dbeafe]  flex  items-center justify-center  space-x-1  border rounded-2xl p-1 hover:scale-110 duration-300">
-                                                                    <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
+                                                                    <svg width="20" height="20" fill="black" enableBackground="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clipRule="evenodd" fill="none" fillRule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" strokeMiterlimit="10" strokeWidth="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                                                                     <span className='normal-case'>Friends</span>
                                                                 </div>
-                                                                <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center bg-[#dbeafe] border rounded-2xl p-1 hover:scale-110 duration-300" >Message</Link>
-                                                                <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center  bg-[#dbeafe]  border rounded-2xl p-1 hover:scale-110 duration-300" >play</Link>
-
+                                                                <Link href={`/chat?user=${numberPart}`} content='play' className="  w-28  h-10 flex justify-center items-center bg-[#dbeafe] border rounded-2xl p-1 hover:scale-110 duration-300" >Message</Link>
+                                                                {/* <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center  bg-[#dbeafe]  border rounded-2xl p-1 hover:scale-110 duration-300" >play</Link> */}
+                                                                <button onClick={() => onlineUsersss.includes(numberPart) ? handelChallenge({ oppId: numberPart, socket: socket, currentUser: currentUser, selectUser: selectUser, setselectUser: setselectUser, router: router }) : undefined} content='play' className="  w-28  h-10 flex justify-center items-center  bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</button>
 
                                                             </div>
                                                         ) :
@@ -559,7 +571,7 @@ const YourComponent = ({ currentFileName }: any) => {
                                                                     (
                                                                         <div className="text-base font-bold flex items-cente w-full justify-center  space-x-10  text-[#2c4d82]">
                                                                             <div className=" w-32 space-x-1 h-10 p-1 justify-center bg-[#dbeafe]  flex  items-center  border rounded-2xl hover:scale-110 duration-300">
-                                                                                <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
+                                                                                <svg width="20" height="20" fill="black" enableBackground="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clipRule="evenodd" fill="none" fillRule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" strokeMiterlimit="10" strokeWidth="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                                                                                 <button className=" bg-[#dbeafe] border  " onClick={sendRequestForaccpet} >Confrim</button>
                                                                             </div>
                                                                             <button className="w-32 h-10 flex justify-center items-center p-1 bg-[#dbeafe] border rounded-2xl  hover:scale-110 duration-300 " onClick={received_request}>Delete</button>
@@ -567,11 +579,11 @@ const YourComponent = ({ currentFileName }: any) => {
                                                                         </div>) :
                                                                     (<div className="text-base font-bold flex items-center w-full justify-center bgw-black  space-x-3  text-[#2c4d82]">
                                                                         <div className="   w-28  h-10  bg-[#dbeafe]  flex  items-center justify-center  space-x-1  border rounded-full hover:scale-110 duration-300">
-                                                                            <svg width="20" height="20" fill="black" enable-background="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clip-rule="evenodd" fill="none" fill-rule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" stroke-miterlimit="10" stroke-width="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
+                                                                            <svg width="20" height="20" fill="black" enableBackground="new 0 0 24 24" id="Layer_1" version="1.0" viewBox="0 0 24 24" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"><polyline clipRule="evenodd" fill="none" fillRule="evenodd" points="  23,7.5 17.7,13 14.9,10.2 " stroke="#000000" strokeMiterlimit="10" strokeWidth="2" /><circle cx="9" cy="8" r="4" /><path d="M9,14c-6.1,0-8,4-8,4v2h16v-2C17,18,15.1,14,9,14z" /></svg>
                                                                             <span className='normal-case'>Friends</span>
                                                                         </div>
-                                                                        <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
-                                                                        <Link href='/game' content='play' className="  w-28  h-10 flex justify-center items-center  bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</Link>
+                                                                        <Link href={`/chat?user=${numberPart}`} content='play' className="  w-28  h-10 flex justify-center items-center bg-[#dbeafe] border rounded-full hover:scale-110 duration-300" >Message</Link>
+                                                                        <button onClick={() => onlineUsersss.includes(numberPart) ? handelChallenge({ oppId: numberPart, socket: socket, currentUser: currentUser, selectUser: selectUser, setselectUser: setselectUser, router: router }) : undefined} content='play' className="  w-28  h-10 flex justify-center items-center  bg-[#dbeafe]  border rounded-full hover:scale-110 duration-300" >play</button>
 
 
                                                                     </div>)
@@ -584,14 +596,14 @@ const YourComponent = ({ currentFileName }: any) => {
                                                                         (
                                                                             <div className=' w-full space-x-10 flex justify-center items-center  flex-row'>
                                                                                 <button className="w-32 h-10  flex justify-center items-center bg-white border rounded-2xl p-1 " onClick={sendRequest} >Add Friend</button>
-                                                                                <Link href='/game' content='play' className="w-32 h-10  flex justify-center items-center bg-white border rounded-2xl p-1 hover:scale-110 duration-300" >Message</Link>
+                                                                                <Link href={`/chat?user=${numberPart}`} content='play' className="w-32 h-10  flex justify-center items-center bg-white border rounded-2xl p-1 hover:scale-110 duration-300" >Message</Link>
                                                                             </div>
                                                                         ) :
                                                                         (
                                                                             <div className=' bg-blacdk w-full space-x-10  flex justify-center items-center  flex-row '>
 
                                                                                 <button className=" w-32 h-10  flex justify-center items-center  bg-white border rounded-2xl p-1 text-sm " onClick={cancelRequest} >Canacel requset</button>
-                                                                                <Link href='/game' content='play' className=" w-32 h-10  flex justify-center items-center  bg-white border rounded-2xl p-1 hover:scale-110 duration-300" >Message</Link>
+                                                                                <Link href={`/chat?user=${numberPart}`} content='play' className=" w-32 h-10  flex justify-center items-center  bg-white border rounded-2xl p-1 hover:scale-110 duration-300" >Message</Link>
                                                                             </div>
                                                                         )
                                                                 )
@@ -603,16 +615,12 @@ const YourComponent = ({ currentFileName }: any) => {
 
                                             <div className=" hidden md:flex justify-center items-center  ">
 
-                                                <div className='mt-6np'>
+                                                <div className='mt-6 flex  flex-col items-center'>
 
                                                     <h1 className="flex  mt-[40px] ">Recent Activities</h1>
-
-                                                    <img
-                                                        src="https://w0.peakpx.com/wallpaper/616/177/HD-wallpaper-table-tennis-neon-icon-blue-background-neon-symbols-table-tennis-neon-icons-table-tennis-sign-sports-signs-table-tennis-icon-sports-icons.jpg"
-                                                        alt="Your"
-                                                        className="w-80 mt-6 h-60  rounded-[32px] inline-block"
-                                                    />
-                                                    {/* <button className="flex justify-center  items-center mt-6  bg-[#f4f5f8] transition-all active:scale-100 rounded-xl text-[#2c4d82] py-2 px-12 hover:scale-105 ">Login</button> */}
+                                                    <div className={` ${(Number(level)) < 5 ? `w-80` : 'w-60'} mt-6 h-60   flex items-center justify-center relative`}>
+                                                        <Image fill style={{ objectFit: "cover" }} className='' src={getTheGrad(Number(level))} alt='grad'></Image>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className=" md:hidden flex justify-center items-center flex-col ml-3 mt-6 ">
@@ -734,9 +742,7 @@ const YourComponent = ({ currentFileName }: any) => {
 
 
 export async function getServerSideProps(context: any) {
-    // const currentFileName = path.basename(__filename);
     const currentFileName = context.query.user;
-
     return {
         props: {
             currentFileName,

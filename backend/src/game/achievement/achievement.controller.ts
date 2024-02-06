@@ -7,6 +7,9 @@ export class AchievementController {
   constructor(private readonly AchievementService: AchievementService) { }
   @Post()
   async updateLevel(@Req() req: Request, @Body() body: AchievementDto) {
-    return this.AchievementService.updateLevel(Number(req['id']), body);
+    try {
+      return this.AchievementService.updateLevel(Number(req['id']), body);
+    } catch (error) {
+    }
   }
 }

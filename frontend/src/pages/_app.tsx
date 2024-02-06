@@ -3,17 +3,21 @@ import '@/styles/game.css'
 import type { AppProps } from 'next/app'
 import SideMenu from '@/components/layout/sideMenu';
 import Navbar from '@/components/layout/navbar';
+import React from 'react'
+
 import { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import { fetchAllAmis, fetchAllUsers, fetchCurrentUser, getCurrentUser } from '@/hooks/userHooks';
 import Image from 'next/image';
 import { Open_Sans } from 'next/font/google'
 import { userData, userProps } from '@/interface/data';
+import Head from 'next/head'
 // import { getBack } from '@/hooks/appContexts';
 // import { fetchData } from '@/hooks/appContexts';
 import { useRouter } from 'next/router';
 import { Constant } from '@/constants/constant';
 import { getLevel } from '@/components/game/listOfFriends';
+import LoginFirstTime from '@/components/user/loginFirstTime';
 
 const font = Open_Sans({ subsets: ['latin'] })
 export interface CardInvitation {
@@ -111,7 +115,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [isSideMenuVisible2, setisSideMenuVisible2] = useState(!router.asPath.startsWith('/register'))
   const [isSideMenuVisible3, setisSideMenuVisible3] = useState(!router.asPath.startsWith(`/enter-2fa/`))
   const [connect, setConnect] = useState(false);
-
+  // const [hiddenFirsttm]
   const [socket, setSocket] = useState<any>();
   const [hideRequest, sethideRequest] = useState<boolean>(true);
   const [myIdFromOpponent, setmyIdFromOpponent] = useState<number>(-2);
@@ -124,7 +128,9 @@ export default function App({ Component, pageProps }: AppProps) {
   const [users, setUsers] = useState<Array<any>>([]);
   const [currentUser, setCurrentUser] = useState<userProps>(userData);
   const [isLogin, setIsLogin] = useState(false)
+  const [first_login, setfrist_login] = useState(false)
   const routerHelp = useRef('')
+  const [loginFirsTm, setloginFirsTm] = useState(false)
   fetchAllUsers({ setUsers, currentUser })
   fetchAllAmis({ setAmis, currentUser })
 
@@ -146,9 +152,9 @@ export default function App({ Component, pageProps }: AppProps) {
               const content = await response.json();
               setCurrentUser(content);
               setIsLogin(true)
+              setfrist_login(content.first_login)
             }
           } catch (error) {
-
           }
         }
       )();
@@ -166,7 +172,6 @@ export default function App({ Component, pageProps }: AppProps) {
         setOnlineUsersss(amisOnline)
       });
       newSocket?.on("areYouReady", ({ opponentSocket, OpponentId, currentPlayer, room }: { opponentSocket: any, OpponentId: string, currentPlayer: userProps, room: string }) => {
-        console.log("areYouReady")
         setRoom(room)
         setopponentSocket(opponentSocket)
         setmyIdFromOpponent(Number(OpponentId))
@@ -185,12 +190,12 @@ export default function App({ Component, pageProps }: AppProps) {
         setmyIdFromOpponent(-2)
       })
       return () => {
-        newSocket.disconnect();
+        newSocket?.disconnect();
       };
     }
     catch (error) {
     }
-  }, [connect]);
+  }, [connect, currentUser]);
 
   const modifiedPageProps = {
     ...pageProps,
@@ -202,18 +207,10 @@ export default function App({ Component, pageProps }: AppProps) {
   };
 
   const handerRefuseButton = async () => {
-
     socket?.emit('rejectAcceptRequesthidden', { currentUser: currentUser });
     setRoom('')
     sethideRequest((prev) => !prev)
     setmyIdFromOpponent(-2)
-    // try {
-    //   const responseDelete = await fetch(`${Constant.API_URL}/game/room`, {
-    //     method: 'DELETE',
-    //     credentials: 'include',
-    //   });
-    // } catch (error) {
-    // }
     socket.emit("rejectRequest", { currentUser, opponent, opponentSocket, room });
   }
 
@@ -257,6 +254,7 @@ export default function App({ Component, pageProps }: AppProps) {
             const content = await response.json();
             setCurrentUser(content);
             setIsLogin(true)
+            setfrist_login(content.first_login)
           }
           else if (router.asPath != '/register' && !router.asPath.startsWith('/enter-2fa/') && router.asPath != '/auth/login')
             router.push('/auth/login')
@@ -265,7 +263,8 @@ export default function App({ Component, pageProps }: AppProps) {
         }
       }
     )();
-  }, [login]);
+  }, [login, first_login]);
+
   useEffect(() => {
     routerHelp.current = router.asPath
     if ((oldPath == '/game/online?search=true' && router.asPath != '/game/online?settings=true') || oldPath == '/game/online?settings=true')
@@ -288,9 +287,16 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [router])
   const itv = isSideMenuVisible && isSideMenuVisible2 && isSideMenuVisible3
   return (
-    // <fetchData.Provider value={{ setRefreshData: setRefreshData, refreshData: refreshData }}>
-    // <getBack.Provider value={path}>
     <>
+      {
+        first_login && (
+          <div className=' absolute  w-full h-screen z-50 flex justify-center items-center '>
+            <div className="w-full h-full absolute     bg-slate-600 opacity-30 "></div>
+            <LoginFirstTime setfrist_login={setfrist_login} currentUser={currentUser}></LoginFirstTime>
+            {/* <LoginFirstTime setfrist_login={setfrist_login} loginFirsTm={loginFirsTm} setloginFirsTm={setloginFirsTm}  currentUser={currentUser}></LoginFirstTime> */}
+          </div>
+        )
+      }
       <RejectRequestComp router={router} opponent={opponent} rejectRequest={rejectRequest} setrejectRequest={setrejectRequest} />
       <CardInvitation currentUser={currentUser} opponent={opponent} handerRefuseButton={handerRefuseButton}
         hideRequest={hideRequest} myIdFromOpponent={myIdFromOpponent} handerAcceptButton={handerAcceptButton} />
@@ -311,9 +317,7 @@ export default function App({ Component, pageProps }: AppProps) {
           >
           </Component>
         </div>
-      </div>
+      </div >
     </>
-    // </getBack.Provider>
-    // </fetchData.Provider >
   )
 }

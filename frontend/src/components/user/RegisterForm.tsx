@@ -31,23 +31,7 @@ export default function RegisterForm() {
     password: password,
     confirmPassword: configPassword, // Doesn't match 'password123'
   };
-  // checklogin();
-  //   useEffect(() => {
-  //     try {
-  //       async () => {
-  //         const response = await fetch(`${Constant.API_URL}/auth/user`, {
-  //           credentials: 'include',
-  //         });
-  //         console.log("ssssss------------");
-  //             console.log(response.status )
-  //             if (response.status != 200) {
-  //                 router.push('/');
-  //                 return;
-  //             }
-  //         };
-  //     } catch (error) {
-  //     }
-  // });
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const FormSchema = z
@@ -70,7 +54,6 @@ export default function RegisterForm() {
     if (validationResult.success) {
       // Form data is valid
       const validatedData = validationResult.data;
-      console.log('Valid data:', validatedData);
     } else {
       // Form data is invalid
       const validationErrors = validationResult.error.flatten();
@@ -107,14 +90,11 @@ export default function RegisterForm() {
         const form = e.target;
         form.reset();
         setError("This user already exists");
-        console.log("user regitration faild.");
       }
 
     } catch (error) {
       const form = e.target;
       form.reset();
-
-      // console.log("kin wahd error hna: ", error);
     }
   };
   return (

@@ -10,19 +10,32 @@ export class RoomController {
   constructor(private readonly roomService: RoomService) { }
   @Get()
   async getRoom(@Req() req: Request) {
-    return this.roomService.getRoom(Number(req['id']));
+    try {
+      return this.roomService.getRoom(Number(req['id']));
+    } catch (error) {
+
+    }
   }
   @Post('/:userId')
   async creatRoom(@Param('userId') userId: string, @Body() body: roomDto) {
-    return await this.roomService.creatRoom(Number(userId), body);
+    try {
+      return await this.roomService.creatRoom(Number(userId), body);
+    } catch (error) {
+    }
   }
   @Post('/play/:id')
   async startGame(@Req() req: Request, @Body() body: playDto) {
-    return await this.roomService.startGame(Number(req['id']), body);
+    try {
+      return await this.roomService.startGame(Number(req['id']), body);
+    } catch (error) {
+    }
   }
 
   @Delete()
   async deleteRoom(@Req() req: Request) {
-    return this.roomService.deleteRoom(Number(req['id']));
+    try {
+      return this.roomService.deleteRoom(Number(req['id']));
+    } catch (error) {
+    }
   }
 }

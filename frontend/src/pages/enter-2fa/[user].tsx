@@ -47,29 +47,16 @@ const YourComponent = ({ currentFileName, currentUser }: any) => {
         }),
       });
       const content = await res.json();
-      // console.log(content.status)
       if (res.ok) {
-
-        // console.log(res.status)
-
-        // const form = e.target;
-        // form.reset();
-
         router.push('/');
-        //   router.push('/');
       }
 
       else {
-        // const form = e.target;
-        // form.reset();
         return;
       }
 
     } catch (error) {
-      // const form = e.target;
-      // form.reset();
 
-      // console.log("kin wahd hna: ", error);
     }
 
   }

@@ -1,7 +1,7 @@
 import { participantsProps, userProps } from '@/interface/data'
 import React, { useEffect, useState } from 'react'
 
-export default function AddPeople({ participants, setCancel, users }: { participants?: participantsProps[], setCancel: (value: any) => void, users: userProps[] }) {
+const AddPeople = ({ participants, setCancel, users }: { participants?: participantsProps[], setCancel: (value: any) => void, users: userProps[] }) =>{
 
     const [select, setSelect] = useState(false)
 
@@ -12,12 +12,8 @@ export default function AddPeople({ participants, setCancel, users }: { particip
             setSelect(false)
         else
             setSelect(true)
-        // console.log(item
-        // console.log('-???', item[index].flag)
         users.map((item) => {
-            // console.log(item.username, item.dakhal)
         })
-        // console.log(users)
     }
 
     useEffect(() => {
@@ -28,7 +24,6 @@ export default function AddPeople({ participants, setCancel, users }: { particip
 
         users.map((item: userProps) => {
             participants?.map((item2) => {
-                // console.log('haaaaaaaaaaa',item.username, item2.username)
                 if (item.username == item2.username)
                     item.dakhal = true
             })
@@ -36,30 +31,27 @@ export default function AddPeople({ participants, setCancel, users }: { particip
 
     }, [users])
 
-    const handleClick = () => {
-
-    }
     return (
 
-        <div className='flex flex-col bg-blac shadow-xl w-[100%] '>
-            <div className="bg-sgky-400 w-full h-20 flex justify-cenjter items-cejnter">
-                <div className='flex justify-start w-full items-center ml-8  text-black'>
-                    <h1 className=' text-shadow-sm'>Add People</h1></div>
-                <div className='w-full justify-end items-center bg-blhack flex'>
-                    <button onClick={() => setCancel(0)} className=" mr-6">
+        <div className='flex-col  w-full '>
+            <div className="h-14 flex">
+                <div className='flex justify-start w-full items-center ml-8'>
+                    <h1 className=' font-mono font-bold'>Add People</h1>
+                </div>
+                <div className='w-full justify-end items-center flex'>
+                    <button onClick={() => setCancel(false)} className=" mr-6">
                         <svg width="10" height="10" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path id="Vector" d="M117.5 100L196.25 21.25C201.25 16.25 201.25 8.75 196.25 3.75C191.25 -1.25 183.75 -1.25 178.75 3.75L100 82.5L21.25 3.75C16.25 -1.25 8.75 -1.25 3.75 3.75C-1.25 8.75 -1.25 16.25 3.75 21.25L82.5 100L3.75 178.75C1.25 181.25 0 183.75 0 187.5C0 195 5 200 12.5 200C16.25 200 18.75 198.75 21.25 196.25L100 117.5L178.75 196.25C181.25 198.75 183.75 200 187.5 200C191.25 200 193.75 198.75 196.25 196.25C201.25 191.25 201.25 183.75 196.25 178.75L117.5 100Z" fill="#376EFA" fill-opacity="0.85" />
                         </svg>
                     </button>
                 </div>
             </div>
-            <div className=' w-full h-[1px] bg-sky-200' />
-            <div className='flex-row-revferse overflow-x-scroll scrollbar-hide flex w-full p-4'>
+            <div className='flex-row-revferse overflow-x-scroll scrollbar-hide flex p-2'>
                 {users.map((item, index) => (
-                    <div key={index} className=' bg-blfack bggf-blue-600  w-32 h-14 p-2 flex justify-center items-center'>
+                    <div key={index} className=''>
                         {
                             item.flag &&
-                            <div className='h-full  bg-bljack w-16 flex justify-center items-center' key={index}>
+                            <div className='h-full w-16 flex justify-center items-center' key={index}>
                                 <img className='w-12 h-12 rounded-full ' src={item.foto_user} />
                                 <div className="flex justify-end items-end h-full bgj-black z-18">
                                     <button className='' onClick={() => handlSelect(users, false, index)}  >
@@ -76,21 +68,19 @@ export default function AddPeople({ participants, setCancel, users }: { particip
                 }
             </div>
             <div className=' w-full h-[1px] bg-sky-200' />
-            <div className="flex flex-col  items-center overflow-y-scroll scrollbar-hide  h-96 bg-blachk p-6">
+            <div className="flex-col  items-center overflow-y-scroll scrollbar-hide  h-[480px]  p-2 ">
                 {users.map((item: userProps, index) =>
-
                     !item.dakhal &&
-
-                    <div key={index} className="flex flex-row w-full p-2  h-14 justify-center items-center p-">
-                        <div className='flex  justify-first'>
-                            <img className='w-10 h-10 rounded-full' src={item.foto_user}></img>
-                            <h1>{item.username}</h1>
+                    <div key={index} className="flex flex-row w-full p-1  h-14 justify-center items-center">
+                        <div className='flex space-x-2'>
+                            <img className='w-8 h-8 rounded-full' src={item.foto_user}></img>
+                            <h1 className='text-lg font-mono'>{item.username}</h1>
                         </div>
-                        <div className="flex w-full justify-end  ">
-                            {!item.flag && <button onClick={() => handlSelect(users, true, index)} className=' duration-300 hover:ease-in-  border-2 border-sky-500 w-26 p-3 h-8 flex justify-center items-center text-sky-500 '>
+                        <div className="flex w-full justify-end">
+                            {!item.flag && <button onClick={() => handlSelect(users, true, index)} className=' duration-300 hover:ease-in-  border-2 border-sky-500 w-auto p-3 h-4 flex justify-center items-center text-xs font-mono font-bold text-sky-500 '>
                                 Add
                             </button>}
-                            {item.flag && <button onClick={() => handlSelect(users, false, index)} className=' border-2 border-lime-500 p-3  text-lime-500 h-8 flex  justify-center items-center space-x-5'>
+                            {item.flag && <button onClick={() => handlSelect(users, false, index)} className=' border-2 border-lime-500 p-3  text-lime-500 w-auto h-4 flex  text-xs font-mono font-bold justify-center items-center space-x-5'>
                                 Added   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
                                     <path d="M18.7099 7.20986C18.617 7.11613 18.5064 7.04174 18.3845 6.99097C18.2627 6.9402 18.132 6.91406 17.9999 6.91406C17.8679 6.91406 17.7372 6.9402 17.6154 6.99097C17.4935 7.04174 17.3829 7.11613 17.29 7.20986L9.83995 14.6699L6.70995 11.5299C6.61343 11.4366 6.49949 11.3633 6.37463 11.3141C6.24978 11.2649 6.11645 11.2408 5.98227 11.2431C5.84809 11.2454 5.71568 11.2741 5.5926 11.3276C5.46953 11.3811 5.35819 11.4583 5.26495 11.5549C5.17171 11.6514 5.0984 11.7653 5.04919 11.8902C4.99999 12.015 4.97586 12.1484 4.97818 12.2825C4.9805 12.4167 5.00923 12.5491 5.06272 12.6722C5.11622 12.7953 5.19343 12.9066 5.28995 12.9999L9.12995 16.8399C9.22291 16.9336 9.33351 17.008 9.45537 17.0588C9.57723 17.1095 9.70794 17.1357 9.83995 17.1357C9.97196 17.1357 10.1027 17.1095 10.2245 17.0588C10.3464 17.008 10.457 16.9336 10.55 16.8399L18.7099 8.67986C18.8115 8.58622 18.8925 8.47257 18.9479 8.34607C19.0033 8.21957 19.0319 8.08296 19.0319 7.94486C19.0319 7.80676 19.0033 7.67015 18.9479 7.54365C18.8925 7.41715 18.8115 7.3035 18.7099 7.20986V7.20986Z" fill="#1ADB50" />
                                 </svg>              </button>}
@@ -102,3 +92,5 @@ export default function AddPeople({ participants, setCancel, users }: { particip
         </div>
     )
 }
+
+export default AddPeople

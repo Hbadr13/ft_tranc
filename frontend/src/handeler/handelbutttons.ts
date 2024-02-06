@@ -9,7 +9,7 @@ export interface handelSendRequestProps {
 
 export const handelSendRequest = async ({ id, friendId, setSend }: handelSendRequestProps) => {
     try {
-        const response = await fetch(`${Constant.API_URL}/friends/send-request/${friendId}/${id}`, {
+        const response = await fetch(`${Constant.API_URL}/friends/send-request/${friendId}`, {
             method: 'POST',
             credentials: 'include',
         });
@@ -18,8 +18,6 @@ export const handelSendRequest = async ({ id, friendId, setSend }: handelSendReq
 
             setSend((pr) => !pr)
 
-
-            console.log('Friend request sent successfully.');
         } else {
             console.error('Failed to send friend request.');
         }

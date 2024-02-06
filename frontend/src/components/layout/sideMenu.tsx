@@ -23,6 +23,8 @@ import { useRouter } from 'next/router'
 
 const SideMenu = () => {
     
+    const [isDivHidden, setIsDivHidden] = useState(false);
+    const [isDivHidden2, setIsDivHidden2] = useState(!true);
     const [activeButton, setActiveButton] = useState<Number>(0);
     const router = useRouter()
     const grey: string = ' bg-[#eee] ';
@@ -53,7 +55,6 @@ const SideMenu = () => {
     const [friendsComp, setfriendsComp] = useState(false)
     useEffect(() => {
         const lst: Array<string> = ['/', '/chat', '/profile', '/user', '/game', '/search']
-        // console.log(router.route, ':', lst.indexOf(router.route))
         if (lst.indexOf(router.route) != -1)
             setActiveButton(lst.indexOf(router.route) + 1)
         if (router.asPath.includes('users/'))
@@ -187,17 +188,6 @@ const SideMenu = () => {
                         <div className={`w-[20px] h-[16px] ${light} rounded-none md:rounded-tr-[15px]`}></div>
                     </div>
                 </div>
-                <div className='relative p-2 md:p-0 md:py-2 md:pl-2 w-full bg-red-300s pt-28'>
-                    <div className={`${light} p-1 rounded-full md:rounded-none md:rounded-l-full transition-padding duration-100 hover:p-2`}>
-                        <Link onClick={() => setActiveButton(10)} className={`flex items-center space-x-4 p-2 rounded-full ${light} w-full`} href='/game'>
-                            <Image src='/icons-logout-black.png' className='' alt='search' width={20} height={20}></Image>
-                            <span className={` ${activeButton == 10 ? 'text-blue-900  font-bold' : ''} `}>
-                                Log Out
-                            </span>
-                        </Link>
-                    </div>
-                </div>
-
             </div >
         </>
 

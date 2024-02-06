@@ -8,6 +8,7 @@ import { Response, Request } from 'express';
 import { JwtAuthGuard } from './jwt/jwt-auth.guard';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { Constant } from 'src/constants/constant';
+import { use } from 'passport';
 
 
 
@@ -29,39 +30,33 @@ export class AuthController {
 
                 throw new UnauthorizedException();
             }
-            // const user = await this.authService.findOne({ id: condition['id'] });
-            //     console.log('JWT Cookie:', 
+         
         } catch (e) {
             throw new UnauthorizedException()
         };
     }
-    @Post('signup')
-    // @UseGuards(JwtAuthGuard)
-    
-    signup(@Body() dto: AuthDto) {
-        console.log({
-            dto,
-        });
-        return this.authService.signup(dto);
+    @Post('signup')  
+    async signup(@Body() dto: AuthDto) {
+
+        return await this.authService.signup(dto);
     }
     @Post('signin')
-    // @UseGuards(JwtAuthGuard)
+    
    
     async signin(@Body() dto: AuthDto,
         @Res({ passthrough: true }) response: Response) {
 
         let user;
-        // console.log("ddddddddddddddddd");
+     
         if (!dto.twoFactorSecret) {
 
             user = await this.authService.signin(dto);
             if (user.twoFactorSecret) {
-                // If 2FA is enabled, send a response indicating that 2FA is required
-                // await this.setJwtCookie(response, user.id);
+            
                 return {
                     message: 'Two-Factor Authentication is enabled. Please provide the 2FA code.',
-                    status: 201, // You can choose an appropriate status code
-                    //   requireTwoFactor: true,
+                    status: 201, 
+                   
                 };
             }
         }
@@ -69,7 +64,6 @@ export class AuthController {
             user = await this.authService.verifyTwoFactor(dto);
         }
         // else {
-        console.log(response.status);
 
         await this.setJwtCookie(response, user.id);
 
@@ -84,11 +78,10 @@ export class AuthController {
 
     @Post('verify-2fa')
     async verifyTwoFactor(@Body() dto: AuthDto, @Res({ passthrough: true }) response: Response) {
-        console.log("dto", dto)
         const user = await this.authService.verifyTwoFactor_intra(dto);
 
-        // If 2FA code is valid, generate JWT and set it in the response cookie
-        console.log(user.id);
+
+   
         await this.setJwtCookie(response, user.id);
 
         return {
@@ -109,21 +102,22 @@ export class AuthController {
     @UseGuards(AuthGuard('42'))
     async fortyTwoAuthCallback(@Req() req, @Res({ passthrough: true }) response: Response) {
 
+        try{
 
-        const user = await this.authService.login(req.user);
-        if (user.twoFactorSecret) {
-            // Two-Factor Authentication is enabled for this user
-            // Redirect to a page where the user can enter their 2FA code
-            response.redirect(`${Constant.API_URL}/enter-2fa/${user.id}`);
-        }
-        else {
-
-            //  console.log("ssssss");
-            const jwt = await this.jwtService.signAsync({ id: user.id })
-            response.cookie('jwt', jwt, { httpOnly: true });
+            const user = await this.authService.login(req.user);
+            
+            if (user.twoFactorSecret) {
+                response.redirect(`${Constant.API_URL}/enter-2fa/${user.id}`);
+            }
+            else {
+                const jwt = await this.jwtService.signAsync({ id: user.id })
+                response.cookie('jwt', jwt, { httpOnly: true });
+                response.redirect(`${Constant.API_URL}`);
+            }
+        }  catch {
             response.redirect(`${Constant.API_URL}`);
         }
-    }
+        }
     @Post('set-2fa/:id/:code')
     async setTwoFactor(
         @Param('id') id: string,
@@ -131,7 +125,6 @@ export class AuthController {
     ) {
 
         const result = await this.authService.setTwoFactor(id, code);
-
         return {
             result
         };
@@ -147,7 +140,6 @@ export class AuthController {
                 throw new UnauthorizedException();
             }
             const user = await this.authService.findOne({ id: condition['id'] });
-            //     console.log('JWT Cookie:', user);
             const { hash, ...result } = user;
             return result;
         } catch (e) {
@@ -156,7 +148,7 @@ export class AuthController {
     }
     @Post('logout')
     async logout(@Res({ passthrough: true }) response: Response) {
-        response.clearCookie('jwt');
+         await response.clearCookie('jwt');
         return {
             message: 'success',
             status: 201

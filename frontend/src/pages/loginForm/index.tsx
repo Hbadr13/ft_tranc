@@ -1,4 +1,4 @@
-import UserInfo from "../../components/user/UserInfo";
+import UserInfo from "../../components/user/userInfo";
 export default function Home() {
   // const re = `/users/[${name}]`
 

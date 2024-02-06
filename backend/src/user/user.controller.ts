@@ -16,21 +16,17 @@ export class UserController {
 
   @Get('/:userId')
   async getAllUsers(@Param('userId') userId: string) {
-    // console.log(userId)
     return this.userService.findAllUsers(Number(userId));
   }
   @Get('other/userId')
   async findAautherUsers(@Req() req) {
-    console.log("--------><" ,req['id'])
-    return this.userService.findAautherUsers(Number(req['id']));
+     return this.userService.findAautherUsers(Number(req['id']));
   }
   @Get('one/:userName/:userId')
   async getOneUsers(
     @Param('userName') userName: string,
     @Param('userId') userId,
   ) {
-    // console.log('userId--->', userId);
-    // console.log('userName--->', userName);
     return this.userService.findOneUsers(Number(userId), userName);
   }
   @Post('update_info')
@@ -47,23 +43,23 @@ export class UserController {
     return await this.userService.findByUserId(Number(userId));
   }
   @Post('enable-2fa')
-  async enableTwoFactor(@Param('userId') userId: string,  @Req() req) {
-    // Assuming user is authenticated
+  async enableTwoFactor(@Req() req) {
     const secret = await this.userService.enableTwoFactor(Number(req['id']));
-
     return {
       message: 'Two-Factor Authentication enabled',
       secret,
     };
   }
   @Post('DeactivateTwoFactor')
-  async DeactivateTwoFactor(@Param('userId') userId: string, @Req() req) {
-    // Assuming user is authenticated
+  async DeactivateTwoFactor( @Req() req) {
     const secret = await this.userService.DeactivateTwoFactor(Number(req['id']));
-
     return {
       message: 'Two-Factor Authentication enabled',
       secret,
     };
+  }
+  @Post('firstTime')
+  async FirstTime(@Req() req) {
+    const secret = await this.userService.FirstTime(Number(req['id']));
   }
 }

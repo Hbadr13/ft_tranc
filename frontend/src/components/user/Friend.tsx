@@ -1,10 +1,8 @@
 import { Constant } from "@/constants/constant";
-import { fetchAllAmis, fetchCurrentUser } from "@/hooks/userHooks";
 import { userProps } from "@/interface/data";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { any } from "zod";
+import { useEffect, useState } from "react";
 import Image from 'next/image';
 
 
@@ -17,7 +15,6 @@ function LevelBar(userid: any) {
     (
       async () => {
         try {
-
           const response = await fetch(`${Constant.API_URL}/friends/accepted-friends/${userid.userid}`, {
             credentials: 'include',
           });
@@ -38,41 +35,28 @@ function LevelBar(userid: any) {
       if (usr.id == user.id) {
         flag1++;
       }
-
-
     })
   })
-
   return (
-
     <p className=" indent-0  text-sm sm:tesxt-md text-blue-200">{flag1} matual friends
     </p>
   );
 
 }
 
-
-
 const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, amis: Array<userProps>, currentUser: number }) => {
 
-  // const [query, setQuery] = useState('')
-  // const [id, setid] = useState(0)
   const [allfriends, setallfriends] = useState<Array<userProps>>([])
-  // fetchAllAmis({ setAmis, query, id});
-
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false)
   const [cansle_request, setcansle_request] = useState(false)
   const profailamis = (username: string, userId: number) => {
-    // Implement the functionality for profailamis
-    // For example, you can navigate to a new page or perform an action here
     router.push(`/users/${username}.${userId}`);
   };
   const [send, setsend] = useState<Array<userProps>>([]);
   const toggleDropdown = () => {
     setcansle_request(!cansle_request);
   };
-
   useEffect(() => {
     (
       async () => {
@@ -82,7 +66,6 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
         const counte = await response.json();
         if (response.status == 200) {
           setsend(Array.from(counte))
-          // setrequestt(cont)
           return;
         }
       }
@@ -90,14 +73,12 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
   }, [currentUser, isOpen]);
   const CanacelRequest = async (numberPart: number) => {
     try {
-      const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}/${currentUser}`, {
+      const response = await fetch(`${Constant.API_URL}/friends/delete-friend-request/${numberPart}`, {
         method: 'DELETE',
         credentials: 'include',
       });
-
       if (response.ok) {
         setIsOpen(true);
-        console.log('delete-friend-request sent successfully.');
       } else {
         console.error('Failed to delete-friend-request.');
       }
@@ -106,25 +87,16 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
     }
   };
   useEffect(() => {
-
-
-    // console.log(send)
     let freid = 0;
     let filterUser: any = amis_id.filter((user: userProps) => {
       user.flag = true;
       user.flag1 = true;
-
-      // user.isf = true
       amis.filter((usr: userProps) => {
         if (usr.id == user.id) {
           user.flag = false
-
         }
-
-
       })
       send.map((usr: any) => {
-        // counte.receiver.filter((usr: userProps) => {
         if (usr.receiver.id == user.id) {
           user.flag1 = false
         }
@@ -135,19 +107,14 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
     setIsOpen(false);
     setcansle_request(false);
   }, [isOpen, amis_id, amis, currentUser, send])
-  // fetchCurrentUser(setid);
   const sendRequest = async (numberPart: number) => {
     try {
-      const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}/${currentUser}`, {
+      const response = await fetch(`${Constant.API_URL}/friends/send-request/${numberPart}`, {
         method: 'POST',
         credentials: 'include',
       });
-
-
       if (response.ok) {
         setIsOpen(true);
-
-        console.log('Friend request sent successfully.');
       } else {
         console.error('Failed to send friend request.');
       }
@@ -155,16 +122,12 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
       console.error('Error sending friend request:', error);
     }
   };
-
   return (
     <div className="flex  flex-none      justify-center items-censter    rounded-r-[40px]  bg-sblue-600  w-full sm:w-[415px] h-[700px] ">
-
-
       <div className=" overflow-y-scroll  scrollbar-hide bg-white  -mt-10 sm:mt-0 w-[96%]  sm:w-[430px] drop-shadow shadow-md shadow-black rounded-2xl max-h-[980px] mst-2">
         {
-          (allfriends.length) ? allfriends.map((user: any) => (
-
-            <div className='   border-b-[2px] mt-0  bg-white w-auto sm:w-[420px] h-16 rounded-l rounded-r items-center      space-x-6 p-2  flex  justify-between'>
+          (allfriends.length) ? allfriends.map((user: any, index: any) => (
+            <div key={index} className='   border-b-[2px] mt-0  bg-white w-auto sm:w-[420px] h-16 rounded-l rounded-r items-center      space-x-6 p-2  flex  justify-between'>
               <div className="flex   space-x-2  ">
                 <img
                   src={user.foto_user}
@@ -173,12 +136,10 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                 />
                 <div className=' rounded-xl  mt-2 flex  justify-start items-start flex-col  '>
                   <button className="  flex  capitalize " onClick={() => profailamis(user.username, user.id)}> {`${user.username}`} </button>
-
                   {
                     (user.id == currentUser) ?
                       (<div></div>) :
                       <div>
-
                         <LevelBar userid={user.id} amis={amis} />
                       </div>
                   }
@@ -187,9 +148,6 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
               {
                 (user.id == currentUser) ?
                   (<div></div>) :
-
-
-
                   (!user.flag) ?
                     (<div className="flex w-wfull justify-end items-center ">
 
@@ -206,14 +164,10 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                       </div>
                     </div>) :
                     (
-
-
                       (user.flag1) ?
                         (
-
                           (<div>
                             <button onClick={() => sendRequest(user.id)} className="py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300  flex  items-center  space-x-1  border rounded-full hover:bg-[white] hover:scale-110 duration-300" >
-
                               <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
                                 width="20" height="20" viewBox="0 0 45.902 45.902"
                                 xmlSpace="preserve">
@@ -236,21 +190,14 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
                           </div>)
                         ) :
                         (
-
                           (
-
                             <div className="">
                               <button onClick={() => CanacelRequest(user.id)} className="flex float-none   py-2 px-5 shadow-blue-400 justify-center bg-gradient-to-r from-blue-500 to-cyan-300  hover:bg-[white] hover:scale-110 items-center      border rounded-full duration-300"><svg width="20" height="20" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M496 224c-79.6 0-144 64.4-144 144s64.4 144 144 144 144-64.4 144-144-64.4-144-144-144zm64 150.3c0 5.3-4.4 9.7-9.7 9.7h-60.6c-5.3 0-9.7-4.4-9.7-9.7v-76.6c0-5.3 4.4-9.7 9.7-9.7h12.6c5.3 0 9.7 4.4 9.7 9.7V352h38.3c5.3 0 9.7 4.4 9.7 9.7v12.6zM320 368c0-27.8 6.7-54.1 18.2-77.5-8-1.5-16.2-2.5-24.6-2.5h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h347.1c-45.3-31.9-75.1-84.5-75.1-144zm-96-112c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128z" /></svg>
                               </button>
                             </div>
-
-
-
                           )
                         )
                     )
-
-
               }
             </div>
           )) : (
@@ -274,14 +221,11 @@ const Friends = ({ amis_id, amis, currentUser }: { amis_id: Array<userProps>, am
               </div>
 
             </footer>
-         
-
           )
         }
       </div>
     </div>
   )
 }
-
 
 export default Friends;

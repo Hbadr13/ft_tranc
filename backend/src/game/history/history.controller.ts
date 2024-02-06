@@ -24,23 +24,21 @@ export class HistoryController {
     }
     @Get()
     async getUsershistory(@Req() req: Request,) {
-        console.log('>>>>>>')
-        const historys = await this.updateService.getUsershistory(Number(req['id']))
-        const users = await this.userService.findAllUsers(Number(req['id']));
-        const _matchs: Array<any> = []
-        Array.from(historys).reverse().map((item: any) => {
-            console.log('-??', item.username)
-            const usr = this.findUserbyId(users, item.opponentId)
-            if (usr)
-                _matchs.push({
-                    createdAt: item.createdAt,
-                    myGools: item.myGools,
-                    opponentGools: item.opponentGools,
-                    opponent: usr,
-                })
-        })
-        return _matchs
         try {
+            const historys = await this.updateService.getUsershistory(Number(req['id']))
+            const users = await this.userService.findAllUsers(Number(req['id']));
+            const _matchs: Array<any> = []
+            Array.from(historys).reverse().map((item: any) => {
+                const usr = this.findUserbyId(users, item.opponentId)
+                if (usr)
+                    _matchs.push({
+                        createdAt: item.createdAt,
+                        myGools: item.myGools,
+                        opponentGools: item.opponentGools,
+                        opponent: usr,
+                    })
+            })
+            return _matchs
         } catch (error) {
 
         }

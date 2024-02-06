@@ -11,7 +11,6 @@ const OnlineUserss = ({ onlineUsersss, amis }: { onlineUsersss: Array<number>, a
     const [windowWidth, setWindoWidth] = useState(1)
     useEffect(() => {
         const handleRisize = () => {
-            console.log(window.innerWidth)
             setWindoWidth(window.innerWidth)
         }
         window.addEventListener('resize', handleRisize);

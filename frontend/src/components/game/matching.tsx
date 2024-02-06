@@ -163,7 +163,7 @@ const UserOverview = ({ user, name }: { user: userProps, name: string }) => {
             </div>
             <div className="h-2/3 w-full flex flex-row md:flex-col pt-5  md:pt-10">
                 <div className="w-full flex items-center px-5 md:p-5 space-x-5  ">
-                    <div className="text-[#EEF0F6] text-xl sm:text-2xl md:text-3xl   capitalize  font-bold overflow-hidden whitespace-nowrap overflow-ellipsis w-[120px] sm:w-max">{user.username}1234455612</div>
+                    <div className="text-[#EEF0F6] text-xl sm:text-2xl md:text-3xl   capitalize  font-bold overflow-hidden whitespace-nowrap overflow-ellipsis w-[120px] sm:w-max">{user.username}</div>
                     <Image className='w-[40px] h-[40px] lg:w-[60px] lg:h-[60px]' src={'/game/grad/grad-1.svg'} width={60} height={60} alt='grad'></Image>
                 </div>
                 <div className="w-full text-[#a0a0a0] md:px-5  bottom-2 relative text-base md:text-lg ">Won: {user.won ? user.won : 0}</div>

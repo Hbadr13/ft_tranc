@@ -229,7 +229,6 @@ const Settings = ({ opponent, setopponent, currentUser, setCurrentUser, setgameI
                         });
                         if (response.ok) {
                             const content = await response.json()
-                            console.log('--------->status:', content)
                             if (content.gameStatus != 'toMatch') {
                                 if (content.gameStatus || !content.opponentId) {
                                     router.push('/game')

@@ -6,10 +6,13 @@ import Link from 'next/link';
 import Image from 'next/image'
 import { Socket } from 'socket.io-client';
 import { Constant } from '@/constants/constant';
-export default function Home({ socket }: { socket: Socket }) {
+import { userProps } from '@/interface/data';
+export default function Home({currentUser ,socket }: {currentUser : userProps, socket: Socket }) {
   const [foto_user, setfoto_user] = useState("");
   const [username, setUsername] = useState("");
   const [Email, setEmail] = useState("");
+  const [win, setWin] = useState(0);
+  const [lost, setLost] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const toggleDropdown = () => {
@@ -29,13 +32,15 @@ export default function Home({ socket }: { socket: Socket }) {
             setfoto_user(content.foto_user);
             setEmail(content.email);
             setUsername(content.username);
+            setWin(content.won);
+            setLost(content.lost)
           }
         } catch (error) {
 
         }
       }
     )();
-  });
+  },[]);
   const handelLogOutUser = async () => {
     try {
       const response = await fetch(`${Constant.API_URL}/auth/logout`, {
@@ -61,7 +66,7 @@ export default function Home({ socket }: { socket: Socket }) {
 
             <Image
               className=''
-              src={foto_user != '' ? foto_user : '/foto_user'}
+              src={currentUser.foto_user != '' ? currentUser.foto_user : '/foto_user'}
               alt="user profile"
               fill
               style={{ objectFit: "cover" }}
@@ -77,14 +82,11 @@ export default function Home({ socket }: { socket: Socket }) {
                 <div className={'w-full h-full relative'}>
                   <Image
                     className=''
-                    src={foto_user}
+                    src={currentUser.foto_user}
                     alt="user profile2"
                     fill
                     style={{ objectFit: "cover" }}
 
-                  // sizes="(max-width: 18px)"
-                  // layout="fill"
-                  // objectFit="cover"
                   />
                 </div>
               </div>
@@ -103,11 +105,11 @@ export default function Home({ socket }: { socket: Socket }) {
             <div className="border-t border-slate-500/30"></div>
             <div className="flex justify-around">
               <div className="flex flex-col items-center justify-center">
-                <span className="text-3xl font-semibold">268</span>
+                <span className="text-3xl font-semibold">{win}</span>
                 <span className="text-sm text-slate-400">Win</span>
               </div>
               <div className="flex flex-col items-center justify-center">
-                <span className="text-3xl font-semibold">897</span>
+                <span className="text-3xl font-semibold">{lost}</span>
                 <span className="text-sm text-slate-400">Lost</span>
               </div>
             </div>
@@ -119,11 +121,11 @@ export default function Home({ socket }: { socket: Socket }) {
                 </svg>
                 <span>Profile</span>
               </Link>
-              <Link href="#" className="flex items-center gap-3 rounded-md py-2 px-3 hover:bg-slate-800">
+              <Link href="/editProfile" className="flex items-center gap-3 rounded-md py-2 px-3 hover:bg-slate-800">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
                   <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 01-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 01-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 01-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584zM12 18a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd"></path>
                 </svg>
-                <span>Help Center</span>
+                <span>Settings</span>
               </Link>
             </div>
             <Link href="/auth/login" onClick={handelLogOutUser} className="flex justify-center gap-3 rounded-md bg-red-600 py-2 px-3 font-semibold hover:bg-red-500 focus:ring-2 focus:ring-red-400">

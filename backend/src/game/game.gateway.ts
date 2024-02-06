@@ -49,7 +49,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const user = await this.gameService.checkuserIfAuth(auth_cookie)
       const userId = user.id
       client.handshake.query.userId = String(user.id);
-      console.log('----->game-->')
       this.IdOfPlayer.set(client, userId);
     } catch (error) {
       client.disconnect();
@@ -107,9 +106,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   @SubscribeMessage('documentHidden')
   handleMessage(client: Socket, flag: boolean): void {
-    const user = this.players.find((item) => item._client.id == client.id);
-    if (user) {
-      client.to(user._room).emit('documentHidden', flag);
+    try {
+      const user = this.players.find((item) => item._client.id == client.id);
+      if (user) {
+        client.to(user._room).emit('documentHidden', flag);
+      }
+    } catch (error) {
+
     }
   }
 
@@ -118,7 +121,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (room == '' || this.rooms.get(room) == 2)
       return
     try {
-      console.log()
       this.players.forEach((value, key) => {
         if (value.user_id == userId)
           throw new Error('ExitLoopException');
@@ -252,21 +254,26 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('ResumePause')
   handlegameResumePause(client: Socket, { room, userId }): void {
-    const game = this.games.get(room)
-    if (!game)
-      return
-    if (game.status == 'Pause')
-      return
-    if (game.player1_Id == userId) {
-      if (!game.player2.pause) {
-        game.player1.pause = !game.player1.pause
-        this.server.to(room).emit('ResumePause')
+    try {
+
+      const game = this.games.get(room)
+      if (!game)
+        return
+      if (game.status == 'Pause')
+        return
+      if (game.player1_Id == userId) {
+        if (!game.player2.pause) {
+          game.player1.pause = !game.player1.pause
+          this.server.to(room).emit('ResumePause')
+        }
+      } else if (game.player2_Id == userId) {
+        if (!game.player1.pause) {
+          game.player2.pause = !game.player2.pause
+          this.server.to(room).emit('ResumePause')
+        }
       }
-    } else if (game.player2_Id == userId) {
-      if (!game.player1.pause) {
-        game.player2.pause = !game.player2.pause
-        this.server.to(room).emit('ResumePause')
-      }
+    } catch (error) {
+
     }
   }
 }

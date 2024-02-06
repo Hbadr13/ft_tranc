@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { AppProps, userProps } from '@/interface/data'
 import Link from 'next/link'
 import { handelSendRequest } from '@/handeler/handelbutttons'
-import { handelChallenge } from '@/components/game/listOfFriends'
+import { getLevel, handelChallenge } from '@/components/game/listOfFriends'
 import { Constant } from '@/constants/constant'
 const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) => {
     const router = useRouter()
@@ -27,13 +27,16 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
 
     const handelGetBack = () => {
         router.push('/')
+
     }
 
     useEffect(() => {
         (
             async () => {
                 try {
-                    const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`)
+                    const respons = await fetch(`${Constant.API_URL}/search/recent`, {
+                        credentials: 'include',
+                    })
                     const content = await respons.json()
                     setRecentSearches(Array.from(content))
                 } catch (error) {
@@ -75,7 +78,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
         (
             async () => {
                 try {
-                    const response = await fetch(`${Constant.API_URL}/friends/${currentUser.id}/send-requests`, {
+                    const response = await fetch(`${Constant.API_URL}/friends/send-requests`, {
                         credentials: 'include',
                     });
                     const content = await response.json();
@@ -101,7 +104,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     }, [router])
     const handelClickProfile = async (id: Number) => {
         try {
-            const response = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`, {
+            const response = await fetch(`${Constant.API_URL}/search/recent`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -117,7 +120,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
     }
     const handelClearSearch = async () => {
         try {
-            const response = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`, {
+            const response = await fetch(`${Constant.API_URL}/search/recent`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -133,7 +136,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                 method: 'DELETE',
                 credentials: 'include',
             });
-            const respons = await fetch(`${Constant.API_URL}/search/recent/${currentUser.id}`)
+            const respons = await fetch(`${Constant.API_URL}/search/recent`)
             const content = await respons.json()
             if (respons.ok && respons.ok)
                 setRecentSearches(Array.from(content))
@@ -187,7 +190,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                                             </div>
                                         ) : null}
                                         <div className="">
-                                            LEVEL 3.90
+                                            LEVEL {getLevel(user.level)}
                                         </div>
                                     </div>
                                 </div>
@@ -198,7 +201,6 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                                             <button onClick={() => handelSendRequest({ id: currentUser.id, friendId: user.id, setSend: setSend })} className=' absolute right-[2px]' > Add friend</button>
                                         </div>) :
                                             (<div className=" relative w-[50%] flex bg-slate-800 hover:bg-slate-600 text-white p-2 rounded-lg  justify-center items-center ">
-                                                {/* <Image className=' absolute   left-[2px]' width={20} height={20} src={'/add-user.png'} alt='addfriend'></Image> */}
                                                 <button className=' absolute right-[2px]' > Cancel request</button>
                                             </div>)
                                     ) : (
@@ -210,7 +212,7 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                                     )}
                                     <div className="w-[45%] flex bg-[#eee] hover:bg-[#d6d5d5] text-black  p-1 rounded-lg justify-center items-center ">
                                         <Image className=' ' width={20} height={20} src={'/messenger.png'} alt='messenger'></Image>
-                                        <button className=''>Message</button>
+                                        <button onClick={() => router.push(`/chat?user=${user.id}`)} className=''>Message</button>
                                     </div>
                                 </div>
                             </div>
@@ -288,22 +290,19 @@ const index = ({ onlineUsersss, currentUser, users, amis, socket }: AppProps) =>
                                                     <button onClick={() => handelSendRequest({ id: currentUser.id, friendId: user.id, setSend: setSend })} className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
                                                         <Image src='/add-friend.svg' className=' fill-red-700  text-red-200' alt='search' width={20} height={20} />
                                                     </button>
-
                                                 )
-                                            ) : (<Link href={'/game'} className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
+                                            ) : (<button onClick={() => onlineUsersss.includes(user.id) ? handelChallenge({ oppId: user.id, socket: socket, currentUser: currentUser, selectUser: selectUser, setselectUser: setselectUser, router: router }) : undefined} className=' border-2  border-blac  p-2 rounded-md hover:ring-offset-2 hover:ring-2 duration-300 hover:ring-red-200'>
                                                 <Image src='/icons-ping-pong-black.png' className=' ' alt='search' width={20} height={20}></Image>
-                                            </Link>)
+                                            </button>)
                                         }
-
-                                        <Link href={'/chat'} className=' bg-blue-300 p-2 rounded-md  hover:ring-offset-2 hover:ring-2 duration-300'>
+                                        <button onClick={() => router.push(`/chat?user=${user.id}`)} className=' bg-blue-300 p-2 rounded-md  hover:ring-offset-2 hover:ring-2 duration-300'>
                                             <Image src='/icons-chat-black.png' className='' alt='search' width={20} height={20}></Image>
-                                        </Link>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         ))}
                 </div>
-
 
             </menu>
             <div className={`${filterUser.length == 0 ? ' flex ' : ' hidden '} w-full 300   justify-center `}>

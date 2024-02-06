@@ -12,6 +12,7 @@ CREATE TABLE "User" (
     "level" DOUBLE PRECISION,
     "won" INTEGER,
     "lost" INTEGER,
+    "first_login" BOOLEAN,
     "gameStatus" TEXT,
     "twoFactorSecret" TEXT,
     "tempSecret" TEXT,
@@ -66,7 +67,7 @@ CREATE TABLE "Membership" (
     "isOwner" BOOLEAN NOT NULL DEFAULT false,
     "isAdmin" BOOLEAN NOT NULL DEFAULT false,
     "isBanned" BOOLEAN NOT NULL DEFAULT false,
-    "timeMute" INTEGER NOT NULL DEFAULT 0,
+    "timeMute" TIMESTAMP(3),
     "roomId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
 

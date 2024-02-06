@@ -108,17 +108,12 @@ export class GameService {
         if (!tokens) {
             throw new UnauthorizedException('JWT token is missing.');
         }
-        const decodedToken = jwt.verify(tokens, '/BZ$ySv`Gr.8p[0>.4himJ46S@r,UKLx`R/h?K*,fXv2@9}7Hg+RF?so56|6au#');
+        const decodedToken = await jwt.verify(tokens, process.env.JWT_SECRET);
         if (!decodedToken) {
             throw new UnauthorizedException('JWT token is invalid.');
         }
         return {
             id: decodedToken['id']
         }
-        // try {
-        // } catch (e) {
-
-        //     throw new UnauthorizedException();
-        // }
     }
 }

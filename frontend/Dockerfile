@@ -1,12 +1,10 @@
-FROM node:lts
+FROM node:20
+
+WORKDIR /app
 
 COPY package*.json ./
 
 RUN npm install
-
-COPY . /fontend
-
-WORKDIR /fontend
 
 EXPOSE 3000
 

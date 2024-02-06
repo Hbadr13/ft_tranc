@@ -1,10 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-// import { PrismaClientKnownRequestError } from '@prisma/client';
 import { PrismaClient, Prisma, User } from '@prisma/client';
-// import { Prisma, User } from '@prisma/client';
 import { ForbiddenException } from '@nestjs/common';
-import { Response, Request } from 'express';
-
+import { Response, Request, response } from 'express';
 import * as speakeasy from 'speakeasy';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto } from './dto';
@@ -13,6 +10,7 @@ import * as argon from 'argon2';
 import { JwtPayload } from './jwt/jwt-payload.interface';
 import { UserService } from 'src/user/user.service';
 import { authenticator } from 'otplib';
+import { Constant } from 'src/constants/constant';
 
 @Injectable()
 export class AuthService {
@@ -67,7 +65,7 @@ export class AuthService {
     }
   }
   async verifyTwoFactor(dto: AuthDto): Promise<any> {
-    // Assuming you use some form of authentication and the user object is attached to the request
+    
     const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
@@ -82,7 +80,7 @@ export class AuthService {
     if (!user.twoFactorSecret) {
       throw new ForbiddenException('Two-Factor Authentication is not enabled for this user');
     }
-    // console.log("dto.foto_user, user.twoFactorSecret", dto.foto_user, user.twoFactorSecret)
+
     const verified = authenticator.check(dto.twoFactorSecret, user.twoFactorSecret);
 
 
@@ -109,7 +107,6 @@ export class AuthService {
     if (!user.twoFactorSecret) {
       throw new ForbiddenException('Two-Factor Authentication is not enabled for this user');
     }
-    // console.log("dto.foto_user, user.twoFactorSecret", dto.foto_user, user.twoFactorSecret)
     const verified = authenticator.check(dto.twoFactorSecret, user.twoFactorSecret);
 
 
@@ -119,40 +116,28 @@ export class AuthService {
       throw new ForbiddenException('Invalid Two-Factor Authentication code');
     }
 
-    // If 2FA code is valid, return the user
     return user;
   }
   async validateUser(payload: JwtPayload): Promise<User | null> {
-    // Implement your logic to validate the user based on the JWT payload
-    // This could involve querying a database or other authentication checks
-    // Return the user if valid, or null if not
-    // Replace 'User' with your actual user model
-    // 'JwtPayload' should match the structure of your JWT payload
     return await this.userService.findByUserId(payload.id);
   }
   async signup(dto: AuthDto) {
     if (dto.foto_user === 'male')
-      dto.foto_user =
-        'https://i.pinimg.com/564x/dc/51/61/dc5161dd5e36744d184e0b98e97d31ba.jpg';
+      dto.foto_user = '/search/boy.png';
     else
-      dto.foto_user =
-        'https://i.pinimg.com/564x/30/c7/1b/30c71b3c02f31c2f3747c9b7404d6880.jpg';
-
-    //generate the password hash
+      dto.foto_user = '/search/woman.png';
     try {
       const hash = await argon.hash(dto.password);
-      //save the new user in the db
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
-          // createdAt: new Date(),
           username: dto.username, // Replace with the desired username
           lastName: dto.lastName, // Replace with the user's last name
           isOnline: false,
           won: 0,
           lost: 0,
           level: 0,
-          // foto_user: dto.foto_user,
+          first_login: true,
           foto_user: dto.foto_user,
           twoFactorSecret: null,
           hash,
@@ -169,8 +154,8 @@ export class AuthService {
       }
       throw e;
     }
-    // return {msg: 'I have signed in'}
-  }q
+  }
+
   async signin(dto: AuthDto) {
     // return {msg: 'I have signed in'}
     const user = await this.prisma.user.findUnique({
@@ -188,29 +173,47 @@ export class AuthService {
     return user;
   }
   async login(requser) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email: requser.email,
-      },
-    });
-    if (user) return user;
-    const user1 = await this.prisma.user.create({
-      data: {
-        email: requser.email,
-        // createdAt: new Date(),
-        username: requser.username, // Replace with the desired username
-        lastName: requser.lastName, // Replace with the user's last name
-        firstName: requser.firstName,
-        isOnline: false,
-        foto_user: requser.avatar,
-        won: 0,
-        lost: 0,
-        level: 0,
-        hash: '', // Replace with the actual password hash
-      },
-    });
-    // delete user.hash;
-    //return the saved user
-    return user1;
+    try {
+    
+      
+      const user = await this.prisma.user.findUnique({
+        where: {
+          email: requser.email,
+        },
+      });
+      if (user) return user;
+      // const ifusernameExist = await this.prisma.user.findUnique({
+      //   where: {
+      //     username: requser.username,
+      //   },
+      // });
+
+      
+  const user1 = await this.prisma.user.create({
+    data: {
+      email: requser.email,
+      // createdAt: new Date(),
+      username: requser.username, // Replace with the desired username
+      lastName: requser.lastName, // Replace with the user's last name
+      firstName: requser.firstName,
+      isOnline: false,
+      foto_user: requser.avatar,
+      won: 0,
+      lost: 0,
+      level: 0,
+      first_login: true,
+      hash: '', // Replace with the actual password hash
+    },
+  });
+
+  return user1;
+} catch (e) {
+  if (e instanceof Prisma.PrismaClientKnownRequestError) {
+    if (e.code === 'P2002') {
+      throw new ForbiddenException('Credentials taken');
+    }
+  }
+  throw e;
+}
   }
 }

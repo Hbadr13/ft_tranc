@@ -30,12 +30,16 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
 
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/auth/user`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
+                try {
+                    const response = await fetch(`${Constant.API_URL}/auth/user`, {
+                        credentials: 'include',
+                    });
+                    const content = await response.json();
+                    if (response.ok)
+                        setid(content.id);
+                } catch (error) {
 
-                setid(content.id);
+                }
 
             }
         )();
@@ -66,7 +70,7 @@ function Profiles({ Leaderboard, t }: { Leaderboard: any, t: number }) {
                         {
                             on == 0 && Leaderboard.map((value: any, index: any) => (
 
-                                <div className=' flex -mt-3 wh-[40%] w-full   fledx-row ml-14  spface-x-3'>
+                                <div key={index} className=' flex -mt-3 wh-[40%] w-full   fledx-row ml-14  spface-x-3'>
                                     {
 
 
@@ -201,11 +205,17 @@ const Rank = ({ id, t }: { id: number, t: number }) => {
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${Constant.API_URL}/users/${0}`, {
-                    credentials: 'include',
-                });
-                const content = await response.json();
-                setUsers_id(Array.from(content));
+                try {
+                    const response = await fetch(`${Constant.API_URL}/users/${0}`, {
+                        credentials: 'include',
+                    });
+                    if (response.ok) {
+                        const content = await response.json();
+                        setUsers_id(Array.from(content));
+                    }
+                } catch (error) {
+
+                }
             }
         )();
     }, [id]);

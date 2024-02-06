@@ -6,11 +6,7 @@ export interface messageProps {
     foto_user: string
     senderId: number
 }
-export interface channelProps {
-    type: string;
-    name: string,
-    id: number,
-}
+
 export interface listConversationDirect {
     flag?: boolean
     updateAt: string,
@@ -35,6 +31,7 @@ export interface channelProps {
     name: string,
     id: number,
     password: string;
+    description: string;
 }
 
 export interface userProps {
@@ -91,5 +88,5 @@ export interface GameCardsProps {
 }
 
 export const userData = { id: 0, opponentId: 0, createdAt: "", updatedAt: "", email: "", hash: "", username: "", firstName: "", lastName: "", foto_user: "", isOnline: false, gameStatus: '', userId: 0, flag: false, flag1: false, room: '', won: 0, lost: 0, level: 0, dakhal: false }
-export const channelData = { id: 0, type: "", name: "", password: "" }
+export const channelData = { id: 0, type: "", name: "", password: "", description: "" }
 export const participantsData = { id: 0, username: "", isAdmin: false, isOwner: false, isBanned: false, timeMute: "", foto_user: '' }

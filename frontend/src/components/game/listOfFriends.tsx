@@ -50,6 +50,10 @@ const dateString = "2023-10-28T09:04:35.054Z";
 export const handelChallenge = async ({ oppId, socket, currentUser, selectUser, setselectUser, router, setclick }: any) => {
 
 
+
+
+    
+
     const user = await getCurrentUser()
     if (user.gameStatus) {
         router.push('/game')
@@ -134,7 +138,6 @@ const ListOfFriends = ({ onlineUsersss, socket }: ExtendedAppProps) => {
         else (
             setGame(true)
         )
-        // console.log(currentUser)
     }, [currentUser])
     useEffect(() => {
         setNoutFount(amis.length == 0)
@@ -144,7 +147,7 @@ const ListOfFriends = ({ onlineUsersss, socket }: ExtendedAppProps) => {
         setMatchs([])
         sethistoriqueHidden((prev) => prev == -1 ? Number(e.target.value) : -1)
         try {
-            const response = await fetch(`${Constant.API_URL}/game/history/${currentUser.id}/${e.target.value}`, {
+            const response = await fetch(`${Constant.API_URL}/game/history/${e.target.value}`, {
                 credentials: 'include',
             });
             if (response.status == 200) {
@@ -158,7 +161,7 @@ const ListOfFriends = ({ onlineUsersss, socket }: ExtendedAppProps) => {
     }
 
     const handelClearHistorique = async (userid: number) => {
-        const response = await fetch(`${Constant.API_URL}/game/history/${currentUser.id}/${userid}`, {
+        const response = await fetch(`${Constant.API_URL}/game/history/${userid}`, {
             method: 'DELETE',
             credentials: 'include',
         });
@@ -184,127 +187,125 @@ const ListOfFriends = ({ onlineUsersss, socket }: ExtendedAppProps) => {
                             <h1 className='text-black ' >Friends</h1>
                         </div>
                         {
-                            (amis.length) ? amis.map((user: userProps) => (
-                                <>
-                                    <div key={'user' + user.id} className=' w-full'>
-                                        <div className=' bg-white rounded-2xl items-center  space-x-3 p-2 flex  w-full md:w-[100%] shadow-md relative'>
-                                            <div className=' w-[20%] flex flex-col py-2 items-center justify-center space-y-4 border-[1px] border-slate-200 border-spacing-9 rounded-3xl'>
-                                                <Image
-                                                    width={2000}
-                                                    height={2000}
-                                                    src={user.foto_user}
-                                                    alt={`image of: ${user.username}`}
-                                                    className="w-20   rounded-full border-4 border-balck inline-block" // Adjust the width as needed
-                                                />
-                                                <div className=' border-2 border-yellow-500 bg-blu-300  rounded-xl bg-blackd w-[80%] h-10  flex items-center justify-center relative'>
-                                                    <Image fill style={{ objectFit: "cover" }} className='' src={getTheGrad(user.level)} alt='grad'></Image>
-                                                </div>
-                                            </div>
-                                            <div className='bg-rded-400 w-[80%] rounded-lg h-[100%] space-y-4'>
-                                                <div className="  flex items-center   bg-rd-200 justify-between space-x-3">
-                                                    <div className=' text-2xl'>
-                                                        {user.username}
-                                                    </div>
-                                                    {
-                                                        onlineUsersss.includes(user.id) ? (
-
-                                                            <div className=" flex items-center space-x-1">
-                                                                <div className="">
-                                                                    online
-                                                                </div>
-                                                                <div className='w-[10px] h-[10px] rounded-full bg-green-500' />
-                                                            </div>
-                                                        ) :
-                                                            (
-                                                                <div className=" flex items-center space-x-1">
-                                                                    <div className="">
-                                                                        offline
-                                                                    </div>
-                                                                    <div className='w-[10px] h-[10px] rounded-full bg-red-400' />
-                                                                </div>
-                                                            )
-                                                    }
-                                                </div>
-                                                <div className="w-[100%] h-10  rounded-xl bg-[#D3E3FC] flex  items-center relative ">
-                                                    <div className="absolute w-full h-full flex justify-center items-center">
-                                                        <div className="">
-                                                            LEVEL {getLevel(user.level)}
-                                                        </div>
-                                                    </div>
-                                                    <div style={{
-                                                        width: `${extractdecimalNumberFromLevel(user.level)}%`
-                                                    }} className={`  duration-500 h-10  rounded-xl bg-[#77A6F7]`}>
-                                                    </div>
-                                                </div>
-                                                <div className="flex justify-between ">
-                                                    <button value={`${user.id}`} onClick={() => onlineUsersss.includes(user.id) ? handelChallenge({ oppId: user.id, socket: socket, currentUser: currentUser, selectUser: selectUser, setselectUser: setselectUser, router: router }) : undefined}
-                                                        className={`${onlineUsersss.includes(user.id) ? ' bg-[#6592e1] ' : ' bg-[#99b8ea] '}    rounded-xl px-4 py-2`}>Challenge</button>
-                                                    <button value={`${user.id}`} onClick={handelHistorique} className='bg-white border-black border-2 rounded-xl px-4 py-2'>Historique</button>
-                                                </div>
-                                            </div>
-                                            <div className={`bg-white text-blue-800  w-[250px] h-[170px] flex flex-col justify-between items-center  absolute z-10  -bottom-[190px] rounded-2xl p-4 shadow-xl ${!(user.id === selectUser) ? 'hidden' : ""}`}>
-                                                <div className="w-full flex justify-end">
-                                                    <button onClick={() => setselectUser(-1)}>
-                                                        <Image width={30} height={30} src={'/clean.png'} alt='x' />
-                                                    </button>
-                                                </div>
-                                                <div className="text-center w-full text-xl md:text-2xl relative -top-6">
-                                                    This Player is not Available new.
-                                                </div>
+                            (amis.length) ? amis.map((user: userProps, index) => (
+                                <div key={index} className=' w-full'>
+                                    <div className=' bg-white rounded-2xl items-center  space-x-3 p-2 flex  w-full md:w-[100%] shadow-md relative'>
+                                        <div className=' w-[20%] flex flex-col py-2 items-center justify-center space-y-4 border-[1px] border-slate-200 border-spacing-9 rounded-3xl'>
+                                            <Image
+                                                width={2000}
+                                                height={2000}
+                                                src={user.foto_user}
+                                                alt={`image of: ${user.username}`}
+                                                className="w-20   rounded-full border-4 border-balck inline-block" // Adjust the width as needed
+                                            />
+                                            <div className=' border-2 border-yellow-500 bg-blu-300  rounded-xl bg-blackd w-[80%] h-10  flex items-center justify-center relative'>
+                                                <Image fill style={{ objectFit: "cover" }} className='' src={getTheGrad(user.level)} alt='grad'></Image>
                                             </div>
                                         </div>
-                                        {(user.id == historiqueHidden) && (
-                                            <div className=' bg-redd-200  w-full  bg-bldue-200 rounded-xl flex flex-col items-center justify-center space-y-5' >
-                                                <div className=" relative bg-rded-200 w-full h-10 flex justify-center items-center">
-                                                    <div className="w-[200px] h-[10px] bg-yellow-300"></div>
-                                                    <div className="w-[200px]  text-yellow-300 uppercase text-center text-3xl">
-                                                        Historique
-                                                    </div>
-                                                    <div className="w-[200px] h-[10px] bg-yellow-300"></div>
-                                                    <button onClick={() => handelClearHistorique(user.id)} hidden={(matchs.length ? false : true)} className=" absolute  right-1 px-5 py-1  bg-blue-400  hover:bg-blue-300 rounded-lg top-7">Clear</button>
+                                        <div className='bg-rded-400 w-[80%] rounded-lg h-[100%] space-y-4'>
+                                            <div className="  flex items-center   bg-rd-200 justify-between space-x-3">
+                                                <div className=' text-2xl'>
+                                                    {user.username}
                                                 </div>
                                                 {
-                                                    (matchs.length) ? matchs.map((match: any) => (
-                                                        <div key={match.id} className="w-[96%] ms:w-[80%] h-20  rounded-xl flex flex-col justify-center item-center bg-sred-200 mt-4">
+                                                    onlineUsersss.includes(user.id) ? (
 
-                                                            <div className="bg-blue-800 mx-[20%] text-sm text rounded-t-3xl h-10 mt-2 text-white flex justify-center items-center">
-                                                                {getTheDateAndTheTime(match.createdAt)}
+                                                        <div className=" flex items-center space-x-1">
+                                                            <div className="">
+                                                                online
                                                             </div>
+                                                            <div className='w-[10px] h-[10px] rounded-full bg-green-500' />
+                                                        </div>
+                                                    ) :
+                                                        (
+                                                            <div className=" flex items-center space-x-1">
+                                                                <div className="">
+                                                                    offline
+                                                                </div>
+                                                                <div className='w-[10px] h-[10px] rounded-full bg-red-400' />
+                                                            </div>
+                                                        )
+                                                }
+                                            </div>
+                                            <div className="w-[100%] h-10  rounded-xl bg-[#D3E3FC] flex  items-center relative ">
+                                                <div className="absolute w-full h-full flex justify-center items-center">
+                                                    <div className="">
+                                                        LEVEL {getLevel(user.level)}
+                                                    </div>
+                                                </div>
+                                                <div style={{
+                                                    width: `${extractdecimalNumberFromLevel(user.level)}%`
+                                                }} className={`  duration-500 h-10  rounded-xl bg-[#77A6F7]`}>
+                                                </div>
+                                            </div>
+                                            <div className="flex justify-between ">
+                                                <button value={`${user.id}`} onClick={() => onlineUsersss.includes(user.id) ? handelChallenge({ oppId: user.id, socket: socket, currentUser: currentUser, selectUser: selectUser, setselectUser: setselectUser, router: router }) : undefined}
+                                                    className={`${onlineUsersss.includes(user.id) ? ' bg-[#6592e1] ' : ' bg-[#99b8ea] '}    rounded-xl px-4 py-2`}>Challenge</button>
+                                                <button value={`${user.id}`} onClick={handelHistorique} className='bg-white border-black border-2 rounded-xl px-4 py-2'>Historique</button>
+                                            </div>
+                                        </div>
+                                        <div className={`bg-white text-blue-800  w-[250px] h-[170px] flex flex-col justify-between items-center  absolute z-10  -bottom-[190px] rounded-2xl p-4 shadow-xl ${!(user.id === selectUser) ? 'hidden' : ""}`}>
+                                            <div className="w-full flex justify-end">
+                                                <button onClick={() => setselectUser(-1)}>
+                                                    <Image width={30} height={30} src={'/clean.png'} alt='x' />
+                                                </button>
+                                            </div>
+                                            <div className="text-center w-full text-xl md:text-2xl relative -top-6">
+                                                This Player is not Available new.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {(user.id == historiqueHidden) && (
+                                        <div className=' bg-redd-200  w-full  bg-bldue-200 rounded-xl flex flex-col items-center justify-center space-y-5' >
+                                            <div className=" relative bg-rded-200 w-full h-10 flex justify-center items-center">
+                                                <div className="w-[200px] h-[10px] bg-yellow-300"></div>
+                                                <div className="w-[200px]  text-yellow-300 uppercase text-center text-3xl">
+                                                    Historique
+                                                </div>
+                                                <div className="w-[200px] h-[10px] bg-yellow-300"></div>
+                                                <button onClick={() => handelClearHistorique(user.id)} hidden={(matchs.length ? false : true)} className=" absolute  right-1 px-5 py-1  bg-blue-400  hover:bg-blue-300 rounded-lg top-7">Clear</button>
+                                            </div>
+                                            {
+                                                (matchs.length) ? matchs.map((match: any, index: any) => (
+                                                    <div key={index} className="w-[96%] ms:w-[80%] h-20  rounded-xl flex flex-col justify-center item-center bg-sred-200 mt-4">
 
-                                                            <div className="bg-blue-500 w-full flex justify-center items-start h-16 rounded-md">
-                                                                <div className="bg-reds-200 w-[40%] h-full flex justify-between items-center">
-                                                                    <Image className='w-12 rounded-l-md'
-                                                                        src={user.foto_user} width={200} height={200} alt={'player Image'}>
-                                                                    </Image>
-                                                                    <h1 className='pr-10  uppercase text-white font-bold text-xl'>{user.username}</h1>
-                                                                </div>
-                                                                <div className="bg-blue-800 w-[20%] h-12 flex flex-col justify-end item">
-                                                                    <div className='bg-reds-400 flex justify-around items-center  text-xl font-bold text-white'>
-                                                                        <span>{match.opponentGools}</span>
-                                                                        <span>-</span>
-                                                                        <span>{match.myGools}</span>
-                                                                    </div>
-                                                                    <div className="w-15 h-3 bg-yellow-300  rounded-t-[8px] ">
-                                                                    </div>
-                                                                </div>
-                                                                <div className="bg-reds-200 w-[40%] h-full flex justify-between items-center">
-                                                                    <h1 className='pl-10  uppercase text-white font-bold text-xl'>{currentUser.username}</h1>
-                                                                    <Image className='w-12 rounded-r-md'
-                                                                        src={currentUser.foto_user} width={200} height={200} alt={'player Image'}>
-                                                                    </Image>
-                                                                </div>
-                                                            </div>
+                                                        <div className="bg-blue-800 mx-[20%] text-sm text rounded-t-3xl h-10 mt-2 text-white flex justify-center items-center">
+                                                            {getTheDateAndTheTime(match.createdAt)}
                                                         </div>
 
-                                                    )) : null
-                                                }
-                                            </div>)}
-                                    </div>
-                                </>
+                                                        <div className="bg-blue-500 w-full flex justify-center items-start h-16 rounded-md">
+                                                            <div className="bg-reds-200 w-[40%] h-full flex justify-between items-center">
+                                                                <Image className='w-12 rounded-l-md'
+                                                                    src={user.foto_user} width={200} height={200} alt={'player Image'}>
+                                                                </Image>
+                                                                <h1 className='pr-10  uppercase text-white font-bold text-xl'>{user.username}</h1>
+                                                            </div>
+                                                            <div className="bg-blue-800 w-[20%] h-12 flex flex-col justify-end item">
+                                                                <div className='bg-reds-400 flex justify-around items-center  text-xl font-bold text-white'>
+                                                                    <span>{match.opponentGools}</span>
+                                                                    <span>-</span>
+                                                                    <span>{match.myGools}</span>
+                                                                </div>
+                                                                <div className="w-15 h-3 bg-yellow-300  rounded-t-[8px] ">
+                                                                </div>
+                                                            </div>
+                                                            <div className="bg-reds-200 w-[40%] h-full flex justify-between items-center">
+                                                                <h1 className='pl-10  uppercase text-white font-bold text-xl'>{currentUser.username}</h1>
+                                                                <Image className='w-12 rounded-r-md'
+                                                                    src={currentUser.foto_user} width={200} height={200} alt={'player Image'}>
+                                                                </Image>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                )) : null
+                                            }
+                                        </div>)}
+                                </div>
 
                             )) : (
                                 <div hidden={!notFount} className={`flex  w-full 300   justify-center `}>
-                                    <footer className='w-[60%]  min-w-[230px] max-w-[760px]  shadow-md rounded-2xl mt-20 py-10 flex flex-col justify-center items-center space-y-3'>
+                                    <footer className='w-[60%]  min-w-[230px] max-w-[760px] rounded-2xl mt-20 py-10 flex flex-col justify-start items-center space-y-3'>
                                         <div className="mt-20 bg-green-w500 flex items-end -space-x-2">
                                             <div className="">
                                                 <Image className='border-2 border-white rounded-full w-[50px] h-[50px]' width={500} height={500} src={'/search/man.png'} alt='woman iamge' />
@@ -319,14 +320,6 @@ const ListOfFriends = ({ onlineUsersss, socket }: ExtendedAppProps) => {
                                         <div className=" w-[50%] text-center  text-xl font-semibold">
                                             <h1>No user found</h1>
                                         </div>
-                                        {/* <div className=' w-[50%]   text-center'>
-                                            <h2> Sorry, We couldn't find any user </h2>
-                                            <h2 className={`${currentPath == '/search' ? 'hidden' : 'block'}`}>with the name "{query}" .Please try again.</h2>
-                                        </div> */}
-                                        {/* <div className="space-x-3">
-                                            <button onClick={handelClearSearch} className='w-[120px] border-2 border-slate-300 py-2  rounded-md  font-bold hover:bg-slate-300 duration-300 '>Clear search</button>
-                                            <button onClick={handelGetBack} className='w-[120px] border-2  bg-blue-300 py-2  text-blue-800 rounded-md  font-bold hover:bg-blue-400 duration-300'>Get back</button>
-                                        </div> */}
                                     </footer>
                                 </div>
                             )

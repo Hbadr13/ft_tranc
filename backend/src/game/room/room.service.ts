@@ -15,19 +15,40 @@ export class RoomService {
     return user;
   }
   async creatRoom(userId: number, body: roomDto) {
-    const data = await this.prisma.user.update({
+    let status;
+
+    const existingFriendship = await this.prisma.friendRequest.findFirst({
       where: {
-        id: userId,
-      },
-      data: {
-        room: body.room,
-        opponentId: Number(body.opponentId),
+        senderId: userId,
+        receiverId: Number(body.opponentId),
       },
     });
-    return data;
+    const existingFriendship1 = await this.prisma.friendRequest.findFirst({
+      where: {
+        senderId: Number(body.opponentId),
+        receiverId: userId,
+      },
+    });
+    if (existingFriendship)
+      status = existingFriendship.status
+    if(existingFriendship1)
+      existingFriendship1.status
+
+    if (status != 'blocked') {
+
+      const data = await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          room: body.room,
+          opponentId: Number(body.opponentId),
+        },
+      });
+      return data;
+    }
   }
   async choiseSettingGame(userId: number, body: playDto) {
-    // console.log(body)
     const data = await this.prisma.user.update({
       where: {
         id: userId,
@@ -64,4 +85,3 @@ export class RoomService {
     return data;
   }
 }
- 
